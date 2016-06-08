@@ -1,4 +1,17 @@
 header {
 	background: #eee;
 	padding: .5em;
+	display: flex;
+	& h1 {
+		flex-grow: 1;
+		flex-shrink: 1;
+	}
+	& nav {
+		flex-grow: 1;
+		text-align: right;
+		& a {
+			display: inline-block;
+			padding: .5em;
+		}
+	}
 }

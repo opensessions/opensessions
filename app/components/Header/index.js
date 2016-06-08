@@ -10,17 +10,21 @@
  */
 
 import React from 'react';
+import { Link } from 'react-router';
 
 import styles from './styles.css';
 
 export default class Header extends React.Component { // eslint-disable-line react/prefer-stateless-function
 
-  render() {
-    return (
-      <header>
-      	<h1>Open Sessions</h1>
-      	<a href="/add-session">+ add session</a>
-      </header>
-    );
-  }
+	render() {
+		return (
+			<header>
+				<h1>Open Sessions</h1>
+				<nav>
+					<Link to="/add-session" activeClassName="active">+ add session</Link>
+					<Link to="/login">log in</Link>
+				</nav>
+			</header>
+		);
+	}
 }
