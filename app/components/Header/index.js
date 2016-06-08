@@ -1,12 +1,5 @@
 /*
  * Header
- *
- * This is the first thing users see of our App, at the '/' route
- *
- * NOTE: while this component should technically be a stateless functional
- * component (SFC), hot reloading does not currently support SFCs. If hot
- * reloading is not a neccessity for you then you can refactor it and remove
- * the linting exception.
  */
 
 import React from 'react';
@@ -17,11 +10,11 @@ import styles from './styles.css';
 import { NotAuthenticated, LoginLink, Authenticated } from 'react-stormpath';
 
 export default class Header extends React.Component { // eslint-disable-line react/prefer-stateless-function
-	shouldComponentUpdate() {
-		console.log("Header shouldComponentUpdate ?")
-		return true
+	static contextTypes = {
+		user: React.PropTypes.object
 	}
 	render() {
+		var user = this.context.user ? this.context.user : false;
 		return (
 			<header>
 				<Link to="/" className="logo">Open Sessions</Link>
@@ -31,7 +24,7 @@ export default class Header extends React.Component { // eslint-disable-line rea
 						<LoginLink>log in</LoginLink>
 					</NotAuthenticated>
 					<Authenticated>
-						<Link to="/me">profile</Link>
+						<Link to="/me">{user.givenName}'s profile</Link>
 					</Authenticated>
 				</nav>
 			</header>
