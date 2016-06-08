@@ -5,7 +5,7 @@
 import React from 'react';
 
 export default class Form extends React.Component { // eslint-disable-line react/prefer-stateless-function
-  propTypes: {
+  static propTypes = {
     children: React.PropTypes.element.isRequired,
     submitText: React.PropTypes.string,
   }
