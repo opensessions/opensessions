@@ -47,7 +47,7 @@ const rootRoute = {
 };
 
 // Setup react stormpath
-import ReactStormpath, { Router, AuthenticatedRoute, LoginLink, LoginForm } from 'react-stormpath';
+import ReactStormpath, { Router } from 'react-stormpath';
 ReactStormpath.init({});
 
 ReactDOM.render(

@@ -15,6 +15,11 @@ const logger = {
     console.error(chalk.red(err));
   },
 
+  // Write some text and a checkmark
+  checkmark: text => {
+    console.log(`${text} ${chalk.green('✓')}`);
+  },
+
   // Called when express.js app starts on given port w/o errors
   appStarted: (port, tunnelStarted) => {
     console.log(`Server started ${chalk.green('✓')}`);

@@ -23,15 +23,15 @@ const stormpath = require('express-stormpath');
 
 app.use(stormpath.init(app, {
   web: {
-    produces: ['application/json']
-  }
+    produces: ['application/json'],
+  },
 }));
 
 const port = process.env.PORT || 3000;
 
 app.on('stormpath.ready', () => {
   // Start your app
-  console.log("Stormpath ready")
+  logger.checkmark('Stormpath ready');
   app.listen(port, (err) => {
     if (err) {
       return logger.error(err);
@@ -49,5 +49,5 @@ app.on('stormpath.ready', () => {
     } else {
       logger.appStarted(port);
     }
-  })
-})
+  });
+});
