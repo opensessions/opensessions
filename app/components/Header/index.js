@@ -14,21 +14,24 @@ import { Link } from 'react-router';
 
 import styles from './styles.css';
 
-import { NotAuthenticated, Authenticated } from 'react-stormpath';
+import { NotAuthenticated, LoginLink, Authenticated } from 'react-stormpath';
 
 export default class Header extends React.Component { // eslint-disable-line react/prefer-stateless-function
-
+	shouldComponentUpdate() {
+		console.log("Header shouldComponentUpdate ?")
+		return true
+	}
 	render() {
 		return (
 			<header>
-				<Link to="/">Open Sessions</Link>
+				<Link to="/" className="logo">Open Sessions</Link>
 				<nav>
-					<Link to="/add-session" activeClassName="active">+ add session</Link>
+					<Link to="/session/add" activeClassName="active">+ add session</Link>
 					<NotAuthenticated>
-						<Link to="/login">log in</Link>
+						<LoginLink>log in</LoginLink>
 					</NotAuthenticated>
 					<Authenticated>
-						<Link to="/login">log in</Link>
+						<Link to="/me">profile</Link>
 					</Authenticated>
 				</nav>
 			</header>

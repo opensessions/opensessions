@@ -50,6 +50,38 @@ export default function createRoutes() {
         importModules.catch(errorLoading);
       },
     }, {
+      path: '/forgot',
+      name: 'forgot',
+      getComponent(nextState, cb) {
+        const importModules = Promise.all([
+          System.import('containers/ForgotPage'),
+        ]);
+
+        const renderRoute = loadModule(cb);
+
+        importModules.then(([component]) => {
+          renderRoute(component);
+        });
+
+        importModules.catch(errorLoading);
+      },
+    }, {
+      path: '/me',
+      name: 'profile',
+      getComponent(nextState, cb) {
+        const importModules = Promise.all([
+          System.import('containers/ProfileView'),
+        ]);
+
+        const renderRoute = loadModule(cb);
+
+        importModules.then(([component]) => {
+          renderRoute(component);
+        });
+
+        importModules.catch(errorLoading);
+      },
+    }, {
       path: '/login',
       name: 'login',
       getComponent(nextState, cb) {
@@ -66,11 +98,27 @@ export default function createRoutes() {
         importModules.catch(errorLoading);
       },
     }, {
-      path: '/add-session',
+      path: '/session/add',
       name: 'add session',
       getComponent(nextState, cb) {
         const importModules = Promise.all([
           System.import('containers/SessionForm'),
+        ]);
+
+        const renderRoute = loadModule(cb);
+
+        importModules.then(([component]) => {
+          renderRoute(component);
+        });
+
+        importModules.catch(errorLoading);
+      },
+    }, {
+      path: '/session/view',
+      name: 'view session',
+      getComponent(nextState, cb) {
+        const importModules = Promise.all([
+          System.import('containers/SessionView'),
         ]);
 
         const renderRoute = loadModule(cb);

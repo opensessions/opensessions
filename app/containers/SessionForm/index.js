@@ -11,13 +11,20 @@ import React from 'react';
 
 import Header from 'components/Header';
 
+import { Authenticated, NotAuthenticated, LoginLink } from 'react-stormpath';
+
 export default class SessionForm extends React.Component { // eslint-disable-line react/prefer-stateless-function
 
 	render() {
 		return (
 			<div>
 				<Header />
-				<h1>A session form!</h1>
+				<Authenticated>
+					<h1>A session form!</h1>
+				</Authenticated>
+				<NotAuthenticated>
+					<p>You must <LoginLink>login</LoginLink> before you can add a session</p>
+				</NotAuthenticated>
 			</div>
 		);
 	}

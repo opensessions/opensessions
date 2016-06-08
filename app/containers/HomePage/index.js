@@ -14,12 +14,12 @@ import { Link } from 'react-router';
 
 export default class HomePage extends React.Component { // eslint-disable-line react/prefer-stateless-function
 
-  render() {
-    return (
-    	<div>
-    		<Header />
-    		<h1>Welcome to Open Sessions <Link to="/add-session">+ add session</Link></h1>
-    	</div>
-    );
-  }
+	render() {
+		return (
+			<div>
+				<Header />
+				<h1>Welcome to Open Sessions <Link to="/session/add">+ add session</Link></h1>
+			</div>
+		);
+	}
 }
