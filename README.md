@@ -1,4 +1,4 @@
-# Open Sessions [![Build Status](https://travis-ci.org/openactive/open-sessions.svg?branch=master)](https://travis-ci.org/openactive/open-sessions)
+# Open Sessions [![Build Status](https://travis-ci.org/openactive/open-sessions.svg?branch=master)](https://travis-ci.org/openactive/open-sessions) [![Coverage Status](https://coveralls.io/repos/github/openactive/open-sessions/badge.svg?branch=master)](https://coveralls.io/github/openactive/open-sessions?branch=master)
 
 ## Quick-start 
 
