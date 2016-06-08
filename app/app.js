@@ -15,7 +15,7 @@ import 'file?name=[name].[ext]!./.htaccess';      // eslint-disable-line import/
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { applyRouterMiddleware, Router, browserHistory } from 'react-router';
+import { applyRouterMiddleware, browserHistory } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
 import useScroll from 'react-router-scroll';
 import configureStore from './store';
@@ -45,6 +45,10 @@ const rootRoute = {
   component: App,
   childRoutes: createRoutes(store),
 };
+
+// Setup react stormpath
+import ReactStormpath, { Router, AuthenticatedRoute, LoginLink, LoginForm } from 'react-stormpath';
+ReactStormpath.init({});
 
 ReactDOM.render(
   <Provider store={store}>

@@ -34,6 +34,38 @@ export default function createRoutes() {
         importModules.catch(errorLoading);
       },
     }, {
+      path: '/register',
+      name: 'register',
+      getComponent(nextState, cb) {
+        const importModules = Promise.all([
+          System.import('containers/RegisterPage'),
+        ]);
+
+        const renderRoute = loadModule(cb);
+
+        importModules.then(([component]) => {
+          renderRoute(component);
+        });
+
+        importModules.catch(errorLoading);
+      },
+    }, {
+      path: '/login',
+      name: 'login',
+      getComponent(nextState, cb) {
+        const importModules = Promise.all([
+          System.import('containers/LoginPage'),
+        ]);
+
+        const renderRoute = loadModule(cb);
+
+        importModules.then(([component]) => {
+          renderRoute(component);
+        });
+
+        importModules.catch(errorLoading);
+      },
+    }, {
       path: '/add-session',
       name: 'add session',
       getComponent(nextState, cb) {

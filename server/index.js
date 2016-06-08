@@ -19,24 +19,35 @@ const webpackConfig = isDev
 
 app.use(frontend(webpackConfig));
 
+const stormpath = require('express-stormpath');
+
+app.use(stormpath.init(app, {
+  web: {
+    produces: ['application/json']
+  }
+}));
+
 const port = process.env.PORT || 3000;
 
-// Start your app.
-app.listen(port, (err) => {
-  if (err) {
-    return logger.error(err);
-  }
+app.on('stormpath.ready', () => {
+  // Start your app
+  console.log("Stormpath ready")
+  app.listen(port, (err) => {
+    if (err) {
+      return logger.error(err);
+    }
 
-  // Connect to ngrok in dev mode
-  if (isDev) {
-    ngrok.connect(port, (innerErr, url) => {
-      if (innerErr) {
-        return logger.error(innerErr);
-      }
+    // Connect to ngrok in dev mode
+    if (isDev) {
+      ngrok.connect(port, (innerErr, url) => {
+        if (innerErr) {
+          return logger.error(innerErr);
+        }
 
-      logger.appStarted(port, url);
-    });
-  } else {
-    logger.appStarted(port);
-  }
-});
+        logger.appStarted(port, url);
+      });
+    } else {
+      logger.appStarted(port);
+    }
+  })
+})

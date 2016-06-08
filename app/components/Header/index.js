@@ -19,7 +19,7 @@ export default class Header extends React.Component { // eslint-disable-line rea
 	render() {
 		return (
 			<header>
-				<h1>Open Sessions</h1>
+				<Link to="/">Open Sessions</Link>
 				<nav>
 					<Link to="/add-session" activeClassName="active">+ add session</Link>
 					<Link to="/login">log in</Link>

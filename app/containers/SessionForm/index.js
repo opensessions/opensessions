@@ -9,11 +9,16 @@
 
 import React from 'react';
 
+import Header from 'components/Header';
+
 export default class SessionForm extends React.Component { // eslint-disable-line react/prefer-stateless-function
 
-  render() {
-    return (
-      <h1>A session<a href="/">home</a> form!</h1>
-    );
-  }
+	render() {
+		return (
+			<div>
+				<Header />
+				<h1>A session form!</h1>
+			</div>
+		);
+	}
 }

@@ -9,8 +9,8 @@
   },
   "author": "Oliver Beatson @ imin-ltd, based on boilerplate by Max Stoiber",
   "license": "ISC",
-  "engines" : {
-    "npm" : ">=3"
+  "engines": {
+    "npm": ">=3"
   },
   "scripts": {
     "npmcheckversion": "node ./internals/scripts/npmcheckversion.js",
@@ -50,7 +50,9 @@
     ],
     "env": {
       "production": {
-        "only": ["app"],
+        "only": [
+          "app"
+        ],
         "plugins": [
           "transform-react-remove-prop-types",
           "transform-react-constant-elements",
@@ -100,6 +102,7 @@
     "chalk": "^1.1.3",
     "compression": "^1.6.1",
     "express": "^4.13.4",
+    "express-stormpath": "^3.1.2",
     "file-loader": "^0.8.5",
     "fontfaceobserver": "^1.7.1",
     "history": "^2.1.0",
@@ -111,11 +114,13 @@
     "react-router": "^2.3.0",
     "react-router-redux": "^4.0.4",
     "react-router-scroll": "^0.2.0",
+    "react-stormpath": "^1.2.1",
     "redux": "^3.5.2",
     "redux-immutable": "^3.0.6",
     "redux-saga": "^0.10.0",
     "reselect": "^2.5.1",
     "sanitize.css": "^3.3.0",
+    "webpack": "^2.1.0-beta.8",
     "whatwg-fetch": "^1.0.0"
   },
   "devDependencies": {

@@ -13,6 +13,8 @@ import Header from 'components/Header';
 
 import ReactStormpath, { Router, AuthenticatedRoute, LoginLink, LoginForm } from 'react-stormpath';
 
+import styles from './styles.css';
+
 export default class LoginPage extends React.Component { // eslint-disable-line react/prefer-stateless-function
 
 	render() {
