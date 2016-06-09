@@ -19,13 +19,9 @@ const webpackConfig = isDev
 
 app.use(frontend(webpackConfig));
 
-const stormpath = require('express-stormpath');
-
-app.use(stormpath.init(app, {
-  web: {
-    produces: ['application/json'],
-  },
-}));
+// Initialize stormpath
+const stormpathMiddleware = require('./middlewares/stormpathMiddleware');
+app.use(stormpathMiddleware());
 
 const port = process.env.PORT || 3000;
 
