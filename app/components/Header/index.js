@@ -3,22 +3,23 @@
  */
 
 import React from 'react';
+import CSSModules from 'react-css-modules';
 import { Link } from 'react-router';
 
 import styles from './styles.css'; // eslint-disable-line no-unused-vars
 
 import { NotAuthenticated, LoginLink, Authenticated } from 'react-stormpath';
 
-export default class Header extends React.Component { // eslint-disable-line react/prefer-stateless-function
+class Header extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
     user: React.PropTypes.object,
   }
   render() {
     const user = this.context.user ? this.context.user : false;
     return (
-      <header>
-        <Link to="/" className="logo">Open Sessions</Link>
-        <nav>
+      <header styleName="app__header">
+        <Link to="/" styleName="header__logo">Open Sessions</Link>
+        <nav className={styles.header__nav}>
           <Link to="/session/add" activeClassName="active">+ add session</Link>
           <NotAuthenticated>
             <LoginLink>log in</LoginLink>
@@ -31,3 +32,5 @@ export default class Header extends React.Component { // eslint-disable-line rea
     );
   }
 }
+
+export default CSSModules(Header, styles) 

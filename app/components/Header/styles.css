@@ -1,21 +1,14 @@
-header {
+.app__header {
   background: #EEE;
   padding: 0.5em;
   display: flex;
   margin: auto;
-  max-width: 64em;
-  & a.logo {
+  & .header__logo {
     padding: 0.2em;
     color: #888;
-    font-size: 1.5em;
-    line-height: 1em;
-    font-family: sans-serif;
+    font-size: 1rem;
   }
-  & h1 {
-    flex-grow: 1;
-    flex-shrink: 1;
-  }
-  & nav {
+  & .header__nav {
     flex-grow: 1;
     text-align: right;
     & a {
