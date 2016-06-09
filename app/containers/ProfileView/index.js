@@ -15,7 +15,6 @@ export default class ProfileView extends React.Component { // eslint-disable-lin
     const user = this.context.user ? this.context.user : null;
     return (
       <div>
-        <Header />
         <Authenticated>
           <p>Hello, {user ? user.givenName : ''}!</p>
         </Authenticated>

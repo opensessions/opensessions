@@ -4,7 +4,6 @@
 
 import React from 'react';
 
-import Header from 'components/Header';
 import Fieldset from 'components/Fieldset';
 import Form from 'components/Form';
 import Field from 'components/Field';
@@ -15,7 +14,6 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   render() {
     return (
       <div>
-        <Header />
         <Authenticated>
           <h1>A session form!</h1>
           <Form>
