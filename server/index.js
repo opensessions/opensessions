@@ -21,7 +21,7 @@ app.use(frontend(webpackConfig));
 
 // Initialize stormpath
 const stormpathMiddleware = require('./middlewares/stormpathMiddleware');
-app.use(stormpathMiddleware());
+app.use(stormpathMiddleware(app));
 
 const port = process.env.PORT || 3000;
 

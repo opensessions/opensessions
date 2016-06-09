@@ -1,6 +1,6 @@
 const stormpath = require('express-stormpath');
 
-module.exports = () => {
+module.exports = (app) => {
   return stormpath.init(app, {
     web: {
       produces: ['application/json'],
