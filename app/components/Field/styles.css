@@ -13,3 +13,6 @@
 .label {
   display: block;
 }
+.field {
+  padding: .5em;
+}

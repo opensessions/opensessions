@@ -27,7 +27,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
       input = <textarea className={styles.input} name={name} value={this.value} />;
     }
     return (
-      <div className="component-field">
+      <div className={styles.field}>
         <label className={styles.label}>{this.props.label}</label>
         {input}
       </div>

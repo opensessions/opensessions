@@ -18,8 +18,10 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     return (
       <div className={styles.form}>
         <div className={styles.titleBar}>
-          <h2>Add a session</h2>
-          <h3>Title</h3>
+          <div>
+            <h2>Add a session</h2>
+            <h3>Title</h3>
+          </div>
           <Link to="/session/view/ExampleSessionID" className={styles.previewButton}>Preview</Link>
         </div>
         <Authenticated>
