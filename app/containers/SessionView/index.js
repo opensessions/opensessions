@@ -20,19 +20,15 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     };
   }
   componentDidMount() {
-  	const self = this;
-    fetch('/api/session/' + this.props.params.sessionID).then((response) => {
-      return response.json();
-    }).then((session) => {
-      self.setState({session: session});
-    });
-  }
-  shouldComponentUpdate(nextProps, nextState) {
-    return true
+    const self = this;
+    fetch(`/api/session/${this.props.params.sessionID}`).then(
+      (response) => response.json()
+    ).then(
+      (session) => self.setState({ session })
+    );
   }
   render() {
     const session = this.state.session || {};
-    console.log('session render', this.session);
     return (
       <div>
         <h1>View session: {session.title}</h1>

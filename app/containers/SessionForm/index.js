@@ -18,31 +18,35 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     return (
       <div className={styles.form}>
         <div className={styles.titleBar}>
-          <div>
-            <h2>Add a session</h2>
-            <h3>Title</h3>
+          <div className={styles.titleInner}>
+            <div>
+              <h2>Add a session</h2>
+              <h3>Title</h3>
+            </div>
+            <Link to="/session/view/ExampleSessionID" className={styles.previewButton}>Preview</Link>
           </div>
-          <Link to="/session/view/ExampleSessionID" className={styles.previewButton}>Preview</Link>
         </div>
-        <Authenticated>
-          <Form autosave="true">
-            <Fieldset label="Description">
-              <Field label="Title" name="title" />
-              <Field label="Organizer" name="organizer" />
-              <Field label="Description" name="description" type="textarea" />
-              <Field label="Activity type" name="activity-type" />
-            </Fieldset>
-            <Fieldset label="Additional info" />
-            <Fieldset label="Location" />
-            <Fieldset label="Pricing" />
-            <Fieldset label="Restrictions" />
-            <Fieldset label="Contact info" />
-            <Fieldset label="Photos" />
-          </Form>
-        </Authenticated>
-        <NotAuthenticated>
-          <p>You must <LoginLink>login</LoginLink> before you can add a session</p>
-        </NotAuthenticated>
+        <div className={styles.formBody}>
+          <Authenticated>
+            <Form autosave="true">
+              <Fieldset label="Description">
+                <Field label="Title" name="title" />
+                <Field label="Organizer" name="organizer" />
+                <Field label="Description" name="description" type="textarea" />
+                <Field label="Activity type" name="activity-type" />
+              </Fieldset>
+              <Fieldset label="Additional info" />
+              <Fieldset label="Location" />
+              <Fieldset label="Pricing" />
+              <Fieldset label="Restrictions" />
+              <Fieldset label="Contact info" />
+              <Fieldset label="Photos" />
+            </Form>
+          </Authenticated>
+          <NotAuthenticated>
+            <p>You must <LoginLink>login</LoginLink> before you can add a session</p>
+          </NotAuthenticated>
+        </div>
       </div>
     );
   }

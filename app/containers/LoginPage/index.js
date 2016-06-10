@@ -12,8 +12,8 @@ import styles from './styles.css'; // eslint-disable-line no-unused-vars
 import global from '../../styles/global.css';
 
 const CSSModulesOptions = {
-  allowMultiple: true
-}
+  allowMultiple: true,
+};
 
 @CSSModules(styles, CSSModulesOptions)
 export default class LoginPage extends React.Component { // eslint-disable-line react/prefer-stateless-function
@@ -34,7 +34,7 @@ export default class LoginPage extends React.Component { // eslint-disable-line 
                     <label htmlFor="username" styleName="input--label">Username</label>
                     <input type="type" name="username" id="username" styleName="input--text" placeholder="e.g. joe@gmail.com" />
                   </div>
-                  <input type="submit" value="Continue" className={global.btn + ' ' + global.btn__large + ' ' + global.btn__submit} styleName="btn__submit" />
+                  <input type="submit" value="Continue" className={`${global.btn} ${global.btn__large} ${global.btn__submit}`} styleName="btn__submit" />
                 </div>
               </LoginForm>
               <Link to="/register" styleName="link__create-account">Create an account</Link>

@@ -5,14 +5,19 @@
   background-color: #EFEFEF;
   transition: .2s ease background;
   outline-offset: .1em;
+  width: 22em;
+  max-width: 100%;
   &:focus {
     outline: .2em solid #00AEEF;
     background-color: #FFF;
+  }
+  textarea& {
+    min-height: 5em;
   }
 }
 .label {
   display: block;
 }
 .field {
-  padding: .5em;
+  padding: .5em 0;
 }
