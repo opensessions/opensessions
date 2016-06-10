@@ -20,6 +20,10 @@
   background-color: #395A93;
 }
 
+.btn--big {
+  font-size: 2.4rem;
+}
+
 .sp-login-form {
   max-width: 16em;
   margin: auto;

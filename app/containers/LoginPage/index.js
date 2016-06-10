@@ -11,14 +11,18 @@ import { NotAuthenticated, Authenticated, LogoutLink, LoginForm } from 'react-st
 import styles from './styles.css'; // eslint-disable-line no-unused-vars
 import global from '../../styles/global.css';
 
-@CSSModules(styles)
+const CSSModulesOptions = {
+  allowMultiple: true
+}
+
+@CSSModules(styles, CSSModulesOptions)
 export default class LoginPage extends React.Component { // eslint-disable-line react/prefer-stateless-function
   render() {
     return (
       <div styleName="page__login">
         <div className={global.l__constrained}>
           <NotAuthenticated>
-          <a href="#" className={global.btn} styleName="btn--fb">Continue with Facebook</a>
+          <a href="#" className={global.btn} styleName="btn--fb btn--big">Continue with Facebook</a>
             <LoginForm>
               <div styleName="input__container">
                 <label htmlFor="username" styleName="input--label">Username</label>
