@@ -10,6 +10,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const cssnext = require('postcss-cssnext');
 const postcssFocus = require('postcss-focus');
 const postcssReporter = require('postcss-reporter');
+const postcssImport = require('postcss-partial-import');
 
 module.exports = require('./webpack.base.babel')({
   // Add hot reloading in development
@@ -26,7 +27,7 @@ module.exports = require('./webpack.base.babel')({
   },
 
   // Load the CSS in a style tag in development
-  cssLoaders: 'style-loader!css-loader?localIdentName=[local]__[path][name]__[hash:base64:5]&modules&importLoaders=1&sourceMap!postcss-loader',
+  cssLoaders: 'style-loader!css-loader?localIdentName=[local]--[hash:base64:5]&modules&importLoaders=1&sourceMap!postcss-loader',
 
   // Process the CSS with PostCSS
   postcssPlugins: [
@@ -37,6 +38,7 @@ module.exports = require('./webpack.base.babel')({
     postcssReporter({ // Posts messages from plugins to the terminal
       clearMessages: true,
     }),
+    postcssImport()
   ],
 
   // Add hot reloading

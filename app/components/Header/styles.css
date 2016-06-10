@@ -6,7 +6,7 @@
   & .header__logo {
     padding: 0.2em;
     color: #888;
-    font-size: 1rem;
+    font-size: 1.6rem;
   }
   & .header__nav {
     flex-grow: 1;

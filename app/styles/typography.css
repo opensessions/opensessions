@@ -1,0 +1,21 @@
+html {
+  font-size: 62.5%;
+  font-family: sans-serif;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-size: 16px;
+  font-size: 1.6rem;
+}
+
+h1, .alpha,
+h2, .beta,
+h3, .gamma,
+h4, h5, h6 {
+  font-weight: 400;
+  clear: both;
+  margin: 0;
+}

@@ -1,0 +1,9 @@
+/* =======================================================================================================
+ * Gloabl stylesheet
+ * These are global styles which apply to the whole app.
+ * Individual component/page styles are found inside the component/page directories (Header, HomePage etc)
+ * ====================================================================================================== */
+
+@import "./defaults.css";
+@import "./typography.css";
+@import "./grid.css";
