@@ -17,13 +17,12 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   render() {
     return (
       <div className={styles.form}>
-        <div>
+        <div className={styles.titleBar}>
           <h2>Add a session</h2>
           <h3>Title</h3>
           <Link to="/session/view/ExampleSessionID" className={styles.previewButton}>Preview</Link>
         </div>
         <Authenticated>
-          <h1>A session form!</h1>
           <Form autosave="true">
             <Fieldset label="Description">
               <Field label="Title" name="title" />
