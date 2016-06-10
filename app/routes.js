@@ -29,9 +29,7 @@ export default function createRoutes() {
 
         importModules.then(([component]) => {
           renderRoute(component);
-        });
-
-        importModules.catch(errorLoading);
+        }).catch(errorLoading);
       },
     }, {
       path: '/register',
@@ -45,9 +43,7 @@ export default function createRoutes() {
 
         importModules.then(([component]) => {
           renderRoute(component);
-        });
-
-        importModules.catch(errorLoading);
+        }).catch(errorLoading);
       },
     }, {
       path: '/forgot',
@@ -61,9 +57,7 @@ export default function createRoutes() {
 
         importModules.then(([component]) => {
           renderRoute(component);
-        });
-
-        importModules.catch(errorLoading);
+        }).catch(errorLoading);
       },
     }, {
       path: '/me',
@@ -77,9 +71,7 @@ export default function createRoutes() {
 
         importModules.then(([component]) => {
           renderRoute(component);
-        });
-
-        importModules.catch(errorLoading);
+        }).catch(errorLoading);
       },
     }, {
       path: '/login',
@@ -93,9 +85,7 @@ export default function createRoutes() {
 
         importModules.then(([component]) => {
           renderRoute(component);
-        });
-
-        importModules.catch(errorLoading);
+        }).catch(errorLoading);
       },
     }, {
       path: '/session/add',
@@ -109,9 +99,7 @@ export default function createRoutes() {
 
         importModules.then(([component]) => {
           renderRoute(component);
-        });
-
-        importModules.catch(errorLoading);
+        }).catch(errorLoading);
       },
     }, {
       path: '/session/view',
@@ -125,9 +113,7 @@ export default function createRoutes() {
 
         importModules.then(([component]) => {
           renderRoute(component);
-        });
-
-        importModules.catch(errorLoading);
+        }).catch(errorLoading);
       },
     }, {
       path: '*',
