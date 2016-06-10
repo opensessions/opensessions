@@ -5,8 +5,8 @@ module.exports = (app) => {
     web: {
       produces: ['application/json'],
     },
-    postLoginHandler: function (account, req, res, next) {
+    postLoginHandler: (account, req, res, next) => {
       next();
     },
-  })
+  });
 };

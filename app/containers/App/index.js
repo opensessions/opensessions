@@ -16,6 +16,8 @@ import React from 'react';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
 
+import styles from './styles.css';
+
 export default class App extends React.Component { // eslint-disable-line react/prefer-stateless-function
 
   static propTypes = {
@@ -24,7 +26,7 @@ export default class App extends React.Component { // eslint-disable-line react/
 
   render() {
     return (
-      <div>
+      <div className={styles.root}>
         <Header />
         {this.props.children}
         <Footer />
