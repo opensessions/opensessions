@@ -11,6 +11,7 @@ const cssnext = require('postcss-cssnext');
 const postcssFocus = require('postcss-focus');
 const postcssReporter = require('postcss-reporter');
 const postcssImport = require('postcss-partial-import');
+const postcssNested = require('postcss-nested');
 
 module.exports = require('./webpack.base.babel')({
   // Add hot reloading in development
@@ -31,6 +32,8 @@ module.exports = require('./webpack.base.babel')({
 
   // Process the CSS with PostCSS
   postcssPlugins: [
+    postcssImport(),
+    postcssNested(), 
     postcssFocus(), // Add a :focus to every :hover
     cssnext({ // Allow future CSS features to be used, also auto-prefixes the CSS...
       browsers: ['last 2 versions', 'IE > 10'], // ...based on this browser list
@@ -38,7 +41,6 @@ module.exports = require('./webpack.base.babel')({
     postcssReporter({ // Posts messages from plugins to the terminal
       clearMessages: true,
     }),
-    postcssImport()
   ],
 
   // Add hot reloading
