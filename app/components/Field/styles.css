@@ -1,8 +1,13 @@
 .input {
   padding: .4em;
   line-height: 1;
+  border: .1em solid #C2C2C2;
+  background-color: #EFEFEF;
+  transition: .2s ease background;
+  outline-offset: .1em;
   &:focus {
     outline: .2em solid #00AEEF;
+    background-color: #FFF;
   }
 }
 .label {
