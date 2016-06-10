@@ -10,7 +10,8 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   render() {
     return (
       <div>
-        <h1>Welcome to Open Sessions <Link to="/session/add">+ add session</Link></h1>
+        <h1>View session: title</h1>
+        <p>Info etc</p>
       </div>
     );
   }
