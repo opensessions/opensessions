@@ -1,17 +1,14 @@
 .app__header {
-  background: #EEE;
-  padding: 0.5em;
-  display: flex;
-  margin: auto;
-  & .header__logo {
-    padding: 0.2em;
-    color: #888;
-    font-size: 1.6rem;
+  background: #fff;
+  padding: 15px 0;
+  .header__logo {
+    float: left;
+    color: #1F2C4D;
+    font-size: 2rem;
   }
-  & .header__nav {
-    flex-grow: 1;
+  .header__nav {
     text-align: right;
-    & a:link {
+    a:link {
       display: inline-block;
       padding: 0.5em;
       color: #1F2C4D;

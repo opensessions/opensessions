@@ -55,6 +55,7 @@ module.exports = require('./webpack.base.babel')({
 
   // Tell babel that we want to hot-reload
   babelQuery: {
+    plugins: ['transform-decorators-legacy'],
     presets: ['react-hmre'],
   },
 
