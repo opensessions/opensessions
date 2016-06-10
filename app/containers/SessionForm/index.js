@@ -23,18 +23,12 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
               <Field label="Description" name="description" type="textarea" />
               <Field label="Activity type" name="activity-type" />
             </Fieldset>
-            <Fieldset label="Additional info">
-            </Fieldset>
-            <Fieldset label="Location">
-            </Fieldset>
-            <Fieldset label="Pricing">
-            </Fieldset>
-            <Fieldset label="Restrictions">
-            </Fieldset>
-            <Fieldset label="Contact info">
-            </Fieldset>
-            <Fieldset label="Photos">
-            </Fieldset>
+            <Fieldset label="Additional info" />
+            <Fieldset label="Location" />
+            <Fieldset label="Pricing" />
+            <Fieldset label="Restrictions" />
+            <Fieldset label="Contact info" />
+            <Fieldset label="Photos" />
           </Form>
         </Authenticated>
         <NotAuthenticated>

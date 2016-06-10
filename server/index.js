@@ -16,6 +16,10 @@ const app = express();
 const stormpathMiddleware = require('./middlewares/stormpathMiddleware');
 app.use(stormpathMiddleware(app));
 
+// Initialize stormpath
+const apiMiddleware = require('./middlewares/api');
+apiMiddleware(app);
+
 // Initialize frontend middleware that will serve your JS app
 const webpackConfig = isDev
   ? require('../internals/webpack/webpack.dev.babel')
