@@ -1,0 +1,10 @@
+.input {
+  padding: .4em;
+  line-height: 1;
+  &:focus {
+    outline: .2em solid #00AEEF;
+  }
+}
+.label {
+  display: block;
+}
