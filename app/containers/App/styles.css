@@ -1,0 +1,12 @@
+.root {
+  max-width: 86em;
+  margin: auto;
+  color: #182750;
+  & a {
+    color: #182750;
+    &:hover,
+    &:focus {
+      text-decoration: underline;
+    }
+  }
+}
