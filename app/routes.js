@@ -60,7 +60,7 @@ export default function createRoutes() {
         }).catch(errorLoading);
       },
     }, {
-      path: '/me',
+      path: '/profile',
       name: 'profile',
       getComponent(nextState, cb) {
         const importModules = Promise.all([
@@ -102,7 +102,7 @@ export default function createRoutes() {
         }).catch(errorLoading);
       },
     }, {
-      path: '/session/view',
+      path: '/session/view/:sessionID',
       name: 'view session',
       getComponent(nextState, cb) {
         const importModules = Promise.all([

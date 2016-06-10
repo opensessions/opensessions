@@ -26,7 +26,7 @@ class Header extends React.Component { // eslint-disable-line react/prefer-state
             <LoginLink>log in</LoginLink>
           </NotAuthenticated>
           <Authenticated>
-            <Link to="/me">{user.givenName}'s profile</Link>
+            <Link to="/me">Hi, {user.givenName}</Link>
           </Authenticated>
         </nav>
       </header>
