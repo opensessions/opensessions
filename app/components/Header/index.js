@@ -18,7 +18,7 @@ class Header extends React.Component { // eslint-disable-line react/prefer-state
   render() {
     const user = this.context.user ? this.context.user : false;
     return (
-      <header styleName="app__header" className={global.grid}>
+      <header styleName="app__header" className={global.l__constrained}>
         <Link to="/" styleName="header__logo" className="grid__col">Open Sessions</Link>
         <nav className={styles.header__nav}>
           <Link to="/session/add" activeClassName="active">+ add session</Link>
