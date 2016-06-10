@@ -16,7 +16,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       <div>
         <Authenticated>
           <h1>A session form!</h1>
-          <Form>
+          <Form autosave="true">
             <Fieldset label="Description">
               <Field label="Title" name="title" />
               <Field label="Organizer" name="organizer" />
