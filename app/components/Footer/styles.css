@@ -2,11 +2,4 @@
   background: #000;
   color: #FFF;
   padding: 1em;
-  & a {
-    color: inherit;
-    &:hover,
-    &:focus {
-      text-decoration: underline;
-    }
-  }
 }
