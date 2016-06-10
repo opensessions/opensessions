@@ -8,7 +8,6 @@
  */
 
 import React from 'react';
-import Header from 'components/Header';
 
 import { RegistrationForm } from 'react-stormpath';
 
@@ -16,7 +15,6 @@ export default class LoginPage extends React.Component { // eslint-disable-line 
   render() {
     return (
       <div>
-        <Header />
         <div>
           <h1>This is the registration form!</h1>
           <RegistrationForm />

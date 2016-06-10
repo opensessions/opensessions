@@ -9,7 +9,7 @@ export default class Footer extends React.Component { // eslint-disable-line rea
   render() {
     return (
       <footer>
-        <p>There will be stuff in the footer</p>
+        <p>There will be stuff <Link to="/">like links</Link> in the footer</p>
       </footer>
     );
   }
