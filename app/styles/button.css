@@ -1,4 +1,6 @@
 .btn {
+  display: block;
+  width: 100%;
   cursor: pointer;
   font-size: 1.6rem;
   position: relative;
@@ -6,13 +8,18 @@
   padding: 8px 35px;
   border-radius: 2px;
   vertical-align: top;
+  color: white;
+  text-align: center;
   &:hover {
     text-decoration: none;
   }
-  .btn--large {
+  &.btn__large {
     font-size: 2rem;
   }
-  .btn--small {
+  &.btn__small {
     font-size: 1.4rem;
+  }
+  &.btn__submit {
+    background: #89C9E3;
   }
 }

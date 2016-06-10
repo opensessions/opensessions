@@ -9,6 +9,7 @@
     color: #444;
   }
   .input--text {
+    width: 100%;
     background: white;
     border: solid thin #ccc;
     padding: 5px;
@@ -16,15 +17,57 @@
   }
 }
 
+.login__section {
+  width: 20%;
+  margin: 0 auto;
+  padding: 40px;
+  .decoration--or {
+    position: relative;
+    text-align: center;
+    margin-top: 15px;
+    .or--label {
+      display: inline-block;
+      position: relative;
+      z-index: 2;
+      background-color: #E6E6E6;
+      color: #ccc;
+      padding: 0 20px;
+    }
+    &:after {
+      content: "";
+      height: 1px;
+      width: 100%;
+      position: absolute;
+      left: 0;
+      top: 50%;
+      z-index: 1;
+      background: #ccc;
+    }
+  }
+  .decoration--continue {
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+    font-size: 2rem;
+    color: #444;
+  }
+  .login__form {
+    margin-top: 15px;
+  }
+}
+
 .btn--fb {
-  background-color: #395A93;
+  background-color: #3B5998;
 }
 
-.btn--big {
-  font-size: 2.4rem;
+.btn__submit {
+  margin-top: 15px;
 }
 
-.sp-login-form {
-  max-width: 16em;
-  margin: auto;
+.link__create-account {
+  Display: block;
+  margin-top: 15px;
+  font-size: 1.4rem;
+  text-align: center;
+  color: #444;
 }

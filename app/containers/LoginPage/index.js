@@ -21,20 +21,29 @@ export default class LoginPage extends React.Component { // eslint-disable-line 
     return (
       <div styleName="page__login">
         <div className={global.l__constrained}>
-          <NotAuthenticated>
-          <a href="#" className={global.btn} styleName="btn--fb btn--big">Continue with Facebook</a>
-            <LoginForm>
-              <div styleName="input__container">
-                <label htmlFor="username" styleName="input--label">Username</label>
-                <input type="type" name="username" id="username" styleName="input--text" placeholder="e.g. joe@gmail.com" />
+          <div styleName="login__section">
+            <NotAuthenticated>
+              <a href="#" className={global.btn} styleName="btn--fb">Continue with Facebook</a>
+              <div styleName="decoration--or">
+                <span styleName="or--label">or</span>
               </div>
-            </LoginForm>
-            <p>Or <Link to="/register">register</Link></p>
-          </NotAuthenticated>
-          <Authenticated>
-            <p>You are already logged in!</p>
-            <p>Head to your <Link to="/me">profile</Link> or <LogoutLink />.</p>
-          </Authenticated>
+              <span styleName="decoration--continue">Continue with email</span>
+              <LoginForm>
+                <div styleName="login__form">
+                  <div styleName="input__container">
+                    <label htmlFor="username" styleName="input--label">Username</label>
+                    <input type="type" name="username" id="username" styleName="input--text" placeholder="e.g. joe@gmail.com" />
+                  </div>
+                  <input type="submit" value="Continue" className={global.btn + ' ' + global.btn__large + ' ' + global.btn__submit} styleName="btn__submit" />
+                </div>
+              </LoginForm>
+              <Link to="/register" styleName="link__create-account">Create an account</Link>
+            </NotAuthenticated>
+            <Authenticated>
+              <p>You are already logged in!</p>
+              <p>Head to your <Link to="/me">profile</Link> or <LogoutLink />.</p>
+            </Authenticated>
+          </div>
         </div>
       </div>
     );
