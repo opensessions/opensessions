@@ -10,9 +10,7 @@
   vertical-align: top;
   color: white;
   text-align: center;
-  &:hover {
-    text-decoration: none;
-  }
+  text-decoration: none;
   &.btn__large {
     font-size: 2rem;
   }

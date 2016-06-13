@@ -2,7 +2,6 @@
   margin: auto;
   color: #182750;
   & a {
-    color: inherit;
     &:hover,
     &:focus {
       text-decoration: underline;
