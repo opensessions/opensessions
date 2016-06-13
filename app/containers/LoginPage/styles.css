@@ -20,18 +20,18 @@
       position: relative;
       z-index: 2;
       background-color: #E6E6E6;
-      color: #ccc;
+      color: #CCC;
       padding: 0 20px;
     }
-    &:after {
-      content: "";
+    &::after {
+      content: '';
       height: 1px;
       width: 100%;
       position: absolute;
       left: 0;
       top: 50%;
       z-index: 1;
-      background: #ccc;
+      background: #CCC;
     }
   }
   .decoration--continue {
