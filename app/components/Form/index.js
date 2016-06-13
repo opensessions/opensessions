@@ -18,6 +18,7 @@ export default class Form extends React.Component { // eslint-disable-line react
     this.autosave = this.autosave.bind(this);
     this.tabClick = this.tabClick.bind(this);
     this.formChange = this.formChange.bind(this);
+    this.state = {};
   }
   autosave() {
     console.log('fetch(/api/session/:sessionID/save, {method: POST, body: form.serialize()})');
@@ -28,19 +29,21 @@ export default class Form extends React.Component { // eslint-disable-line react
     this.timeout = setTimeout(this.autosave, 4000);
   }
   tabClick(event) {
-    console.log('form click', event.target);
-    this.activeTab = event.target.text;
+    if (this.activeTab === event.target.text) return;
+    this.setState({activeTab: event.target.text});
   }
   _renderTabs() {
     const self = this;
     return this.props.children.map((child) => {
-      const className = self.activeTab == child.props.label;
+      const className = self.state.activeTab == child.props.label ? styles.active : '';
       return <a className={className} onClick={this.tabClick}>{child.props.label}</a>;
     });
   }
   _renderTab() {
+    const self = this;
     return this.props.children.map((child) => {
-      return child;
+      const active = child.props.label === self.state.activeTab ? '' : styles.hiddenTab;
+      return <div className={active}>{child}</div>;
     });
   }
   render() {
@@ -51,7 +54,7 @@ export default class Form extends React.Component { // eslint-disable-line react
           {this._renderTabs()}
         </nav>
         <div className={styles.tabs}>
-          {this.props.children}
+          {this._renderTab()}
           <input type="submit" value={submitText} />
         </div>
       </form>

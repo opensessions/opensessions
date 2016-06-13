@@ -15,3 +15,11 @@
 .tabs {
   flex-basis: 75%;
 }
+
+.active {
+  font-weight: bold;
+}
+
+.hiddenTab {
+  display: none;
+}
