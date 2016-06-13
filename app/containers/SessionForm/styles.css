@@ -1,0 +1,44 @@
+:root {
+  --pagewidth: 144rem;
+}
+
+.form {
+  background-color: #E6E6E6;
+}
+
+.formBody {
+  max-width: var(--pagewidth);
+  margin: auto;
+}
+
+.titleInner {
+  max-width: var(--pagewidth);
+  margin: auto;
+  justify-content: space-between;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.titleBar {
+  background-color: #182750;
+  color: #FFF;
+  padding: 0.75em;
+  font-size: 1.25em;
+  h1, h2, h3, h4 {
+    display: inline-block;
+    padding: .5em;
+  }
+  h2 {
+    font-size: 1.2em;
+  }
+  h3 {
+    font-size: 1em;
+  }
+  .previewButton {
+    background-color: #1A90CD;
+    color: #FFF;
+    padding: .5em 1.5em;
+    line-height: 1;
+  }
+}

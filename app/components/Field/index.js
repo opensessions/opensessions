@@ -9,7 +9,9 @@ import styles from './styles.css';
 export default class Field extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
     label: React.PropTypes.string.isRequired,
+    model: React.PropTypes.object,
     name: React.PropTypes.string.isRequired,
+    onChange: React.PropTypes.func,
     type: React.PropTypes.string,
     value: React.PropTypes.string,
   }
@@ -18,17 +20,35 @@ export default class Field extends React.Component { // eslint-disable-line reac
     this.state = {
       value: this.props.value || '',
     };
+    this.handleChange = this.handleChange.bind(this);
+  }
+  handleChange(event) {
+    let value = event.target.value;
+    this.setState({ value });
+    if (this.props.onChange) {
+      this.props.onChange(event);
+    }
+    if (this.props.model) {
+      this.props.model.update(this.props.name, value);
+    }
   }
   render() {
+    let label = this.props.label;
     let type = this.props.type || 'text';
     let name = this.props.name;
-    let input = <input className={styles.input} type={type} name={name} value={this.value} />;
+    let value = this.state.value;
+    if (this.props.model) {
+      value = this.props.model[ name ];
+    }
+    let input;
     if (type === 'textarea') {
-      input = <textarea className={styles.input} name={name} value={this.value} />;
+      input = <textarea name={name} value={value} onChange={this.handleChange} className={styles.input} />;
+    } else {
+      input = <input type={type} name={name} value={value} onChange={this.handleChange} className={styles.input} />;
     }
     return (
       <div className={styles.field}>
-        <label className={styles.label}>{this.props.label}</label>
+        <label className={styles.label}>{label}</label>
         {input}
       </div>
     );

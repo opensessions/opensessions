@@ -28,6 +28,7 @@ export default class LoginPage extends React.Component { // eslint-disable-line 
                 <span styleName="or--label">or</span>
               </div>
               <span styleName="decoration--continue">Continue with email</span>
+              <LoginForm />
               <LoginForm>
                 <div styleName="login__form">
                   <div styleName="input__container">

@@ -35,15 +35,9 @@ export default function createRoutes() {
       path: '/register',
       name: 'register',
       getComponent(nextState, cb) {
-        const importModules = Promise.all([
-          System.import('containers/RegisterPage'),
-        ]);
-
-        const renderRoute = loadModule(cb);
-
-        importModules.then(([component]) => {
-          renderRoute(component);
-        }).catch(errorLoading);
+        System.import('containers/RegisterPage')
+          .then(loadModule(cb))
+          .catch(errorLoading);
       },
     }, {
       path: '/forgot',
