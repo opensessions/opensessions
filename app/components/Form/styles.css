@@ -1,0 +1,17 @@
+.form {
+  display: flex;
+}
+
+.nav {
+  flex-basis: 16em;
+  background-color: #EFEFEF;
+  padding: .5em;
+  & > a {
+    display: block;
+    padding: .5em 1em;
+  }
+}
+
+.tabs {
+  flex-basis: 75%;
+}
