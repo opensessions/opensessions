@@ -22,7 +22,6 @@ export default class Fieldset extends React.Component { // eslint-disable-line r
     const hidden = this.state.hidden ? styles.hidden : '';
     return (
       <fieldset className={`${styles.fieldset} ${hidden}`}>
-        <legend>{this.props.label}</legend>
         {this.props.children}
       </fieldset>
     );

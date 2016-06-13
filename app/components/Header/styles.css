@@ -5,6 +5,9 @@
     float: left;
     color: #1F2C4D;
     font-size: 2rem;
+    img {
+      max-height: 3em;
+    }
   }
   .header__nav {
     text-align: right;
