@@ -1,26 +1,13 @@
+@lost flexbox flex;
+
 .page__login {
   background: #E6E6E6;
 }
 
-.input__container {
-  position: relative;
-  .input--label {
-    display: block;
-    color: #444;
-  }
-  .input--text {
-    width: 100%;
-    background: white;
-    border: solid thin #ccc;
-    padding: 5px;
-    border-radius: 2px;
-  }
-}
-
 .login__section {
-  width: 20%;
-  margin: 0 auto;
   padding: 40px;
+  lost-column: 1/5;
+  margin: 0 auto;
   .decoration--or {
     position: relative;
     text-align: center;
@@ -65,7 +52,7 @@
 }
 
 .link__create-account {
-  Display: block;
+  display: block;
   margin-top: 15px;
   font-size: 1.4rem;
   text-align: center;
