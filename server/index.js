@@ -12,6 +12,9 @@ const app = express();
 // If you need a backend, e.g. an API, add your custom backend-specific middleware here
 // app.use('/api', myApi);
 
+// Initialize image serving
+app.use('/images', express.static('app/images'));
+
 // Initialize stormpath
 const stormpathMiddleware = require('./middlewares/stormpathMiddleware');
 app.use(stormpathMiddleware(app));

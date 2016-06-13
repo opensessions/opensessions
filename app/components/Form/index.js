@@ -17,8 +17,8 @@ export default class Form extends React.Component { // eslint-disable-line react
     this.autosave = this.autosave.bind(this);
   }
   autosave() {
-    console.log('fetch(/api/session/:sessionID/save, {method: POST, body: form.serialize()})');
     this.timeout = undefined;
+    console.log('fetch(/api/session/:sessionID/save, {method: POST, body: form.serialize()})');
   }
   formChange() {
     if (!this.props.autosave) return;
