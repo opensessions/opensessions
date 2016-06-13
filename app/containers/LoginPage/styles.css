@@ -1,11 +1,13 @@
+@lost flexbox flex;
+
 .page__login {
   background: #E6E6E6;
 }
 
 .login__section {
-  width: 20%;
-  margin: 0 auto;
   padding: 40px;
+  lost-column: 1/5;
+  margin: 0 auto;
   .decoration--or {
     position: relative;
     text-align: center;

@@ -12,6 +12,7 @@ const postcssFocus = require('postcss-focus');
 const postcssReporter = require('postcss-reporter');
 const postcssImport = require('postcss-partial-import');
 const postcssNested = require('postcss-nested');
+const postcssLost = require('lost');
 
 module.exports = require('./webpack.base.babel')({
   // Add hot reloading in development
@@ -38,6 +39,7 @@ module.exports = require('./webpack.base.babel')({
     cssnext({ // Allow future CSS features to be used, also auto-prefixes the CSS...
       browsers: ['last 2 versions', 'IE > 10'], // ...based on this browser list
     }),
+    postcssLost(),
     postcssReporter({ // Posts messages from plugins to the terminal
       clearMessages: true,
     }),
