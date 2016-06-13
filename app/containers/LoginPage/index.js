@@ -30,10 +30,10 @@ export default class LoginPage extends React.Component { // eslint-disable-line 
                 <span styleName="or--label">or</span>
               </div>
               <span styleName="decoration--continue">Continue with email</span>
-              <LoginForm />
               <LoginForm>
                 <div styleName="login__form">
                   <Field label="Username" name="username" />
+                  <Field label="Password" name="password" />
                   <input type="submit" value="Continue" className="btn btn__submit" styleName="btn__submit" />
                 </div>
               </LoginForm>
