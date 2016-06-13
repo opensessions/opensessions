@@ -6,8 +6,11 @@
 
 .login__section {
   padding: 40px;
-  lost-column: 1/5;
-  margin: 0 auto;
+  lost-center: 1440px;
+  justify-content: center;
+  > span {
+    lost-column: 1/4;
+  }
   .decoration--or {
     position: relative;
     text-align: center;
