@@ -1,11 +1,82 @@
+html {
+  height: 100%;
+  font-size: 62.5%;
+  font-family: sans-serif;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 .root {
+  font-size: 16px;
+  font-size: 1.6rem;
   margin: auto;
   color: #182750;
   & a {
-    color: inherit;
     &:hover,
     &:focus {
       text-decoration: underline;
     }
+  }
+}
+
+*,
+:before,
+:after {
+  box-sizing: border-box;
+}
+
+svg {
+  fill: currentColor;
+  vertical-align: baseline;
+}
+
+img {
+  height: auto; /* Make sure images are scaled correctly. */
+  max-width: 100%; /* Adhere to container width. */
+}
+
+/* -----------------------------------------
+ * Global layout classes
+ * ----------------------------------------- */
+
+:global .clearfix:after {
+  content:"";
+  display:block;
+  clear:both;
+}
+
+:global .l__constrained {
+  margin: 0 3%;
+  @media screen and (min-width: 720px) {
+    margin: 0 1.5%;
+  }
+}
+
+/* -----------------------------------------
+ * Buttons
+ * ----------------------------------------- */
+
+:global .btn {
+  display: block;
+  width: 100%;
+  cursor: pointer;
+  font-size: 1.6rem;
+  position: relative;
+  border: 0;
+  padding: 8px 35px;
+  border-radius: 2px;
+  vertical-align: top;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  &.btn__large {
+    font-size: 2rem;
+  }
+  &.btn__small {
+    font-size: 1.4rem;
+  }
+  &.btn__submit {
+    background: #89C9E3;
   }
 }

@@ -2,21 +2,6 @@
   background: #E6E6E6;
 }
 
-.input__container {
-  position: relative;
-  .input--label {
-    display: block;
-    color: #444;
-  }
-  .input--text {
-    width: 100%;
-    background: white;
-    border: solid thin #ccc;
-    padding: 5px;
-    border-radius: 2px;
-  }
-}
-
 .login__section {
   width: 20%;
   margin: 0 auto;
@@ -65,7 +50,7 @@
 }
 
 .link__create-account {
-  Display: block;
+  display: block;
   margin-top: 15px;
   font-size: 1.4rem;
   text-align: center;
