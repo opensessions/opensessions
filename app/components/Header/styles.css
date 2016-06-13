@@ -1,5 +1,5 @@
 .app__header {
-  background: #fff;
+  background: #FFF;
   padding: 15px 0;
   .header__logo {
     float: left;
@@ -10,7 +10,7 @@
     text-align: right;
     a:link {
       display: inline-block;
-      padding: 0.5em;
+      padding: .5em;
       color: #1F2C4D;
     }
   }
