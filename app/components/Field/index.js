@@ -23,7 +23,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
     this.handleChange = this.handleChange.bind(this);
   }
   handleChange(event) {
-    let value = event.target.value;
+    const value = event.target.value;
     this.setState({ value });
     if (this.props.onChange) {
       this.props.onChange(event);
@@ -38,7 +38,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
     let name = this.props.name;
     let value = this.state.value;
     if (this.props.model) {
-      value = this.props.model[ name ];
+      value = this.props.model[name];
     }
     let input;
     if (type === 'textarea') {

@@ -22,7 +22,7 @@ export default class Form extends React.Component { // eslint-disable-line react
   }
   formChange() {
     if (!this.props.autosave) return;
-    if( this.timeout ) clearTimeout(this.timeout);
+    if (this.timeout) clearTimeout(this.timeout);
     this.timeout = setTimeout(this.autosave, 4000);
   }
   render() {
