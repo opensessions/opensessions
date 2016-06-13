@@ -1,0 +1,9 @@
+:root {
+  /* Colors */
+  --darkBlue: #182750;
+  --lightBlue: #1a90cd;
+
+  /* Fonts */
+  --bodyFont: "Open Sans", "Helvetica", sans-serif;
+  --headingFont: "Belgrano", "Georgia", "Times", serif;
+}
