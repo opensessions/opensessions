@@ -25,6 +25,7 @@
   color: #FFF;
   padding: .75em;
   font-size: 1.25em;
+  box-shadow: inset 0 .25em .5em rgba(0, 0, 0, .5);
   h1,
   h2,
   h3,
