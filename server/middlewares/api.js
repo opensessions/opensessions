@@ -1,7 +1,7 @@
-var express = require('express');
+const express = require('express');
 
 module.exports = (app) => {
-  var api = express();
+  const api = express();
 
   api.get('/session/:sessionID', (req, res) => {
     res.json({
@@ -25,7 +25,7 @@ module.exports = (app) => {
         title: 'mock title',
         description: 'mock description',
         href: '/api/session/example',
-      }
+      },
     ]);
   });
 
