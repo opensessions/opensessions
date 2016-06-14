@@ -18,7 +18,7 @@ class Header extends React.Component { // eslint-disable-line react/prefer-state
     const user = this.context.user ? this.context.user : false;
     return (
       <header styleName="app__header" className="l__constrained">
-        <Link to="/" styleName="header__logo"><img src="/images/open-sessions-logo.png" /></Link>
+        <Link to="/" styleName="header__logo"><img src="/images/open-sessions-logo.png" alt="Open Sessions" /></Link>
         <nav className={styles.header__nav}>
           <Link to="/session/add" activeClassName="active">+ Add a session</Link>
           <NotAuthenticated>

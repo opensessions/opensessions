@@ -30,16 +30,16 @@ export default class Form extends React.Component { // eslint-disable-line react
   }
   tabClick(event) {
     if (this.activeTab === event.target.text) return;
-    this.setState({activeTab: event.target.text});
+    this.setState({ activeTab: event.target.text });
   }
-  _renderTabs() {
+  renderTabs() {
     const self = this;
     return this.props.children.map((child) => {
-      const className = self.state.activeTab == child.props.label ? styles.active : '';
+      const className = self.state.activeTab === child.props.label ? styles.active : '';
       return <a className={className} onClick={this.tabClick}>{child.props.label}</a>;
     });
   }
-  _renderTab() {
+  renderTab() {
     const self = this;
     return this.props.children.map((child) => {
       const active = child.props.label === self.state.activeTab ? '' : styles.hiddenTab;
@@ -51,10 +51,10 @@ export default class Form extends React.Component { // eslint-disable-line react
     return (
       <form onInput={this.formChange} className={styles.form}>
         <nav className={styles.nav}>
-          {this._renderTabs()}
+          {this.renderTabs()}
         </nav>
         <div className={styles.tabs}>
-          {this._renderTab()}
+          {this.renderTab()}
           <input type="submit" value={submitText} />
         </div>
       </form>
