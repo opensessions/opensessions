@@ -39,7 +39,7 @@
   position: absolute;
   top: 2em;
   left: 26em;
-  &:before {
+  &::before {
     content: 'i';
     position: absolute;
     border-radius: 1em;

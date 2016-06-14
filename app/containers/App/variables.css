@@ -1,10 +1,10 @@
 :root {
   /* Colors */
   --darkBlue: #182750;
-  --lightBlue: #1a90cd;
+  --lightBlue: #1A90CD;
 
   /* Fonts */
-  --bodyFont: "Open Sans", "Helvetica", sans-serif;
-  --headingFont: "Belgrano", "Georgia", "Times", serif;
+  --bodyFont: 'Open Sans', 'Helvetica', sans-serif;
+  --headingFont: 'Belgrano', 'Georgia', 'Times', serif;
   --pagewidth: 144rem;
 }

@@ -1,10 +1,8 @@
-:root {
-  --pagewidth: 144rem;
-}
+@import '../../containers/App/variables.css';
 
 .form {
   background-color: #E6E6E6;
-  input[type="submit"] {
+  input[type='submit'] {
     background-color: #1A90CD;
     color: #FFF;
     padding: .5em 1.5em;
