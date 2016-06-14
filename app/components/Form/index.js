@@ -36,16 +36,16 @@ export default class Form extends React.Component { // eslint-disable-line react
   }
   renderTabs() {
     const self = this;
-    return this.props.children.map((child) => {
+    return this.props.children.map((child, key) => {
       const className = self.state.activeTab === child.props.label ? styles.active : '';
-      return <a className={className} onClick={this.tabClick}>{child.props.label}</a>;
+      return <a className={className} onClick={this.tabClick} key={key}>{child.props.label}</a>;
     });
   }
   renderTab() {
     const self = this;
-    return this.props.children.map((child) => {
+    return this.props.children.map((child, key) => {
       const active = child.props.label === self.state.activeTab ? '' : styles.hiddenTab;
-      return <div className={active}>{child}</div>;
+      return <div key={key} className={active}>{child}</div>;
     });
   }
   render() {

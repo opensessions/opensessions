@@ -1,5 +1,17 @@
+@import "../../containers/App/variables.css";
+
 .footer {
   background: #000;
   color: #FFF;
   padding: 1em;
+}
+
+.footerInner {
+  max-width: var(--pagewidth);
+  margin: auto;
+  display: flex;
+}
+
+.column {
+  flex-basis: 25%;
 }

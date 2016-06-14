@@ -11,7 +11,28 @@ export default class Footer extends React.Component { // eslint-disable-line rea
   render() {
     return (
       <footer className={styles.footer}>
-        <p>There will be stuff <Link to="/">like links</Link> in the footer</p>
+        <div className={styles.footerInner}>
+          <div className={styles.column}>
+            <h2>Providers</h2>
+            <p><Link to="/">Register your club</Link></p>
+            <p><Link to="/">Become a partner</Link></p>
+          </div>
+          <div className={styles.column}>
+            <h2>Support</h2>
+            <p><Link to="/">Help Desk</Link></p>
+          </div>
+          <div className={styles.column}>
+            <h2>Info</h2>
+            <p><Link to="/">Contact us</Link></p>
+            <p><Link to="/">About this site</Link></p>
+            <p><Link to="/">Terms & Conditions</Link></p>
+            <p><Link to="/">Site map</Link></p>
+          </div>
+          <div className={styles.column}>
+            <caption>In association with</caption>
+            <img src="" alt="London Sport" />
+          </div>
+        </div>
       </footer>
     );
   }

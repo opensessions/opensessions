@@ -41,12 +41,13 @@ export default class Field extends React.Component { // eslint-disable-line reac
     if (this.props.model) {
       value = this.props.model[name];
     }
-    let input, tip;
+    let input;
     if (type === 'textarea') {
       input = <textarea name={name} value={value} onChange={this.handleChange} className={styles.input} />;
     } else {
       input = <input type={type} name={name} value={value} onChange={this.handleChange} className={styles.input} />;
     }
+    let tip;
     if (this.props.tip) {
       tip = (<div className={styles.tip}>
         <strong>{label}</strong>

@@ -5,6 +5,7 @@
 
 .label {
   display: block;
+  line-height: 2;
 }
 
 .input {
@@ -36,8 +37,8 @@
   padding: .75em;
   max-width: 16em;
   position: absolute;
-  right: 0;
   top: 2em;
+  left: 26em;
   &:before {
     content: 'i';
     position: absolute;
