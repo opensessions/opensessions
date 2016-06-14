@@ -13,12 +13,14 @@ export default class Form extends React.Component { // eslint-disable-line react
     model: React.PropTypes.object,
     submitText: React.PropTypes.string,
   }
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.autosave = this.autosave.bind(this);
     this.tabClick = this.tabClick.bind(this);
     this.formChange = this.formChange.bind(this);
-    this.state = {};
+    this.state = {
+      activeTab: props.children[0].props.label,
+    };
   }
   autosave() {
     console.log('fetch(/api/session/:sessionID/save, {method: POST, body: form.serialize()})');
