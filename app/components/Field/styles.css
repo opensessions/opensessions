@@ -77,6 +77,12 @@
   text-align: right;
 }
 
+.valid,
+.warn,
+.danger {
+  font-weight: bold;
+}
+
 .valid {
   color: green;
 }

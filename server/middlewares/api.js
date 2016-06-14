@@ -3,6 +3,12 @@ const session = require('express-session');
 
 module.exports = (app) => {
   const api = express();
+  const getSession = req => ({
+    id: req.params.sessionID,
+    href: '/session/example',
+    title: 'mock title',
+    description: 'mock description',
+  });
 
   app.use(session({
     secret: 'moose',
@@ -10,22 +16,13 @@ module.exports = (app) => {
     saveUninitialized: true,
   }));
 
-  getSession = (req) => {
-    return {
-      id: req.params.sessionID,
-      href: '/session/example',
-      title: 'mock title',
-      description: 'mock description',
-    };
-  };
-
   api.get('/session/:sessionID', (req, res) => {
     res.json(getSession(req));
   });
 
   api.post('/session/:sessionID', (req, res) => {
     req.session.session = JSON.stringify(req.body);
-    req.session.save((err) => {
+    req.session.save(() => {
       res.json(getSession(req));
     });
   });

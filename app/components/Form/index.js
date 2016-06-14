@@ -20,24 +20,26 @@ export default class Form extends React.Component { // eslint-disable-line react
     this.formChange = this.formChange.bind(this);
     this.state = {
       activeTab: props.children[0].props.label,
+      saveState: 'Unsaved',
+      saveStateClass: styles.unsaved,
     };
   }
   autosave() {
     console.log(this);
     const data = JSON.stringify(this.props.model);
-    this.setState({ saveState: 'Saving...' });
-    fetch('/api/session/' + this.props.model.id, {method: 'POST', body: data})
+    this.setState({ saveState: 'Saving...', saveStateClass: styles.saving });
+    fetch(`/api/session/ ${this.props.model.id}`, { method: 'POST', body: data })
       .then((response) => response.json())
       .then((json) => {
         console.log('autosave complete', json);
-        this.setState({ saveState: 'Saved!' });
+        this.setState({ saveState: 'Saved!', saveStateClass: styles.saved });
       });
   }
   formChange() {
     if (!this.props.autosave) return;
     if (this.timeout) clearTimeout(this.timeout);
-    this.timeout = setTimeout(this.autosave, 4000);
-    this.setState({ saveState: 'Changed' });
+    this.timeout = setTimeout(this.autosave, 3000);
+    this.setState({ saveState: 'Changed', saveStateClass: styles.changed });
   }
   tabClick(event) {
     if (this.activeTab === event.target.text) return;
@@ -65,7 +67,7 @@ export default class Form extends React.Component { // eslint-disable-line react
           {this.renderTabs()}
         </nav>
         <div className={styles.tabs}>
-          <div className={styles.saveState}>{this.state.saveState}</div>
+          <div className={`${styles.saveState} ${this.state.saveStateClass}`}>{this.state.saveState}</div>
           {this.renderTab()}
           <input type="submit" value={submitText} />
         </div>

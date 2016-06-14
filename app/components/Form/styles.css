@@ -5,7 +5,7 @@
 .nav {
   flex-basis: 12em;
   background-color: #EFEFEF;
-  padding: 2em .5em;
+  padding: 4em .5em;
   font-size: 1.2em;
   & > a {
     display: block;
@@ -27,6 +27,22 @@
 }
 
 .saveState {
-  color: green;
-  float: right;
+  text-align: right;
+  font-weight: bold;
+  transition: .1s ease all;
+  opacity: 1;
+  &.unsaved {
+    color: #BFBFBF;
+  }
+  &.changed {
+    color: #E4C383;
+  }
+  &.saving {
+    color: #88A743;
+  }
+  &.saved {
+    color: #51A743;
+    opacity: 0;
+    transition: .1s ease color, 1s ease opacity;
+  }
 }

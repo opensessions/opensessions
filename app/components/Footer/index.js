@@ -30,7 +30,7 @@ export default class Footer extends React.Component { // eslint-disable-line rea
           </div>
           <div className={styles.column}>
             <caption>In association with</caption>
-            <img src="" alt="London Sport" />
+            <img src="/images/london-sport.png" alt="London Sport" />
           </div>
         </div>
       </footer>

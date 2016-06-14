@@ -11,7 +11,7 @@ const app = express();
 
 // API middleware
 const bodyParser = require('body-parser');
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // Initialize static serving

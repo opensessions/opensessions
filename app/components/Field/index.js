@@ -35,14 +35,14 @@ export default class Field extends React.Component { // eslint-disable-line reac
       this.props.model.update(this.props.name, value);
     }
     if (this.props.validation) {
-      this.validate();
+      this.validate(value);
     }
   }
-  validate() {
+  validate(value) {
     const opts = this.props.validation;
     let valid = true;
     if (opts.maxLength) {
-      if (this.state.value.length > opts.maxLength) {
+      if (value.length > opts.maxLength) {
         valid = false;
       }
     }
@@ -50,10 +50,11 @@ export default class Field extends React.Component { // eslint-disable-line reac
   }
   validationHelper() {
     const opts = this.props.validation;
-    if (!opts) return;
+    if (!opts) return false;
     if (opts.maxLength) {
       return this.validationMaxLength();
     }
+    return false;
   }
   validationMaxLength() {
     const opts = this.props.validation;
@@ -68,8 +69,8 @@ export default class Field extends React.Component { // eslint-disable-line reac
   }
   render() {
     let label = this.props.label;
-    let validClass = this.state.valid === false ? styles.invalid : '';
-    let attrs = {
+    const validClass = this.state.valid === false ? styles.invalid : '';
+    const attrs = {
       onChange: this.handleChange,
       className: `${styles.input} ${validClass}`,
     };

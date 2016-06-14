@@ -72,7 +72,9 @@
     },
     "rules": {
       "max-len": 0,
-      "new-cap": 0
+      "new-cap": 0,
+      "no-floating-decimal": 0,
+      "no-param-reassign": 0
     },
     "settings": {
       "import/resolver": {

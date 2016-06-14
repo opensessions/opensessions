@@ -53,7 +53,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
           <div className={styles.formBody}>
             <Form autosave model={session}>
               <Fieldset label="Description">
-                <Field label="Title" name="title" model={session} validation={{maxLength: 50}} tip="Enter a title for your session E.g. Volleyball training" />
+                <Field label="Title" name="title" model={session} validation={{ maxLength: 50 }} tip="Enter a title for your session E.g. Volleyball training" />
                 <Field label="Organizer" name="organizer" model={session} />
                 <Field label="Description" name="description" model={session} type="textarea" />
                 <Field label="Sport / activity type" name="activityType" model={session} />
