@@ -20,7 +20,8 @@ export default class Field extends React.Component { // eslint-disable-line reac
   constructor(props) {
     super(props);
     this.state = {
-      value: this.props.value || '',
+      value: props.value || '',
+      valid: undefined,
     };
     this.handleChange = this.handleChange.bind(this);
   }
@@ -39,9 +40,13 @@ export default class Field extends React.Component { // eslint-disable-line reac
   }
   validate() {
     const opts = this.props.validation;
+    let valid = true;
     if (opts.maxLength) {
-
+      if (this.state.value.length > opts.maxLength) {
+        valid = false;
+      }
     }
+    this.setState({ valid });
   }
   validationHelper() {
     const opts = this.props.validation;
@@ -63,9 +68,10 @@ export default class Field extends React.Component { // eslint-disable-line reac
   }
   render() {
     let label = this.props.label;
+    let validClass = this.state.valid === false ? styles.invalid : '';
     let attrs = {
       onChange: this.handleChange,
-      className: styles.input,
+      className: `${styles.input} ${validClass}`,
     };
     attrs.name = this.props.name;
     attrs.value = this.state.value;
@@ -91,9 +97,9 @@ export default class Field extends React.Component { // eslint-disable-line reac
         <label className={styles.label}>{label}</label>
         <div className={styles.inputWrap}>
           {input}
+          {tip}
           {this.validationHelper()}
         </div>
-        {tip}
       </div>
     );
   }

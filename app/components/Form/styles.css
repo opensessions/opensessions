@@ -25,3 +25,8 @@
 .hiddenTab {
   display: none;
 }
+
+.saveState {
+  color: green;
+  float: right;
+}

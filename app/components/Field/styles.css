@@ -32,6 +32,9 @@
       opacity: 1;
     }
   }
+  &.invalid {
+    border-color: red;
+  }
   textarea& {
     min-height: 5em;
   }

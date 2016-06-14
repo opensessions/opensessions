@@ -26,7 +26,6 @@ module.exports = (app) => {
   api.post('/session/:sessionID', (req, res) => {
     req.session.session = JSON.stringify(req.body);
     req.session.save((err) => {
-      console.log(req.session, err);
       res.json(getSession(req));
     });
   });
