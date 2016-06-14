@@ -4,6 +4,12 @@
 
 .form {
   background-color: #E6E6E6;
+  input[type="submit"] {
+    background-color: #1A90CD;
+    color: #FFF;
+    padding: .5em 1.5em;
+    line-height: 1;
+  }
 }
 
 .formBody {

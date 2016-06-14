@@ -12,6 +12,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
     model: React.PropTypes.object,
     name: React.PropTypes.string.isRequired,
     onChange: React.PropTypes.func,
+    tip: React.PropTypes.string,
     type: React.PropTypes.string,
     value: React.PropTypes.string,
   }
@@ -40,16 +41,23 @@ export default class Field extends React.Component { // eslint-disable-line reac
     if (this.props.model) {
       value = this.props.model[name];
     }
-    let input;
+    let input, tip;
     if (type === 'textarea') {
       input = <textarea name={name} value={value} onChange={this.handleChange} className={styles.input} />;
     } else {
       input = <input type={type} name={name} value={value} onChange={this.handleChange} className={styles.input} />;
     }
+    if (this.props.tip) {
+      tip = (<div className={styles.tip}>
+        <strong>{label}</strong>
+        <p>{this.props.tip}</p>
+      </div>);
+    }
     return (
       <div className={styles.field}>
         <label className={styles.label}>{label}</label>
         {input}
+        {tip}
       </div>
     );
   }

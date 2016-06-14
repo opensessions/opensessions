@@ -1,3 +1,12 @@
+.field {
+  position: relative;
+  padding: .5em 0;
+}
+
+.label {
+  display: block;
+}
+
 .input {
   padding: .4em;
   line-height: 1;
@@ -10,16 +19,38 @@
   &:focus {
     outline: .2em solid #00AEEF;
     background-color: #FFF;
+    & + .tip {
+      opacity: 1;
+    }
   }
   textarea& {
     min-height: 5em;
   }
 }
 
-.label {
-  display: block;
-}
-
-.field {
-  padding: .5em 0;
+.tip {
+  position: relative;
+  opacity: 0;
+  transition: .5s all ease;
+  background-color: #FFF;
+  padding: .75em;
+  max-width: 16em;
+  position: absolute;
+  right: 0;
+  top: 2em;
+  &:before {
+    content: 'i';
+    position: absolute;
+    border-radius: 1em;
+    background-color: #00AEEF;
+    color: #FFF;
+    line-height: 1;
+    width: 1em;
+    text-align: center;
+    font-style: italic;
+    font-family: serif;
+    font-size: 1.5em;
+    top: -.5em;
+    left: -.5em;
+  }
 }
