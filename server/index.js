@@ -9,11 +9,14 @@ const isDev = process.env.NODE_ENV !== 'production';
 
 const app = express();
 
-// If you need a backend, e.g. an API, add your custom backend-specific middleware here
-// app.use('/api', myApi);
+// API middleware
+const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
 
-// Initialize image serving
+// Initialize static serving
 app.use('/images', express.static('app/images'));
+app.use('/favicon.ico', express.static('app/favicon.ico'));
 
 // Initialize stormpath
 const stormpathMiddleware = require('./middlewares/stormpathMiddleware');

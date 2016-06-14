@@ -14,6 +14,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
     onChange: React.PropTypes.func,
     tip: React.PropTypes.string,
     type: React.PropTypes.string,
+    validation: React.PropTypes.object,
     value: React.PropTypes.string,
   }
   constructor(props) {
@@ -32,20 +33,51 @@ export default class Field extends React.Component { // eslint-disable-line reac
     if (this.props.model) {
       this.props.model.update(this.props.name, value);
     }
+    if (this.props.validation) {
+      this.validate();
+    }
+  }
+  validate() {
+    const opts = this.props.validation;
+    if (opts.maxLength) {
+
+    }
+  }
+  validationHelper() {
+    const opts = this.props.validation;
+    if (!opts) return;
+    if (opts.maxLength) {
+      return this.validationMaxLength();
+    }
+  }
+  validationMaxLength() {
+    const opts = this.props.validation;
+    const num = opts.maxLength - this.state.value.length;
+    let urgency = styles.valid;
+    if (num / opts.maxLength < .25) {
+      urgency = styles.danger;
+    } else if (num / opts.maxLength < .5) {
+      urgency = styles.warn;
+    }
+    return <div className={styles.maxLength}><span className={urgency}>{num}</span> characters remaining</div>;
   }
   render() {
     let label = this.props.label;
-    let type = this.props.type || 'text';
-    let name = this.props.name;
-    let value = this.state.value;
+    let attrs = {
+      onChange: this.handleChange,
+      className: styles.input,
+    };
+    attrs.name = this.props.name;
+    attrs.value = this.state.value;
     if (this.props.model) {
-      value = this.props.model[name];
+      attrs.value = this.props.model[name];
     }
     let input;
-    if (type === 'textarea') {
-      input = <textarea name={name} value={value} onChange={this.handleChange} className={styles.input} />;
+    if (this.props.type === 'textarea') {
+      input = <textarea {...attrs} />;
     } else {
-      input = <input type={type} name={name} value={value} onChange={this.handleChange} className={styles.input} />;
+      attrs.type = this.props.type || 'text';
+      input = <input {...attrs} />;
     }
     let tip;
     if (this.props.tip) {
@@ -57,7 +89,10 @@ export default class Field extends React.Component { // eslint-disable-line reac
     return (
       <div className={styles.field}>
         <label className={styles.label}>{label}</label>
-        {input}
+        <div className={styles.inputWrap}>
+          {input}
+          {this.validationHelper()}
+        </div>
         {tip}
       </div>
     );

@@ -23,7 +23,13 @@ export default class Form extends React.Component { // eslint-disable-line react
     };
   }
   autosave() {
-    console.log('fetch(/api/session/:sessionID/save, {method: POST, body: form.serialize()})');
+    console.log(this);
+    const data = JSON.stringify(this.props.model);
+    fetch('/api/session/' + this.props.model.id, {method: 'POST', body: data})
+      .then((response) => response.json())
+      .then((json) => {
+        console.log('autosave complete', json);
+      });
   }
   formChange() {
     if (!this.props.autosave) return;

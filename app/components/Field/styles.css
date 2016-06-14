@@ -1,6 +1,11 @@
 .field {
   position: relative;
   padding: .5em 0;
+  &:hover {
+    & .tip {
+      opacity: 1;
+    }
+  }
 }
 
 .label {
@@ -20,6 +25,9 @@
   &:focus {
     outline: .2em solid #00AEEF;
     background-color: #FFF;
+  }
+  &:focus,
+  &:hover {
     & + .tip {
       opacity: 1;
     }
@@ -54,4 +62,26 @@
     top: -.5em;
     left: -.5em;
   }
+}
+
+.inputWrap {
+  width: 22em;
+  max-width: 100%;
+}
+
+.maxLength {
+  font-size: .9em;
+  text-align: right;
+}
+
+.valid {
+  color: green;
+}
+
+.warn {
+  color: orange;
+}
+
+.danger {
+  color: red;
 }
