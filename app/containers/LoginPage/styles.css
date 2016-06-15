@@ -4,7 +4,7 @@
   background: #E6E6E6;
 }
 
-.form__section {
+.page__content {
   padding: 40px;
   lost-center: 1440px;
   justify-content: center;
@@ -40,9 +40,6 @@
     margin-top: 15px;
     font-size: 2rem;
     color: #444;
-  }
-  .login__form {
-    margin-top: 15px;
   }
 }
 

@@ -22,28 +22,28 @@ export default class LoginPage extends React.Component { // eslint-disable-line 
   render() {
     return (
       <div styleName="page__loginRegister">
-        <div className="l__constrained">
-          <div styleName="form__section">
-            <NotAuthenticated>
-              <a href="#" className="btn" styleName="btn--fb">Continue with Facebook</a>
-              <div styleName="decoration--or">
-                <span styleName="or--label">or</span>
-              </div>
-              <span styleName="decoration--continue">Continue with email</span>
-              <LoginForm>
-                <div styleName="login__form">
-                  <Field label="Username" name="username" />
-                  <Field label="Password" name="password" />
-                  <input type="submit" value="Continue" className="btn btn__submit" styleName="btn__submit" />
-                </div>
-              </LoginForm>
-              <Link to="/register" styleName="link__create-account">Create an account</Link>
-            </NotAuthenticated>
-            <Authenticated>
-              <h1 className="alpha">You are already logged in!</h1>
-              <p>Head to your <Link to="/me">profile</Link> or you can <LogoutLink />.</p>
-            </Authenticated>
-          </div>
+        <div className="l__constrained" styleName="page__content">
+          <NotAuthenticated>
+            <a href="#" className="btn" styleName="btn--fb">Continue with Facebook</a>
+            <div styleName="decoration--or">
+              <span styleName="or--label">or</span>
+            </div>
+            <span styleName="decoration--continue">Continue with email</span>
+            <LoginForm>
+              <Field label="Email" name="Email" />
+              <Field label="Password" name="password" />
+              <p spIf="form.error">
+                <strong>Error:</strong><br />
+                <span spBind="form.errorMessage" />
+              </p>
+              <input type="submit" value="Continue" className="btn btn__submit" styleName="btn__submit" />
+            </LoginForm>
+            <Link to="/register" styleName="link__create-account">Create an account</Link>
+          </NotAuthenticated>
+          <Authenticated>
+            <h1 className="alpha">You are already logged in!</h1>
+            <p>Head to your <Link to="/me">profile</Link> or you can <LogoutLink />.</p>
+          </Authenticated>
         </div>
       </div>
     );
