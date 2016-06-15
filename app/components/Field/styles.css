@@ -1,3 +1,5 @@
+@import "../../containers/App/variables.css";
+
 .field {
   position: relative;
   padding: .5em 0;
@@ -33,7 +35,7 @@
     }
   }
   &.invalid {
-    outline-color: red;
+    outline-color: var(--errorRed);
   }
   textarea& {
     min-height: 5em;
@@ -47,9 +49,11 @@
   background-color: #FFF;
   padding: .75em;
   max-width: 16em;
-  position: absolute;
   top: 2em;
   left: 26em;
+  @media screen and (max-width: 24em) {
+    position: absolute;
+  }
   &::before {
     content: 'i';
     position: absolute;
@@ -84,19 +88,13 @@
 }
 
 .valid {
-  color: #57A540;
+  color: var(--validGreen);
 }
 
 .warn {
-  color: #E2A81C;
+  color: var(--warnYellow);
 }
 
 .danger {
-  color: #DE4C28;
-}
-
-@media (max-width: 24em) {
-  .tip {
-    position: absolute;
-  }
+  color: var(--errorRed);
 }

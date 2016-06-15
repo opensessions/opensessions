@@ -2,6 +2,9 @@
   /* Colors */
   --darkBlue: #182750;
   --lightBlue: #1A90CD;
+  --errorRed: #DE4C28;
+  --validGreen: #57A540;
+  --warnYellow: #E2A81C;
 
   /* Fonts */
   --bodyFont: 'Open Sans', 'Helvetica', sans-serif;
