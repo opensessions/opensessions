@@ -1,3 +1,5 @@
+@import '../../containers/App/variables.css';
+
 .form {
   display: flex;
   flex-wrap: wrap;
@@ -26,10 +28,32 @@
   background-color: #E6E6E6;
 }
 
+.formNav {
+  padding: 1em .5em;
+}
+
+.actionButtons {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1em;
+  & > a {
+    font-size: 1.2em;
+    padding: .5em 1.5em;
+    line-height: 1;
+    background-color: var(--actionColor);
+    color: #FFF;
+    &.inactive {
+      background-color: transparent;
+      color: var(--actionColor);
+      text-decoration: none;
+    }
+  }
+}
 
 .tick {
   color: #57A540;
-  padding: 0 1em;
+  padding: 0 .5em;
+  pointer-events: none;
 }
 
 .hiddenTab {

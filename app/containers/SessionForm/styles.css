@@ -3,10 +3,11 @@
 .form {
   background-color: #EFEFEF;
   input[type='submit'] {
-    background-color: #1A90CD;
+    background-color: var(--actionColor);
     color: #FFF;
     padding: .5em 1.5em;
     line-height: 1;
+    font-size: 1.2em;
   }
 }
 

@@ -13,14 +13,10 @@ export default class Fieldset extends React.Component { // eslint-disable-line r
   }
   constructor(props) {
     super(props);
-    this.onChange = this.onChange.bind(this);
-  }
-  onChange() {
-    console.log(this.children.map((child) => child._owner._instance.state.valid));
   }
   render() {
     return (
-      <fieldset className={styles.fieldset} onInput={this.onChange}>
+      <fieldset className={styles.fieldset}>
         {this.props.children}
       </fieldset>
     );
