@@ -21,9 +21,9 @@ const CSSModulesOptions = {
 export default class LoginPage extends React.Component { // eslint-disable-line react/prefer-stateless-function
   render() {
     return (
-      <div styleName="page__login">
+      <div styleName="page__loginRegister">
         <div className="l__constrained">
-          <div styleName="login__section" className="grid">
+          <div styleName="form__section">
             <NotAuthenticated>
               <a href="#" className="btn" styleName="btn--fb">Continue with Facebook</a>
               <div styleName="decoration--or">
@@ -40,8 +40,8 @@ export default class LoginPage extends React.Component { // eslint-disable-line 
               <Link to="/register" styleName="link__create-account">Create an account</Link>
             </NotAuthenticated>
             <Authenticated>
-              <p>You are already logged in!</p>
-              <p>Head to your <Link to="/me">profile</Link> or <LogoutLink />.</p>
+              <h1 className="alpha">You are already logged in!</h1>
+              <p>Head to your <Link to="/me">profile</Link> or you can <LogoutLink />.</p>
             </Authenticated>
           </div>
         </div>

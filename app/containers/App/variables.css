@@ -6,5 +6,7 @@
   /* Fonts */
   --bodyFont: 'Open Sans', 'Helvetica', sans-serif;
   --headingFont: 'Belgrano', 'Georgia', 'Times', serif;
+
+  /* Layout / Structure */
   --pagewidth: 144rem;
 }

@@ -1,10 +1,10 @@
 @lost flexbox flex;
 
-.page__login {
+.page__loginRegister {
   background: #E6E6E6;
 }
 
-.login__section {
+.form__section {
   padding: 40px;
   lost-center: 1440px;
   justify-content: center;
