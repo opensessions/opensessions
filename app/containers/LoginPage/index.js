@@ -30,8 +30,8 @@ export default class LoginPage extends React.Component { // eslint-disable-line 
             </div>
             <span styleName="decoration--continue">Continue with email</span>
             <LoginForm>
-              <Field label="Email" name="Email" />
-              <Field label="Password" name="password" />
+              <Field label="Email" name="email" />
+              <Field label="Password" name="password" type="password" />
               <p spIf="form.error">
                 <strong>Error:</strong><br />
                 <span spBind="form.errorMessage" />
