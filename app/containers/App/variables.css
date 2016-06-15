@@ -5,6 +5,7 @@
   --errorRed: #DE4C28;
   --validGreen: #57A540;
   --warnYellow: #E2A81C;
+  --actionColor: var(--lightBlue);
 
   /* Fonts */
   --bodyFont: 'Open Sans', 'Helvetica', sans-serif;

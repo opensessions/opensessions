@@ -48,15 +48,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
     }
     this.setState({ valid });
   }
-  renderValidation() {
-    const opts = this.props.validation;
-    if (!opts) return false;
-    if (opts.maxLength) {
-      return this.validationMaxLength();
-    }
-    return false;
-  }
-  validationMaxLength() {
+  renderValidationMaxLength() {
     const opts = this.props.validation;
     const num = opts.maxLength - this.state.value.length;
     let urgency = styles.valid;
@@ -67,6 +59,14 @@ export default class Field extends React.Component { // eslint-disable-line reac
     }
     const s = num === 1 ? '' : 's';
     return <div className={styles.maxLength}><span className={urgency}>{num}</span> character{s} remaining</div>;
+  }
+  renderValidation() {
+    const opts = this.props.validation;
+    if (!opts) return false;
+    if (opts.maxLength) {
+      return this.renderValidationMaxLength();
+    }
+    return false;
   }
   render() {
     let label = this.props.label;

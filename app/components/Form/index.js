@@ -17,6 +17,7 @@ export default class Form extends React.Component { // eslint-disable-line react
     super(props);
     this.autosave = this.autosave.bind(this);
     this.tabClick = this.tabClick.bind(this);
+    this.actionClick = this.actionClick.bind(this);
     this.formChange = this.formChange.bind(this);
     this.state = {
       activeTab: 0,
@@ -42,8 +43,12 @@ export default class Form extends React.Component { // eslint-disable-line react
   }
   tabClick(event) {
     const key = Array.prototype.indexOf.call(event.target.parentNode.childNodes, event.target);
-    if (this.activeTab === key) return;
+    if (this.state.activeTab === key) return;
     this.setState({ activeTab: key });
+  }
+  actionClick(event) {
+    const delta = event.target.text === 'Next' ? 1 : -1;
+    this.setState({ activeTab: this.state.activeTab + delta });
   }
   renderNav() {
     const self = this;
@@ -60,6 +65,26 @@ export default class Form extends React.Component { // eslint-disable-line react
       return <div key={key} className={active}>{child}</div>;
     });
   }
+  renderActionButtons() {
+    const inactive = styles.inactive;
+    const backAttr = {
+      onClick: this.actionClick,
+    };
+    const nextAttr = {
+      onClick: this.actionClick,
+    };
+    if (this.state.activeTab === 0) {
+      backAttr.className = inactive;
+      backAttr.onClick = undefined;
+    } else if (this.state.activeTab + 1 === this.props.children.length) {
+      nextAttr.className = inactive;
+      nextAttr.onClick = undefined;
+    }
+    return (<div className={styles.actionButtons}>
+      <a {...backAttr}>Back</a>
+      <a {...nextAttr}>Next</a>
+    </div>);
+  }
   render() {
     const submitText = this.props.submitText || 'Submit';
     return (
@@ -70,7 +95,10 @@ export default class Form extends React.Component { // eslint-disable-line react
         <div className={styles.tabs}>
           <div className={`${styles.saveState} ${this.state.saveStateClass}`}>{this.state.saveState}</div>
           {this.renderTab()}
-          <input type="submit" value={submitText} />
+          <nav className={styles.formNav}>
+            {this.renderActionButtons()}
+            <input type="submit" value={submitText} />
+          </nav>
         </div>
       </form>
     );
