@@ -8,23 +8,23 @@ module.exports = (app) => stormpath.init(app, {
       form: {
         fields: {
           givenName: {
-            enabled: false
+            enabled: false,
           },
           surname: {
-            enabled: false
-          }
-        }
-      }
+            enabled: false,
+          },
+        },
+      },
     },
     login: {
       enabled: true,
       form: {
         fields: {
           username: {
-            enabled: false
-          }
-        }
-      }
-    }
+            enabled: false,
+          },
+        },
+      },
+    },
   },
 });

@@ -1,4 +1,4 @@
-@import "../../containers/App/variables.css";
+@import '../../containers/App/variables.css';
 
 .field {
   position: relative;
@@ -51,6 +51,7 @@
   max-width: 16em;
   top: 2em;
   left: 26em;
+
   @media screen and (max-width: 24em) {
     position: absolute;
   }
