@@ -65,7 +65,8 @@ export default class Field extends React.Component { // eslint-disable-line reac
     } else if (num / opts.maxLength < .5) {
       urgency = styles.warn;
     }
-    return <div className={styles.maxLength}><span className={urgency}>{num}</span> characters remaining</div>;
+    const s = num === 1 ? '' : 's';
+    return <div className={styles.maxLength}><span className={urgency}>{num}</span> character{s} remaining</div>;
   }
   render() {
     let label = this.props.label;

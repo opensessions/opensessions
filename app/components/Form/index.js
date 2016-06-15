@@ -19,7 +19,7 @@ export default class Form extends React.Component { // eslint-disable-line react
     this.tabClick = this.tabClick.bind(this);
     this.formChange = this.formChange.bind(this);
     this.state = {
-      activeTab: props.children[0].props.label,
+      activeTab: 0,
       saveState: 'Unsaved',
       saveStateClass: styles.unsaved,
     };
@@ -41,20 +41,22 @@ export default class Form extends React.Component { // eslint-disable-line react
     this.setState({ saveState: 'Changed', saveStateClass: styles.changed });
   }
   tabClick(event) {
-    if (this.activeTab === event.target.text) return;
-    this.setState({ activeTab: event.target.text });
+    const key = Array.prototype.indexOf.call(event.target.parentNode.childNodes, event.target);
+    if (this.activeTab === key) return;
+    this.setState({ activeTab: key });
   }
-  renderTabs() {
+  renderNav() {
     const self = this;
     return this.props.children.map((child, key) => {
-      const className = self.state.activeTab === child.props.label ? styles.active : '';
-      return <a className={className} onClick={this.tabClick} key={key}>{child.props.label}</a>;
+      const className = self.state.activeTab === key ? styles.active : '';
+      const isComplete = <span className={styles.tick}>&#10003;</span>;
+      return <a className={className} onClick={this.tabClick} index={key}>{child.props.label} {isComplete}</a>;
     });
   }
   renderTab() {
     const self = this;
     return this.props.children.map((child, key) => {
-      const active = child.props.label === self.state.activeTab ? '' : styles.hiddenTab;
+      const active = key === self.state.activeTab ? '' : styles.hiddenTab;
       return <div key={key} className={active}>{child}</div>;
     });
   }
@@ -63,7 +65,7 @@ export default class Form extends React.Component { // eslint-disable-line react
     return (
       <form onInput={this.formChange} className={styles.form}>
         <nav className={styles.nav}>
-          {this.renderTabs()}
+          {this.renderNav()}
         </nav>
         <div className={styles.tabs}>
           <div className={`${styles.saveState} ${this.state.saveStateClass}`}>{this.state.saveState}</div>

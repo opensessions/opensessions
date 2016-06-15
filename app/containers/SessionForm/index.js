@@ -35,6 +35,16 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     session[name] = value;
     this.setState({ session });
   }
+  renderDescriptionFieldset() {
+    const session = this.state.session || {};
+    return (<Fieldset label="Description">
+      <Field label="Title" name="title" model={session} validation={{ maxLength: 50 }} tip="Enter a title for your session E.g. Volleyball training" />
+      <Field label="Organizer" name="organizer" model={session} />
+      <Field label="Description" name="description" model={session} type="textarea" />
+      <Field label="Sport / activity type" name="activityType" model={session} />
+      <Field label="Sub category" name="activitySubType" model={session} />
+    </Fieldset>);
+  }
   render() {
     const session = this.state.session || {};
     session.update = this.updateSession;
@@ -52,13 +62,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
           </div>
           <div className={styles.formBody}>
             <Form autosave model={session}>
-              <Fieldset label="Description">
-                <Field label="Title" name="title" model={session} validation={{ maxLength: 50 }} tip="Enter a title for your session E.g. Volleyball training" />
-                <Field label="Organizer" name="organizer" model={session} />
-                <Field label="Description" name="description" model={session} type="textarea" />
-                <Field label="Sport / activity type" name="activityType" model={session} />
-                <Field label="Sub category" name="activitySubType" model={session} />
-              </Fieldset>
+              {this.renderDescriptionFieldset()}
               <Fieldset label="Additional info" />
               <Fieldset label="Location" />
               <Fieldset label="Pricing" />

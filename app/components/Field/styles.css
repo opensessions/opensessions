@@ -84,15 +84,15 @@
 }
 
 .valid {
-  color: green;
+  color: #57A540;
 }
 
 .warn {
-  color: orange;
+  color: #E2A81C;
 }
 
 .danger {
-  color: red;
+  color: #DE4C28;
 }
 
 @media (max-width: 24em) {
