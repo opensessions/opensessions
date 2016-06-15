@@ -19,11 +19,11 @@
   border: .1em solid #C2C2C2;
   background-color: #EFEFEF;
   transition: .2s ease background;
-  outline-offset: .1em;
+  outline-offset: .05em;
   width: 22em;
   max-width: 100%;
   &:focus {
-    outline: .2em solid #00AEEF;
+    outline: .15em solid #00AEEF;
     background-color: #FFF;
   }
   &:focus,
@@ -33,7 +33,7 @@
     }
   }
   &.invalid {
-    border-color: red;
+    outline-color: red;
   }
   textarea& {
     min-height: 5em;
@@ -73,7 +73,7 @@
 }
 
 .maxLength {
-  font-size: .9em;
+  font-size: .825em;
   text-align: right;
 }
 
@@ -93,4 +93,10 @@
 
 .danger {
   color: red;
+}
+
+@media (max-width: 24em) {
+  .tip {
+    position: absolute;
+  }
 }

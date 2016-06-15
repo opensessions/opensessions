@@ -48,7 +48,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
     }
     this.setState({ valid });
   }
-  validationHelper() {
+  renderValidation() {
     const opts = this.props.validation;
     if (!opts) return false;
     if (opts.maxLength) {
@@ -73,11 +73,11 @@ export default class Field extends React.Component { // eslint-disable-line reac
     const attrs = {
       onChange: this.handleChange,
       className: `${styles.input} ${validClass}`,
+      name: this.props.name,
+      value: this.state.value,
     };
-    attrs.name = this.props.name;
-    attrs.value = this.state.value;
     if (this.props.model) {
-      attrs.value = this.props.model[name];
+      attrs.value = this.props.model[this.props.name];
     }
     let input;
     if (this.props.type === 'textarea') {
@@ -99,7 +99,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
         <div className={styles.inputWrap}>
           {input}
           {tip}
-          {this.validationHelper()}
+          {this.renderValidation()}
         </div>
       </div>
     );

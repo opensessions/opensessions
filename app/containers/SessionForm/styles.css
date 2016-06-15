@@ -1,7 +1,7 @@
 @import '../../containers/App/variables.css';
 
 .form {
-  background-color: #E6E6E6;
+  background-color: #EFEFEF;
   input[type='submit'] {
     background-color: #1A90CD;
     color: #FFF;

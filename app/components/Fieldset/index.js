@@ -9,19 +9,18 @@ import styles from './styles.css';
 export default class Fieldset extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
     children: React.PropTypes.node,
-    hidden: React.PropTypes.bool,
     label: React.PropTypes.string,
   }
   constructor(props) {
     super(props);
-    this.state = {
-      hidden: this.props.hidden || false,
-    };
+    this.onChange = this.onChange.bind(this);
+  }
+  onChange() {
+    console.log(this.refs);
   }
   render() {
-    const hidden = this.state.hidden ? styles.hidden : '';
     return (
-      <fieldset className={`${styles.fieldset} ${hidden}`}>
+      <fieldset className={styles.fieldset} onInput={this.onChange}>
         {this.props.children}
       </fieldset>
     );

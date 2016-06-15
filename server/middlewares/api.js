@@ -1,5 +1,4 @@
 const express = require('express');
-const session = require('express-session');
 
 module.exports = (app) => {
   const api = express();
@@ -9,12 +8,6 @@ module.exports = (app) => {
     title: 'mock title',
     description: 'mock description',
   });
-
-  app.use(session({
-    secret: 'moose',
-    resave: true,
-    saveUninitialized: true,
-  }));
 
   api.get('/session/:sessionID', (req, res) => {
     res.json(getSession(req));

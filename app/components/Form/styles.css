@@ -1,10 +1,10 @@
 .form {
   display: flex;
+  flex-wrap: wrap;
 }
 
 .nav {
-  flex-basis: 12em;
-  background-color: #EFEFEF;
+  flex-grow: 1;
   padding: 4em .5em;
   font-size: 1.2em;
   & > a {
@@ -14,8 +14,9 @@
 }
 
 .tabs {
-  flex-basis: 75%;
+  flex-grow: 4;
   padding: 2em 2%;
+  background-color: #E6E6E6;
 }
 
 .active {

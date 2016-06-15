@@ -25,7 +25,6 @@ export default class Form extends React.Component { // eslint-disable-line react
     };
   }
   autosave() {
-    console.log(this);
     const data = JSON.stringify(this.props.model);
     this.setState({ saveState: 'Saving...', saveStateClass: styles.saving });
     fetch(`/api/session/ ${this.props.model.id}`, { method: 'POST', body: data })
