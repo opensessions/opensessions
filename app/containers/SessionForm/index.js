@@ -30,14 +30,19 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       });
     }
   }
+  getSession() {
+    const session = this.state.session || {};
+    session.update = this.updateSession;
+    return session;
+  }
   updateSession(name, value) {
-    const session = this.state.session;
+    const session = this.getSession();
     session[name] = value;
     this.setState({ session });
   }
   renderDescriptionFieldset() {
-    const session = this.state.session || {};
-    return (<Fieldset label="Description">
+    const session = this.getSession();
+    return (<Fieldset label="Description" ref="descriptionFieldset">
       <Field label="Title" name="title" model={session} validation={{ maxLength: 50 }} tip="Enter a title for your session E.g. Volleyball training" />
       <Field label="Organizer" name="organizer" model={session} />
       <Field label="Description" name="description" model={session} type="textarea" />
@@ -46,8 +51,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     </Fieldset>);
   }
   render() {
-    const session = this.state.session || {};
-    session.update = this.updateSession;
+    const session = this.getSession();
     return (
       <div className={styles.form}>
         <Authenticated>
@@ -63,12 +67,29 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
           <div className={styles.formBody}>
             <Form autosave model={session}>
               {this.renderDescriptionFieldset()}
-              <Fieldset label="Additional info" />
-              <Fieldset label="Location" />
-              <Fieldset label="Pricing" />
-              <Fieldset label="Restrictions" />
-              <Fieldset label="Contact info" />
-              <Fieldset label="Photos" />
+              <Fieldset label="Additional info">
+                <Field label="Example" name="example" />
+              </Fieldset>
+              <Fieldset label="Location">
+                <Field label="Example" name="example" />
+              </Fieldset>
+              <Fieldset label="Pricing">
+                <Field label="Example" name="example" />
+              </Fieldset>
+              <Fieldset label="Restrictions">
+                <Field label="Example" name="example" />
+              </Fieldset>
+              <Fieldset label="Contact info">
+                <Field label="Example" name="example" />
+              </Fieldset>
+              <Fieldset label="Photos">
+                <Field label="Example" name="example" />
+              </Fieldset>
+              <Fieldset label="Schedule">
+                <Field label="Start date" name="startDate" type="date" model={session} />
+                <Field label="Start time" name="startTime" type="time" model={session} />
+                <Field label="End time" name="endTime" type="time" model={session} />
+              </Fieldset>
             </Form>
           </div>
         </Authenticated>

@@ -8,7 +8,7 @@ import styles from './styles.css';
 
 export default class Fieldset extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
-    children: React.PropTypes.node,
+    children: React.PropTypes.node.isRequired,
     label: React.PropTypes.string,
   }
   render() {

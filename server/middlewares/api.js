@@ -14,10 +14,7 @@ module.exports = (app) => {
   });
 
   api.post('/session/:sessionID', (req, res) => {
-    req.session.session = JSON.stringify(req.body);
-    req.session.save(() => {
-      res.json(getSession(req));
-    });
+    res.json(getSession(req));
   });
 
   api.get('/user/:username', (req, res) => {

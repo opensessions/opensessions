@@ -27,18 +27,20 @@ export default class Field extends React.Component { // eslint-disable-line reac
   }
   handleChange(event) {
     const value = event.target.value;
-    this.setState({ value });
+    const state = { value };
+    if (this.props.validation) {
+      state.valid = this.isValid(value);
+    }
+    this.setState(state);
     if (this.props.onChange) {
       this.props.onChange(event);
     }
     if (this.props.model) {
       this.props.model.update(this.props.name, value);
     }
-    if (this.props.validation) {
-      this.validate(value);
-    }
   }
-  validate(value) {
+  isValid(value) {
+    if (typeof value === 'undefined') value = this.state.value;
     const opts = this.props.validation;
     let valid = true;
     if (opts.maxLength) {
@@ -46,19 +48,24 @@ export default class Field extends React.Component { // eslint-disable-line reac
         valid = false;
       }
     }
-    this.setState({ valid });
+    return valid;
   }
   renderValidationMaxLength() {
-    const opts = this.props.validation;
-    const num = opts.maxLength - this.state.value.length;
+    const maxLength = this.props.validation.maxLength;
+    let num = maxLength - this.state.value.length;
     let urgency = styles.valid;
-    if (num / opts.maxLength < .25) {
+    let characterState = 'remaining';
+    if (num / maxLength < .25) {
       urgency = styles.danger;
-    } else if (num / opts.maxLength < .5) {
+    } else if (num / maxLength < .5) {
       urgency = styles.warn;
     }
-    const s = num === 1 ? '' : 's';
-    return <div className={styles.maxLength}><span className={urgency}>{num}</span> character{s} remaining</div>;
+    if (num < 0) {
+      num = 0 - num;
+      characterState = 'too many';
+    }
+    const characters = num === 1 ? 'character' : 'characters';
+    return <div className={styles.maxLength}><span className={urgency}>{num}</span> {characters} {characterState}</div>;
   }
   renderValidation() {
     const opts = this.props.validation;
@@ -95,7 +102,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
       </div>);
     }
     return (
-      <div className={styles.field}>
+      <div className={styles.field} data-valid={this.state.valid}>
         <label className={styles.label}>{label}</label>
         <div className={styles.inputWrap}>
           {input}

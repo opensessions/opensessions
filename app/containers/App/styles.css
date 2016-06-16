@@ -83,3 +83,7 @@ img {
     background: #89C9E3;
   }
 }
+
+:global a {
+  user-select: none;
+}

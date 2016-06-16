@@ -3,6 +3,7 @@
 .form {
   background-color: #EFEFEF;
   input[type='submit'] {
+    cursor: pointer;
     background-color: var(--actionColor);
     color: #FFF;
     padding: .5em 1.5em;

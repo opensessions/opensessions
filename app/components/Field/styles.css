@@ -43,7 +43,7 @@
 }
 
 .tip {
-  position: relative;
+  position: absolute;
   opacity: 0;
   transition: .5s all ease;
   background-color: #FFF;
@@ -51,10 +51,6 @@
   max-width: 16em;
   top: 2em;
   left: 26em;
-
-  @media screen and (max-width: 24em) {
-    position: absolute;
-  }
   &::before {
     content: 'i';
     position: absolute;

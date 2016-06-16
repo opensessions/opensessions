@@ -19,6 +19,7 @@ export default class Form extends React.Component { // eslint-disable-line react
     this.tabClick = this.tabClick.bind(this);
     this.actionClick = this.actionClick.bind(this);
     this.formChange = this.formChange.bind(this);
+    this.submit = this.submit.bind(this);
     this.state = {
       activeTab: 0,
       saveState: 'Unsaved',
@@ -26,20 +27,25 @@ export default class Form extends React.Component { // eslint-disable-line react
     };
   }
   autosave() {
-    const data = JSON.stringify(this.props.model);
+    const model = this.props.model;
+    model.isPublished = false;
+    this.saveModel(model);
+  }
+  saveModel(model) {
+    const data = JSON.stringify(model);
     this.setState({ saveState: 'Saving...', saveStateClass: styles.saving });
-    fetch(`/api/session/ ${this.props.model.id}`, { method: 'POST', body: data })
+    fetch(`/api/session/ ${model.id}`, { method: 'POST', body: data })
       .then((response) => response.json())
       .then((json) => {
-        console.log('autosave complete', json);
+        console.log('save complete', json);
         this.setState({ saveState: 'Saved!', saveStateClass: styles.saved });
       });
   }
   formChange() {
     if (!this.props.autosave) return;
     if (this.timeout) clearTimeout(this.timeout);
-    this.timeout = setTimeout(this.autosave, 3000);
-    this.setState({ saveState: 'Changed', saveStateClass: styles.changed });
+    this.timeout = setTimeout(this.autosave, 2000);
+    this.setState({ saveState: 'Saving...', saveStateClass: styles.saving });
   }
   tabClick(event) {
     const key = Array.prototype.indexOf.call(event.target.parentNode.childNodes, event.target);
@@ -50,12 +56,21 @@ export default class Form extends React.Component { // eslint-disable-line react
     const delta = event.target.text === 'Next' ? 1 : -1;
     this.setState({ activeTab: this.state.activeTab + delta });
   }
+  submit() {
+    const model = this.props.model;
+    model.isPublished = true;
+    this.saveModel(model);
+    console.log(this);
+  }
   renderNav() {
     const self = this;
-    return this.props.children.map((child, key) => {
+    return this.props.children.map((fieldset, key) => {
       const className = self.state.activeTab === key ? styles.active : '';
-      const isComplete = <span className={styles.tick}>&#10003;</span>;
-      return <a className={className} onClick={this.tabClick} index={key}>{child.props.label} {isComplete}</a>;
+      let isComplete;
+      if (fieldset.props.validity) {
+        isComplete = <span className={styles.tick}>&#10003;</span>;
+      }
+      return <a className={className} onClick={this.tabClick} index={key}>{fieldset.props.label} {isComplete}</a>;
     });
   }
   renderTab() {
@@ -69,24 +84,25 @@ export default class Form extends React.Component { // eslint-disable-line react
     const inactive = styles.inactive;
     const backAttr = {
       onClick: this.actionClick,
+      className: styles.backButton,
     };
     const nextAttr = {
       onClick: this.actionClick,
     };
+    let nextText = 'Next';
     if (this.state.activeTab === 0) {
-      backAttr.className = inactive;
+      backAttr.className = `${styles.backButton} ${inactive}`;
       backAttr.onClick = undefined;
     } else if (this.state.activeTab + 1 === this.props.children.length) {
-      nextAttr.className = inactive;
-      nextAttr.onClick = undefined;
+      nextAttr.onClick = this.submit;
+      nextText = 'Submit';
     }
     return (<div className={styles.actionButtons}>
       <a {...backAttr}>Back</a>
-      <a {...nextAttr}>Next</a>
+      <a {...nextAttr}>{nextText}</a>
     </div>);
   }
   render() {
-    const submitText = this.props.submitText || 'Submit';
     return (
       <form onInput={this.formChange} className={styles.form}>
         <nav className={styles.nav}>
@@ -97,7 +113,6 @@ export default class Form extends React.Component { // eslint-disable-line react
           {this.renderTab()}
           <nav className={styles.formNav}>
             {this.renderActionButtons()}
-            <input type="submit" value={submitText} />
           </nav>
         </div>
       </form>
