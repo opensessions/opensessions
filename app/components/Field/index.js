@@ -15,6 +15,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
     tip: React.PropTypes.string,
     type: React.PropTypes.string,
     validation: React.PropTypes.object,
+    error: React.PropTypes.bool,
     value: React.PropTypes.string,
   }
   constructor(props) {
@@ -22,6 +23,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
     this.state = {
       value: props.value || '',
       valid: undefined,
+      error: false,
     };
     this.handleChange = this.handleChange.bind(this);
   }
@@ -68,14 +70,19 @@ export default class Field extends React.Component { // eslint-disable-line reac
     }
     return false;
   }
+  componentWillReceiveProps() {
+    this.setState({ error: this.props.error });
+  }
   render() {
     let label = this.props.label;
     const validClass = this.state.valid === false ? styles.invalid : '';
+    const errorCheck = this.state.error === true ? styles.invalid : '';
     const attrs = {
       onChange: this.handleChange,
-      className: `${styles.input} ${validClass}`,
+      className: `${styles.input} ${validClass} ${errorCheck}`,
       name: this.props.name,
       value: this.state.value,
+      id: this.props.id || this.props.name,
     };
     if (this.props.model) {
       attrs.value = this.props.model[this.props.name];
