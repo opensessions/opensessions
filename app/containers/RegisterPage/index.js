@@ -24,6 +24,28 @@ const CSSModulesOptions = {
 @CSSModules(styles, CSSModulesOptions)
 
 export default class RegisterPage extends React.Component { // eslint-disable-line react/prefer-stateless-function
+  constructor() {
+    super();
+    this.state = {
+      emailError: false,
+      passwordError: false,
+      confirmPasswordError: false,
+    };
+  };
+  onFormSubmit(e, next) {
+    // e.data will contain the data mapped from your form.
+    e.data.email = email.value;
+    if (e.data.email == "") {
+      this.setState({ emailError: true });
+    }
+    if (e.data.password == "") {
+      this.setState({ passwordError: true });
+    }
+    if (e.data.passwordcheck == "") {
+      this.setState({ confirmPasswordError: true });
+    }
+    next();
+  }
   render() {
     return (
       <div styleName="page__loginRegister">
@@ -34,10 +56,10 @@ export default class RegisterPage extends React.Component { // eslint-disable-li
               <span styleName="or--label">or</span>
             </div>
             <span styleName="decoration--continue">Create your Open Sessions account</span>
-            <RegistrationForm>
-              <Field label="Email" name="email" />
-              <Field label="Choose a password" type="password" name="password" />
-              <Field label="Re-type password" type="password" name="confirm-password" />
+            <RegistrationForm onSubmit={this.onFormSubmit.bind(this)}>
+              <Field name="email" label="Email" error={this.state.emailError} /> 
+              <Field type="password" name="password" label="Password" error={this.state.passwordError} />
+              <Field type="password" name="passwordcheck" label="Retype Password" error={this.state.confirmPasswordError} />
               <p spIf="form.error">
                 <strong>Error:</strong><br />
                 <span spBind="form.errorMessage" />

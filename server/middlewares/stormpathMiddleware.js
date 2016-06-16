@@ -13,6 +13,9 @@ module.exports = (app) => stormpath.init(app, {
           surname: {
             enabled: false,
           },
+          email: {
+            enabled: true,
+          },
         },
       },
     },
@@ -22,6 +25,10 @@ module.exports = (app) => stormpath.init(app, {
         fields: {
           username: {
             enabled: false,
+          },
+          email: {
+            enabled: true,
+            required: true,
           },
         },
       },
