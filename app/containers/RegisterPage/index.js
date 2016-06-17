@@ -27,7 +27,6 @@ export default class RegisterPage extends React.Component { // eslint-disable-li
   constructor() {
     super();
     this.state = {
-      errors: [],
       fields: ['email', 'password', 'passwordcheck'],
     };
   };
@@ -39,12 +38,9 @@ export default class RegisterPage extends React.Component { // eslint-disable-li
     this.state.fields.forEach((field) => {
       console.log(this.refs[field]);
       if (this.refs[field].state.value == "") {
-        errors[field] = true;
-      } else {
-        errors[field] = false;
+        this.refs[field].error(); 
       }
     });
-    this.setState({ errors: errors });
     next();
   }
   render() {
@@ -58,9 +54,9 @@ export default class RegisterPage extends React.Component { // eslint-disable-li
             </div>
             <span styleName="decoration--continue">Create your Open Sessions account</span>
             <RegistrationForm onSubmit={this.onFormSubmit.bind(this)}>
-              <Field ref="email" name="email" label="Email" error={this.state.errors['email']} /> 
-              <Field ref="password" type="password" name="password" label="Password" error={this.state.errors['password']} />
-              <Field ref="passwordcheck" type="password" name="passwordcheck" label="Retype Password" error={this.state.errors['passwordcheck']} />
+              <Field ref="email" name="email" label="Email" /> 
+              <Field ref="password" type="password" name="password" label="Password" />
+              <Field ref="passwordcheck" type="password" name="passwordcheck" label="Retype Password" />
               <p spIf="form.error">
                 <strong>Error:</strong><br />
                 <span spBind="form.errorMessage" />

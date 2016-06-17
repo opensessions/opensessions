@@ -15,7 +15,6 @@ export default class Field extends React.Component { // eslint-disable-line reac
     tip: React.PropTypes.string,
     type: React.PropTypes.string,
     validation: React.PropTypes.object,
-    error: React.PropTypes.bool,
     value: React.PropTypes.string,
   }
   constructor(props) {
@@ -77,8 +76,8 @@ export default class Field extends React.Component { // eslint-disable-line reac
     }
     return false;
   }
-  componentWillReceiveProps() {
-    this.setState({ error: this.props.error });
+  error() {
+    this.setState({ error: true })
   }
   render() {
     let label = this.props.label;
