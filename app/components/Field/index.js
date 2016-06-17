@@ -11,6 +11,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
     label: React.PropTypes.string.isRequired,
     model: React.PropTypes.object,
     name: React.PropTypes.string.isRequired,
+    id: React.PropTypes.id,
     onChange: React.PropTypes.func,
     tip: React.PropTypes.string,
     type: React.PropTypes.string,
@@ -22,7 +23,6 @@ export default class Field extends React.Component { // eslint-disable-line reac
     this.state = {
       value: props.value || '',
       valid: undefined,
-      error: false,
     };
     this.handleChange = this.handleChange.bind(this);
   }
@@ -42,13 +42,16 @@ export default class Field extends React.Component { // eslint-disable-line reac
   }
   isValid(value) {
     if (typeof value === 'undefined') value = this.state.value;
-    const opts = this.props.validation;
+    const opts = this.props.validation || '';
     let valid = true;
     if (opts.maxLength) {
       if (value.length > opts.maxLength) {
         valid = false;
       }
+    } else if (value.length === 0) {
+      valid = false;
     }
+    this.setState({ valid });
     return valid;
   }
   renderValidationMaxLength() {
@@ -76,20 +79,12 @@ export default class Field extends React.Component { // eslint-disable-line reac
     }
     return false;
   }
-  error(value) {
-    if (value == "") {
-      this.setState({ error: true })
-    } else {
-      this.setState({ error: false })
-    }
-  }
   render() {
     let label = this.props.label;
     const validClass = this.state.valid === false ? styles.invalid : '';
-    const errorCheck = this.state.error === true ? styles.invalid : '';
     const attrs = {
       onChange: this.handleChange,
-      className: `${styles.input} ${validClass} ${errorCheck}`,
+      className: `${styles.input} ${validClass}`,
       name: this.props.name,
       value: this.state.value,
       id: this.props.id || this.props.name,

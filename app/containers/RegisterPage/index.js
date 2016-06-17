@@ -26,15 +26,16 @@ const CSSModulesOptions = {
 export default class RegisterPage extends React.Component { // eslint-disable-line react/prefer-stateless-function
   constructor() {
     super();
+    this.onSubmit = this.onSubmit.bind(this);
     this.state = {
       fields: ['email', 'password', 'passwordcheck'],
     };
-  };
-  onFormSubmit(e, next) {
+  }
+  onSubmit(e, next) {
     // e is the response data, next is the callback
     this.state.fields.forEach((field) => {
       const fieldValue = this.refs[field].state.value;
-      this.refs[field].error(fieldValue); 
+      this.refs[field].isValid(fieldValue);
     });
     next();
   }
@@ -48,8 +49,8 @@ export default class RegisterPage extends React.Component { // eslint-disable-li
               <span styleName="or--label">or</span>
             </div>
             <span styleName="decoration--continue">Create your Open Sessions account</span>
-            <RegistrationForm onSubmit={this.onFormSubmit.bind(this)}>
-              <Field ref="email" name="email" label="Email" /> 
+            <RegistrationForm onSubmit={this.onSubmit}>
+              <Field ref="email" name="email" label="Email" />
               <Field ref="password" type="password" name="password" label="Password" />
               <Field ref="passwordcheck" type="password" name="passwordcheck" label="Retype Password" />
               <p spIf="form.error">

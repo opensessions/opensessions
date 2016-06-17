@@ -21,15 +21,16 @@ const CSSModulesOptions = {
 export default class LoginPage extends React.Component { // eslint-disable-line react/prefer-stateless-function
   constructor() {
     super();
+    this.onSubmit = this.onSubmit.bind(this);
     this.state = {
       fields: ['email', 'password'],
     };
-  };
-  onFormSubmit(e, next) {
+  }
+  onSubmit(e, next) {
     // e is the response data, next is the callback
     this.state.fields.forEach((field) => {
       const fieldValue = this.refs[field].state.value;
-      this.refs[field].error(fieldValue); 
+      this.refs[field].isValid(fieldValue);
     });
     next();
   }
@@ -43,7 +44,7 @@ export default class LoginPage extends React.Component { // eslint-disable-line 
               <span styleName="or--label">or</span>
             </div>
             <span styleName="decoration--continue">Continue with email</span>
-            <LoginForm onSubmit={this.onFormSubmit.bind(this)}>
+            <LoginForm onSubmit={this.onSubmit}>
               <Field ref="email" label="Email" name="email" />
               <Field ref="password" label="Password" name="password" type="password" />
               <p spIf="form.error">
