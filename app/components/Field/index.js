@@ -76,8 +76,12 @@ export default class Field extends React.Component { // eslint-disable-line reac
     }
     return false;
   }
-  error() {
-    this.setState({ error: true })
+  error(value) {
+    if (value == "") {
+      this.setState({ error: true })
+    } else {
+      this.setState({ error: false })
+    }
   }
   render() {
     let label = this.props.label;

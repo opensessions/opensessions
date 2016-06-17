@@ -30,16 +30,11 @@ export default class RegisterPage extends React.Component { // eslint-disable-li
       fields: ['email', 'password', 'passwordcheck'],
     };
   };
-  componentDidUpdate() {
-    console.log(this.state);
-  }
   onFormSubmit(e, next) {
-    let errors = {};
+    // e is the response data, next is the callback
     this.state.fields.forEach((field) => {
-      console.log(this.refs[field]);
-      if (this.refs[field].state.value == "") {
-        this.refs[field].error(); 
-      }
+      const fieldValue = this.refs[field].state.value;
+      this.refs[field].error(fieldValue); 
     });
     next();
   }
