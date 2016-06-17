@@ -27,23 +27,24 @@ export default class RegisterPage extends React.Component { // eslint-disable-li
   constructor() {
     super();
     this.state = {
-      emailError: false,
-      passwordError: false,
-      confirmPasswordError: false,
+      errors: [],
+      fields: ['email', 'password', 'passwordcheck'],
     };
   };
+  componentDidUpdate() {
+    console.log(this.state);
+  }
   onFormSubmit(e, next) {
-    // e.data will contain the data mapped from your form.
-    e.data.email = email.value;
-    if (e.data.email == "") {
-      this.setState({ emailError: true });
-    }
-    if (e.data.password == "") {
-      this.setState({ passwordError: true });
-    }
-    if (e.data.passwordcheck == "") {
-      this.setState({ confirmPasswordError: true });
-    }
+    let errors = {};
+    this.state.fields.forEach((field) => {
+      console.log(this.refs[field]);
+      if (this.refs[field].state.value == "") {
+        errors[field] = true;
+      } else {
+        errors[field] = false;
+      }
+    });
+    this.setState({ errors: errors });
     next();
   }
   render() {
@@ -57,9 +58,9 @@ export default class RegisterPage extends React.Component { // eslint-disable-li
             </div>
             <span styleName="decoration--continue">Create your Open Sessions account</span>
             <RegistrationForm onSubmit={this.onFormSubmit.bind(this)}>
-              <Field name="email" label="Email" error={this.state.emailError} /> 
-              <Field type="password" name="password" label="Password" error={this.state.passwordError} />
-              <Field type="password" name="passwordcheck" label="Retype Password" error={this.state.confirmPasswordError} />
+              <Field ref="email" name="email" label="Email" error={this.state.errors['email']} /> 
+              <Field ref="password" type="password" name="password" label="Password" error={this.state.errors['password']} />
+              <Field ref="passwordcheck" type="password" name="passwordcheck" label="Retype Password" error={this.state.errors['passwordcheck']} />
               <p spIf="form.error">
                 <strong>Error:</strong><br />
                 <span spBind="form.errorMessage" />
