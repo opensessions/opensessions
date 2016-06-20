@@ -27,6 +27,7 @@ module.exports = (app) => {
         res.json({ error: 'Must be session owner to modify session' });
         return;
       }
+      console.log('req.body', req.body);
       session.update(req.body);
       session.save().then((savedSession) => {
         res.json(savedSession);
