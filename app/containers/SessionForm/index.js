@@ -24,11 +24,13 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   }
   componentDidMount() {
     const self = this;
-    if (!this.props.session) {
-      fetch('/api/session/example').then((response) => response.json()).then((session) => {
-        self.setState({ session });
-      });
+    let sessionUri = '/api/session/create';
+    if (this.props.session) {
+      sessionUri = `/api/session/${this.props.session.uuid}`
     }
+    fetch(sessionUri).then((response) => response.json()).then((session) => {
+      self.setState({ session });
+    });
   }
   getSession() {
     const session = this.state.session || {};
