@@ -19,19 +19,20 @@ const CSSModulesOptions = {
 
 @CSSModules(styles, CSSModulesOptions)
 export default class LoginPage extends React.Component { // eslint-disable-line react/prefer-stateless-function
-  onFormSubmit(e, next) {
-    // e.data will contain the data mapped from your form.
-    console.log("Form submitted", e.data);
-
-    // To return an error message, call next() as:
-    // next(new Error('Something in the form is wrong.'));
-
-    // Or if you want to change the data being sent, call it as:
-    // next(null, { myNewData: '123' });
-
-    // If you call next without any arguments,
-    // it will simply proceed processing the form.
-    next(new Error('something in the form is wrrong.'));
+  constructor() {
+    super();
+    this.onSubmit = this.onSubmit.bind(this);
+    this.state = {
+      fields: ['email', 'password'],
+    };
+  }
+  onSubmit(e, next) {
+    // e is the response data, next is the callback
+    this.state.fields.forEach((field) => {
+      const fieldValue = this.refs[field].state.value;
+      this.refs[field].isValid(fieldValue);
+    });
+    next();
   }
   render() {
     return (
@@ -43,9 +44,9 @@ export default class LoginPage extends React.Component { // eslint-disable-line 
               <span styleName="or--label">or</span>
             </div>
             <span styleName="decoration--continue">Continue with email</span>
-            <LoginForm onSubmit={this.onFormSubmit.bind(this)}>
-              <Field label="Email" name="email" />
-              <Field label="Password" name="password" type="password" />
+            <LoginForm onSubmit={this.onSubmit}>
+              <Field ref="email" label="Email" name="email" />
+              <Field ref="password" label="Password" name="password" type="password" />
               <p spIf="form.error">
                 <strong>Error:</strong><br />
                 <span spBind="form.errorMessage" />

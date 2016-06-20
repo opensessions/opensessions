@@ -26,24 +26,17 @@ const CSSModulesOptions = {
 export default class RegisterPage extends React.Component { // eslint-disable-line react/prefer-stateless-function
   constructor() {
     super();
+    this.onSubmit = this.onSubmit.bind(this);
     this.state = {
-      emailError: false,
-      passwordError: false,
-      confirmPasswordError: false,
+      fields: ['email', 'password', 'passwordcheck'],
     };
-  };
-  onFormSubmit(e, next) {
-    // e.data will contain the data mapped from your form.
-    e.data.email = email.value;
-    if (e.data.email == "") {
-      this.setState({ emailError: true });
-    }
-    if (e.data.password == "") {
-      this.setState({ passwordError: true });
-    }
-    if (e.data.passwordcheck == "") {
-      this.setState({ confirmPasswordError: true });
-    }
+  }
+  onSubmit(e, next) {
+    // e is the response data, next is the callback
+    this.state.fields.forEach((field) => {
+      const fieldValue = this.refs[field].state.value;
+      this.refs[field].isValid(fieldValue);
+    });
     next();
   }
   render() {
@@ -56,10 +49,10 @@ export default class RegisterPage extends React.Component { // eslint-disable-li
               <span styleName="or--label">or</span>
             </div>
             <span styleName="decoration--continue">Create your Open Sessions account</span>
-            <RegistrationForm onSubmit={this.onFormSubmit.bind(this)}>
-              <Field name="email" label="Email" error={this.state.emailError} /> 
-              <Field type="password" name="password" label="Password" error={this.state.passwordError} />
-              <Field type="password" name="passwordcheck" label="Retype Password" error={this.state.confirmPasswordError} />
+            <RegistrationForm onSubmit={this.onSubmit}>
+              <Field ref="email" name="email" label="Email" />
+              <Field ref="password" type="password" name="password" label="Password" />
+              <Field ref="passwordcheck" type="password" name="passwordcheck" label="Retype Password" />
               <p spIf="form.error">
                 <strong>Error:</strong><br />
                 <span spBind="form.errorMessage" />
