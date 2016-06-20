@@ -16,6 +16,7 @@ import styles from './styles.css';
 export default class SessionForm extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
     session: React.PropTypes.object,
+    sessionID: React.PropTypes.string,
   }
   constructor(props) {
     super(props);
@@ -27,6 +28,8 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     let sessionUri = '/api/session/create';
     if (this.props.session) {
       sessionUri = `/api/session/${this.props.session.uuid}`;
+    } else if (this.props.sessionID) {
+      sessionUri = `/api/session/${this.props.sessionID}`;
     }
     fetch(sessionUri, {
       mode: 'cors',
@@ -66,7 +69,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
                 <h2>Add a session</h2>
                 <h3>{session.title}</h3>
               </div>
-              <Link to="/session/view/ExampleSessionID" className={styles.previewButton}>Preview</Link>
+              <Link to={`/session/${session.uuid}`} className={styles.previewButton}>Preview</Link>
             </div>
           </div>
           <div className={styles.formBody}>

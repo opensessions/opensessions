@@ -102,11 +102,25 @@ export default function createRoutes() {
         }).catch(errorLoading);
       },
     }, {
-      path: '/session/view/:sessionID',
-      name: 'view session',
+      path: '/session/:sessionID',
+      name: 'View session',
       getComponent(nextState, cb) {
         const importModules = Promise.all([
           System.import('containers/SessionView'),
+        ]);
+
+        const renderRoute = loadModule(cb);
+
+        importModules.then(([component]) => {
+          renderRoute(component);
+        }).catch(errorLoading);
+      },
+    }, {
+      path: '/session/:uuid/edit',
+      name: 'Edit session',
+      getComponent(nextState, cb) {
+        const importModules = Promise.all([
+          System.import('containers/SessionEdit'),
         ]);
 
         const renderRoute = loadModule(cb);
