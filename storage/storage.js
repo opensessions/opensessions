@@ -1,18 +1,18 @@
-"use strict";
-const storage = require('./interfaces/postgres.js');
+'use strict';
+const postgresStorage = require('./interfaces/postgres.js');
 
 class Storage {
   constructor() {
-    this._instance = new storage();
+    this.instance = new postgresStorage();
   }
   install() {
-    return this._instance.install();
+    return this.instance.install();
   }
   getInstance() {
-    return this._instance.getInstance();
+    return this.instance.getInstance();
   }
   createModels() {
-    return this._instance.createModels();
+    return this.instance.createModels();
   }
 }
 

@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 const sequelize = require('sequelize');
 const uuid = require('node-uuid');
 
@@ -60,11 +60,9 @@ class PostgresStorage {
   }
   syncModels() {
     const db = this.createModels();
-    return db.query(`drop owned by ${this.user.username}`).then(() => {
-      return db.sync()
-    }).then(() => {
-      return db.models.Session.create({ uuid: uuid.v1(), title: 'mock title', description: 'mock title' });
-    });
+    return db.query(`drop owned by ${this.user.username}`)
+      .then(() => db.sync())
+      .then(() => db.models.Session.create({ uuid: uuid.v1(), title: 'mock title', description: 'mock title' }));
   }
   getInstance() {
     if (!this.instance) {
