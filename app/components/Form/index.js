@@ -34,7 +34,7 @@ export default class Form extends React.Component { // eslint-disable-line react
   saveModel(model) {
     const data = JSON.stringify(model);
     this.setState({ saveState: 'Saving...', saveStateClass: styles.saving });
-    fetch(`/api/session/ ${model.id}`, { method: 'POST', body: data })
+    fetch(`/api/session/${model.uuid}`, { method: 'POST', body: data, credentials: 'same-origin' })
       .then((response) => response.json())
       .then((json) => {
         console.log('save complete', json);

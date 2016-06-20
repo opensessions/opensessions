@@ -31,7 +31,7 @@ module.exports = (app) => {
 
   api.post('/session/:uuid', stormpath.loginRequired, (req, res) => {
     database.models.Session.findOne({ where: { uuid: req.params.uuid } }).then((session) => {
-      if (req.user.email === session.owner) {
+      if (req.user.email !== session.owner) {
         res.json({error: 'Must be session owner to modify session'});
         return;
       }

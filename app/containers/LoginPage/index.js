@@ -44,6 +44,7 @@ export default class LoginPage extends React.Component { // eslint-disable-line 
               <span styleName="or--label">or</span>
             </div>
             <span styleName="decoration--continue">Continue with email</span>
+            <LoginForm />
             <LoginForm onSubmit={this.onSubmit}>
               <Field ref="email" label="Email" name="email" />
               <Field ref="password" label="Password" name="password" type="password" />

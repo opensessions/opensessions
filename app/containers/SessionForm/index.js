@@ -28,7 +28,10 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     if (this.props.session) {
       sessionUri = `/api/session/${this.props.session.uuid}`
     }
-    fetch(sessionUri).then((response) => response.json()).then((session) => {
+    fetch(sessionUri, {
+      mode: 'cors',
+      credentials: 'same-origin',
+    }).then((response) => response.json()).then((session) => {
       self.setState({ session });
     });
   }
