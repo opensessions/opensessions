@@ -18,13 +18,17 @@ class PostgresStorage {
     this.getInstance();
     this.syncModels();
   }
+  command(cmd) {
+    console.log(cmd);
+  }
   createUser() {
-    // sudo -u postgres createuser ${this.user.username}
-    // sudo -u postgres psql
-    // ALTER USER ${this.user.username} PASSWORD ${this.user.password};
+    this.command("# you need to create a user manually using the following commands:");
+    this.command(`sudo -u postgres createuser ${this.user.username}`);
+    this.command(`sudo -u postgres psql`);
+    this.command(`ALTER USER ${this.user.username} PASSWORD ${this.user.password}`);
   }
   createDatabase() {
-    // sudo -u postgres createdb ${this.db.name}
+    this.command(`sudo -u postgres createdb ${this.db.name}`);
   }
   install() {
     this.createUser();
