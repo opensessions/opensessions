@@ -67,7 +67,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
             <div className={styles.titleInner}>
               <div>
                 <h2>Add a session</h2>
-                <h3>{session.title}</h3>
+                <h3>{session.title || <i>Untitled</i>}</h3>
               </div>
               <Link to={`/session/${session.uuid}`} className={styles.previewButton}>Preview</Link>
             </div>
@@ -76,22 +76,22 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
             <Form autosave model={session}>
               {this.renderDescriptionFieldset()}
               <Fieldset label="Additional info">
-                <Field label="Example" name="example" />
+                <Field label="Example" name="example" value="" />
               </Fieldset>
               <Fieldset label="Location">
-                <Field label="Example" name="example" />
+                <Field label="Example" name="example" value="" />
               </Fieldset>
               <Fieldset label="Pricing">
-                <Field label="Example" name="example" />
+                <Field label="Example" name="example" value="" />
               </Fieldset>
               <Fieldset label="Restrictions">
-                <Field label="Example" name="example" />
+                <Field label="Example" name="example" value="" />
               </Fieldset>
               <Fieldset label="Contact info">
-                <Field label="Example" name="example" />
+                <Field label="Example" name="example" value="" />
               </Fieldset>
               <Fieldset label="Photos">
-                <Field label="Example" name="example" />
+                <Field label="Example" name="example" value="" />
               </Fieldset>
               <Fieldset label="Schedule">
                 <Field label="Start date" name="startDate" type="date" model={session} />
