@@ -4,7 +4,8 @@ const stormpath = require('express-stormpath');
 
 module.exports = (app) => {
   const api = express();
-  const storage = new Storage();
+  const doDBInstall = true;
+  const storage = new Storage(doDBInstall);
   const database = storage.getInstance();
 
   api.all('/session/create', stormpath.loginRequired, (req, res) => {
