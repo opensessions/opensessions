@@ -44,7 +44,7 @@ export default class RegisterPage extends React.Component { // eslint-disable-li
       <div styleName="page__loginRegister">
         <div className="l__constrained" styleName="page__content">
           <NotAuthenticated>
-            <SocialLoginLink className="btn" styleName="btn--fb" providerId='facebook'>Continue with Facebook</SocialLoginLink>
+            <SocialLoginLink className="btn" styleName="btn--fb" providerId="facebook">Continue with Facebook</SocialLoginLink>
             <div styleName="decoration--or">
               <span styleName="or--label">or</span>
             </div>
