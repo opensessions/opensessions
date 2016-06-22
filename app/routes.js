@@ -74,7 +74,7 @@ export default function createRoutes() {
         }).catch(errorLoading);
       },
     }, {
-      path: '/organizer/:id',
+      path: '/organizer/:uuid',
       name: 'Organizer view',
       getComponent(nextState, cb) {
         const importModules = Promise.all([
@@ -116,7 +116,7 @@ export default function createRoutes() {
         }).catch(errorLoading);
       },
     }, {
-      path: '/session/:sessionID',
+      path: '/session/:uuid',
       name: 'View session',
       getComponent(nextState, cb) {
         const importModules = Promise.all([

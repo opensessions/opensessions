@@ -1,36 +1,28 @@
 import React from 'react';
 import { Link } from 'react-router';
 
-export default class ProfileView extends React.Component { // eslint-disable-line react/prefer-stateless-function
+export default class OrganizerView extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
-    user: React.PropTypes.object,
+    organizer: React.PropTypes.object,
     params: React.PropTypes.object,
-  }
-  static contextTypes = {
-    user: React.PropTypes.object,
   }
   constructor(props) {
     super(props);
     this.state = {
+      organizer: props.organizer || { href: '' },
       sessions: [],
-      user: props.user || null,
     };
   }
   componentDidMount() {
     const self = this;
-    if (!this.state.user) {
-      this.apiFetch(`/api/profile/${this.props.params.id}`).then((user) => {
-        self.setState({ user });
-      });
-    }
-    let userId;
-    if (this.props.params && this.props.params.id) {
-      userId = this.props.params.id;
+    let uuid;
+    if (this.props.params && this.props.params.uuid) {
+      uuid = this.props.params.uuid;
     } else {
-      userId = this.state.user.href.split('/').pop();
+      uuid = this.state.organizer.uuid;
     }
-    this.apiFetch(`/api/profile/${userId}/sessions`).then((sessions) => {
-      self.setState({ sessions });
+    this.apiFetch(`/api/organizer/${uuid}/sessions`).then((data) => {
+      self.setState(data);
     });
   }
   apiFetch(url) {
@@ -41,14 +33,14 @@ export default class ProfileView extends React.Component { // eslint-disable-lin
   }
   renderSessions() {
     return (<ol>
-      {this.state.sessions.map((session) => (<li><Link to={`/session/${session.uuid}`}>{session.title || `Untitled (${session.updatedAt})`}</Link></li>))}
+      {this.state.sessions.map((session) => (<li><Link to={session.href}>{session.title || `Untitled (${session.updatedAt})`}</Link></li>))}
     </ol>);
   }
   render() {
-    const user = this.state.user || this.context.user;
+    const organizer = this.state.organizer;
     return (
       <div>
-        {user.givenName}
+        <h1>Organizer: <Link to={organizer.href}>{organizer.name}</Link></h1>
         {this.renderSessions()}
       </div>
     );

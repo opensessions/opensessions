@@ -76,23 +76,23 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
             <Form autosave model={session}>
               {this.renderDescriptionFieldset()}
               <Fieldset label="Additional info">
-                <Field label="Example" name="example" value="" />
+                <Field label="Example" name="example" model={session} />
               </Fieldset>
               <Fieldset label="Location">
                 <Field label="Location" name="location" model={session} />
               </Fieldset>
               <Fieldset label="Pricing">
-                <Field label="Example" name="example" value="" />
+                <Field label="Price" name="price" model={session} type="number" />
               </Fieldset>
               <Fieldset label="Restrictions">
-                <Field label="Example" name="example" value="" />
+                <Field label="Example" name="example" model={session} />
               </Fieldset>
               <Fieldset label="Contact info">
                 <Field label="Phone" name="contactPhone" model={session} />
                 <Field label="Email" name="contactEmail" model={session} type="email" />
               </Fieldset>
               <Fieldset label="Photos">
-                <Field label="Example" name="example" value="" />
+                <Field label="Example" name="example" model={session} />
               </Fieldset>
               <Fieldset label="Schedule">
                 <Field label="Start date" name="startDate" type="date" model={session} />

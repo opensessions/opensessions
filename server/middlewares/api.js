@@ -8,11 +8,9 @@ module.exports = (app) => {
   const storage = new Storage(doDBInstall);
   const database = storage.getInstance();
 
-  const getUserId = (user) => user.href.split('/').pop();
-
   api.all('/session/create', stormpath.loginRequired, (req, res) => {
     const session = req.body;
-    session.owner = getUserId(req.user);
+    session.owner = req.user.username;
     database.models.Session.create(session).then((savedSession) => {
       res.json(savedSession);
     });
@@ -26,13 +24,16 @@ module.exports = (app) => {
 
   api.post('/session/:uuid', stormpath.loginRequired, (req, res) => {
     database.models.Session.findOne({ where: { uuid: req.params.uuid } }).then((session) => {
-      if (req.user.email !== session.owner) {
+      if (session.owner !== req.user.username) {
         res.json({ error: 'Must be session owner to modify session' });
         return;
       }
-      session.update(req.body);
-      session.save().then((savedSession) => {
-        res.json(savedSession);
+      database.models.Organizer.create({ owner: req.user.username, name: req.body.organizer }).then((organizer) => {
+        session.update(req.body);
+        session.OrganizerUuid = organizer.uuid;
+        session.save().then((savedSession) => {
+          res.json(savedSession);
+        });
       });
     });
   });
@@ -42,18 +43,36 @@ module.exports = (app) => {
   });
 
   api.get('/me/sessions', stormpath.loginRequired, (req, res) => {
-    database.models.Session.findAll({ where: { owner: req.user.email } }).then((sessions) => {
+    database.models.Session.findAll({ where: { owner: req.user.username } }).then((sessions) => {
       res.json(sessions);
     });
   });
 
-  api.get('/profile/:id', (req, res) => {
-    res.json({ givenName: 'Profiles not yet supported' });
+  api.get('/organizer', (req, res) => {
+    database.models.Organizer.findAll({ where: req.query }).then((organizers) => {
+      res.json(organizers);
+    });
   });
 
-  api.get('/profile/:id/sessions', (req, res) => {
-    database.models.Session.findAll({ where: { owner: req.params.id } }).then((sessions) => {
-      res.json(sessions);
+  api.all('/organizer/create', stormpath.loginRequired, (req, res) => {
+    const organizer = req.body;
+    organizer.owner = req.user.username;
+    database.models.Organizer.create(organizer).then((savedOrganizer) => {
+      res.json(savedOrganizer);
+    });
+  });
+
+  api.get('/organizer/:uuid', (req, res) => {
+    database.models.Organizer.findOne({ where: { uuid: req.params.uuid } }).then((organizer) => {
+      res.json(organizer);
+    });
+  });
+
+  api.get('/organizer/:uuid/sessions', (req, res) => {
+    database.models.Organizer.findOne({ where: { uuid: req.params.uuid } }).then((organizer) => {
+      database.models.Session.findAll({ where: { OrganizerUuid: organizer.uuid } }).then((sessions) => {
+        res.json({ organizer, sessions });
+      });
     });
   });
 

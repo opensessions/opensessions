@@ -16,16 +16,26 @@ class PostgresStorage {
       name: process.env.OPENSESSIONS_PG_DB,
       host: process.env.OPENSESSIONS_PG_HOST,
     };
-    this.getInstance();
-    this.syncModels();
+    if (isDev) {
+      this.dropModels();
+    } else {
+      this.syncModels();
+    }
   }
   writeTestEnv() {
     Object.keys(postgresEnv).forEach((key) => {
       process.env[key] = postgresEnv[key];
     });
   }
-  createModels() {
+  dropModels() {
     const db = this.getInstance();
+    return db.query(`drop owned by ${this.user.username}`).then(() => db.sync());
+  }
+  syncModels() {
+    const db = this.getInstance();
+    return db.sync();
+  }
+  createModels(db) {
     db.define('Organizer', {
       // meta
       uuid: {
@@ -35,6 +45,12 @@ class PostgresStorage {
       },
       owner: sequelize.STRING,
       name: sequelize.STRING,
+    }, {
+      getterMethods: {
+        href() {
+          return `/organizer/${this.uuid}`;
+        },
+      },
     });
     db.define('Session', {
       // meta
@@ -48,7 +64,6 @@ class PostgresStorage {
       // description
       title: sequelize.STRING(50),
       description: sequelize.STRING,
-      organizer: db.models.Organizer,
       activityType: sequelize.STRING,
       // location
       location: sequelize.STRING,
@@ -59,24 +74,25 @@ class PostgresStorage {
       endTime: sequelize.TIME,
       startDate: sequelize.DATE,
       startTime: sequelize.TIME,
+    }, {
+      getterMethods: {
+        href() {
+          return `/session/${this.uuid}`;
+        },
+      },
     });
+    db.models.Organizer.hasMany(db.models.Session, { as: 'sessions' });
     return db;
-  }
-  syncModels(dropOld) {
-    const db = this.createModels();
-    if (dropOld) {
-      return db.query(`drop owned by ${this.user.username}`).then(() => db.sync());
-    }
-    return db.sync();
   }
   getInstance() {
     if (!this.instance) {
       const user = this.user;
       const db = this.db;
-      this.instance = new sequelize(db.name, user.username, user.password, {
+      const instance = new sequelize(db.name, user.username, user.password, {
         host: db.host,
         dialect: 'postgres',
       });
+      this.instance = this.createModels(instance);
     }
     return this.instance;
   }

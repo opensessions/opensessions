@@ -7,14 +7,48 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
   static contextTypes = {
     user: React.PropTypes.object,
   }
+  constructor(props) {
+    super(props);
+    this.state = {
+      organizers: [],
+    };
+  }
+  componentDidMount() {
+    const self = this;
+    const user = this.getUser();
+    this.apiFetch('/api/organizer', {
+      owner: user.username,
+    }).then((organizers) => {
+      self.setState({ organizers });
+    });
+  }
+  getUser() {
+    return this.context ? this.context.user : null;
+  }
+  apiFetch(url, query) {
+    const opts = {};
+    opts.mode = 'cors';
+    opts.credentials = 'same-origin';
+    if (query) {
+      url += '?';
+      url += Object.keys(query)
+       .map((key) => [encodeURIComponent(key), encodeURIComponent(query[key])].join('='))
+       .join('&')
+       .replace(/%20/g, '+');
+    }
+    return fetch(url, opts).then((response) => response.json());
+  }
+  renderOrganizers() {
+    return (this.state.organizers.map((organizer) => <OrganizerView organizer={organizer} />));
+  }
   render() {
-    const user = this.context ? this.context.user : null;
+    const user = this.getUser();
     return (
       <div>
         <Authenticated>
           <p>Hello, {user ? user.givenName : ''}! (<LogoutLink>Log out</LogoutLink>)</p>
         </Authenticated>
-        <OrganizerView user={user} />
+        {this.renderOrganizers()}
       </div>
     );
   }
