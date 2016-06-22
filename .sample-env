@@ -1,0 +1,3 @@
+STORMPATH_API_KEY_SECRET=secret stormpath key
+STORMPATH_API_KEY_ID=stormpath api id
+STORMPATH_URL=stormpath href
