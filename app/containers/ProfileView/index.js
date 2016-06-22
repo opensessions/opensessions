@@ -9,6 +9,7 @@ import { Authenticated, LogoutLink } from 'react-stormpath';
 
 export default class ProfileView extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
+    user: React.PropTypes.object,
     params: React.PropTypes.object,
   }
   static contextTypes = {
@@ -18,18 +19,29 @@ export default class ProfileView extends React.Component { // eslint-disable-lin
     super(props);
     this.state = {
       sessions: [],
+      user: props.user || null,
     };
+  }
+  apiFetch(url) {
+    return fetch(url, {
+      mode: 'cors',
+      credentials: 'same-origin',
+    }).then((response) => response.json());
   }
   componentDidMount() {
     const self = this;
-    let url = '/api/me/sessions';
-    if (this.props.params['id']) {
-      url = `/api/profile/${this.props.params['id']}/sessions`;
+    let sessionsUrl;
+    if (!this.state.user) {
+      this.apiFetch(`/api/profile/${this.props.params['id']}`).then((user) => {
+        self.setState({ user });
+      });
     }
-    fetch(url, {
-      mode: 'cors',
-      credentials: 'same-origin',
-    }).then((response) => response.json()).then((sessions) => {
+    if (this.props.params['id']) {
+      sessionsUrl = `/api/profile/${this.props.params['id']}/sessions`;
+    } else {
+      sessionsUrl = `/api/profile/${this.state.user.href}/sessions`;
+    }
+    this.apiFetch(sessionsUrl).then((sessions) => {
       self.setState({ sessions });
     });
   }
@@ -39,14 +51,11 @@ export default class ProfileView extends React.Component { // eslint-disable-lin
     </ol>);
   }
   render() {
-    const user = this.context ? this.context.user : null;
+    const user = this.state.user || this.context.user;
     return (
       <div>
-        <Authenticated>
-          <p>Hello, {user ? user.givenName : ''}!</p>
-          {this.renderSessions()}
-          <p><LogoutLink>Log out</LogoutLink></p>
-        </Authenticated>
+        {user.givenName}
+        {this.renderSessions()}
       </div>
     );
   }

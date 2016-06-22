@@ -8,9 +8,11 @@ module.exports = (app) => {
   const storage = new Storage(doDBInstall);
   const database = storage.getInstance();
 
+  const getUserId = (user) => user.href.split('/').pop();
+
   api.all('/session/create', stormpath.loginRequired, (req, res) => {
     const session = req.body;
-    session.owner = req.user.email;
+    session.owner = getUserId(req.user);
     database.models.Session.create(session).then((savedSession) => {
       res.json(savedSession);
     });
@@ -46,7 +48,11 @@ module.exports = (app) => {
     });
   });
 
-  api.get('/profile/:id/sessions', stormpath.loginRequired, (req, res) => {
+  api.get('/profile/:id', (req, res) => {
+    res.json({givenName: 'Profiles not yet supported'});
+  });
+
+  api.get('/profile/:id/sessions', (req, res) => {
     database.models.Session.findAll({ where: { owner: req.params.id } }).then((sessions) => {
       res.json(sessions);
     });

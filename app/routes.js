@@ -64,7 +64,7 @@ export default function createRoutes() {
       name: 'My profile',
       getComponent(nextState, cb) {
         const importModules = Promise.all([
-          System.import('containers/ProfileView'),
+          System.import('containers/MyProfile'),
         ]);
 
         const renderRoute = loadModule(cb);
