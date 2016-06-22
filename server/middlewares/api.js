@@ -30,7 +30,6 @@ module.exports = (app) => {
         res.json({ error: 'Must be session owner to modify session' });
         return;
       }
-      console.log('req.body', req.body);
       session.update(req.body);
       session.save().then((savedSession) => {
         res.json(savedSession);
@@ -49,7 +48,7 @@ module.exports = (app) => {
   });
 
   api.get('/profile/:id', (req, res) => {
-    res.json({givenName: 'Profiles not yet supported'});
+    res.json({ givenName: 'Profiles not yet supported' });
   });
 
   api.get('/profile/:id/sessions', (req, res) => {

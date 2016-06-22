@@ -1,11 +1,5 @@
-/*
- * HomePage
- */
-
 import React from 'react';
 import { Link } from 'react-router';
-
-import { Authenticated, LogoutLink } from 'react-stormpath';
 
 export default class ProfileView extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
@@ -22,28 +16,28 @@ export default class ProfileView extends React.Component { // eslint-disable-lin
       user: props.user || null,
     };
   }
-  apiFetch(url) {
-    return fetch(url, {
-      mode: 'cors',
-      credentials: 'same-origin',
-    }).then((response) => response.json());
-  }
   componentDidMount() {
     const self = this;
     let sessionsUrl;
     if (!this.state.user) {
-      this.apiFetch(`/api/profile/${this.props.params['id']}`).then((user) => {
+      this.apiFetch(`/api/profile/${this.props.params.id}`).then((user) => {
         self.setState({ user });
       });
     }
-    if (this.props.params['id']) {
-      sessionsUrl = `/api/profile/${this.props.params['id']}/sessions`;
+    if (this.props.params && this.props.params.id) {
+      sessionsUrl = `/api/profile/${this.props.params.id}/sessions`;
     } else {
       sessionsUrl = `/api/profile/${this.state.user.href}/sessions`;
     }
     this.apiFetch(sessionsUrl).then((sessions) => {
       self.setState({ sessions });
     });
+  }
+  apiFetch(url) {
+    return fetch(url, {
+      mode: 'cors',
+      credentials: 'same-origin',
+    }).then((response) => response.json());
   }
   renderSessions() {
     return (<ol>

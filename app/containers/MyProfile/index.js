@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router';
 
 import { Authenticated, LogoutLink } from 'react-stormpath';
 import ProfileView from '../ProfileView';
