@@ -40,6 +40,6 @@ module.exports = (app) => stormpath.init(app, {
     secret: config.stormpath.APIKEY_SECRET,
   },
   application: {
-    href: `https://api.stormpath.com/v1/applications/${config.stormpath.HREF_ID}`,
+    href: config.stormpath.HREF,
   },
 });

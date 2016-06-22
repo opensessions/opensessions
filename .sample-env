@@ -1,4 +1,3 @@
-STORMPATH_CLIENT_APIKEY_SECRET=secret stormpath key
-STORMPATH_CLIENT_APIKEY_ID=stormpath api id
-STORMPATH_APPLICATION_HREF_ID=stormpath href id (without the actual url part)
-
+STORMPATH_API_KEY_SECRET=secret stormpath key
+STORMPATH_API_KEY_ID=stormpath api id
+STORMPATH_URL=stormpath href
