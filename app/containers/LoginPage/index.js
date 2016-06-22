@@ -9,7 +9,7 @@ import Field from 'components/Field';
 import { Link } from 'react-router';
 import CSSModules from 'react-css-modules';
 
-import { NotAuthenticated, Authenticated, LogoutLink, LoginForm } from 'react-stormpath';
+import { NotAuthenticated, Authenticated, LogoutLink, LoginForm, SocialLoginLink } from 'react-stormpath';
 
 import styles from './styles.css'; // eslint-disable-line no-unused-vars
 
@@ -39,12 +39,11 @@ export default class LoginPage extends React.Component { // eslint-disable-line 
       <div styleName="page__loginRegister">
         <div className="l__constrained" styleName="page__content">
           <NotAuthenticated>
-            <a href="#" className="btn" styleName="btn--fb">Continue with Facebook</a>
+            <SocialLoginLink className="btn" styleName="btn--fb" providerId='facebook'>Continue with Facebook</SocialLoginLink>
             <div styleName="decoration--or">
               <span styleName="or--label">or</span>
             </div>
             <span styleName="decoration--continue">Continue with email</span>
-            <LoginForm />
             <LoginForm onSubmit={this.onSubmit}>
               <Field ref="email" label="Email" name="email" />
               <Field ref="password" label="Password" name="password" type="password" />

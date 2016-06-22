@@ -43,12 +43,12 @@
   }
 }
 
-.btn--fb {
-  background-color: #3B5998;
-}
-
 .btn__submit {
   margin-top: 15px;
+}
+
+.btn--fb {
+  background-color: #3B5998;
 }
 
 .link__create-account {
