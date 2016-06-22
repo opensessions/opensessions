@@ -44,6 +44,9 @@
   }
   h3 {
     font-size: 1em;
+    > i {
+      opacity: .5;
+    }
   }
   .previewButton {
     background-color: #1A90CD;

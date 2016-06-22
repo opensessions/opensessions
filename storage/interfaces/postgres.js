@@ -1,38 +1,28 @@
 'use strict';
 const sequelize = require('sequelize');
-const uuid = require('node-uuid');
+const postgresEnv = require('../../postgres.env.json');
 
 class PostgresStorage {
-  constructor(install) {
+  constructor() {
+    const isDev = process.env.NODE_ENV !== 'production';
+    if (isDev) {
+      this.writeTestEnv();
+    }
     this.user = {
-      username: 'open_sessions',
-      password: 'example',
+      username: process.env.OPENSESSIONS_PG_USER,
+      password: process.env.OPENSESSIONS_PG_PASS,
     };
     this.db = {
-      name: 'open_sessions',
-      host: 'localhost',
+      name: process.env.OPENSESSIONS_PG_DB,
+      host: process.env.OPENSESSIONS_PG_HOST,
     };
-    if (install) {
-      this.install();
-    }
     this.getInstance();
     this.syncModels();
   }
-  command(cmd) {
-    console.log(cmd);
-  }
-  createUser() {
-    this.command("# you need to create a user manually using the following commands:");
-    this.command(`sudo -u postgres createuser ${this.user.username}`);
-    this.command(`sudo -u postgres psql`);
-    this.command(`ALTER USER ${this.user.username} PASSWORD '${this.user.password}'`);
-  }
-  createDatabase() {
-    this.command(`sudo -u postgres createdb ${this.db.name}`);
-  }
-  install() {
-    this.createUser();
-    this.createDatabase();
+  writeTestEnv() {
+    postgresEnv.keys().forEach((key) => {
+      process.env[key] = postgresEnv[key];
+    });
   }
   createModels() {
     const db = this.getInstance();
@@ -62,11 +52,12 @@ class PostgresStorage {
     });
     return db;
   }
-  syncModels() {
+  syncModels(dropOld) {
     const db = this.createModels();
-    return db.query(`drop owned by ${this.user.username}`)
-      .then(() => db.sync())
-      .then(() => db.models.Session.create({ uuid: uuid.v1(), title: 'mock title', description: 'mock title' }));
+    if (dropOld) {
+      return db.query(`drop owned by ${this.user.username}`).then(() => db.sync());
+    }
+    return db.sync();
   }
   getInstance() {
     if (!this.instance) {

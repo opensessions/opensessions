@@ -93,10 +93,18 @@ export default class Field extends React.Component { // eslint-disable-line reac
       attrs.value = this.props.model[this.props.name];
     }
     let input;
-    if (this.props.type === 'textarea') {
+    const type = this.props.type || 'text';
+    if (type === 'textarea') {
       input = <textarea {...attrs} />;
     } else {
-      attrs.type = this.props.type || 'text';
+      if (type === 'date') {
+        const date = new Date(attrs.value);
+        attrs.value = date.toLocaleDateString()
+          .split('/')
+          .reverse()
+          .join('-');
+      }
+      attrs.type = type;
       input = <input {...attrs} />;
     }
     let tip;
