@@ -11,4 +11,4 @@ npm-debug.log
 .*.sw[po]
 
 # Propreitary stuff
-stormpath.yml
+.env

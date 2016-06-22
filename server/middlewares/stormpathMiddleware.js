@@ -1,4 +1,5 @@
 const stormpath = require('express-stormpath');
+const config = require('./../../app/config');
 
 module.exports = (app) => stormpath.init(app, {
   web: {
@@ -33,5 +34,12 @@ module.exports = (app) => stormpath.init(app, {
         },
       },
     },
+  },
+  apiKey: {
+    id: config.stormpath.APIKEY_ID,
+    secret: config.stormpath.APIKEY_SECRET,
+  },
+  application: {
+    href: `https://api.stormpath.com/v1/applications/${config.stormpath.HREF_ID}`,
   },
 });
