@@ -79,7 +79,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
                 <Field label="Example" name="example" value="" />
               </Fieldset>
               <Fieldset label="Location">
-                <Field label="Example" name="example" value="" />
+                <Field label="Location" name="location" model={session} />
               </Fieldset>
               <Fieldset label="Pricing">
                 <Field label="Example" name="example" value="" />
@@ -88,7 +88,8 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
                 <Field label="Example" name="example" value="" />
               </Fieldset>
               <Fieldset label="Contact info">
-                <Field label="Example" name="example" value="" />
+                <Field label="Phone" name="contactPhone" model={session} />
+                <Field label="Email" name="contactEmail" model={session} type="email" />
               </Fieldset>
               <Fieldset label="Photos">
                 <Field label="Example" name="example" value="" />

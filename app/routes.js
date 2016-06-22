@@ -61,7 +61,21 @@ export default function createRoutes() {
       },
     }, {
       path: '/profile',
-      name: 'profile',
+      name: 'My profile',
+      getComponent(nextState, cb) {
+        const importModules = Promise.all([
+          System.import('containers/ProfileView'),
+        ]);
+
+        const renderRoute = loadModule(cb);
+
+        importModules.then(([component]) => {
+          renderRoute(component);
+        }).catch(errorLoading);
+      },
+    }, {
+      path: '/profile/:id',
+      name: 'Profile view',
       getComponent(nextState, cb) {
         const importModules = Promise.all([
           System.import('containers/ProfileView'),

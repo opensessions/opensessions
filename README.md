@@ -4,9 +4,9 @@
 
 ### Setup
 To start the project, download and use `npm install` in the root folder to install the dependencies.
-### Configure Stormpath
+#### Configure Stormpath
 Add a `stormpath.yml` with credentials as described (https://stormpath.com/blog/fullstack-express-angular-stormpath) to allow stormpath integration. (TODO: abstract Stormpath integration away to be non-breaking)
-### Configure Database
+#### Configure Database
 Postgres is currently the only storage option configured to run directly with the app. The following commands will help you to create a user and database:
 
 - `sudo -u postgres createuser $OPENSESSIONS_PG_USER`

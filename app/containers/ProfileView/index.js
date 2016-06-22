@@ -8,6 +8,9 @@ import { Link } from 'react-router';
 import { Authenticated, LogoutLink } from 'react-stormpath';
 
 export default class ProfileView extends React.Component { // eslint-disable-line react/prefer-stateless-function
+  static propTypes = {
+    params: React.PropTypes.object,
+  }
   static contextTypes = {
     user: React.PropTypes.object,
   }
@@ -19,7 +22,11 @@ export default class ProfileView extends React.Component { // eslint-disable-lin
   }
   componentDidMount() {
     const self = this;
-    fetch('/api/me/sessions', {
+    let url = '/api/me/sessions';
+    if (this.props.params['id']) {
+      url = `/api/profile/${this.props.params['id']}/sessions`;
+    }
+    fetch(url, {
       mode: 'cors',
       credentials: 'same-origin',
     }).then((response) => response.json()).then((sessions) => {

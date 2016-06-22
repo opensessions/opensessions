@@ -46,5 +46,11 @@ module.exports = (app) => {
     });
   });
 
+  api.get('/profile/:id/sessions', stormpath.loginRequired, (req, res) => {
+    database.models.Session.findAll({ where: { owner: req.params.id } }).then((sessions) => {
+      res.json(sessions);
+    });
+  });
+
   app.use('/api', api);
 };

@@ -20,7 +20,7 @@ class PostgresStorage {
     this.syncModels();
   }
   writeTestEnv() {
-    postgresEnv.keys().forEach((key) => {
+    Object.keys(postgresEnv).forEach((key) => {
       process.env[key] = postgresEnv[key];
     });
   }
@@ -45,6 +45,11 @@ class PostgresStorage {
       description: sequelize.STRING,
       organizer: sequelize.STRING,
       activityType: sequelize.STRING,
+      // location
+      location: sequelize.STRING,
+      // contact
+      contactPhone: sequelize.STRING,
+      contactEmail: sequelize.STRING,
       // schedule details
       endTime: sequelize.TIME,
       startDate: sequelize.DATE,

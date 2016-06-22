@@ -40,6 +40,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       <div>
         {this.renderActions()}
         <h1>View session: {session.title}</h1>
+        <p>Organizer: <Link to={`/profile/${session.owner}`}>{session.owner}</Link></p>
         <p>{session.description}</p>
       </div>
     );

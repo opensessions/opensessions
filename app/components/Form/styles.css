@@ -7,8 +7,7 @@
 
 .nav {
   flex-grow: 1;
-  padding: 4em .5em;
-  font-size: 1.2em;
+  padding: .5em;
   & > a {
     display: block;
     padding: .5em 1em;
@@ -26,7 +25,6 @@
 
 .tabs {
   flex-grow: 4;
-  padding: 2em 2%;
   background-color: #E6E6E6;
 }
 
@@ -88,5 +86,16 @@
     color: #51A743;
     opacity: 0;
     transition: .1s ease color, 1.5s ease opacity;
+  }
+}
+
+@media (min-width: 36rem) {
+  .nav {
+    padding: 4em .5em;
+    font-size: 1.2em;
+  }
+
+  .tabs {
+    padding: 2em 2%;
   }
 }
