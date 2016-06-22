@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Authenticated, LogoutLink } from 'react-stormpath';
-import ProfileView from '../ProfileView';
+import OrganizerView from '../OrganizerView';
 
 export default class MyProfile extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
@@ -14,7 +14,7 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
         <Authenticated>
           <p>Hello, {user ? user.givenName : ''}! (<LogoutLink>Log out</LogoutLink>)</p>
         </Authenticated>
-        <ProfileView user={user} />
+        <OrganizerView user={user} />
       </div>
     );
   }

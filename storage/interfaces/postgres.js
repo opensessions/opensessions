@@ -26,6 +26,16 @@ class PostgresStorage {
   }
   createModels() {
     const db = this.getInstance();
+    db.define('Organizer', {
+      // meta
+      uuid: {
+        type: sequelize.UUID,
+        defaultValue: sequelize.UUIDV1,
+        primaryKey: true,
+      },
+      owner: sequelize.STRING,
+      name: sequelize.STRING,
+    });
     db.define('Session', {
       // meta
       uuid: {
@@ -34,16 +44,11 @@ class PostgresStorage {
         primaryKey: true,
       },
       isPublished: sequelize.BOOLEAN,
-      owner: {
-        type: sequelize.STRING,
-        validation: {
-          isEmail: true,
-        },
-      }, // using email for now
+      owner: sequelize.STRING,
       // description
       title: sequelize.STRING(50),
       description: sequelize.STRING,
-      organizer: sequelize.STRING,
+      organizer: db.models.Organizer,
       activityType: sequelize.STRING,
       // location
       location: sequelize.STRING,

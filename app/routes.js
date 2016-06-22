@@ -74,11 +74,11 @@ export default function createRoutes() {
         }).catch(errorLoading);
       },
     }, {
-      path: '/profile/:id',
-      name: 'Profile view',
+      path: '/organizer/:id',
+      name: 'Organizer view',
       getComponent(nextState, cb) {
         const importModules = Promise.all([
-          System.import('containers/ProfileView'),
+          System.import('containers/OrganizerView'),
         ]);
 
         const renderRoute = loadModule(cb);

@@ -18,18 +18,18 @@ export default class ProfileView extends React.Component { // eslint-disable-lin
   }
   componentDidMount() {
     const self = this;
-    let sessionsUrl;
     if (!this.state.user) {
       this.apiFetch(`/api/profile/${this.props.params.id}`).then((user) => {
         self.setState({ user });
       });
     }
+    let userId;
     if (this.props.params && this.props.params.id) {
-      sessionsUrl = `/api/profile/${this.props.params.id}/sessions`;
+      userId = this.props.params.id;
     } else {
-      sessionsUrl = `/api/profile/${this.state.user.href}/sessions`;
+      userId = this.state.user.href.split('/').pop();
     }
-    this.apiFetch(sessionsUrl).then((sessions) => {
+    this.apiFetch(`/api/profile/${userId}/sessions`).then((sessions) => {
       self.setState({ sessions });
     });
   }
