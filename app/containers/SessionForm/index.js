@@ -1,7 +1,3 @@
-/*
- * SessionForm
- */
-
 import React from 'react';
 
 import Fieldset from 'components/Fieldset';
@@ -12,6 +8,8 @@ import { Link } from 'react-router';
 import { Authenticated, NotAuthenticated, LoginLink } from 'react-stormpath';
 
 import styles from './styles.css';
+
+import { apiFetch } from '../../utils/api';
 
 export default class SessionForm extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
@@ -31,10 +29,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     } else if (this.props.sessionID) {
       sessionUri = `/api/session/${this.props.sessionID}`;
     }
-    fetch(sessionUri, {
-      mode: 'cors',
-      credentials: 'same-origin',
-    }).then((response) => response.json()).then((session) => {
+    apiFetch(sessionUri).then((session) => {
       self.setState({ session });
     });
   }

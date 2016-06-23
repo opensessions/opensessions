@@ -3,6 +3,8 @@ import React from 'react';
 import { Authenticated, LogoutLink } from 'react-stormpath';
 import OrganizerView from '../OrganizerView';
 
+import { apiFetch } from '../../utils/api';
+
 export default class MyProfile extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
     user: React.PropTypes.object,
@@ -16,27 +18,16 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
   componentDidMount() {
     const self = this;
     const user = this.getUser();
-    this.apiFetch('/api/organizer', {
-      owner: user.username,
+    apiFetch('/api/organizer', {
+      query: {
+        owner: user.username,
+      },
     }).then((organizers) => {
       self.setState({ organizers });
     });
   }
   getUser() {
     return this.context ? this.context.user : null;
-  }
-  apiFetch(url, query) {
-    const opts = {};
-    opts.mode = 'cors';
-    opts.credentials = 'same-origin';
-    if (query) {
-      url += '?';
-      url += Object.keys(query)
-       .map((key) => [encodeURIComponent(key), encodeURIComponent(query[key])].join('='))
-       .join('&')
-       .replace(/%20/g, '+');
-    }
-    return fetch(url, opts).then((response) => response.json());
   }
   renderOrganizers() {
     return (<ul>

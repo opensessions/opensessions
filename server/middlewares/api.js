@@ -49,16 +49,12 @@ module.exports = (app) => {
 
   api.get('/organizer', (req, res) => {
     const query = req.query;
-    console.log('api/organizer', query);
     if (query) {
-      console.log('api/organizer : query');
       if (query.hasOwnProperty('name__contains')) {
-        console.log('api/organizer : query : name__contains');
         query.name = {
           '$like': `%${query.name__contains}%`,
         };
         delete query.name__contains;
-        console.log(query);
       }
     }
     database.models.Organizer.findAll({

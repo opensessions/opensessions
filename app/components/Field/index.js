@@ -1,10 +1,8 @@
-/*
- * Field
- */
-
 import React from 'react';
 
 import styles from './styles.css';
+
+import { apiFetch } from '../../utils/api';
 
 export default class Field extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
@@ -31,21 +29,9 @@ export default class Field extends React.Component { // eslint-disable-line reac
   }
   fetchRelation(query) {
     const self = this;
-    this.apiFetch(this.props.relationURL, query).then((options) => {
+    return apiFetch(this.props.relationURL, { query }).then((options) => {
       self.setState({ options });
     });
-  }
-  apiFetch(url, query) {
-    const opts = {};
-    opts.credentials = 'same-origin';
-    if (query) {
-      url += '?';
-      url += Object.keys(query)
-       .map((key) => [encodeURIComponent(key), encodeURIComponent(query[key])].join('='))
-       .join('&')
-       .replace(/%20/g, '+');
-    }
-    return fetch(url, opts).then((response) => response.json());
   }
   handleChange(event) {
     const value = event.target.value;
@@ -120,8 +106,11 @@ export default class Field extends React.Component { // eslint-disable-line reac
     } else if (type === 'relation') {
       const options = this.state.options || [];
       const onClick = (event) => {
-        this.fetchRelation({ name__contains: prompt("Add a relation:") });
         event.preventDefault();
+        apiFetch(`${this.props.relationURL}/create`, { body: { name: prompt("Add a relation:") } }).then((relation) => {
+          this.setState({ value: relation.uuid });
+          this.fetchRelation();
+        });
       };
       input = (<div>
         <button onClick={onClick}>Add +</button>
