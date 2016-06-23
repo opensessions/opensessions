@@ -9,6 +9,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
     label: React.PropTypes.string.isRequired,
     model: React.PropTypes.object,
     name: React.PropTypes.string.isRequired,
+    relationURL: React.PropTypes.string,
     id: React.PropTypes.id,
     onChange: React.PropTypes.func,
     tip: React.PropTypes.string,
@@ -107,13 +108,13 @@ export default class Field extends React.Component { // eslint-disable-line reac
       const options = this.state.options || [];
       const onClick = (event) => {
         event.preventDefault();
-        apiFetch(`${this.props.relationURL}/create`, { body: { name: prompt("Add a relation:") } }).then((relation) => {
+        apiFetch(`${this.props.relationURL}/create`, { body: { name: prompt('Add a relation:') } }).then((relation) => {
           this.setState({ value: relation.uuid });
           this.fetchRelation();
         });
       };
       input = (<div>
-        <button onClick={onClick}>Add +</button>
+        <button onClick={onClick} className={styles.addRelation}>Add +</button>
         <select {...attrs}>
           {options.map((option) => <option value={option.uuid}>{option.name}</option>)}
         </select>

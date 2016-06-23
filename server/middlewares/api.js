@@ -16,7 +16,7 @@ module.exports = (app) => {
   });
 
   api.get('/session/:uuid', (req, res) => {
-    database.models.Session.findOne({ where: { uuid: req.params.uuid }, include: [ database.models.Organizer ] }).then((session) => {
+    database.models.Session.findOne({ where: { uuid: req.params.uuid }, include: [database.models.Organizer] }).then((session) => {
       res.json(session);
     });
   });
@@ -27,12 +27,10 @@ module.exports = (app) => {
         res.json({ error: 'Must be session owner to modify session' });
         return;
       }
-      database.models.Organizer.create({ owner: req.user.username, name: req.body.organizer }).then((organizer) => {
-        session.update(req.body);
-        session.OrganizerUuid = organizer.uuid;
-        session.save().then((savedSession) => {
-          res.json(savedSession);
-        });
+      session.update(req.body);
+      session.OrganizerUuid = req.body.organizer;
+      session.save().then((savedSession) => {
+        res.json(savedSession);
       });
     });
   });
@@ -52,16 +50,14 @@ module.exports = (app) => {
     if (query) {
       if (query.hasOwnProperty('name__contains')) {
         query.name = {
-          '$like': `%${query.name__contains}%`,
+          $like: `%${query.name__contains}%`,
         };
         delete query.name__contains;
       }
     }
     database.models.Organizer.findAll({
       where: query,
-      include: [
-        database.models.Session
-      ],
+      include: [database.models.Session],
     }).then((organizers) => {
       res.json(organizers);
     });
@@ -76,7 +72,7 @@ module.exports = (app) => {
   });
 
   api.get('/organizer/:uuid', (req, res) => {
-    database.models.Organizer.findOne({ where: { uuid: req.params.uuid }, include: [ database.models.Session ] }).then((organizer) => {
+    database.models.Organizer.findOne({ where: { uuid: req.params.uuid }, include: [database.models.Session] }).then((organizer) => {
       res.json(organizer);
     });
   });

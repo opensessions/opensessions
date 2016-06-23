@@ -55,10 +55,10 @@ class PostgresStorage {
         },
       },
       classMethods: {
-        getQuery(req, res) {
+        getQuery(req) {
           return {
             where: { owner: req.user.username },
-            include: [ db.models.Session ],
+            include: [db.models.Session],
           };
         },
       },

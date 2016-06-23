@@ -2,6 +2,8 @@ import React from 'react';
 
 import { Link } from 'react-router';
 
+import { apiFetch } from '../../utils/api';
+
 export default class SessionView extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
     user: React.PropTypes.object,
@@ -17,8 +19,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   }
   componentDidMount() {
     const self = this;
-    fetch(`/api/session/${this.props.params.uuid}`)
-      .then((response) => response.json())
+    apiFetch(`/api/session/${this.props.params.uuid}`)
       .then((session) => self.setState({ session }));
   }
   renderActions() {
@@ -37,7 +38,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     if (!session) return null;
     return (<div>
       <h1>View session: {session.title}</h1>
-      <p>Organizer: <Link to={session.href}>{session.organizer}</Link></p>
+      <p>Organizer: <Link to={session.Organizer.href}>{session.Organizer.name}</Link></p>
       <p>{session.description}</p>
     </div>);
   }
