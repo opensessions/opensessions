@@ -35,10 +35,14 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   }
   renderSession() {
     const session = this.state.session;
+    let organizer = null;
     if (!session) return null;
+    if (session.Organizer) {
+      organizer = (<p>Organizer: <Link to={session.Organizer.href}>{session.Organizer.name}</Link></p>);
+    }
     return (<div>
       <h1>View session: {session.title}</h1>
-      <p>Organizer: <Link to={session.Organizer.href}>{session.Organizer.name}</Link></p>
+      {organizer}
       <p>{session.description}</p>
     </div>);
   }
