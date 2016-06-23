@@ -9,8 +9,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
   constructor(props) {
     super(props);
     this.state = {
-      organizer: props.organizer || { href: '' },
-      sessions: [],
+      organizer: props.organizer || null,
     };
   }
   componentDidMount() {
@@ -21,8 +20,8 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     } else {
       uuid = this.state.organizer.uuid;
     }
-    this.apiFetch(`/api/organizer/${uuid}/sessions`).then((data) => {
-      self.setState(data);
+    this.apiFetch(`/api/organizer/${uuid}`).then((organizer) => {
+      self.setState({ organizer });
     });
   }
   apiFetch(url) {
@@ -33,14 +32,20 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
   }
   renderSessions() {
     return (<ol>
-      {this.state.sessions.map((session) => (<li><Link to={session.href}>{session.title || `Untitled (${session.updatedAt})`}</Link></li>))}
+      {this.state.organizer.sessions.map((session) => (<li><Link to={session.href}>{session.title || `Untitled (${session.updatedAt})`}</Link></li>))}
     </ol>);
   }
-  render() {
+  renderOrganizer() {
     const organizer = this.state.organizer;
+    if (!organizer) return null;
+    return (<div>
+      <h1>Organizer: <Link to={organizer.href}>{organizer.name}</Link></h1>
+    </div>);
+  }
+  render() {
     return (
       <div>
-        <h1>Organizer: <Link to={organizer.href}>{organizer.name}</Link></h1>
+        {this.renderOrganizer()}
         {this.renderSessions()}
       </div>
     );

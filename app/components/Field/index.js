@@ -25,6 +25,27 @@ export default class Field extends React.Component { // eslint-disable-line reac
       valid: undefined,
     };
     this.handleChange = this.handleChange.bind(this);
+    if (props.type === 'relation') {
+      this.fetchRelation();
+    }
+  }
+  fetchRelation(query) {
+    const self = this;
+    this.apiFetch(this.props.relationURL, query).then((options) => {
+      self.setState({ options });
+    });
+  }
+  apiFetch(url, query) {
+    const opts = {};
+    opts.credentials = 'same-origin';
+    if (query) {
+      url += '?';
+      url += Object.keys(query)
+       .map((key) => [encodeURIComponent(key), encodeURIComponent(query[key])].join('='))
+       .join('&')
+       .replace(/%20/g, '+');
+    }
+    return fetch(url, opts).then((response) => response.json());
   }
   handleChange(event) {
     const value = event.target.value;
@@ -96,6 +117,18 @@ export default class Field extends React.Component { // eslint-disable-line reac
     const type = this.props.type || 'text';
     if (type === 'textarea') {
       input = <textarea {...attrs} />;
+    } else if (type === 'relation') {
+      const options = this.state.options || [];
+      const onClick = (event) => {
+        this.fetchRelation({ name__contains: prompt("Add a relation:") });
+        event.preventDefault();
+      };
+      input = (<div>
+        <button onClick={onClick}>Add +</button>
+        <select {...attrs}>
+          {options.map((option) => <option value={option.uuid}>{option.name}</option>)}
+        </select>
+      </div>);
     } else {
       if (type === 'date') {
         const date = new Date(attrs.value);

@@ -101,7 +101,7 @@ export default class Form extends React.Component { // eslint-disable-line react
       backAttr.onClick = undefined;
     } else if (this.state.activeTab + 1 === this.props.children.length) {
       nextAttr.onClick = this.submit;
-      nextText = 'Submit';
+      nextText = 'Publish';
     }
     return (<div className={styles.actionButtons}>
       <a {...backAttr}>Back</a>

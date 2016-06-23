@@ -4,8 +4,7 @@ const stormpath = require('express-stormpath');
 
 module.exports = (app) => {
   const api = express();
-  const doDBInstall = true;
-  const storage = new Storage(doDBInstall);
+  const storage = new Storage();
   const database = storage.getInstance();
 
   api.all('/session/create', stormpath.loginRequired, (req, res) => {
@@ -17,7 +16,7 @@ module.exports = (app) => {
   });
 
   api.get('/session/:uuid', (req, res) => {
-    database.models.Session.findOne({ where: { uuid: req.params.uuid } }).then((session) => {
+    database.models.Session.findOne({ where: { uuid: req.params.uuid }, include: [ database.models.Organizer ] }).then((session) => {
       res.json(session);
     });
   });
@@ -49,7 +48,25 @@ module.exports = (app) => {
   });
 
   api.get('/organizer', (req, res) => {
-    database.models.Organizer.findAll({ where: req.query }).then((organizers) => {
+    const query = req.query;
+    console.log('api/organizer', query);
+    if (query) {
+      console.log('api/organizer : query');
+      if (query.hasOwnProperty('name__contains')) {
+        console.log('api/organizer : query : name__contains');
+        query.name = {
+          '$like': `%${query.name__contains}%`,
+        };
+        delete query.name__contains;
+        console.log(query);
+      }
+    }
+    database.models.Organizer.findAll({
+      where: query,
+      include: [
+        database.models.Session
+      ],
+    }).then((organizers) => {
       res.json(organizers);
     });
   });
@@ -63,16 +80,8 @@ module.exports = (app) => {
   });
 
   api.get('/organizer/:uuid', (req, res) => {
-    database.models.Organizer.findOne({ where: { uuid: req.params.uuid } }).then((organizer) => {
+    database.models.Organizer.findOne({ where: { uuid: req.params.uuid }, include: [ database.models.Session ] }).then((organizer) => {
       res.json(organizer);
-    });
-  });
-
-  api.get('/organizer/:uuid/sessions', (req, res) => {
-    database.models.Organizer.findOne({ where: { uuid: req.params.uuid } }).then((organizer) => {
-      database.models.Session.findAll({ where: { OrganizerUuid: organizer.uuid } }).then((sessions) => {
-        res.json({ organizer, sessions });
-      });
     });
   });
 

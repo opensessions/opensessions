@@ -1,7 +1,3 @@
-/*
- * SessionView
- */
-
 import React from 'react';
 
 import { Link } from 'react-router';
@@ -16,7 +12,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   constructor(props) {
     super(props);
     this.state = {
-      session: {},
+      session: null,
     };
   }
   componentDidMount() {
@@ -32,16 +28,24 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     if (user && user.email === session.owner) {
       actions.push(<Link to={`/session/${session.uuid}/edit`}>Edit</Link>);
     }
-    return actions;
+    return (<div>
+      {actions}
+    </div>);
+  }
+  renderSession() {
+    const session = this.state.session;
+    if (!session) return null;
+    return (<div>
+      <h1>View session: {session.title}</h1>
+      <p>Organizer: <Link to={session.href}>{session.organizer}</Link></p>
+      <p>{session.description}</p>
+    </div>);
   }
   render() {
-    const session = this.state.session || {};
     return (
       <div>
         {this.renderActions()}
-        <h1>View session: {session.title}</h1>
-        <p>Organizer: <Link to={`/profile/${session.owner}`}>{session.owner}</Link></p>
-        <p>{session.description}</p>
+        {this.renderSession()}
       </div>
     );
   }

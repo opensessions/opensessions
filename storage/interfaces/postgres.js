@@ -36,7 +36,7 @@ class PostgresStorage {
     return db.sync();
   }
   createModels(db) {
-    db.define('Organizer', {
+    const Organizer = db.define('Organizer', {
       // meta
       uuid: {
         type: sequelize.UUID,
@@ -50,9 +50,20 @@ class PostgresStorage {
         href() {
           return `/organizer/${this.uuid}`;
         },
+        displayName() {
+          return this.name;
+        },
+      },
+      classMethods: {
+        getQuery(req, res) {
+          return {
+            where: { owner: req.user.username },
+            include: [ db.models.Session ],
+          };
+        },
       },
     });
-    db.define('Session', {
+    const Session = db.define('Session', {
       // meta
       uuid: {
         type: sequelize.UUID,
@@ -65,8 +76,13 @@ class PostgresStorage {
       title: sequelize.STRING(50),
       description: sequelize.STRING,
       activityType: sequelize.STRING,
+      // description
+      preparation: sequelize.STRING,
+      leader: sequelize.STRING,
+      hasCoaching: sequelize.BOOLEAN,
       // location
       location: sequelize.STRING,
+      meetingPoint: sequelize.STRING,
       // contact
       contactPhone: sequelize.STRING,
       contactEmail: sequelize.STRING,
@@ -79,9 +95,13 @@ class PostgresStorage {
         href() {
           return `/session/${this.uuid}`;
         },
+        displayName() {
+          return `${this.title}${this.isPublished ? '' : ' (draft)'}`;
+        },
       },
     });
-    db.models.Organizer.hasMany(db.models.Session, { as: 'sessions' });
+    Session.belongsTo(Organizer);
+    Organizer.hasMany(Session);
     return db;
   }
   getInstance() {
