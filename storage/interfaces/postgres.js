@@ -96,7 +96,7 @@ class PostgresStorage {
           return `/session/${this.uuid}`;
         },
         displayName() {
-          return `${this.title}${this.isPublished ? '' : ' (draft)'}`;
+          return `${this.title || 'Untitled'}${this.isPublished ? '' : ' (draft)'}`;
         },
       },
     });

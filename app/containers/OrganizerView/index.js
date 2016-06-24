@@ -30,7 +30,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     const organizer = this.state.organizer;
     if (!organizer) return null;
     return (<ol>
-      {organizer.Sessions.map((session) => (<li><Link to={session.href}>{session.title || `Untitled (${session.updatedAt})`}</Link></li>))}
+      {organizer.Sessions.map((session) => (<li><Link to={session.href}>{session.displayName}</Link></li>))}
     </ol>);
   }
   renderOrganizer() {

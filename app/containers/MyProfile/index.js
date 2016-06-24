@@ -18,7 +18,7 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
   }
   fetchOrganizers() {
     const self = this;
-    const {user} = this.context;
+    const user = this.context.user;
     apiFetch('/api/organizer', {
       query: { owner: user.user_id, }
     }).then((organizers) => {

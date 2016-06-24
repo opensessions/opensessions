@@ -38,7 +38,6 @@ module.exports = (app) => {
         return;
       }
       session.update(req.body);
-      session.OrganizerUuid = req.body.organizer;
       console.log("Object.keys", Object.keys(session));
       session.save().then((savedSession) => {
         res.json(savedSession);

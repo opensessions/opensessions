@@ -26,7 +26,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     const user = this.context ? this.context.user : false;
     const session = this.state.session || {};
     const actions = [];
-    if (user && user.email === session.owner) {
+    if (user && user.user_id === session.owner) {
       actions.push(<Link to={`/session/${session.uuid}/edit`}>Edit</Link>);
     }
     return (<div>
@@ -41,7 +41,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       organizer = (<p>Organizer: <Link to={session.Organizer.href}>{session.Organizer.name}</Link></p>);
     }
     return (<div>
-      <h1>View session: {session.title}</h1>
+      <h1>View session: {session.displayName}</h1>
       {organizer}
       <p>{session.description}</p>
     </div>);

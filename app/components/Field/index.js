@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 
 import styles from './styles.css';
 
@@ -108,15 +109,29 @@ export default class Field extends React.Component { // eslint-disable-line reac
       const options = this.state.options || [];
       const onClick = (event) => {
         event.preventDefault();
-        apiFetch(`${this.props.relationURL}/create`, { body: { name: prompt('Add a relation:') } }).then((relation) => {
-          this.setState({ value: relation.uuid });
+        this.setState({ relationState: 'typeNew' });
+      };
+      const onKeyDown = (event) => {
+        if (event.keyCode === 8 && !event.target.value) {
+          this.setState({ relationState: 'none' });
+          return;
+        } else if (event.keyCode !== 13) {
+          return;
+        }
+        event.preventDefault();
+        apiFetch(`${this.props.relationURL}/create`, { body: { name: event.target.value } }).then((relation) => {
+          this.setState({ value: relation.uuid, relationState: 'none' });
           this.fetchRelation();
         });
-      };
+      }
+      let addControl = (<button onClick={onClick} className={styles.addRelation}>Add +</button>);
+      if (this.state.relationState === 'typeNew') {
+        addControl = (<input onKeyDown={onKeyDown} className={styles.input} autoFocus />);
+      }
       input = (<div>
-        <button onClick={onClick} className={styles.addRelation}>Add +</button>
-        <select {...attrs}>
-          <option value="">Select</option>
+        {addControl}
+        <select {...attrs} defaultValue={this.state.value}>
+          <option value="">Select...</option>
           {options.map((option) => <option value={option.uuid}>{option.name}</option>)}
         </select>
       </div>);
