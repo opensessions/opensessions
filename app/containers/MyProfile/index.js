@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { Authenticated, LogoutLink } from 'react-stormpath';
 import OrganizerView from '../OrganizerView';
+import LogoutLink from '../../components/LogoutLink';
 
 import { apiFetch } from '../../utils/api';
 
@@ -17,17 +17,16 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
   }
   componentDidMount() {
     const self = this;
-    const user = this.getUser();
-    apiFetch('/api/organizer', {
-      query: {
-        owner: user.username,
-      },
+    const {user} = this.context;
+    this.apiFetch('/api/organizer', {
+      owner: user.email,
     }).then((organizers) => {
       self.setState({ organizers });
     });
   }
-  getUser() {
-    return this.context ? this.context.user : null;
+  static contextTypes = {
+    user: React.PropTypes.object,
+    lock: React.PropTypes.object,
   }
   renderOrganizers() {
     return (<ul>
@@ -35,13 +34,12 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
     </ul>);
   }
   render() {
-    const user = this.getUser();
+    const {user} = this.context;
+    console.log("user from profile", user);
     return (
       <div>
-        <Authenticated>
-          <p>Hello, {user ? user.givenName : ''}, welcome to your profile!</p>
-          <p>From here you can view your organizers and their sessions below, or (<LogoutLink>Log out</LogoutLink>)</p>
-        </Authenticated>
+        <p>Hello, {user ? user.nickname: ''}!</p>
+        <p>From here you can view your organizers and their sessions below, or (<LogoutLink user={user} value="Log out" />)</p>
         {this.renderOrganizers()}
       </div>
     );
