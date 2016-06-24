@@ -14,6 +14,9 @@ export default class LogoutLink extends React.Component {
 
   static propTypes = {
     value: React.PropTypes.string,
+  }
+
+  static contextTypes = {
     user: React.PropTypes.object,
   }
 
@@ -26,7 +29,7 @@ export default class LogoutLink extends React.Component {
   }
 
   componentWillMount() {
-    this.setState({ user: this.props.user });
+    this.setState({ user: this.context.user });
   }
 
   onClick() {
