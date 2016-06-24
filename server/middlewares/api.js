@@ -1,15 +1,25 @@
 const express = require('express');
 const Storage = require('../../storage/interfaces/postgres.js');
-const stormpath = require('express-stormpath');
+const jwt = require('express-jwt');
+const cors = require('cors');
 
 module.exports = (app) => {
   const api = express();
   const storage = new Storage();
   const database = storage.getInstance();
+  const IDprop = 'sub';
 
-  api.all('/session/create', stormpath.loginRequired, (req, res) => {
+  api.use(cors());
+
+  const requireLogin = jwt({
+    secret: new Buffer(process.env.AUTH0_CLIENT_SECRET, 'base64'),
+    audience: process.env.AUTH0_CLIENT_ID,
+  });
+
+  api.all('/session/create', requireLogin, (req, res) => {
     const session = req.body;
-    session.owner = req.user.username;
+    console.log("session owner == ", req.user);
+    session.owner = req.user[IDprop];
     database.models.Session.create(session).then((savedSession) => {
       res.json(savedSession);
     });
@@ -21,26 +31,27 @@ module.exports = (app) => {
     });
   });
 
-  api.post('/session/:uuid', stormpath.loginRequired, (req, res) => {
+  api.post('/session/:uuid', requireLogin, (req, res) => {
     database.models.Session.findOne({ where: { uuid: req.params.uuid } }).then((session) => {
-      if (session.owner !== req.user.username) {
+      if (session.owner !== req.user[IDprop]) {
         res.json({ error: 'Must be session owner to modify session' });
         return;
       }
       session.update(req.body);
       session.OrganizerUuid = req.body.organizer;
+      console.log("Object.keys", Object.keys(session));
       session.save().then((savedSession) => {
         res.json(savedSession);
       });
     });
   });
 
-  api.get('/me', stormpath.loginRequired, (req, res) => {
+  api.get('/me', requireLogin, (req, res) => {
     res.json(req.user);
   });
 
-  api.get('/me/sessions', stormpath.loginRequired, (req, res) => {
-    database.models.Session.findAll({ where: { owner: req.user.username } }).then((sessions) => {
+  api.get('/me/sessions', requireLogin, (req, res) => {
+    database.models.Session.findAll({ where: { owner: req.user[IDprop] } }).then((sessions) => {
       res.json(sessions);
     });
   });
@@ -63,9 +74,9 @@ module.exports = (app) => {
     });
   });
 
-  api.all('/organizer/create', stormpath.loginRequired, (req, res) => {
+  api.all('/organizer/create', requireLogin, (req, res) => {
     const organizer = req.body;
-    organizer.owner = req.user.username;
+    organizer.owner = req.user[IDprop];
     database.models.Organizer.create(organizer).then((savedOrganizer) => {
       res.json(savedOrganizer);
     });
