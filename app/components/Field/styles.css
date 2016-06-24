@@ -96,3 +96,16 @@
 .danger {
   color: var(--errorRed);
 }
+
+.addRelation {
+  background-color: var(--actionColor);
+  color: #FFF;
+  padding: .5em;
+  line-height: 1;
+  cursor: pointer;
+  &:hover,
+  &:focus {
+    background-color: #FFF;
+    color: var(--actionColor);
+  }
+}

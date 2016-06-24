@@ -1,7 +1,3 @@
-/*
- * SessionForm
- */
-
 import React from 'react';
 
 import Fieldset from 'components/Fieldset';
@@ -12,6 +8,8 @@ import { Link } from 'react-router';
 import { Authenticated, NotAuthenticated, LoginLink } from 'react-stormpath';
 
 import styles from './styles.css';
+
+import { apiFetch } from '../../utils/api';
 
 export default class SessionForm extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
@@ -31,10 +29,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     } else if (this.props.sessionID) {
       sessionUri = `/api/session/${this.props.sessionID}`;
     }
-    fetch(sessionUri, {
-      mode: 'cors',
-      credentials: 'same-origin',
-    }).then((response) => response.json()).then((session) => {
+    apiFetch(sessionUri).then((session) => {
       self.setState({ session });
     });
   }
@@ -52,7 +47,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     const session = this.getSession();
     return (<Fieldset label="Description" ref="descriptionFieldset">
       <Field label="Title" name="title" model={session} validation={{ maxLength: 50 }} tip="Enter a title for your session E.g. Volleyball training" />
-      <Field label="Organizer" name="organizer" model={session} />
+      <Field label="Organizer" name="organizer" model={session} type="relation" relationURL="/api/organizer" tip="Enter a club or session organiser name E.g. Richmond Rovers" />
       <Field label="Description" name="description" model={session} type="textarea" />
       <Field label="Sport / activity type" name="activityType" model={session} />
       <Field label="Sub category" name="activitySubType" model={session} />
@@ -76,10 +71,13 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
             <Form autosave model={session}>
               {this.renderDescriptionFieldset()}
               <Fieldset label="Additional info">
-                <Field label="Example" name="example" model={session} />
+                <Field label="What to bring" name="preparation" type="textarea" model={session} />
+                <Field label="Session leader" name="leader" model={session} />
+                <Field label="Will participants recieve coaching?" name="hasCoach" type="checkbox" model={session} />
               </Fieldset>
               <Fieldset label="Location">
                 <Field label="Location" name="location" model={session} />
+                <Field label="Meeting point" name="meetingPoint" model={session} />
               </Fieldset>
               <Fieldset label="Pricing">
                 <Field label="Price" name="price" model={session} type="number" />

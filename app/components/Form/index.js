@@ -1,10 +1,8 @@
-/*
- * Form
- */
-
 import React from 'react';
 
 import styles from './styles.css';
+
+import { apiFetch } from '../../utils/api';
 
 export default class Form extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
@@ -32,18 +30,10 @@ export default class Form extends React.Component { // eslint-disable-line react
     this.saveModel(model);
   }
   saveModel(model) {
-    const data = JSON.stringify(model);
     this.setState({ saveState: 'Saving...', saveStateClass: styles.saving });
-    fetch(`/api/session/${model.uuid}`, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-      body: data,
-      credentials: 'same-origin',
-    }).then((response) => response.json())
+    apiFetch(`/api/session/${model.uuid}`, { body: model })
       .then((json) => {
-        console.log('save complete', json);
+        console.log('Save complete', json);
         this.setState({ saveState: 'Saved!', saveStateClass: styles.saved });
       });
   }
@@ -101,7 +91,7 @@ export default class Form extends React.Component { // eslint-disable-line react
       backAttr.onClick = undefined;
     } else if (this.state.activeTab + 1 === this.props.children.length) {
       nextAttr.onClick = this.submit;
-      nextText = 'Submit';
+      nextText = 'Publish';
     }
     return (<div className={styles.actionButtons}>
       <a {...backAttr}>Back</a>

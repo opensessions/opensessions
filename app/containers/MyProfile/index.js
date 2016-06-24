@@ -3,6 +3,8 @@ import React from 'react';
 import OrganizerView from '../OrganizerView';
 import LogoutLink from '../../components/LogoutLink';
 
+import { apiFetch } from '../../utils/api';
+
 export default class MyProfile extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
     user: React.PropTypes.object,
@@ -26,28 +28,18 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
     user: React.PropTypes.object,
     lock: React.PropTypes.object,
   }
-  apiFetch(url, query) {
-    const opts = {};
-    opts.mode = 'cors';
-    opts.credentials = 'same-origin';
-    if (query) {
-      url += '?';
-      url += Object.keys(query)
-       .map((key) => [encodeURIComponent(key), encodeURIComponent(query[key])].join('='))
-       .join('&')
-       .replace(/%20/g, '+');
-    }
-    return fetch(url, opts).then((response) => response.json());
-  }
   renderOrganizers() {
-    return (this.state.organizers.map((organizer) => <OrganizerView organizer={organizer} />));
+    return (<ul>
+      {this.state.organizers.map((organizer) => <li key={organizer.uuid}><OrganizerView organizer={organizer} /></li>)}
+    </ul>);
   }
   render() {
     const {user} = this.context;
     console.log("user from profile", user);
     return (
       <div>
-        <p>Hello, {user ? user.nickname: ''}! (<LogoutLink user={user} value="Log out" />)</p>
+        <p>Hello, {user ? user.nickname: ''}!</p>
+        <p>From here you can view your organizers and their sessions below, or (<LogoutLink user={user} value="Log out" />)</p>
         {this.renderOrganizers()}
       </div>
     );

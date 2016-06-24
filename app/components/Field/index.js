@@ -1,16 +1,15 @@
-/*
- * Field
- */
-
 import React from 'react';
 
 import styles from './styles.css';
+
+import { apiFetch } from '../../utils/api';
 
 export default class Field extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
     label: React.PropTypes.string.isRequired,
     model: React.PropTypes.object,
     name: React.PropTypes.string.isRequired,
+    relationURL: React.PropTypes.string,
     id: React.PropTypes.id,
     onChange: React.PropTypes.func,
     tip: React.PropTypes.string,
@@ -25,6 +24,15 @@ export default class Field extends React.Component { // eslint-disable-line reac
       valid: undefined,
     };
     this.handleChange = this.handleChange.bind(this);
+    if (props.type === 'relation') {
+      this.fetchRelation();
+    }
+  }
+  fetchRelation(query) {
+    const self = this;
+    return apiFetch(this.props.relationURL, { query }).then((options) => {
+      self.setState({ options });
+    });
   }
   handleChange(event) {
     const value = event.target.value;
@@ -96,6 +104,21 @@ export default class Field extends React.Component { // eslint-disable-line reac
     const type = this.props.type || 'text';
     if (type === 'textarea') {
       input = <textarea {...attrs} />;
+    } else if (type === 'relation') {
+      const options = this.state.options || [];
+      const onClick = (event) => {
+        event.preventDefault();
+        apiFetch(`${this.props.relationURL}/create`, { body: { name: prompt('Add a relation:') } }).then((relation) => {
+          this.setState({ value: relation.uuid });
+          this.fetchRelation();
+        });
+      };
+      input = (<div>
+        <button onClick={onClick} className={styles.addRelation}>Add +</button>
+        <select {...attrs}>
+          {options.map((option) => <option value={option.uuid}>{option.name}</option>)}
+        </select>
+      </div>);
     } else {
       if (type === 'date') {
         const date = new Date(attrs.value);

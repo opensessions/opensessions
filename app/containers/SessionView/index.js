@@ -1,10 +1,8 @@
-/*
- * SessionView
- */
-
 import React from 'react';
 
 import { Link } from 'react-router';
+
+import { apiFetch } from '../../utils/api';
 
 export default class SessionView extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
@@ -16,13 +14,12 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   constructor(props) {
     super(props);
     this.state = {
-      session: {},
+      session: null,
     };
   }
   componentDidMount() {
     const self = this;
-    fetch(`/api/session/${this.props.params.uuid}`)
-      .then((response) => response.json())
+    apiFetch(`/api/session/${this.props.params.uuid}`)
       .then((session) => self.setState({ session }));
   }
   renderActions() {
@@ -32,16 +29,28 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     if (user && user.email === session.owner) {
       actions.push(<Link to={`/session/${session.uuid}/edit`}>Edit</Link>);
     }
-    return actions;
+    return (<div>
+      {actions}
+    </div>);
+  }
+  renderSession() {
+    const session = this.state.session;
+    let organizer = null;
+    if (!session) return null;
+    if (session.Organizer) {
+      organizer = (<p>Organizer: <Link to={session.Organizer.href}>{session.Organizer.name}</Link></p>);
+    }
+    return (<div>
+      <h1>View session: {session.title}</h1>
+      {organizer}
+      <p>{session.description}</p>
+    </div>);
   }
   render() {
-    const session = this.state.session || {};
     return (
       <div>
         {this.renderActions()}
-        <h1>View session: {session.title}</h1>
-        <p>Organizer: <Link to={`/profile/${session.owner}`}>{session.owner}</Link></p>
-        <p>{session.description}</p>
+        {this.renderSession()}
       </div>
     );
   }
