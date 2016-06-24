@@ -35,11 +35,6 @@ class Header extends React.Component { // eslint-disable-line react/prefer-state
     return false;
   }
 
-  componentWillReceiveProps(nextProps, nextContext) {
-    console.log("componentWillReceiveProps current context", this.context.user);
-    console.log("componentWillReceiveProps next context", nextContext.user);
-  }
-
   renderLoginButton() {
     const {user} = this.context;
     if (user) {

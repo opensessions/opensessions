@@ -39,7 +39,7 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
     return (
       <div>
         <p>Hello, {user ? user.nickname: ''}!</p>
-        <p>From here you can view your organizers and their sessions below, or (<LogoutLink user={user} value="Log out" />)</p>
+        <p>From here you can view your organizers and their sessions below, or (<LogoutLink value="Log out" />)</p>
         {this.renderOrganizers()}
       </div>
     );
