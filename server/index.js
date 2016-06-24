@@ -7,6 +7,12 @@ const ngrok = require('ngrok');
 const frontend = require('./middlewares/frontendMiddleware');
 const isDev = process.env.NODE_ENV !== 'production';
 
+const passport = require('passport');
+const strategy = require('./middlewares/passportMiddleware');
+const session = require('express-session');
+
+const cookieParser = require('cookie-parser');
+
 const app = express();
 
 // API middleware
@@ -19,10 +25,30 @@ app.use('/images', express.static('app/images'));
 app.use('/favicon.ico', express.static('app/favicon.ico'));
 
 // Initialize stormpath
-const stormpathMiddleware = require('./middlewares/stormpathMiddleware');
-app.use(stormpathMiddleware(app));
+// const stormpathMiddleware = require('./middlewares/stormpathMiddleware');
+// app.use(stormpathMiddleware(app));
 
-// Initialize stormpath
+// Initialise Auth0, Passport and express-session
+app.use(cookieParser());
+app.use(session({
+  secret: 'randomstring',
+  resave: false,
+  saveUnitialized: false,
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.get('/callback',
+  passport.authenticate('auth0', { failureRedirect: '/login' }),
+  (req, res) => {
+    if (!req.user) {
+      throw new Error('user null');
+    }
+    res.redirect("/user");
+  }
+);
+
+// Initialize api
 const apiMiddleware = require('./middlewares/api');
 apiMiddleware(app);
 
@@ -34,23 +60,20 @@ app.use(frontend(webpackConfig));
 
 const port = process.env.PORT || 3000;
 
-app.on('stormpath.ready', () => {
-  logger.checkmark('Stormpath ready');
-  app.listen(port, (err) => {
-    if (err) {
-      return logger.error(err);
-    }
+app.listen(port, (err) => {
+  if (err) {
+    return logger.error(err);
+  }
 
-    // Connect to ngrok in dev mode
-    if (isDev) {
-      ngrok.connect(port, (innerErr, url) => {
-        if (innerErr) {
-          return logger.error(innerErr);
-        }
-        logger.appStarted(port, url);
-      });
-    } else {
-      logger.appStarted(port);
-    }
-  });
+  // Connect to ngrok in dev mode
+  if (isDev) {
+    ngrok.connect(port, (innerErr, url) => {
+      if (innerErr) {
+        return logger.error(innerErr);
+      }
+      logger.appStarted(port, url);
+    });
+  } else {
+    logger.appStarted(port);
+  }
 });
