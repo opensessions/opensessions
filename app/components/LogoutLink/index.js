@@ -29,10 +29,6 @@ export default class LogoutLink extends React.Component {
     this.setState({ user: this.props.user });
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    console.log("componentWillUpdate user state", nextState.user);
-  }
-
   onClick() {
     localStorage.removeItem('userToken');
     this.setState({ user: {hello: "world"} });
