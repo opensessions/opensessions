@@ -7,9 +7,7 @@ const strategy = new auth0strategy({
   clientID: config.auth0.CLIENT_ID,
   clientSecret: config.auth0.CLIENT_SECRET,
   callbackURL: '/callback',
-}, (accessToken, refreshToken, extraParams, profile, done) => {
-  return done(null, profile);
-});
+}, (accessToken, refreshToken, extraParams, profile, done) => done(null, profile));
 
 passport.use(strategy);
 

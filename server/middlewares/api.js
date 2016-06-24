@@ -18,7 +18,6 @@ module.exports = (app) => {
 
   api.all('/session/create', requireLogin, (req, res) => {
     const session = req.body;
-    console.log("session owner == ", req.user);
     session.owner = req.user[IDprop];
     database.models.Session.create(session).then((savedSession) => {
       res.json(savedSession);
@@ -38,7 +37,6 @@ module.exports = (app) => {
         return;
       }
       session.update(req.body);
-      console.log("Object.keys", Object.keys(session));
       session.save().then((savedSession) => {
         res.json(savedSession);
       });
