@@ -8,6 +8,7 @@ import { apiFetch } from '../../utils/api';
 export default class MyProfile extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
     user: React.PropTypes.object,
+    lock: React.PropTypes.object,
   }
   constructor(props) {
     super(props);
@@ -15,18 +16,17 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
       organizers: [],
     };
   }
-  componentDidMount() {
+  fetchOrganizers() {
     const self = this;
     const {user} = this.context;
-    this.apiFetch('/api/organizer', {
-      owner: user.email,
+    apiFetch('/api/organizer', {
+      query: { owner: user.user_id, }
     }).then((organizers) => {
       self.setState({ organizers });
     });
   }
-  static contextTypes = {
-    user: React.PropTypes.object,
-    lock: React.PropTypes.object,
+  componentDidMount() {
+    this.fetchOrganizers();
   }
   renderOrganizers() {
     return (<ul>
