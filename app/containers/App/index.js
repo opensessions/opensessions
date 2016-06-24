@@ -1,5 +1,4 @@
 /**
- *
  * App.react.js
  *
  * This component is the skeleton around the actual pages, and should only
@@ -13,7 +12,7 @@
 
 import React from 'react';
 import Auth0Lock from 'auth0-lock';
-import $ from "jquery";
+import $ from 'jquery';
 
 import Header from 'components/Header';
 import Footer from 'components/Footer';

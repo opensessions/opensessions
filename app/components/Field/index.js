@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 
 import styles from './styles.css';
 
@@ -123,7 +122,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
           this.setState({ value: relation.uuid, relationState: 'none' });
           this.fetchRelation();
         });
-      }
+      };
       let addControl = (<button onClick={onClick} className={styles.addRelation}>Add +</button>);
       if (this.state.relationState === 'typeNew') {
         addControl = (<input onKeyDown={onKeyDown} className={styles.input} autoFocus />);

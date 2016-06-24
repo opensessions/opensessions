@@ -5,7 +5,7 @@ import Form from 'components/Form';
 import Field from 'components/Field';
 
 import { Link } from 'react-router';
-import { Authenticated, NotAuthenticated, LoginLink } from 'react-stormpath';
+import Authenticated from 'components/Authenticated';
 
 import styles from './styles.css';
 
@@ -57,7 +57,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     const session = this.getSession();
     return (
       <div className={styles.form}>
-        <Authenticated>
+        <Authenticated message="You must login before you can add a session">
           <div className={styles.titleBar}>
             <div className={styles.titleInner}>
               <div>
@@ -100,9 +100,6 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
             </Form>
           </div>
         </Authenticated>
-        <NotAuthenticated>
-          <p>You must <LoginLink>login</LoginLink> before you can add a session</p>
-        </NotAuthenticated>
       </div>
     );
   }
