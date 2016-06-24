@@ -116,6 +116,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
       input = (<div>
         <button onClick={onClick} className={styles.addRelation}>Add +</button>
         <select {...attrs}>
+          <option value="">Select</option>
           {options.map((option) => <option value={option.uuid}>{option.name}</option>)}
         </select>
       </div>);
