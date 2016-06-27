@@ -11,6 +11,7 @@ export default class LocationField extends React.Component {
     const element = this.refs.input;
     const autocomplete = new window.google.maps.places.Autocomplete(element, options);
     window.google.maps.event.addListener(autocomplete, 'place_changed', () => {
+      window.result = autocomplete.getPlace();
     });
   }
   render() {
