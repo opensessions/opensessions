@@ -16,6 +16,7 @@
   flex-grow: 2;
   color: #1F2C4D;
   font-size: 2rem;
+  padding: .25em .5em;
   & img {
     max-height: 3em;
     &.beta {

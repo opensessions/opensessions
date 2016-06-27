@@ -1,0 +1,10 @@
+@import '../App/variables.css';
+
+.container {
+  max-width: var(--pagewidth);
+  margin: auto;
+  & h1 {
+    text-align: center;
+    font-size: 1.5em;
+  }
+}

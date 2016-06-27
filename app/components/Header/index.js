@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router';
 
-import getUserToken from 'containers/App/getUserToken';
+import getUserToken from 'containers/App/getUserToken'; // eslint-disable-line no-unused-vars
 
-import styles from './styles.css'; // eslint-disable-line no-unused-vars
+import styles from './styles.css';
 
 class Header extends React.Component { // eslint-disable-line react/prefer-stateless-function
   constructor() {
@@ -15,7 +15,7 @@ class Header extends React.Component { // eslint-disable-line react/prefer-state
     lock: React.PropTypes.object,
   }
   showLock() {
-    const {lock} = this.context;
+    const { lock } = this.context;
     lock.show();
   }
   shouldComponentUpdate(nextProps, nextState, nextContext) {
@@ -27,17 +27,17 @@ class Header extends React.Component { // eslint-disable-line react/prefer-state
     return false;
   }
   renderLoginButton() {
-    const {user} = this.context;
+    const { user } = this.context;
+    let loginButton = <button onClick={this.showLock}>Login</button>;
     if (user) {
       const name = user.nickname;
       let image = null;
       if (user.picture) {
-        image = (<img src={user.picture} className={styles.userIcon} />);
+        image = (<img src={user.picture} className={styles.userIcon} role="presentation" />);
       }
-      return <Link to="/profile">Hey there {name}! {image}</Link>
-    } else {
-      return <button onClick={this.showLock}>Login</button>
+      loginButton = (<Link to="/profile">Hey there {name}! {image}</Link>);
     }
+    return loginButton;
   }
   render() {
     return (
@@ -58,9 +58,3 @@ class Header extends React.Component { // eslint-disable-line react/prefer-state
 }
 
 export default Header;
-
-// react-css-modules seems to have a bug when using styleName to refer to className in styles.css, so switched to using className={styles.class} for now
-// Issue started by others affected: https://github.com/gajus/react-css-modules/issues/107
-// TODO: fix and re-implement react-css-modules
-
-// export default Header;
