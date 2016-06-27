@@ -2,7 +2,7 @@ export function apiFetch(url, opts) {
   if (typeof opts !== 'object') opts = {};
   const query = opts.query;
   const headers = opts.headers || {};
-  headers['authorization'] = `Bearer ${localStorage.userToken}`;
+  headers.authorization = `Bearer ${localStorage.userToken}`;
   if (opts.body) {
     headers['Content-Type'] = 'application/json';
     opts.method = 'POST';

@@ -13,7 +13,7 @@ module.exports = (app) => {
 
   console.log(process.env);
   const requireLogin = jwt({
-    secret: new Buffer(process.env.AUTH0_CLIENT_SECRET, 'base64'),
+    secret: new Buffer('randomstring', 'base64'),
     audience: process.env.AUTH0_CLIENT_ID,
   });
 

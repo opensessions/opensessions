@@ -1,22 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router';
 
-import getUserToken from 'containers/App/getUserToken';
-
 import styles from './styles.css'; // eslint-disable-line no-unused-vars
 
 class Header extends React.Component { // eslint-disable-line react/prefer-stateless-function
-  constructor() {
-    super();
-    this.showLock = this.showLock.bind(this);
-  }
   static contextTypes = {
     user: React.PropTypes.object,
     lock: React.PropTypes.object,
   }
-  showLock() {
-    const {lock} = this.context;
-    lock.show();
+  constructor() {
+    super();
+    this.showLock = this.showLock.bind(this);
   }
   shouldComponentUpdate(nextProps, nextState, nextContext) {
     if (this.context.user == null && nextContext.user != null) {
@@ -26,18 +20,19 @@ class Header extends React.Component { // eslint-disable-line react/prefer-state
     }
     return false;
   }
+  showLock() {
+    const { lock } = this.context;
+    lock.show();
+  }
   renderLoginButton() {
-    const {user} = this.context;
-    if (user) {
-      const name = user.nickname;
-      let image = null;
-      if (user.picture) {
-        image = (<img src={user.picture} className={styles.userIcon} />);
-      }
-      return <Link to="/profile">Hey there {name}! {image}</Link>
-    } else {
-      return <button onClick={this.showLock}>Login</button>
+    const { user } = this.context;
+    if (!user) return <button onClick={this.showLock}>Login</button>;
+    const name = user.nickname;
+    let image = null;
+    if (user.picture) {
+      image = (<img src={user.picture} alt={name} className={styles.userIcon} />);
     }
+    return <Link to="/profile">Hey there {name}! {image}</Link>;
   }
   render() {
     return (

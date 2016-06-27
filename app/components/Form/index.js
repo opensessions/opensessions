@@ -24,24 +24,8 @@ export default class Form extends React.Component { // eslint-disable-line react
       saveStateClass: styles.unsaved,
     };
   }
-  autosave() {
-    const model = this.props.model;
-    model.isPublished = false;
-    this.saveModel(model);
-  }
-  saveModel(model) {
-    this.setState({ saveState: 'Saving...', saveStateClass: styles.saving });
-    apiFetch(`/api/session/${model.uuid}`, { body: model })
-      .then((json) => {
-        console.log('Save complete', json);
-        this.setState({ saveState: 'Saved!', saveStateClass: styles.saved });
-      });
-  }
-  formChange() {
-    if (!this.props.autosave) return;
-    if (this.timeout) clearTimeout(this.timeout);
-    this.timeout = setTimeout(this.autosave, 2000);
-    this.setState({ saveState: 'Saving...', saveStateClass: styles.saving });
+  getFieldsets() {
+    return this.props.children instanceof Array ? this.props.children : [this.props.children];
   }
   tabClick(event) {
     const key = Array.prototype.indexOf.call(event.target.parentNode.childNodes, event.target);
@@ -58,8 +42,24 @@ export default class Form extends React.Component { // eslint-disable-line react
     this.saveModel(model);
     console.log(this);
   }
-  getFieldsets() {
-    return this.props.children instanceof Array ? this.props.children : [this.props.children];
+  formChange() {
+    if (!this.props.autosave) return;
+    if (this.timeout) clearTimeout(this.timeout);
+    this.timeout = setTimeout(this.autosave, 2000);
+    this.setState({ saveState: 'Saving...', saveStateClass: styles.saving });
+  }
+  saveModel(model) {
+    this.setState({ saveState: 'Saving...', saveStateClass: styles.saving });
+    apiFetch(`/api/session/${model.uuid}`, { body: model })
+      .then((json) => {
+        console.log('Save complete', json);
+        this.setState({ saveState: 'Saved!', saveStateClass: styles.saved });
+      });
+  }
+  autosave() {
+    const model = this.props.model;
+    model.isPublished = false;
+    this.saveModel(model);
   }
   renderNav() {
     const self = this;

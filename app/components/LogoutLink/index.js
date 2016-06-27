@@ -1,16 +1,8 @@
 import React from 'react';
 
-import {Link} from 'react-router';
+import { Link } from 'react-router';
 
 export default class LogoutLink extends React.Component {
-
-  constructor(props) {
-    super(props);
-    this.onClick = this.onClick.bind(this);
-    this.state = {
-      user: null,
-    };
-  }
 
   static propTypes = {
     value: React.PropTypes.string,
@@ -24,8 +16,16 @@ export default class LogoutLink extends React.Component {
     user: React.PropTypes.object,
   }
 
+  constructor(props) {
+    super(props);
+    this.onClick = this.onClick.bind(this);
+    this.state = {
+      user: null,
+    };
+  }
+
   getChildContext() {
-    return {user: this.state.user}
+    return { user: this.state.user };
   }
 
   componentWillMount() {
@@ -34,22 +34,18 @@ export default class LogoutLink extends React.Component {
 
   onClick() {
     localStorage.removeItem('userToken');
-    this.setState({ user: {hello: "world"} });
+    this.setState({ user: null });
   }
 
   renderLogoutLink() {
-    const {value} = this.props;
-    const {user} = this.state;
-    console.log("user state renderLogoutLink", user); 
-    if (user != null) {
-      return <Link to="/profile" onClick={this.onClick}>{value}</Link>
-    } else {
-      return <span>You're already logged out!</span>
-    }
+    const { value } = this.props;
+    const { user } = this.state;
+    if (!user) return <span>You're already logged out!</span>;
+    return <Link to="/profile" onClick={this.onClick}>{value}</Link>;
   }
 
   render() {
-    return <span>{this.renderLogoutLink()}</span>
+    return <span>{this.renderLogoutLink()}</span>;
   }
-  
+
 }

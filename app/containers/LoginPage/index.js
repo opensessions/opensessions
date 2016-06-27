@@ -13,7 +13,7 @@ export default class LoginPage extends React.Component { // eslint-disable-line 
   render() {
     return (
       <div>
-        {this.showLock} 
+        {this.showLock}
       </div>
     );
   }

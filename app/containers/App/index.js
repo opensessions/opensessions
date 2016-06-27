@@ -12,6 +12,7 @@
 
 import React from 'react';
 import Auth0Lock from 'auth0-lock';
+import CSSModules from 'react-css-modules';
 
 import Header from 'components/Header';
 import Footer from 'components/Footer';
@@ -19,6 +20,11 @@ import getUserToken from './getUserToken';
 
 import styles from './styles.css';
 
+const CSSModulesOptions = {
+  allowMultiple: true,
+};
+
+@CSSModules(styles, CSSModulesOptions)
 export default class App extends React.Component { // eslint-disable-line react/prefer-stateless-function
 
   static propTypes = {
@@ -26,7 +32,7 @@ export default class App extends React.Component { // eslint-disable-line react/
   };
   static childContextTypes = {
     user: React.PropTypes.object,
-    lock: React.PropTypes.object
+    lock: React.PropTypes.object,
   };
   constructor() {
     super();
@@ -44,30 +50,22 @@ export default class App extends React.Component { // eslint-disable-line react/
     this.createLock();
     this.setupProfile();
   }
-  createLock() {
-    this.lock = new Auth0Lock('bSVd1LzdwXsKbjF7JXflIc1UuMacffUA', 'opensessions.eu.auth0.com');
-  }
   setupProfile() {
     this.lock.getProfile(getUserToken(this.lock), (err, profile) => {
       if (err) {
-        console.log("user error");
+        console.log('user error');
         return false;
       }
-      this.setState({profile: profile});
+      this.setState({ profile });
+      return true;
     });
   }
-  setupAjax() {
-    $.ajaxSetup({
-      beforeSend: function(xhr) {
-        if (localStorage.getItem('userToken')) {
-          xhr.setRequestHeader('Authorization', `Bearer  ${localStorage.getItem('userToken')}`);
-        }
-      }
-    });
+  createLock() {
+    this.lock = new Auth0Lock('bSVd1LzdwXsKbjF7JXflIc1UuMacffUA', 'opensessions.eu.auth0.com');
   }
   render() {
     return (
-      <div className={styles.root}>
+      <div styleName="root">
         <Header />
         {this.props.children}
         <Footer />

@@ -16,17 +16,17 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
       organizers: [],
     };
   }
+  componentDidMount() {
+    this.fetchOrganizers();
+  }
   fetchOrganizers() {
     const self = this;
-    const user = this.context.user;
+    const { user } = this.context;
     apiFetch('/api/organizer', {
-      query: { owner: user.user_id, }
+      query: { owner: user.user_id },
     }).then((organizers) => {
       self.setState({ organizers });
     });
-  }
-  componentDidMount() {
-    this.fetchOrganizers();
   }
   renderOrganizers() {
     return (<ul>
@@ -34,11 +34,10 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
     </ul>);
   }
   render() {
-    const {user} = this.context;
-    console.log("user from profile", user);
+    const { user } = this.context;
     return (
       <div>
-        <p>Hello, {user ? user.nickname: ''}!</p>
+        <p>Hello, {user ? user.nickname : ''}!</p>
         <p>From here you can view your organizers and their sessions below, or (<LogoutLink value="Log out" />)</p>
         {this.renderOrganizers()}
       </div>

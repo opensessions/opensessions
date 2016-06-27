@@ -8,7 +8,6 @@ const frontend = require('./middlewares/frontendMiddleware');
 const isDev = process.env.NODE_ENV !== 'production';
 
 const passport = require('passport');
-const strategy = require('./middlewares/passportMiddleware');
 const session = require('express-session');
 
 const cookieParser = require('cookie-parser');
