@@ -56,7 +56,7 @@ export default class App extends React.Component { // eslint-disable-line react/
   }
   setupAjax() {
     window.$.ajaxSetup({
-      beforeSend: function(xhr) {
+      beforeSend: (xhr) => {
         if (localStorage.getItem('userToken')) {
           xhr.setRequestHeader('Authorization', `Bearer ${localStorage.getItem('userToken')}`);
         }

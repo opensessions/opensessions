@@ -21,7 +21,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     super(props);
     this.state = { session: props.session || {} };
     this.updateSession = this.updateSession.bind(this);
-  };
+  }
   componentDidMount() {
     const self = this;
     let sessionUri = '/api/session/create';

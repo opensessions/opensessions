@@ -40,6 +40,6 @@ export default class LogoutLink extends React.Component {
     return logoutLink;
   }
   render() {
-    return <span>{this.renderLogoutLink()}</span>
+    return <span>{this.renderLogoutLink()}</span>;
   }
 }
