@@ -58,20 +58,23 @@ export default class Form extends React.Component { // eslint-disable-line react
     this.saveModel(model);
     console.log(this);
   }
+  getFieldsets() {
+    return this.props.children instanceof Array ? this.props.children : [this.props.children];
+  }
   renderNav() {
     const self = this;
-    return this.props.children.map((fieldset, key) => {
+    return this.getFieldsets().map((fieldset, key) => {
       const className = self.state.activeTab === key ? styles.active : '';
       let isComplete;
       if (fieldset.props.validity) {
         isComplete = <span className={styles.tick}>&#10003;</span>;
       }
-      return <a className={className} onClick={this.tabClick} index={key}>{fieldset.props.label} {isComplete}</a>;
+      return <a className={className} onClick={this.tabClick} key={key}>{fieldset.props.label} {isComplete}</a>;
     });
   }
   renderTab() {
     const self = this;
-    return this.props.children.map((child, key) => {
+    return this.getFieldsets().map((child, key) => {
       const active = key === self.state.activeTab ? '' : styles.hiddenTab;
       return <div key={key} className={active}>{child}</div>;
     });
