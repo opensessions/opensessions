@@ -10,7 +10,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
     model: React.PropTypes.object,
     name: React.PropTypes.string.isRequired,
     relationURL: React.PropTypes.string,
-    id: React.PropTypes.string,
+    id: React.PropTypes.id,
     onChange: React.PropTypes.func,
     tip: React.PropTypes.string,
     type: React.PropTypes.string,
@@ -94,11 +94,11 @@ export default class Field extends React.Component { // eslint-disable-line reac
       onChange: this.handleChange,
       className: `${styles.input} ${validClass}`,
       name: this.props.name,
-      value: this.state.valueimport CSSModules from 'react-css-modules';,
+      value: this.state.value,
       id: this.props.id || this.props.name,
     };
     if (this.props.model) {
-      attrs.value = this.props.model[this.props.name] || '';
+      attrs.value = this.props.model[this.props.name];
     }
     let input;
     const type = this.props.type || 'text';
@@ -119,9 +119,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
         }
         event.preventDefault();
         apiFetch(`${this.props.relationURL}/create`, { body: { name: event.target.value } }).then((relation) => {
-          const value = relation.uuid;
-          this.props.model.update(this.props.name, value);
-          this.setState({ value, relationState: 'none' });
+          this.setState({ value: relation.uuid, relationState: 'none' });
           this.fetchRelation();
         });
       };
@@ -129,15 +127,12 @@ export default class Field extends React.Component { // eslint-disable-line reac
       if (this.state.relationState === 'typeNew') {
         addControl = (<input onKeyDown={onKeyDown} className={styles.input} autoFocus />);
       }
-      let selectBox = null;
-      if (options.length) {
-        selectBox = (<select {...attrs} value={this.state.value}>
-          {options.map((option) => <option value={option.uuid} key={option.uuid}>{option.name}</option>)}
-        </select>);
-      }
       input = (<div>
         {addControl}
-        {selectBox}
+        <select {...attrs} defaultValue={this.state.value}>
+          <option value="">Select...</option>
+          {options.map((option) => <option value={option.uuid}>{option.name}</option>)}
+        </select>
       </div>);
     } else {
       if (type === 'date') {
