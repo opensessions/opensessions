@@ -3,7 +3,7 @@ const getUserToken = (lock) => {
   const authHash = lock.parseHash(window.location.hash);
   if (!idToken && authHash) {
     if (authHash.id_token) {
-      idToken = authHash.id_token
+      idToken = authHash.id_token;
       localStorage.setItem('userToken', authHash.id_token);
     }
     if (authHash.error) {
@@ -11,6 +11,6 @@ const getUserToken = (lock) => {
     }
   }
   return idToken;
-}
+};
 
 export default getUserToken;

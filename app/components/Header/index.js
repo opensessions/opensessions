@@ -6,17 +6,13 @@ import getUserToken from 'containers/App/getUserToken'; // eslint-disable-line n
 import styles from './styles.css';
 
 class Header extends React.Component { // eslint-disable-line react/prefer-stateless-function
-  constructor() {
-    super();
-    this.showLock = this.showLock.bind(this);
-  }
   static contextTypes = {
     user: React.PropTypes.object,
     lock: React.PropTypes.object,
   }
-  showLock() {
-    const { lock } = this.context;
-    lock.show();
+  constructor() {
+    super();
+    this.showLock = this.showLock.bind(this);
   }
   shouldComponentUpdate(nextProps, nextState, nextContext) {
     if (this.context.user == null && nextContext.user != null) {
@@ -25,6 +21,10 @@ class Header extends React.Component { // eslint-disable-line react/prefer-state
       return true;
     }
     return false;
+  }
+  showLock() {
+    const { lock } = this.context;
+    lock.show();
   }
   renderLoginButton() {
     const { user } = this.context;
