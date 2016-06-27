@@ -94,7 +94,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
       onChange: this.handleChange,
       className: `${styles.input} ${validClass}`,
       name: this.props.name,
-      value: this.state.value,
+      value: this.state.valueimport CSSModules from 'react-css-modules';,
       id: this.props.id || this.props.name,
     };
     if (this.props.model) {

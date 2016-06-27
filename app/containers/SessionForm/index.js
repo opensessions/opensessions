@@ -1,8 +1,10 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 
 import Fieldset from 'components/Fieldset';
 import Form from 'components/Form';
 import Field from 'components/Field';
+import LocationField from 'components/LocationField';
 
 import { Link } from 'react-router';
 import Authenticated from 'components/Authenticated';
@@ -15,12 +17,13 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   static propTypes = {
     session: React.PropTypes.object,
     sessionID: React.PropTypes.string,
-  }
+  };
   constructor(props) {
     super(props);
     this.state = { session: props.session || {} };
     this.updateSession = this.updateSession.bind(this);
-  }
+  };
+  _locationInput = null;
   componentDidMount() {
     const self = this;
     let sessionUri = '/api/session/create';
@@ -76,7 +79,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
                 <Field label="Will participants recieve coaching?" name="hasCoach" type="checkbox" model={session} />
               </Fieldset>
               <Fieldset label="Location">
-                <Field label="Location" name="location" model={session} />
+                <LocationField label="Location" name="Location" />
                 <Field label="Meeting point" name="meetingPoint" model={session} />
               </Fieldset>
               <Fieldset label="Pricing">
