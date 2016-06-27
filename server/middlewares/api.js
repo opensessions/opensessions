@@ -28,13 +28,14 @@ module.exports = (app) => {
     };
     database.models.Session.findAll({ where }).then((rawSessions) => {
       const sessions = rawSessions.map((session) => {
+        const state = session.state !== 'deleted' ? 'updated' : 'deleted';
         return {
-          state: session.state !== 'deleted' ? 'updated' : 'deleted',
+          state: state,
           kind: 'session',
           id: session.uuid,
           modified: session.updatedAt,
           data: session,
-        }
+        };
       });
       const next = {
         from: sessions.length ? sessions[sessions.length - 1].modified : 0,

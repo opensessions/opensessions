@@ -24,6 +24,9 @@ export default class Form extends React.Component { // eslint-disable-line react
       saveStateClass: styles.unsaved,
     };
   }
+  getFieldsets() {
+    return this.props.children instanceof Array ? this.props.children : [this.props.children];
+  }
   autosave() {
     const model = this.props.model;
     model.isPublished = false;
@@ -57,9 +60,6 @@ export default class Form extends React.Component { // eslint-disable-line react
     model.isPublished = true;
     this.saveModel(model);
     console.log(this);
-  }
-  getFieldsets() {
-    return this.props.children instanceof Array ? this.props.children : [this.props.children];
   }
   renderNav() {
     const self = this;

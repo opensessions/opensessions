@@ -30,14 +30,14 @@ export default class LogoutLink extends React.Component {
     this.setState({ user: { hello: 'world' } });
   }
   renderLogoutLink() {
-    const {value} = this.props;
-    const {user} = this.state;
-    console.log("user state renderLogoutLink", user); 
-    if (user != null) {
-      return <Link to="/profile" onClick={this.onClick}>{value}</Link>;
-    } else {
-      return <span>You're already logged out!</span>;
+    const { value } = this.props;
+    const { user } = this.state;
+    console.log('user state renderLogoutLink', user);
+    let logoutLink = <span>You're already logged out!</span>;
+    if (user !== null) {
+      logoutLink = <Link to="/profile" onClick={this.onClick}>{value}</Link>;
     }
+    return logoutLink;
   }
   render() {
     return <span>{this.renderLogoutLink()}</span>

@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 
 import Fieldset from 'components/Fieldset';
 import Form from 'components/Form';
@@ -23,7 +22,6 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     this.state = { session: props.session || {} };
     this.updateSession = this.updateSession.bind(this);
   };
-  _locationInput = null;
   componentDidMount() {
     const self = this;
     let sessionUri = '/api/session/create';
@@ -41,6 +39,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     session.update = this.updateSession;
     return session;
   }
+  _locationInput = null
   updateSession(name, value) {
     const session = this.getSession();
     session[name] = value;
