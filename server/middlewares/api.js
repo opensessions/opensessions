@@ -30,7 +30,7 @@ module.exports = (app) => {
       const sessions = rawSessions.map((session) => {
         const state = session.state !== 'deleted' ? 'updated' : 'deleted';
         return {
-          state: state,
+          state,
           kind: 'session',
           id: session.uuid,
           modified: session.updatedAt,

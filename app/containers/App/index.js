@@ -44,26 +44,27 @@ export default class App extends React.Component { // eslint-disable-line react/
     this.createLock();
     this.setupProfile();
   }
-  createLock() {
-    this.lock = new Auth0Lock('bSVd1LzdwXsKbjF7JXflIc1UuMacffUA', 'opensessions.eu.auth0.com');
-  }
   setupProfile() {
     this.lock.getProfile(getUserToken(this.lock), (err, profile) => {
       if (err) {
-        console.log("user error");
+        console.log('user error');
         return false;
       }
-      this.setState({profile: profile});
+      this.setState({ profile });
+      return profile;
     });
   }
   setupAjax() {
-    $.ajaxSetup({
+    window.$.ajaxSetup({
       beforeSend: function(xhr) {
         if (localStorage.getItem('userToken')) {
-          xhr.setRequestHeader('Authorization', `Bearer  ${localStorage.getItem('userToken')}`);
+          xhr.setRequestHeader('Authorization', `Bearer ${localStorage.getItem('userToken')}`);
         }
       }
     });
+  }
+  createLock() {
+    this.lock = new Auth0Lock('bSVd1LzdwXsKbjF7JXflIc1UuMacffUA', 'opensessions.eu.auth0.com');
   }
   render() {
     return (
