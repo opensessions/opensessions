@@ -82,6 +82,7 @@ class PostgresStorage {
       hasCoaching: sequelize.BOOLEAN,
       // location
       location: sequelize.STRING,
+      locationData: sequelize.JSON,
       meetingPoint: sequelize.STRING,
       // contact
       contactPhone: sequelize.STRING,

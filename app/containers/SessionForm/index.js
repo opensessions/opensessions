@@ -14,7 +14,7 @@ import { apiFetch } from '../../utils/api';
 export default class SessionForm extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
     session: React.PropTypes.object,
-    // sessionID: React.PropTypes.string,
+    sessionID: React.PropTypes.string,
   }
   constructor(props) {
     super(props);

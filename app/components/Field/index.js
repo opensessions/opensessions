@@ -119,7 +119,9 @@ export default class Field extends React.Component { // eslint-disable-line reac
         }
         event.preventDefault();
         apiFetch(`${this.props.relationURL}/create`, { body: { name: event.target.value } }).then((relation) => {
-          this.setState({ value: relation.uuid, relationState: 'none' });
+          const value = relation.uuid;
+          this.props.model.update(this.props.name, value);
+          this.setState({ value, relationState: 'none' });
           this.fetchRelation();
         });
       };
