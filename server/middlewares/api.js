@@ -11,6 +11,7 @@ module.exports = (app) => {
 
   api.use(cors());
 
+  console.log(process.env);
   const requireLogin = jwt({
     secret: new Buffer(process.env.AUTH0_CLIENT_SECRET, 'base64'),
     audience: process.env.AUTH0_CLIENT_ID,

@@ -1,6 +1,3 @@
-import React from 'react';
-import Auth0Lock from 'auth0-lock';
-
 const getUserToken = (lock) => {
   let idToken = localStorage.getItem('userToken');
   const authHash = lock.parseHash(window.location.hash);
@@ -10,7 +7,7 @@ const getUserToken = (lock) => {
       localStorage.setItem('userToken', authHash.id_token);
     }
     if (authHash.error) {
-      console.log("Error signing in", authHash);
+      console.log('Error signing in', authHash);
     }
   }
   return idToken;
