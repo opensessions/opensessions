@@ -1,6 +1,9 @@
 const express = require('express');
 const Storage = require('../../storage/interfaces/postgres.js');
 const jwt = require('express-jwt');
+const dotenv = require('dotenv');
+
+dotenv.load();
 
 module.exports = (app) => {
   const api = express();
@@ -9,7 +12,7 @@ module.exports = (app) => {
   const IDprop = 'sub';
 
   const requireLogin = jwt({
-    secret: new Buffer('randomstring', 'base64'),
+    secret: new Buffer(process.env.AUTH0_CLIENT_SECRET, 'base64'),
     audience: process.env.AUTH0_CLIENT_ID,
   });
 
@@ -32,7 +35,7 @@ module.exports = (app) => {
         return {
           state,
           kind: 'session',
-          id: session.uuid,
+          id: `{${session.uuid}}`,
           modified: session.updatedAt,
           data: session,
         };

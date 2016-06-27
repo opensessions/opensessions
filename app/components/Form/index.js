@@ -32,8 +32,8 @@ export default class Form extends React.Component { // eslint-disable-line react
     model.isPublished = false;
     this.saveModel(model);
   }
-  saveModel(model) {
-    this.setState({ saveState: 'Saving...', saveStateClass: styles.saving });
+  saveModel(model, verb) {
+    this.setState({ saveState: `${verb || 'Saving'}...`, saveStateClass: styles.saving });
     apiFetch(`/api/session/${model.uuid}`, { body: model })
       .then((json) => {
         console.log('Save complete', json);
@@ -56,10 +56,10 @@ export default class Form extends React.Component { // eslint-disable-line react
     this.setState({ activeTab: this.state.activeTab + delta });
   }
   submit() {
+    if (this.timeout) clearTimeout(this.timeout);
     const model = this.props.model;
     model.isPublished = true;
-    this.saveModel(model);
-    console.log(this);
+    this.saveModel(model, 'Publishing');
   }
   renderNav() {
     const self = this;

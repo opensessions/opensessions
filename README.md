@@ -11,7 +11,7 @@ Postgres is currently the only storage option configured to run directly with th
 
 - `sudo -u postgres createuser $OPENSESSIONS_PG_USER`
 - `sudo -u postgres psql`
-- `ALTER USER ${this.user.username} PASSWORD '$OPENSESSIONS_PG_PASS';`
+- `ALTER USER $OPENSESSIONS_PG_USER PASSWORD '$OPENSESSIONS_PG_PASS';`
 - `sudo -u postgres createdb $OPENSESSIONS_PG_DB`
 
 Ensure that the system running your application has vars set that satisfy the above.
