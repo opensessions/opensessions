@@ -10,7 +10,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
     model: React.PropTypes.object,
     name: React.PropTypes.string.isRequired,
     relationURL: React.PropTypes.string,
-    id: React.PropTypes.id,
+    id: React.PropTypes.string,
     onChange: React.PropTypes.func,
     tip: React.PropTypes.string,
     type: React.PropTypes.string,
@@ -98,7 +98,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
       id: this.props.id || this.props.name,
     };
     if (this.props.model) {
-      attrs.value = this.props.model[this.props.name];
+      attrs.value = this.props.model[this.props.name] || '';
     }
     let input;
     const type = this.props.type || 'text';
@@ -127,12 +127,15 @@ export default class Field extends React.Component { // eslint-disable-line reac
       if (this.state.relationState === 'typeNew') {
         addControl = (<input onKeyDown={onKeyDown} className={styles.input} autoFocus />);
       }
+      let selectBox = null;
+      if (options.length) {
+        selectBox = (<select {...attrs} defaultValue={this.state.value}>
+          {options.map((option) => <option value={option.uuid}>{option.name}</option>)}
+        </select>);
+      }
       input = (<div>
         {addControl}
-        <select {...attrs} defaultValue={this.state.value}>
-          <option value="">Select...</option>
-          {options.map((option) => <option value={option.uuid}>{option.name}</option>)}
-        </select>
+        {selectBox}
       </div>);
     } else {
       if (type === 'date') {

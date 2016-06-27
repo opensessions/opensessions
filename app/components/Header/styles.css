@@ -13,9 +13,10 @@
 }
 
 .logoLink {
-  flex-grow: 2;
+  flex-grow: 1;
   color: #1F2C4D;
   font-size: 2rem;
+  padding: .25em .5em;
   & img {
     max-height: 3em;
     &.beta {
@@ -27,7 +28,7 @@
 }
 
 .nav {
-  flex-grow: 2;
+  flex-grow: 4;
   text-align: right;
   & a:link {
     display: inline-block;

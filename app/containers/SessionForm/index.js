@@ -39,6 +39,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     session.update = this.updateSession;
     return session;
   }
+  _locationInput = null
   updateSession(name, value) {
     const session = this.getSession();
     session[name] = value;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router';
 
-import styles from './styles.css'; // eslint-disable-line no-unused-vars
+import styles from './styles.css';
 
 class Header extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
@@ -53,9 +53,3 @@ class Header extends React.Component { // eslint-disable-line react/prefer-state
 }
 
 export default Header;
-
-// react-css-modules seems to have a bug when using styleName to refer to className in styles.css, so switched to using className={styles.class} for now
-// Issue started by others affected: https://github.com/gajus/react-css-modules/issues/107
-// TODO: fix and re-implement react-css-modules
-
-// export default Header;

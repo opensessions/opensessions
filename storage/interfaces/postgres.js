@@ -112,6 +112,7 @@ class PostgresStorage {
       const instance = new sequelize(db.name, user.username, user.password, {
         host: db.host,
         dialect: 'postgres',
+        logging: false,
       });
       this.instance = this.createModels(instance);
     }

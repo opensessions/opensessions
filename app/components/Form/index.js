@@ -27,6 +27,25 @@ export default class Form extends React.Component { // eslint-disable-line react
   getFieldsets() {
     return this.props.children instanceof Array ? this.props.children : [this.props.children];
   }
+  autosave() {
+    const model = this.props.model;
+    model.isPublished = false;
+    this.saveModel(model);
+  }
+  saveModel(model) {
+    this.setState({ saveState: 'Saving...', saveStateClass: styles.saving });
+    apiFetch(`/api/session/${model.uuid}`, { body: model })
+      .then((json) => {
+        console.log('Save complete', json);
+        this.setState({ saveState: 'Saved!', saveStateClass: styles.saved });
+      });
+  }
+  formChange() {
+    if (!this.props.autosave) return;
+    if (this.timeout) clearTimeout(this.timeout);
+    this.timeout = setTimeout(this.autosave, 2000);
+    this.setState({ saveState: 'Saving...', saveStateClass: styles.saving });
+  }
   tabClick(event) {
     const key = Array.prototype.indexOf.call(event.target.parentNode.childNodes, event.target);
     if (this.state.activeTab === key) return;
@@ -41,25 +60,6 @@ export default class Form extends React.Component { // eslint-disable-line react
     model.isPublished = true;
     this.saveModel(model);
     console.log(this);
-  }
-  formChange() {
-    if (!this.props.autosave) return;
-    if (this.timeout) clearTimeout(this.timeout);
-    this.timeout = setTimeout(this.autosave, 2000);
-    this.setState({ saveState: 'Saving...', saveStateClass: styles.saving });
-  }
-  saveModel(model) {
-    this.setState({ saveState: 'Saving...', saveStateClass: styles.saving });
-    apiFetch(`/api/session/${model.uuid}`, { body: model })
-      .then((json) => {
-        console.log('Save complete', json);
-        this.setState({ saveState: 'Saved!', saveStateClass: styles.saved });
-      });
-  }
-  autosave() {
-    const model = this.props.model;
-    model.isPublished = false;
-    this.saveModel(model);
   }
   renderNav() {
     const self = this;

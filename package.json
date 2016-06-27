@@ -75,7 +75,8 @@
       "new-cap": 0,
       "no-floating-decimal": 0,
       "no-param-reassign": 0,
-      "strict": 0
+      "strict": 0,
+      "comma-dangle": "off"
     },
     "settings": {
       "import/resolver": {
