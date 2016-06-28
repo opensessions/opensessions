@@ -28,10 +28,11 @@ export default class Field extends React.Component { // eslint-disable-line reac
       this.fetchRelation();
     }
   }
-  fetchRelation(query) {
+  fetchRelation(query, value) {
     const self = this;
     return apiFetch(this.props.relationURL, { query }).then((options) => {
-      self.setState({ options });
+      if (typeof value === 'undefined' && options[0]) value = options[0].uuid;
+      self.setState({ options, value });
     });
   }
   handleChange(event) {
@@ -119,8 +120,8 @@ export default class Field extends React.Component { // eslint-disable-line reac
         }
         event.preventDefault();
         apiFetch(`${this.props.relationURL}/create`, { body: { name: event.target.value } }).then((relation) => {
-          this.setState({ value: relation.uuid, relationState: 'none' });
-          this.fetchRelation();
+          this.setState({ relationState: 'none' });
+          this.fetchRelation(undefined, relation.uuid);
         });
       };
       let addControl = (<button onClick={onClick} className={styles.addRelation}>Add +</button>);
