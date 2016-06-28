@@ -103,9 +103,14 @@
   padding: .5em;
   line-height: 1;
   cursor: pointer;
+  min-width: 4em;
   &:hover,
   &:focus {
     background-color: #FFF;
     color: var(--actionColor);
   }
+}
+
+.relationWrap {
+  display: flex;
 }
