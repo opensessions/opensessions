@@ -12,14 +12,6 @@ class Header extends React.Component { // eslint-disable-line react/prefer-state
     super();
     this.showLock = this.showLock.bind(this);
   }
-  shouldComponentUpdate(nextProps, nextState, nextContext) {
-    if (this.context.user == null && nextContext.user != null) {
-      return true;
-    } else if (this.context.user != null && nextContext.user == null) {
-      return true;
-    }
-    return false;
-  }
   showLock() {
     const { lock } = this.context;
     lock.show();

@@ -56,6 +56,9 @@ export default class App extends React.Component { // eslint-disable-line react/
         console.log('user error');
         return false;
       }
+      profile.logout = () => {
+        this.setState({ profile: null });
+      };
       this.setState({ profile });
       return true;
     });
