@@ -36,14 +36,15 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     if (user && user.user_id === session.owner) {
       actions.push(<Link to={`/session/${session.uuid}/edit`}>Edit</Link>);
     }
-    return (<div>
+    return (<div className={styles.actions}>
       {actions}
     </div>);
   }
   renderDetails() {
     const session = this.state.session;
     return (<div className={styles.detailsSection}>
-      <img />
+      {this.renderActions()}
+      <img role="presentation" />
       <div>
         <h2>{session.displayName}</h2>
         <div>{session.location}</div>
@@ -98,7 +99,6 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   render() {
     return (
       <div className={styles.sessionView}>
-        {this.renderActions()}
         {this.renderDetails()}
         <div className={styles.shareSection}>
           <div className={styles.inner}>Share this session</div>

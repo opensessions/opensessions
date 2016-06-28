@@ -9,6 +9,10 @@
   overflow: hidden;
 }
 
+.actions {
+  float: right;
+}
+
 .inner {
   max-width: var(--sectionWidth);
   margin: auto;
@@ -54,10 +58,13 @@
 
 .mainCol {
   flex-grow: 4;
+  padding: 1em;
 }
 
 .sideCol {
   flex-grow: 1;
+  flex-basis: 25%;
+  padding: 1em;
 }
 
 .floatingInfo {

@@ -41,7 +41,7 @@ class PostgresStorage {
       defaultValue: sequelize.UUIDV1,
       primaryKey: true,
     };
-    const Sport = db.define('Sport', {
+    db.define('Sport', {
       // meta
       uuid,
       name: sequelize.STRING,
