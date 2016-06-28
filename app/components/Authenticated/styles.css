@@ -1,0 +1,9 @@
+@import '../../containers/App/variables.css';
+
+.noAuth {
+  text-align: center;
+  color: red;
+  margin: auto;
+  max-width: var(--pagewidth);
+  padding: 1em;
+}
