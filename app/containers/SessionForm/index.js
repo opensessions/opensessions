@@ -60,10 +60,10 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   }
   renderDescriptionFieldset() {
     const session = this.getSession();
-    const { user_id } = this.context.user;
+    const user = this.context.user;
     return (<Fieldset label="Description" ref="descriptionFieldset">
       <Field label="Title" name="title" model={session} validation={{ maxLength: 50 }} tip="Enter a title for your session E.g. Volleyball training" />
-      <Field label="Organizer" name="OrganizerUuid" model={session} type="relation" relationURL={`/api/organizer?owner=${user_id}`} tip="Enter a club or session organiser name E.g. Richmond Rovers" />
+      <Field label="Organizer" name="OrganizerUuid" model={session} type="relation" relationURL={`/api/organizer?owner=${user.user_id}`} tip="Enter a club or session organiser name E.g. Richmond Rovers" />
       <Field label="Description" name="description" model={session} type="textarea" />
       <Field label="Sport / activity type" name="activityType" model={session} />
       {/* <Field label="Sub category" name="activitySubType" model={session} /> */}

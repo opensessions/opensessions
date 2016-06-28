@@ -58,7 +58,9 @@
   margin: 1em auto;
   padding: 2em;
   display: flex;
-  h2, h3, h4 {
+  h2,
+  h3,
+  h4 {
     margin: .5em auto;
     font-weight: normal;
     font-family: serif;

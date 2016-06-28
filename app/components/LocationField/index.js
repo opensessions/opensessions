@@ -13,7 +13,7 @@ export default class LocationField extends React.Component {
     const autocomplete = new window.google.maps.places.Autocomplete(element, options);
     window.google.maps.event.addListener(autocomplete,
       'place_changed',
-      () => this.props.callback ? this.props.callback(autocomplete) : autocomplete.getPlace()
+      () => (this.props.callback ? this.props.callback(autocomplete) : autocomplete.getPlace())
     );
   }
   render() {
