@@ -131,12 +131,13 @@ export default class Field extends React.Component { // eslint-disable-line reac
       let selectBox = null;
       if (options.length) {
         selectBox = (<select {...attrs} defaultValue={this.state.value}>
+          <option value="">None</option>
           {options.map((option) => <option value={option.uuid}>{option.name}</option>)}
         </select>);
       }
-      input = (<div>
-        {addControl}
+      input = (<div className={styles.relationWrap}>
         {selectBox}
+        {addControl}
       </div>);
     } else {
       if (type === 'date') {

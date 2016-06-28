@@ -1,0 +1,109 @@
+@import '../App/variables.css';
+
+:root {
+  --sectionWidth: 128rem;
+}
+
+.sessionView {
+  background-color: var(--grey);
+  overflow: hidden;
+}
+
+.actions {
+  float: right;
+  & a {
+    padding: .4em .6em;
+    background: var(--actionColor);
+    color: #FFF;
+  }
+}
+
+.inner {
+  max-width: var(--sectionWidth);
+  margin: auto;
+}
+
+.detailsSection {
+  max-width: var(--sectionWidth);
+  margin: 1em auto;
+  background: #FFF;
+  padding: 2em;
+  display: flex;
+  & h1 {
+    font-size: 1.6em;
+    margin: .5em auto;
+  }
+  & .detailsImg {
+    flex-basis: 50%;
+  }
+  & .detailsText {
+    flex-basis: 50%;
+  }
+  & .detail {
+    margin: 1em auto;
+    padding-left: 4em;
+  }
+}
+
+.shareSection {
+  background-color: #FFF;
+  text-align: right;
+  margin: 1em 0;
+  padding: 1em;
+  font-size: 1.2em;
+}
+
+.descriptionSection {
+  max-width: var(--sectionWidth);
+  margin: 1em auto;
+  padding: 2em;
+  display: flex;
+  h2,
+  h3,
+  h4 {
+    margin: .5em auto;
+    font-weight: normal;
+    font-family: serif;
+  }
+  h2 {
+    font-size: 2.4em;
+  }
+  h3 {
+    font-size: 1.8em;
+  }
+  h4 {
+    font-size: 1.4em;
+  }
+  & .description {
+    white-space: pre-wrap;
+  }
+}
+
+.mainCol {
+  flex-grow: 4;
+  padding: 1em;
+  & h3 {
+    font-size: 1.4em;
+    font-family: inherit;
+  }
+}
+
+.sideCol {
+  flex-grow: 1;
+  flex-basis: 25%;
+  padding: 1em;
+}
+
+.floatingInfo {
+  background-color: #FFF;
+  padding: 1em;
+}
+
+.contactButton {
+  text-align: right;
+  & a {
+    padding: .4em .6em;
+    background: var(--actionColor);
+    color: #FFF;
+  }
+}

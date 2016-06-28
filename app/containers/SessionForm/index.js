@@ -17,10 +17,14 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     session: React.PropTypes.object,
     sessionID: React.PropTypes.string,
   };
+  static contextTypes = {
+    user: React.PropTypes.object,
+  };
   constructor(props) {
     super(props);
     this.state = { session: props.session || {} };
     this.updateSession = this.updateSession.bind(this);
+    this.locationCallback = this.locationCallback.bind(this);
   }
   componentDidMount() {
     const self = this;
@@ -45,11 +49,21 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     session[name] = value;
     this.setState({ session });
   }
+  locationCallback(autocomplete) {
+    const place = autocomplete.getPlace();
+    const data = {
+      formatted_address: place.formatted_address,
+      lat: place.geometry.lat(),
+      lng: place.geometry.lng(),
+    };
+    this.updateSession('locationData', JSON.stringify(data));
+  }
   renderDescriptionFieldset() {
     const session = this.getSession();
+    const user = this.context.user;
     return (<Fieldset label="Description" ref="descriptionFieldset">
       <Field label="Title" name="title" model={session} validation={{ maxLength: 50 }} tip="Enter a title for your session E.g. Volleyball training" />
-      <Field label="Organizer" name="OrganizerUuid" model={session} type="relation" relationURL="/api/organizer" tip="Enter a club or session organiser name E.g. Richmond Rovers" />
+      <Field label="Organizer" name="OrganizerUuid" model={session} type="relation" relationURL={`/api/organizer?owner=${user.user_id}`} tip="Enter a club or session organiser name E.g. Richmond Rovers" />
       <Field label="Description" name="description" model={session} type="textarea" />
       <Field label="Sport / activity type" name="activityType" model={session} />
       {/* <Field label="Sub category" name="activitySubType" model={session} /> */}
@@ -57,6 +71,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   }
   render() {
     const session = this.getSession();
+    const locationCallback = this.locationCallback;
     return (
       <div className={styles.form}>
         <Authenticated message="You must login before you can add a session">
@@ -78,7 +93,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
                 <Field label="Will participants recieve coaching?" name="hasCoach" type="checkbox" model={session} />
               </Fieldset>
               <Fieldset label="Location">
-                <LocationField label="Location" name="location" />
+                <LocationField label="Location" name="location" callback={locationCallback} />
                 <Field label="Meeting point" name="meetingPoint" model={session} />
               </Fieldset>
               <Fieldset label="Pricing">

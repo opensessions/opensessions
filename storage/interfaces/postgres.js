@@ -23,13 +23,19 @@ class PostgresStorage {
     return db.sync();
   }
   createModels(db) {
+    const uuid = {
+      type: sequelize.UUID,
+      defaultValue: sequelize.UUIDV1,
+      primaryKey: true,
+    };
+    db.define('Sport', {
+      // meta
+      uuid,
+      name: sequelize.STRING,
+    });
     const Organizer = db.define('Organizer', {
       // meta
-      uuid: {
-        type: sequelize.UUID,
-        defaultValue: sequelize.UUIDV1,
-        primaryKey: true,
-      },
+      uuid,
       owner: sequelize.STRING,
       name: sequelize.STRING,
     }, {
@@ -52,25 +58,23 @@ class PostgresStorage {
     });
     const Session = db.define('Session', {
       // meta
-      uuid: {
-        type: sequelize.UUID,
-        defaultValue: sequelize.UUIDV1,
-        primaryKey: true,
-      },
+      uuid,
       isPublished: sequelize.BOOLEAN,
       owner: sequelize.STRING,
       // description
       title: sequelize.STRING(50),
-      description: sequelize.STRING,
+      description: sequelize.STRING(2048),
       activityType: sequelize.STRING,
       // description
-      preparation: sequelize.STRING,
+      preparation: sequelize.STRING(2048),
       leader: sequelize.STRING,
       hasCoaching: sequelize.BOOLEAN,
       // location
       location: sequelize.STRING,
       locationData: sequelize.JSON,
       meetingPoint: sequelize.STRING,
+      // price
+      price: sequelize.NUMBER,
       // contact
       contactPhone: sequelize.STRING,
       contactEmail: sequelize.STRING,
