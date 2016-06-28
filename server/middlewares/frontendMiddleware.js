@@ -1,12 +1,12 @@
 const express = require('express');
 const path = require('path');
 const compression = require('compression');
-const webpackDevMiddleware = require('webpack-dev-middleware');
-const webpackHotMiddleware = require('webpack-hot-middleware');
-const webpack = require('webpack');
 
 // Dev middleware
 const addDevMiddlewares = (app, options) => {
+  const webpackHotMiddleware = require('webpack-hot-middleware'); // eslint-disable-line global-require
+  const webpackDevMiddleware = require('webpack-dev-middleware'); // eslint-disable-line global-require
+  const webpack = require('webpack'); // eslint-disable-line global-require
   const compiler = webpack(options);
   const middleware = webpackDevMiddleware(compiler, {
     noInfo: true,
