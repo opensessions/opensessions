@@ -3,6 +3,7 @@
 .header {
   background: #FFF;
   padding: 10px 0;
+  box-shadow: 0 -1em 1em 1em #828282;
 }
 
 .pageMargin {
@@ -38,8 +39,8 @@
 }
 
 .userIcon {
-  max-width: 2em;
-  max-height: 2em;
-  margin: .25em .5em;
+  max-width: var(--iconSize);
+  max-height: var(--iconSize);
+  margin: 0 .5em;
   border-radius: 50%;
 }

@@ -79,7 +79,7 @@ class PostgresStorage {
       description: sequelize.STRING(2048),
       activityType: sequelize.STRING,
       // description
-      preparation: sequelize.STRING,
+      preparation: sequelize.STRING(2048),
       leader: sequelize.STRING,
       hasCoaching: sequelize.BOOLEAN,
       // location

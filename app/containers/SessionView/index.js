@@ -27,7 +27,8 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   }
   date() {
     const date = new Date(this.state.session.startDate);
-    return moment(date).format('dddd D MMM');
+    const time = new Date(this.state.session.startTime);
+    return `${moment(date).format('dddd D MMM')} at ${moment(time).format('H:mm')}`;
   }
   renderActions() {
     const user = this.context ? this.context.user : false;
@@ -42,15 +43,25 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   }
   renderDetails() {
     const session = this.state.session;
+    let organizerButton = null;
+    if (session.Organizer) {
+      organizerButton = <div className={styles.contactButton}><Link to={session.Organizer.href}>Contact organizer</Link></div>;
+    }
     return (<div className={styles.detailsSection}>
-      {this.renderActions()}
-      <img role="presentation" />
-      <div>
-        <h2>{session.displayName}</h2>
-        <div>{session.location}</div>
-        <div>{this.date()} at {session.startTime}</div>
+      <div className={styles.detailsImg}>
+        <img role="presentation" />
+      </div>
+      <div className={styles.detailsText}>
+        {this.renderActions()}
+        <h1>{session.displayName}</h1>
+        <div className={styles.detail}>
+          {session.location}
+        </div>
+        <div className={styles.detail}>
+          {this.date()}
+        </div>
         <div>from £{session.price}</div>
-        <div><Link to={session.Organizer.href}>Contact organizer</Link></div>
+        {organizerButton}
       </div>
     </div>);
   }
@@ -58,45 +69,48 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     const session = this.state.session;
     return (<div className={styles.descriptionSection}>
       <div className={styles.mainCol}>
-        <h3>Description</h3>
+        <h2>Description</h2>
         <div className={styles.description}>
           {session.description}
         </div>
-        <h4>Session meeting point</h4>
+        <h3>Session meeting point</h3>
         <div>{session.meetingPoint}</div>
-        <h4>What you'll need</h4>
+        <h3>What you'll need</h3>
         <div>{session.preparation}</div>
       </div>
       <div className={styles.sideCol}>
-        <h4>Pricing</h4>
+        <h3>Pricing</h3>
         <div className={styles.floatingInfo}>
           General £{session.price}
         </div>
-        <h4>Session Leader</h4>
+        <h3>Session Leader</h3>
         <div className={styles.floatingInfo}>
           {session.leader}
         </div>
-        <h4>Organiser</h4>
+        <h3>Organiser</h3>
         <div className={styles.floatingInfo}>
-          {session.organizer}
+          {session.Organizer ? session.Organizer.name : 'No organizer'}
         </div>
       </div>
     </div>);
   }
-  renderSession() {
+  renderAbout() {
     const session = this.state.session;
-    let organizer = null;
-    if (!session) return null;
-    if (session.Organizer) {
-      organizer = (<p>Organizer: <Link to={session.Organizer.href}>{session.Organizer.name}</Link></p>);
-    }
+    const features = [];
+    if (session.hasCoaching) features.push('Coached');
     return (<div>
-      <h1>View session: {session.displayName}</h1>
-      {organizer}
-      <p>{session.description}</p>
+      <h2>About this session</h2>
+      <p>Detail about requirements etc, coming soon</p>
+      <ol>
+        {features.map((feature) => <li>{feature}</li>)}
+      </ol>
     </div>);
   }
+  renderMap() {
+    return (<div>Coming soon</div>);
+  }
   render() {
+    if (this.state.session === null) return (<div>Loading</div>);
     return (
       <div className={styles.sessionView}>
         {this.renderDetails()}
@@ -104,6 +118,8 @@ export default class SessionView extends React.Component { // eslint-disable-lin
           <div className={styles.inner}>Share this session</div>
         </div>
         {this.renderDescription()}
+        {this.renderAbout()}
+        {this.renderMap()}
       </div>
     );
   }
