@@ -4,36 +4,9 @@ const postgresEnv = require('../../postgres.env.json');
 
 class PostgresStorage {
   constructor() {
-    const isDev = process.env.NODE_ENV !== 'production';
-    if (isDev) {
-      this.writeTestEnv();
+    if (!process.env.IS_HEROKU) {
+      postgresEnv.DATABASE_URL = process.env.DATABASE_URL;
     }
-    this.user = {
-      username: process.env.OPENSESSIONS_PG_USER,
-      password: process.env.OPENSESSIONS_PG_PASS,
-    };
-    this.db = {
-      name: process.env.OPENSESSIONS_PG_DB,
-      host: process.env.OPENSESSIONS_PG_HOST,
-    };
-    if (isDev) {
-      this.dropModels();
-    } else {
-      this.syncModels();
-    }
-  }
-  writeTestEnv() {
-    Object.keys(postgresEnv).forEach((key) => {
-      process.env[key] = postgresEnv[key];
-    });
-  }
-  dropModels() {
-    const db = this.getInstance();
-    return db.query(`drop owned by ${this.user.username}`).then(() => db.sync());
-  }
-  syncModels() {
-    const db = this.getInstance();
-    return db.sync();
   }
   createModels(db) {
     const Organizer = db.define('Organizer', {
@@ -107,11 +80,9 @@ class PostgresStorage {
   }
   getInstance() {
     if (!this.instance) {
-      const user = this.user;
-      const db = this.db;
-      const instance = new sequelize(db.name, user.username, user.password, {
-        host: db.host,
+      const instance = new sequelize(process.env.DATABASE_URL, {
         dialect: 'postgres',
+        protocol: 'postgres',
         logging: false,
       });
       this.instance = this.createModels(instance);
