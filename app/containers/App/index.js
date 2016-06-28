@@ -14,8 +14,6 @@ import React from 'react';
 import Auth0Lock from 'auth0-lock';
 import CSSModules from 'react-css-modules';
 
-import $ from 'jquery';
-
 import Header from 'components/Header';
 import Footer from 'components/Footer';
 import getUserToken from './getUserToken';
@@ -60,7 +58,7 @@ export default class App extends React.Component { // eslint-disable-line react/
       }
       profile.logout = () => {
         this.setState({ profile: null });
-      }
+      };
       this.setState({ profile });
       return true;
     });

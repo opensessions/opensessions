@@ -15,8 +15,8 @@ export default class LogoutLink extends React.Component {
   }
   onClick() {
     localStorage.removeItem('userToken');
-    const {user} = this.context;
-    user.logout(); 
+    const { user } = this.context;
+    user.logout();
   }
   renderLogoutLink() {
     const { value } = this.props;

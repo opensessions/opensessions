@@ -52,7 +52,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       <Field label="Organizer" name="OrganizerUuid" model={session} type="relation" relationURL="/api/organizer" tip="Enter a club or session organiser name E.g. Richmond Rovers" />
       <Field label="Description" name="description" model={session} type="textarea" />
       <Field label="Sport / activity type" name="activityType" model={session} />
-      {/*<Field label="Sub category" name="activitySubType" model={session} />*/}
+      {/* <Field label="Sub category" name="activitySubType" model={session} /> */}
     </Fieldset>);
   }
   render() {
@@ -91,9 +91,9 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
                 <Field label="Phone" name="contactPhone" model={session} />
                 <Field label="Email" name="contactEmail" model={session} type="email" />
               </Fieldset>
-              {/*<Fieldset label="Photos">
+              {/* <Fieldset label="Photos">
                 <Field label="Example" name="example" model={session} />
-              </Fieldset>*/}
+              </Fieldset> */}
               <Fieldset label="Schedule">
                 <Field label="Start date" name="startDate" type="date" model={session} />
                 <Field label="Start time" name="startTime" type="time" model={session} />
