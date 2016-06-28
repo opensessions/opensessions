@@ -1,0 +1,66 @@
+@import '../App/variables.css';
+
+:root {
+  --sectionWidth: 128rem;
+}
+
+.sessionView {
+  background-color: var(--grey);
+  overflow: hidden;
+}
+
+.inner {
+  max-width: var(--sectionWidth);
+  margin: auto;
+}
+
+.detailsSection {
+  max-width: var(--sectionWidth);
+  margin: 1em auto;
+  background: #FFF;
+  padding: 2em;
+}
+
+.shareSection {
+  background-color: #FFF;
+  text-align: right;
+  margin: 1em 0;
+  padding: 1em;
+}
+
+.descriptionSection {
+  max-width: var(--sectionWidth);
+  margin: 1em auto;
+  padding: 2em;
+  display: flex;
+  h2, h3, h4 {
+    margin: .5em auto;
+    font-weight: normal;
+    font-family: serif;
+  }
+  h2 {
+    font-size: 2em;
+  }
+  h3 {
+    font-size: 1.6em;
+  }
+  h4 {
+    font-size: 1.4em;
+  }
+  & .description {
+    white-space: pre-wrap;
+  }
+}
+
+.mainCol {
+  flex-grow: 4;
+}
+
+.sideCol {
+  flex-grow: 1;
+}
+
+.floatingInfo {
+  background-color: #FFF;
+  padding: 1em;
+}
