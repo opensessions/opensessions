@@ -11,7 +11,7 @@ module.exports = (app) => {
   const database = storage.getInstance();
   const Session = database.models.Session;
   const Organizer = database.models.Organizer;
-  const getUser = (req) => req.user['sub'];
+  const getUser = (req) => req.user.sub;
 
   const requireLogin = jwt({
     secret: new Buffer(process.env.AUTH0_CLIENT_SECRET, 'base64'),
