@@ -9,12 +9,28 @@ module.exports = (app) => {
   const api = express();
   const storage = new Storage();
   const database = storage.getInstance();
-  const IDprop = 'sub';
+  const Session = database.models.Session;
+  const Organizer = database.models.Organizer;
+  const getUser = (req) => req.user['sub'];
 
   const requireLogin = jwt({
     secret: new Buffer(process.env.AUTH0_CLIENT_SECRET, 'base64'),
     audience: process.env.AUTH0_CLIENT_ID,
   });
+
+  const queryParse = (req) => {
+    const query = req.query || {};
+    if (query) {
+      Object.keys(query).forEach((key) => {
+        if (key[0] === key[0].toUpperCase()) {
+          if (query[key] === 'null') {
+            query[key] = null;
+          }
+        }
+      });
+    }
+    return query;
+  };
 
   api.get('/rdpe', (req, res) => {
     res.json({
@@ -29,7 +45,7 @@ module.exports = (app) => {
         $gte: fromTS,
       },
     };
-    database.models.Session.findAll({ where }).then((rawSessions) => {
+    Session.findAll({ where }).then((rawSessions) => {
       const sessions = rawSessions.map((session) => {
         const state = session.state !== 'deleted' ? 'updated' : 'deleted';
         return {
@@ -48,26 +64,40 @@ module.exports = (app) => {
         items: sessions,
         next: `/api/rdpe/sessions?from=${next.from}&after=${next.after}`
       });
+    }).catch((error) => {
+      res.json({ error });
+    });
+  });
+
+  api.get('/session', (req, res) => {
+    Session.findAll({ where: queryParse(req), include: [Organizer] }).then((sessions) => {
+      res.json(sessions);
+    }).catch((error) => {
+      res.json({ error });
     });
   });
 
   api.all('/session/create', requireLogin, (req, res) => {
     const session = req.body;
-    session.owner = req.user[IDprop];
-    database.models.Session.create(session).then((savedSession) => {
+    session.owner = getUser(req);
+    Session.create(session).then((savedSession) => {
       res.json(savedSession);
+    }).catch((error) => {
+      res.json({ error });
     });
   });
 
   api.get('/session/:uuid', (req, res) => {
-    database.models.Session.findOne({ where: { uuid: req.params.uuid }, include: [database.models.Organizer] }).then((session) => {
+    Session.findOne({ where: { uuid: req.params.uuid }, include: [Organizer] }).then((session) => {
       res.json(session);
+    }).catch((error) => {
+      res.json({ error });
     });
   });
 
   api.post('/session/:uuid', requireLogin, (req, res) => {
-    database.models.Session.findOne({ where: { uuid: req.params.uuid } }).then((session) => {
-      if (session.owner !== req.user[IDprop]) {
+    Session.findOne({ where: { uuid: req.params.uuid } }).then((session) => {
+      if (session.owner !== getUser(req)) {
         res.json({ error: 'Must be session owner to modify session' });
         return;
       }
@@ -75,6 +105,8 @@ module.exports = (app) => {
       session.save().then((savedSession) => {
         res.json(savedSession);
       });
+    }).catch((error) => {
+      res.json({ error });
     });
   });
 
@@ -85,8 +117,10 @@ module.exports = (app) => {
   });
 
   api.get('/me/sessions', (req, res) => {
-    database.models.Session.findAll({ where: { owner: req.user[IDprop] } }).then((sessions) => {
+    Session.findAll({ where: { owner: getUser(req) } }).then((sessions) => {
       res.json(sessions);
+    }).catch((error) => {
+      res.json({ error });
     });
   });
 
@@ -100,25 +134,31 @@ module.exports = (app) => {
         delete query.name__contains;
       }
     }
-    database.models.Organizer.findAll({
+    Organizer.findAll({
       where: query,
-      include: [database.models.Session],
+      include: [Session],
     }).then((organizers) => {
       res.json(organizers);
+    }).catch((error) => {
+      res.json({ error });
     });
   });
 
   api.all('/organizer/create', requireLogin, (req, res) => {
     const organizer = req.body;
-    organizer.owner = req.user[IDprop];
-    database.models.Organizer.create(organizer).then((savedOrganizer) => {
+    organizer.owner = getUser(req);
+    Organizer.create(organizer).then((savedOrganizer) => {
       res.json(savedOrganizer);
+    }).catch((error) => {
+      res.json({ error });
     });
   });
 
   api.get('/organizer/:uuid', (req, res) => {
-    database.models.Organizer.findOne({ where: { uuid: req.params.uuid }, include: [database.models.Session] }).then((organizer) => {
+    Organizer.findOne({ where: { uuid: req.params.uuid }, include: [Session] }).then((organizer) => {
       res.json(organizer);
+    }).catch((error) => {
+      res.json({ error });
     });
   });
 

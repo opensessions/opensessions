@@ -64,7 +64,7 @@ export default class App extends React.Component { // eslint-disable-line react/
     });
   }
   createLock() {
-    localStorage.removeItem('userToken');
+    // localStorage.removeItem('userToken');
     this.lock = new Auth0Lock('bSVd1LzdwXsKbjF7JXflIc1UuMacffUA', 'opensessions.eu.auth0.com');
   }
   render() {

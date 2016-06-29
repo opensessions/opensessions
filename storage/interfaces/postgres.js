@@ -59,7 +59,12 @@ class PostgresStorage {
     const Session = db.define('Session', {
       // meta
       uuid,
-      isPublished: sequelize.BOOLEAN,
+      state: {
+        type: sequelize.STRING,
+        validation: {
+          isIn: ['draft', 'published', 'deleted']
+        }
+      },
       owner: sequelize.STRING,
       // description
       title: sequelize.STRING(50),
@@ -76,8 +81,14 @@ class PostgresStorage {
       // price
       price: sequelize.FLOAT(2),
       // restriction
-      genderRestriction: sequelize.STRING(16),
-      minimumAgeRestriction: sequelize.INTEGER,
+      genderRestriction: {
+        type: sequelize.STRING(16),
+        validation: {
+          isIn: ['mixed', 'male', 'female']
+        }
+      },
+      minAgeRestriction: sequelize.INTEGER,
+      maxAgeRestriction: sequelize.INTEGER,
       // contact
       contactPhone: sequelize.STRING,
       contactEmail: sequelize.STRING,
@@ -91,7 +102,7 @@ class PostgresStorage {
           return `/session/${this.uuid}`;
         },
         displayName() {
-          return `${this.title || 'Untitled'}${this.isPublished ? '' : ' (draft)'}`;
+          return `${this.title || 'Untitled'}${this.state === 'draft' ? ' (draft)' : ''}`;
         },
       },
     });
@@ -105,6 +116,7 @@ class PostgresStorage {
       const instance = new sequelize(DATABASE_URL, {
         dialect: 'postgres',
         logging: false,
+        omitNull: true,
       });
       this.instance = this.createModels(instance);
     }

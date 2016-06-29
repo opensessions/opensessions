@@ -10,6 +10,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
     model: React.PropTypes.object,
     name: React.PropTypes.string.isRequired,
     relationURL: React.PropTypes.string,
+    relationQuery: React.PropTypes.object,
     id: React.PropTypes.string,
     onChange: React.PropTypes.func,
     tip: React.PropTypes.string,
@@ -25,7 +26,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
     };
     this.handleChange = this.handleChange.bind(this);
     if (props.type === 'relation') {
-      this.fetchRelation();
+      this.fetchRelation(this.props.relationQuery);
     }
   }
   fetchRelation(query, value) {
@@ -121,7 +122,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
         event.preventDefault();
         apiFetch(`${this.props.relationURL}/create`, { body: { name: event.target.value } }).then((relation) => {
           this.setState({ relationState: 'none' });
-          this.fetchRelation(undefined, relation.uuid);
+          this.fetchRelation(this.props.relationQuery, relation.uuid);
         });
       };
       let addControl = (<button onClick={onClick} className={styles.addRelation}>Add +</button>);
