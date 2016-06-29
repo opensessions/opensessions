@@ -1,8 +1,8 @@
 const passport = require('passport');
-const auth0strategy = require('passport-auth0');
+const Auth0Strategy = require('passport-auth0');
 const config = require('./../../app/config');
 
-const strategy = new auth0strategy({
+const strategy = new Auth0Strategy({
   domain: 'opensessions.eu.auth0.com',
   clientID: config.auth0.CLIENT_ID,
   clientSecret: config.auth0.CLIENT_SECRET,
