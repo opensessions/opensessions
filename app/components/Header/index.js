@@ -14,7 +14,11 @@ class Header extends React.Component { // eslint-disable-line react/prefer-state
   }
   showLock() {
     const { lock } = this.context;
-    lock.show();
+    lock.show({
+      icon: '/images/open-sessions-icon.png',
+      socialBigButtons: true,
+      theme: true
+    });
   }
   renderLoginButton() {
     const { user } = this.context;
