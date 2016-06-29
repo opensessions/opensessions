@@ -39,7 +39,8 @@
     "test:firefox": "npm run test -- --browsers Firefox",
     "test:safari": "npm run test -- --browsers Safari",
     "test:ie": "npm run test -- --browsers IE",
-    "coveralls": "cat ./coverage/lcov/lcov.info | coveralls"
+    "coveralls": "cat ./coverage/lcov/lcov.info | coveralls",
+    "postinstall": "npm run build:clean"
   },
   "pre-commit": "lint:staged",
   "babel": {
