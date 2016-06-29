@@ -46,15 +46,17 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   _locationInput = null
   updateSession(name, value) {
     const session = this.getSession();
+    console.log("updateSession", name, value);
     session[name] = value;
     this.setState({ session });
   }
   locationCallback(autocomplete) {
     const place = autocomplete.getPlace();
+    console.log(place);
     const data = {
       formatted_address: place.formatted_address,
-      lat: place.geometry.lat(),
-      lng: place.geometry.lng(),
+      lat: place.geometry.location.lat(),
+      lng: place.geometry.location.lng(),
     };
     this.updateSession('locationData', JSON.stringify(data));
     return place;
@@ -67,12 +69,16 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       <Field label="Organizer" name="OrganizerUuid" model={session} type="relation" relationURL="/api/organizer" relationQuery={{ owner: user.user_id }} tip="Enter a club or session organiser name E.g. Richmond Rovers" />
       <Field label="Description" name="description" model={session} type="textarea" />
       <Field label="Sport / activity type" name="activityType" model={session} />
-      {/* <Field label="Sub category" name="activitySubType" model={session} /> */}
     </Fieldset>);
   }
   render() {
     const session = this.getSession();
     const locationCallback = this.locationCallback;
+    const genderOptions = [
+      { text: 'Mixed', value: 'mixed', src: '/images/mixed.svg' },
+      { text: 'Male only', value: 'male', src: '/images/male.svg' },
+      { text: 'Female only', value: 'female', src: '/images/female.svg' }
+    ];
     return (
       <div className={styles.form}>
         <Authenticated message="You must login before you can add a session">
@@ -101,7 +107,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
                 <Field label="Price" name="price" model={session} type="number" />
               </Fieldset>
               <Fieldset label="Restrictions">
-                <Field label="Gender restrictions" name="genderRestriction" model={session} />
+                <Field label="Gender restrictions" type="IconRadio" name="genderRestriction" model={session} options={genderOptions} />
                 <Field label="Is there a minimum age?" name="minAgeRestriction" model={session} type="number" />
                 <Field label="Is there a maximum age?" name="maxAgeRestriction" model={session} type="number" />
               </Fieldset>

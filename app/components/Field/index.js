@@ -1,5 +1,7 @@
 import React from 'react';
 
+import IconRadioField from 'components/IconRadioField';
+
 import styles from './styles.css';
 
 import { apiFetch } from '../../utils/api';
@@ -49,6 +51,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
     if (this.props.model) {
       this.props.model.update(this.props.name, value);
     }
+    console.log("HandleChange", value, this.props.name);
   }
   isValid(value) {
     if (typeof value === 'undefined') value = this.state.value;
@@ -150,6 +153,9 @@ export default class Field extends React.Component { // eslint-disable-line reac
       }
       attrs.type = type;
       input = <input {...attrs} />;
+      if (type === 'IconRadio') {
+        input = <IconRadioField name={this.props.name} options={this.props.options} onChange={this.handleChange} />;
+      }
     }
     let tip;
     if (this.props.tip) {

@@ -36,6 +36,13 @@
     padding: .75em;
     color: #1F2C4D;
   }
+  & span.plus {
+    font-weight: bold;
+    font-size: 2em;
+    line-height: .6;
+    vertical-align: sub;
+    display: inline-block;
+  }
 }
 
 .userIcon {

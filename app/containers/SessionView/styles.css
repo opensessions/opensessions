@@ -42,6 +42,9 @@
     margin: 1em auto;
     padding-left: 4em;
   }
+  & .detailPrice {
+    text-align: right;
+  }
 }
 
 .shareSection {

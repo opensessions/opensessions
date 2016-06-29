@@ -60,7 +60,9 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         <div className={styles.detail}>
           {this.date()}
         </div>
-        <div>from £{session.price}</div>
+        <div className={styles.detailPrice}>
+          from £{session.price}
+        </div>
         {organizerButton}
       </div>
     </div>);
@@ -89,7 +91,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         </div>
         <h3>Organiser</h3>
         <div className={styles.floatingInfo}>
-          {session.Organizer ? session.Organizer.name : 'No organizer'}
+          {session.Organizer ? (<Link to={session.Organizer.href}>{session.Organizer.name}</Link>) : 'No organizer'}
         </div>
       </div>
     </div>);

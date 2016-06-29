@@ -1,0 +1,24 @@
+@import '../../containers/App/variables.css';
+
+.iconRadio {
+  & ol {
+    display: flex;
+    & > li {
+      text-align: center;
+      list-style: none;
+      color: #AAA;
+      flex-grow: 1;
+      flex-basis: 5em;
+      &.selected {
+        color: var(--actionColor);
+      }
+      & img {
+        display: block;
+        margin: auto;
+      }
+      & input {
+        display: none;
+      }
+    }
+  }
+}

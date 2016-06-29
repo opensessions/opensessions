@@ -35,7 +35,7 @@ class Header extends React.Component { // eslint-disable-line react/prefer-state
             <img src="/images/beta.svg" alt="beta" className={styles.beta} />
           </Link>
           <nav className={styles.nav}>
-            <Link to="/session/add" activeClassName="active">+ Add a session</Link>
+            <Link to="/session/add" activeClassName="active"><span className={styles.plus}>+</span> Add a session</Link>
             {this.renderLoginButton()}
           </nav>
         </div>
