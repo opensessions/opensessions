@@ -1,12 +1,26 @@
 'use strict';
 const sequelize = require('sequelize');
-const postgresEnv = require('../../postgres.env.json');
+const dotenv = require('dotenv');
+dotenv.load();
 
 class PostgresStorage {
   constructor() {
-    if (!process.env.IS_HEROKU) {
-      postgresEnv.DATABASE_URL = process.env.DATABASE_URL;
+    const isDev = process.env.NODE_ENV !== 'production';
+    if (isDev) {
+      this.DATABASE_URL = `postgres://${process.env.DATABASE_USER}:${process.env.DATABASE_PASS}@${process.env.DATABASE_HOST}:5432/${process.env.DATABASE_NAME}`;
+      this.dropModels();
+    } else {
+      this.DATABASE_URL = process.env.DATABASE_URL;
+      this.syncModels();
     }
+  }
+  dropModels() {
+    const db = this.getInstance();
+    return db.query(`drop owned by ${process.env.DATABASE_USER}`).then(() => db.sync());
+  }
+  syncModels() {
+    const db = this.getInstance();
+    return db.sync();
   }
   createModels(db) {
     const uuid = {
@@ -87,9 +101,9 @@ class PostgresStorage {
   }
   getInstance() {
     if (!this.instance) {
-      const instance = new sequelize(process.env.DATABASE_URL, {
+      const DATABASE_URL = this.DATABASE_URL;
+      const instance = new sequelize(DATABASE_URL, {
         dialect: 'postgres',
-        protocol: 'postgres',
         logging: false,
       });
       this.instance = this.createModels(instance);
