@@ -64,7 +64,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     const user = this.context.user || {};
     return (<Fieldset label="Description" ref="descriptionFieldset">
       <Field label="Title" name="title" model={session} validation={{ maxLength: 50 }} tip="Enter a title for your session E.g. Volleyball training" />
-      <Field label="Organizer" name="OrganizerUuid" model={session} type="relation" relationURL={`/api/organizer?owner=${user.user_id}`} tip="Enter a club or session organiser name E.g. Richmond Rovers" />
+      <Field label="Organizer" name="OrganizerUuid" model={session} type="relation" relationURL="/api/organizer" relationQuery={{ owner: user.user_id }} tip="Enter a club or session organiser name E.g. Richmond Rovers" />
       <Field label="Description" name="description" model={session} type="textarea" />
       <Field label="Sport / activity type" name="activityType" model={session} />
       {/* <Field label="Sub category" name="activitySubType" model={session} /> */}
@@ -101,7 +101,9 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
                 <Field label="Price" name="price" model={session} type="number" />
               </Fieldset>
               <Fieldset label="Restrictions">
-                <Field label="Example" name="example" model={session} />
+                <Field label="Gender restrictions" name="genderRestriction" model={session} />
+                <Field label="Is there a minimum age?" name="minAgeRestriction" model={session} type="number" />
+                <Field label="Is there a maximum age?" name="maxAgeRestriction" model={session} type="number" />
               </Fieldset>
               <Fieldset label="Contact info">
                 <Field label="Phone" name="contactPhone" model={session} />

@@ -29,7 +29,7 @@ export default class Form extends React.Component { // eslint-disable-line react
   }
   autosave() {
     const model = this.props.model;
-    model.isPublished = false;
+    model.state = 'draft';
     this.saveModel(model);
   }
   saveModel(model, verb) {
@@ -58,7 +58,7 @@ export default class Form extends React.Component { // eslint-disable-line react
   submit() {
     if (this.timeout) clearTimeout(this.timeout);
     const model = this.props.model;
-    model.isPublished = true;
+    model.state = 'published';
     this.saveModel(model, 'Publishing');
   }
   renderNav() {
