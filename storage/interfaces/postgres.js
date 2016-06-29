@@ -83,6 +83,7 @@ class PostgresStorage {
       // restriction
       genderRestriction: {
         type: sequelize.STRING(16),
+        defaultValue: 'mixed',
         validation: {
           isIn: ['mixed', 'male', 'female']
         }

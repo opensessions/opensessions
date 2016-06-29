@@ -40,7 +40,7 @@ export default class IconRadioField extends React.Component { // eslint-disable-
         const selected = option.value === this.state.value;
         return (<li className={selected ? styles.selected : ''}>
           <label>
-            <img src={option.src} />
+            <img src={selected ? option.selectedSrc : option.src} />
             {option.text}
             <input type="radio" value={value} selected={selected} {...attrs} />
           </label>

@@ -52,7 +52,6 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   }
   locationCallback(autocomplete) {
     const place = autocomplete.getPlace();
-    console.log(place);
     const data = {
       formatted_address: place.formatted_address,
       lat: place.geometry.location.lat(),
@@ -75,9 +74,9 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     const session = this.getSession();
     const locationCallback = this.locationCallback;
     const genderOptions = [
-      { text: 'Mixed', value: 'mixed', src: '/images/mixed.svg' },
-      { text: 'Male only', value: 'male', src: '/images/male.svg' },
-      { text: 'Female only', value: 'female', src: '/images/female.svg' }
+      { text: 'Mixed', value: 'mixed', src: '/images/mixed.svg', selectedSrc: '/images/mixed-selected.svg' },
+      { text: 'Male only', value: 'male', src: '/images/male.svg', selectedSrc: '/images/male-selected.svg' },
+      { text: 'Female only', value: 'female', src: '/images/female.svg', selectedSrc: '/images/female-selected.svg' }
     ];
     return (
       <div className={styles.form}>

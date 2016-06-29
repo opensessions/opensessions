@@ -9,12 +9,14 @@
       color: #AAA;
       flex-grow: 1;
       flex-basis: 5em;
+      text-transform: uppercase;
       &.selected {
         color: var(--actionColor);
       }
       & img {
         display: block;
-        margin: auto;
+        margin: .5em auto;
+        height: 6rem;
       }
       & input {
         display: none;

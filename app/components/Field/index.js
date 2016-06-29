@@ -154,7 +154,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
       attrs.type = type;
       input = <input {...attrs} />;
       if (type === 'IconRadio') {
-        input = <IconRadioField name={this.props.name} options={this.props.options} onChange={this.handleChange} />;
+        input = <IconRadioField name={attrs.name} options={this.props.options} onChange={this.handleChange} value={attrs.value} />;
       }
     }
     let tip;
