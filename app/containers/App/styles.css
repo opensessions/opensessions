@@ -14,6 +14,7 @@ html {
   font-size: 1.6rem;
   margin: auto;
   color: #182750;
+  background-color: var(--grey);
   & a {
     color: inherit;
     &:hover,

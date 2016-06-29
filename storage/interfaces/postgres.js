@@ -60,7 +60,10 @@ class PostgresStorage {
       locationData: sequelize.JSON,
       meetingPoint: sequelize.STRING,
       // price
-      price: sequelize.NUMBER,
+      price: sequelize.FLOAT(2),
+      // restriction
+      genderRestriction: sequelize.STRING(16),
+      minimumAgeRestriction: sequelize.INTEGER,
       // contact
       contactPhone: sequelize.STRING,
       contactEmail: sequelize.STRING,

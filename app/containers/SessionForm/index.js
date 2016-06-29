@@ -57,10 +57,11 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       lng: place.geometry.lng(),
     };
     this.updateSession('locationData', JSON.stringify(data));
+    return place;
   }
   renderDescriptionFieldset() {
     const session = this.getSession();
-    const user = this.context.user;
+    const user = this.context.user || {};
     return (<Fieldset label="Description" ref="descriptionFieldset">
       <Field label="Title" name="title" model={session} validation={{ maxLength: 50 }} tip="Enter a title for your session E.g. Volleyball training" />
       <Field label="Organizer" name="OrganizerUuid" model={session} type="relation" relationURL={`/api/organizer?owner=${user.user_id}`} tip="Enter a club or session organiser name E.g. Richmond Rovers" />
