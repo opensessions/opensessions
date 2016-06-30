@@ -77,9 +77,13 @@ export default class SessionView extends React.Component { // eslint-disable-lin
           {session.description}
         </div>
         <h3>Session meeting point</h3>
-        <div>{session.meetingPoint}</div>
+        <div className={styles.description}>
+          {session.meetingPoint}
+        </div>
         <h3>What you'll need</h3>
-        <div>{session.preparation}</div>
+        <div className={styles.description}>
+          {session.preparation}
+        </div>
       </div>
       <div className={styles.sideCol}>
         <h3>Pricing</h3>

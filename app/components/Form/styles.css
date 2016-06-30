@@ -7,7 +7,7 @@
 
 .nav {
   flex-grow: 1;
-  padding: .5em;
+  padding: 4em .5em;
   & > a {
     display: block;
     padding: .5em 1em;
@@ -91,11 +91,22 @@
 
 @media (min-width: 36rem) {
   .nav {
-    padding: 4em .5em;
     font-size: 1.2em;
   }
 
   .tabs {
     padding: 2em 2%;
+  }
+}
+
+@media (max-width: 36rem) {
+  .nav {
+  padding: .5em;
+    display: flex;
+    flex-wrap: wrap;
+    & a {
+      flex-grow: 1;
+      text-align: center;
+    }
   }
 }

@@ -50,6 +50,7 @@
     }
   }
   .previewButton {
+    font-family: Belgrano, serif;
     background-color: #1A90CD;
     color: #FFF;
     padding: .5em 1.5em;
