@@ -12,9 +12,6 @@
 
 import React from 'react';
 import Auth0Lock from 'auth0-lock';
-import CSSModules from 'react-css-modules';
-
-import $ from 'jquery';
 
 import Header from 'components/Header';
 import Footer from 'components/Footer';
@@ -22,11 +19,6 @@ import getUserToken from './getUserToken';
 
 import styles from './styles.css';
 
-const CSSModulesOptions = {
-  allowMultiple: true,
-};
-
-@CSSModules(styles, CSSModulesOptions)
 export default class App extends React.Component { // eslint-disable-line react/prefer-stateless-function
 
   static propTypes = {
@@ -49,23 +41,12 @@ export default class App extends React.Component { // eslint-disable-line react/
     };
   }
   componentWillMount() {
-    this.setupAjax();
     this.createLock();
     this.setupProfile();
-  }
-  setupAjax() {
-    $.ajaxSetup({
-      'beforeSend': function(xhr) {
-        if (localStorage.getItem('userToken')) {
-          xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('userToken'));
-        }
-      }
-    });
   }
   setupProfile() {
     this.lock.getProfile(getUserToken(this.lock), (err, profile) => {
       if (err) {
-        console.log('user error');
         return false;
       }
       profile.logout = () => {
@@ -81,7 +62,7 @@ export default class App extends React.Component { // eslint-disable-line react/
   }
   render() {
     return (
-      <div styleName="root">
+      <div className={styles.root}>
         <Header />
         {this.props.children}
         <Footer />

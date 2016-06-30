@@ -19,6 +19,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
     type: React.PropTypes.string,
     validation: React.PropTypes.object,
     value: React.PropTypes.string,
+    options: React.PropTypes.array
   }
   constructor(props) {
     super(props);
@@ -51,7 +52,6 @@ export default class Field extends React.Component { // eslint-disable-line reac
     if (this.props.model) {
       this.props.model.update(this.props.name, value);
     }
-    console.log("HandleChange", value, this.props.name);
   }
   isValid(value) {
     if (typeof value === 'undefined') value = this.state.value;

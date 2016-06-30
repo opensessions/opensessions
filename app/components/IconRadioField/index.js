@@ -1,7 +1,5 @@
 import React from 'react';
 
-import { apiFetch } from '../../utils/api';
-
 import styles from './styles.css';
 
 export default class IconRadioField extends React.Component { // eslint-disable-line react/prefer-stateless-function
@@ -36,11 +34,11 @@ export default class IconRadioField extends React.Component { // eslint-disable-
     const value = this.state.value;
     const radios = (<ol>
       {this.props.options.map((option) => {
-        const value = option.value;
-        const selected = option.value === this.state.value;
+        const optionValue = option.value;
+        const selected = optionValue === this.state.value;
         return (<li className={selected ? styles.selected : ''}>
           <label>
-            <img src={selected ? option.selectedSrc : option.src} />
+            <img src={selected ? option.selectedSrc : option.src} role="presentation" />
             {option.text}
             <input type="radio" value={value} selected={selected} {...attrs} />
           </label>

@@ -35,8 +35,7 @@ export default class Form extends React.Component { // eslint-disable-line react
   saveModel(model, verb) {
     this.setState({ saveState: `${verb || 'Saving'}...`, saveStateClass: styles.saving });
     apiFetch(`/api/session/${model.uuid}`, { body: model })
-      .then((json) => {
-        console.log('Save complete', json);
+      .then(() => {
         this.setState({ saveState: 'Saved!', saveStateClass: styles.saved });
       });
   }
