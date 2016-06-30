@@ -38,6 +38,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     if (user && user.user_id === session.owner) {
       actions.push(<Link to={`/session/${session.uuid}/edit`}>Edit</Link>);
     }
+    if (!actions.length) return null;
     return (<div className={styles.actions}>
       {actions}
     </div>);
@@ -48,6 +49,13 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     if (session.Organizer) {
       organizerButton = <div className={styles.contactButton}><Link to={session.Organizer.href}>Contact organizer</Link></div>;
     }
+    let locationDetail = null;
+    if (session.location) {
+      locationDetail = (<div className={styles.locationDetail}>
+        <img src="/images/map-pin.svg" role="presentation" />
+        {session.location}
+      </div>);
+    }
     return (<div className={styles.detailsSection}>
       <div className={styles.detailsImg}>
         <img role="presentation" />
@@ -55,10 +63,9 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       <div className={styles.detailsText}>
         {this.renderActions()}
         <h1>{session.displayName}</h1>
-        <div className={styles.detail}>
-          {session.location}
-        </div>
-        <div className={styles.detail}>
+        {locationDetail}
+        <div className={styles.dateDetail}>
+          <img src="/images/calendar.svg" role="presentation" />
           {this.date()}
         </div>
         <div className={styles.detailPrice}>

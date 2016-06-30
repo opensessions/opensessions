@@ -38,7 +38,8 @@
   & .detailsText {
     flex-basis: 50%;
   }
-  & .detail {
+  & .dateDetail,
+  & .locationDetail {
     margin: 1em auto;
     padding-left: 4em;
   }

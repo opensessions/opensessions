@@ -40,7 +40,8 @@
     "test:safari": "npm run test -- --browsers Safari",
     "test:ie": "npm run test -- --browsers IE",
     "coveralls": "cat ./coverage/lcov/lcov.info | coveralls",
-    "postinstall": "npm run build:clean"
+    "postinstall": "npm run build:clean",
+    "push": "npm run test && git push"
   },
   "pre-commit": "lint:staged",
   "babel": {

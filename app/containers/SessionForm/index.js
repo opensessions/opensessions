@@ -56,6 +56,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       lat: place.geometry.location.lat(),
       lng: place.geometry.location.lng(),
     };
+    this.updateSession('location', place.formatted_address);
     this.updateSession('locationData', JSON.stringify(data));
     return place;
   }
