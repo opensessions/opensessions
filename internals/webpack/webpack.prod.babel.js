@@ -31,11 +31,14 @@ module.exports = require('./webpack.base.babel')({
 
   // In production, we minify our CSS with cssnano
   postcssPlugins: [
-    postcssFocus(),
-    cssnext({
-      browsers: ['last 2 versions', 'IE > 10'],
+    postcssImport(),
+    postcssNested(),
+    postcssFocus(), // Add a :focus to every :hover
+    cssnext({ // Allow future CSS features to be used, also auto-prefixes the CSS...
+      browsers: ['last 2 versions', 'IE > 10'], // ...based on this browser list
     }),
-    postcssReporter({
+    postcssLost(),
+    postcssReporter({ // Posts messages from plugins to the terminal
       clearMessages: true,
     }),
   ],

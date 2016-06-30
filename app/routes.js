@@ -32,20 +32,6 @@ export default function createRoutes() {
         }).catch(errorLoading);
       },
     }, {
-      path: '/register',
-      name: 'register',
-      getComponent(nextState, cb) {
-        const importModules = Promise.all([
-          System.import('containers/RegisterPage'),
-        ]);
-
-        const renderRoute = loadModule(cb);
-
-        importModules.then(([component]) => {
-          renderRoute(component);
-        }).catch(errorLoading);
-      },
-    }, {
       path: '/forgot',
       name: 'forgot',
       getComponent(nextState, cb) {
@@ -79,20 +65,6 @@ export default function createRoutes() {
       getComponent(nextState, cb) {
         const importModules = Promise.all([
           System.import('containers/OrganizerView'),
-        ]);
-
-        const renderRoute = loadModule(cb);
-
-        importModules.then(([component]) => {
-          renderRoute(component);
-        }).catch(errorLoading);
-      },
-    }, {
-      path: '/login',
-      name: 'login',
-      getComponent(nextState, cb) {
-        const importModules = Promise.all([
-          System.import('containers/LoginPage'),
         ]);
 
         const renderRoute = loadModule(cb);

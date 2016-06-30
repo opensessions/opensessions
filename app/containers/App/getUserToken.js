@@ -6,9 +6,6 @@ const getUserToken = (lock) => {
       idToken = authHash.id_token;
       localStorage.setItem('userToken', authHash.id_token);
     }
-    if (authHash.error) {
-      console.log('Error signing in', authHash);
-    }
   }
   return idToken;
 };
