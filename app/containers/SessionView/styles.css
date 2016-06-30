@@ -82,6 +82,24 @@
   }
 }
 
+.aboutSection {
+  background-color: #FFF;
+  padding: 2em;
+  & h2 {
+    font-family: Belgrano, serif;
+    font-size: 1.6em;
+    font-weight: normal;
+  }
+  & ol {
+    font-size: 1.4em;
+    color: var(--actionColor);
+    & > li {
+      list-style: none;
+      padding: 1em;
+    }
+  }
+}
+
 .mainCol {
   flex-grow: 4;
   padding: 1em;

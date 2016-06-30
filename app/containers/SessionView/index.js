@@ -108,12 +108,14 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     if (session.genderRestriction) {
       features.push(session.genderRestriction);
     }
-    return (<div>
-      <h2>About this session</h2>
-      <p>Detail about requirements etc, coming soon</p>
-      <ol>
-        {features.map((feature) => <li>{feature}</li>)}
-      </ol>
+    return (<div className={styles.aboutSection}>
+      <div className={styles.inner}>
+        <h2>About this session</h2>
+        <p>Detail about requirements etc, coming soon</p>
+        <ol>
+          {features.map((feature) => <li>{feature}</li>)}
+        </ol>
+      </div>
     </div>);
   }
   renderMap() {

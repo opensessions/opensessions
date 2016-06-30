@@ -48,7 +48,8 @@ module.exports = (app) => {
     const order = [
       ['updatedAt', 'DESC']
     ];
-    Session.findAll({ where, order }).then((rawSessions) => {
+    const limit = 50;
+    Session.findAll({ where, order, limit }).then((rawSessions) => {
       const sessions = rawSessions.map((session) => {
         const state = session.state !== 'deleted' ? 'updated' : 'deleted';
         return {
