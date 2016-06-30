@@ -3,7 +3,7 @@ const Storage = require('../../storage/interfaces/postgres.js');
 const jwt = require('express-jwt');
 const dotenv = require('dotenv');
 
-dotenv.config({silent: true});
+dotenv.config({ silent: true });
 dotenv.load();
 
 module.exports = (app) => {

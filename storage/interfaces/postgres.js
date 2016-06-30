@@ -2,7 +2,7 @@
 const sequelize = require('sequelize');
 const dotenv = require('dotenv');
 
-dotenv.config({silent: true});
+dotenv.config({ silent: true });
 dotenv.load();
 
 class PostgresStorage {
