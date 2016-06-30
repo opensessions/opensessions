@@ -56,10 +56,8 @@ export default class BoolRadioField extends React.Component { // eslint-disable-
         </li>);
       })}
     </ol>);
-    return (
-      <div className={styles.iconRadio}>
-        {radios}
-      </div>
-    );
+    return (<div className={styles.boolRadio}>
+      {radios}
+    </div>);
   }
 }

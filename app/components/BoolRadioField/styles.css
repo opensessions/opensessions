@@ -1,0 +1,12 @@
+.boolRadio {
+  & ol {
+    display: flex;
+    & > li {
+      flex-grow: 1;
+      list-style: none;
+      & input {
+        margin: .5em;
+      }
+    }
+  }
+}

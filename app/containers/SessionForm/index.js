@@ -100,8 +100,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
               <Fieldset label="Additional info">
                 <Field label="What to bring" name="preparation" type="textarea" model={session} validation={{ maxLength: 2048 }} />
                 <Field label="Session leader" name="leader" model={session} />
-                <Field label="Will participants recieve coaching?" name="hasCoach" type="checkbox" model={session} />
-                <Field label="Will participants recieve coaching?" type="BoolRadio" name="hasCoach" model={session} options={coachOptions} />
+                <Field label="Will participants recieve coaching?" type="BoolRadio" name="hasCoaching" model={session} options={coachOptions} />
               </Fieldset>
               <Fieldset label="Location">
                 <LocationField label="Location" name="location" callback={locationCallback} />

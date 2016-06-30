@@ -19,12 +19,10 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     let uuid;
     if (this.props.params && this.props.params.uuid) {
       uuid = this.props.params.uuid;
-    } else {
-      uuid = this.state.organizer.uuid;
+      apiFetch(`/api/organizer/${uuid}`).then((organizer) => {
+        self.setState({ organizer });
+      });
     }
-    apiFetch(`/api/organizer/${uuid}`).then((organizer) => {
-      self.setState({ organizer });
-    });
   }
   renderSessions() {
     const organizer = this.state.organizer;
