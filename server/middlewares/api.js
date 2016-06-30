@@ -45,7 +45,10 @@ module.exports = (app) => {
         $gte: fromTS,
       },
     };
-    Session.findAll({ where }).then((rawSessions) => {
+    const order = [
+      ['updatedAt', 'DESC']
+    ];
+    Session.findAll({ where, order }).then((rawSessions) => {
       const sessions = rawSessions.map((session) => {
         const state = session.state !== 'deleted' ? 'updated' : 'deleted';
         return {

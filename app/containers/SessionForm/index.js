@@ -78,6 +78,10 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       { text: 'Male only', value: 'male', src: '/images/male.svg', selectedSrc: '/images/male-selected.svg' },
       { text: 'Female only', value: 'female', src: '/images/female.svg', selectedSrc: '/images/female-selected.svg' }
     ];
+    const coachOptions = [
+      { text: 'Coached' },
+      { text: 'Uncoached' }
+    ];
     return (
       <div className={styles.form}>
         <Authenticated message="You must login before you can add a session">
@@ -94,9 +98,10 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
             <Form autosave model={session}>
               {this.renderDescriptionFieldset()}
               <Fieldset label="Additional info">
-                <Field label="What to bring" name="preparation" type="textarea" model={session} validation={{ maxLength: 150 }} />
+                <Field label="What to bring" name="preparation" type="textarea" model={session} validation={{ maxLength: 2048 }} />
                 <Field label="Session leader" name="leader" model={session} />
                 <Field label="Will participants recieve coaching?" name="hasCoach" type="checkbox" model={session} />
+                <Field label="Will participants recieve coaching?" type="BoolRadio" name="hasCoach" model={session} options={coachOptions} />
               </Fieldset>
               <Fieldset label="Location">
                 <LocationField label="Location" name="location" callback={locationCallback} />

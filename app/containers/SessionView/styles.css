@@ -92,8 +92,12 @@
 
 .sideCol {
   flex-grow: 1;
-  flex-basis: 25%;
+  flex-basis: 20%;
+  min-width: 12rem;
   padding: 1em;
+  & h3 {
+    text-align: right;
+  }
 }
 
 .floatingInfo {
