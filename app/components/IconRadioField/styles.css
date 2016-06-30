@@ -10,8 +10,14 @@
       flex-grow: 1;
       flex-basis: 5em;
       text-transform: uppercase;
+      & label {
+        cursor: pointer;
+      }
       &.selected {
         color: var(--actionColor);
+        & label {
+          cursor: default;
+        }
       }
       & img {
         display: block;

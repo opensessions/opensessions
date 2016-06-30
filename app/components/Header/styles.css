@@ -37,11 +37,12 @@
     color: #1F2C4D;
   }
   & span.plus {
-    font-weight: bold;
-    font-size: 2em;
+    display: inline-block;
+    padding: .1em;
+    font-size: 1.8em;
     line-height: .6;
     vertical-align: sub;
-    display: inline-block;
+    font-weight: bold;
   }
 }
 

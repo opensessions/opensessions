@@ -38,6 +38,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
     const self = this;
     return apiFetch(this.props.relationURL, { query }).then((options) => {
       if (typeof value === 'undefined' && options[0]) value = options[0].uuid;
+      this.props.model.update(this.props.name, value);
       self.setState({ options, value });
     });
   }
@@ -117,11 +118,11 @@ export default class Field extends React.Component { // eslint-disable-line reac
         event.preventDefault();
         this.setState({ relationState: 'typeNew' });
       };
-      const onKeyDown = (event) => {
-        if (event.keyCode === 8 && !event.target.value) {
+      const inputEvents = (event) => {
+        if ((event.type === 'blur' && !event.target.value) || (event.type === 'keydown' && event.keyCode === 8)) {
           this.setState({ relationState: 'none' });
           return;
-        } else if (event.keyCode !== 13) {
+        } else if (event.type === 'keydown' && event.keyCode !== 13) {
           return;
         }
         event.preventDefault();
@@ -132,7 +133,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
       };
       let addControl = (<button onClick={onClick} className={styles.addRelation}>Add +</button>);
       if (this.state.relationState === 'typeNew') {
-        addControl = (<input onKeyDown={onKeyDown} className={styles.input} autoFocus />);
+        addControl = (<input onKeyDown={inputEvents} onBlur={inputEvents} className={styles.input} autoFocus />);
       }
       let selectBox = null;
       if (options.length) {
@@ -160,7 +161,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
       } else if (type === 'BoolRadio') {
         input = <BoolRadioField name={attrs.name} options={this.props.options} onChange={this.handleChange} trueText={this.props.options[1].text} falseText={this.props.options[0].text} value={attrs.value} />;
       } else if (type === 'Relation') {
-        input = <RelationField  name={attrs.name} options={this.props.options} onChange={this.handleChange} value={attrs.value} />
+        input = <RelationField name={attrs.name} onChange={this.handleChange} value={attrs.value} />;
       }
     }
     let tip;
