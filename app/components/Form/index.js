@@ -102,7 +102,7 @@ export default class Form extends React.Component { // eslint-disable-line react
   }
   render() {
     return (
-      <form onInput={this.formChange} className={styles.form}>
+      <form onChange={this.formChange} className={styles.form}>
         <nav className={styles.nav}>
           {this.renderNav()}
         </nav>

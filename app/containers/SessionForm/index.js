@@ -78,8 +78,8 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       { text: 'Female only', value: 'female', src: '/images/female.svg', selectedSrc: '/images/female-selected.svg' }
     ];
     const coachOptions = [
-      { text: 'Coached' },
-      { text: 'Uncoached' }
+      { text: 'Uncoached' },
+      { text: 'Coached' }
     ];
     return (
       <div className={styles.form}>

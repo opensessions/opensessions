@@ -17,6 +17,9 @@ export default class IconRadioField extends React.Component { // eslint-disable-
     };
     this.handleChange = this.handleChange.bind(this);
   }
+  componentWillReceiveProps(nextProps) {
+    this.setState({ value: nextProps.value });
+  }
   handleChange(event) {
     const value = event.target.value;
     const state = { value };
@@ -35,6 +38,7 @@ export default class IconRadioField extends React.Component { // eslint-disable-
     const radios = (<ol>
       {this.props.options.map((option) => {
         const selected = option.value === value;
+        console.log('IconRadioField render comparison', option.value, value);
         return (<li className={selected ? styles.selected : ''}>
           <label>
             <img src={selected ? option.selectedSrc : option.src} role="presentation" />

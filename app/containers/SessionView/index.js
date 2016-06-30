@@ -27,8 +27,9 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   }
   date() {
     const date = new Date(this.state.session.startDate);
-    const time = new Date(this.state.session.startTime);
-    return `${moment(date).format('dddd D MMM')} at ${moment(time).format('H:mm')}`;
+    const time = this.state.session.startTime ? this.state.session.startTime.split(':') : ['00', '00', '00'];
+    time.pop();
+    return `${moment(date).format('dddd D MMM')} at ${time.join(':')}`;
   }
   renderActions() {
     const user = this.context ? this.context.user : false;
@@ -100,6 +101,9 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     const session = this.state.session;
     const features = [];
     if (session.hasCoaching) features.push('Coached');
+    if (session.genderRestriction) {
+      features.push(session.genderRestriction);
+    }
     return (<div>
       <h2>About this session</h2>
       <p>Detail about requirements etc, coming soon</p>
@@ -109,7 +113,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     </div>);
   }
   renderMap() {
-    return (<div>Coming soon</div>);
+    return (<div>Map coming soon</div>);
   }
   render() {
     if (this.state.session === null) return (<div>Loading</div>);
