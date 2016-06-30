@@ -73,6 +73,7 @@ module.exports = (options) => ({
     extensions: [
       '',
       '.js',
+      '.ejs',
       '.jsx',
       '.react.js',
     ],

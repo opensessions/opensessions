@@ -45,6 +45,12 @@ module.exports = {
       },
       { test: /\.jpe?g$|\.gif$|\.png$/i,
         loader: 'null-loader',
+      }, {
+        test: /node_modules[\\\/]auth0-lock[\\\/].*\.js$/,
+        loaders: ['transform-loader/cacheable?brfs', 'transform-loader/cacheable?packageify'],
+      }, {
+        test: /node_modules[\\\/]auth0-lock[\\\/].*\.ejs$/,
+        loader: 'transform-loader/cacheable?ejsify',
       },
     ],
   },
