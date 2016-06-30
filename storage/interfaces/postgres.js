@@ -1,18 +1,14 @@
 'use strict';
 const sequelize = require('sequelize');
 const dotenv = require('dotenv');
+
+dotenv.config({silent: true});
 dotenv.load();
 
 class PostgresStorage {
   constructor() {
-    const isDev = process.env.NODE_ENV !== 'production';
-    if (isDev) {
-      this.DATABASE_URL = `postgres://${process.env.DATABASE_USER}:${process.env.DATABASE_PASS}@${process.env.DATABASE_HOST}:5432/${process.env.DATABASE_NAME}`;
-      this.dropModels();
-    } else {
-      this.DATABASE_URL = process.env.DATABASE_URL;
-      this.syncModels();
-    }
+    this.DATABASE_URL = process.env.DATABASE_URL;
+    this.syncModels();
   }
   dropModels() {
     const db = this.getInstance();
