@@ -1,0 +1,10 @@
+.boolRadio {
+  display: flex;
+  align-items: center;
+  & label {
+    flex-grow: 1;
+    & .inputField {
+      width: 8rem;
+    }
+  }
+}

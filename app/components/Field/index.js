@@ -107,7 +107,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
       id: this.props.id || this.props.name,
     };
     if (this.props.model) {
-      attrs.value = this.props.model[this.props.name] || '';
+      attrs.value = this.props.model.hasOwnProperty(attrs.name) ? this.props.model[attrs.name] : '';
     }
     let input;
     const type = this.props.type || 'text';

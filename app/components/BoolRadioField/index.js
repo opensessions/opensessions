@@ -15,9 +15,12 @@ export default class BoolRadioField extends React.Component { // eslint-disable-
   constructor(props) {
     super(props);
     this.state = {
-      value: props.value || '',
+      value: props.hasOwnProperty('value') ? props.value.toString() : 'false'
     };
     this.handleChange = this.handleChange.bind(this);
+  }
+  componentWillReceiveProps(nextProps) {
+    this.setState({ value: nextProps.hasOwnProperty('value') ? nextProps.value.toString() : 'false' });
   }
   handleChange(event) {
     const value = event.target.value;
@@ -37,20 +40,20 @@ export default class BoolRadioField extends React.Component { // eslint-disable-
     const value = this.state.value;
     const options = [
       {
-        value: true,
+        value: 'true',
         text: this.props.trueText
       },
       {
-        value: false,
+        value: 'false',
         text: this.props.falseText
       }
     ];
     const radios = (<ol>
       {options.map((option) => {
-        const selected = option.value === value;
-        return (<li className={selected ? styles.selected : ''}>
+        const checked = option.value === value;
+        return (<li className={checked ? styles.selected : ''}>
           <label>
-            <input value={option.value} selected={selected} {...attrs} />
+            <input value={option.value} checked={checked} {...attrs} />
             {option.text}
           </label>
         </li>);

@@ -21,7 +21,7 @@ export default class LocationField extends React.Component {
     return (
       <div className={styles.field}>
         <label className={styles.label}>{label}</label>
-        <input {...this.props} label={label} name={name} ref="input" className={styles.input} />
+        <input {...this.props} type="text" label={label} name={name} ref="input" className={styles.input} />
       </div>
     );
   }

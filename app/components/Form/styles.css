@@ -3,6 +3,25 @@
 .form {
   display: flex;
   flex-wrap: wrap;
+  & input[type=text],
+  & input[type=email],
+  & input[type=number],
+  & input[type=date],
+  & input[type=time],
+  & select,
+  & textarea {
+    padding: .4em;
+    line-height: 1;
+    border: .1em solid #C2C2C2;
+    background-color: #EFEFEF;
+    transition: .2s ease background;
+    outline: .05em solid transparent;
+    &:focus {
+      outline-width: .15em;
+      outline-color: #00AEEF;
+      background-color: #FFF;
+    }
+  }
 }
 
 .nav {
