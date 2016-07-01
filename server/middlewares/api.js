@@ -10,9 +10,8 @@ module.exports = (app) => {
   const api = express();
   const storage = new Storage();
   const database = storage.getInstance();
-  const Session = database.models.Session;
-  const Organizer = database.models.Organizer;
-  const getUser = (req) => req.user.sub;
+  const { Session, Organizer } = database.models;
+  const getUser = (req) => (req.user ? req.user.sub : null);
 
   const requireLogin = jwt({
     secret: new Buffer(process.env.AUTH0_CLIENT_SECRET, 'base64'),
@@ -45,6 +44,9 @@ module.exports = (app) => {
       updatedAt: {
         $gte: fromTS,
       },
+      state: {
+        $in: ['published', 'deleted']
+      }
     };
     const order = [
       ['updatedAt', 'DESC']
@@ -75,7 +77,9 @@ module.exports = (app) => {
   });
 
   api.get('/session', (req, res) => {
-    Session.findAll({ where: queryParse(req), include: [Organizer] }).then((sessions) => {
+    const where = queryParse(req);
+    where.state = 'published';
+    Session.findAll({ where, include: [Organizer] }).then((sessions) => {
       res.json(sessions);
     }).catch((error) => {
       res.json({ error });
@@ -94,7 +98,18 @@ module.exports = (app) => {
 
   api.get('/session/:uuid', (req, res) => {
     Session.findOne({ where: { uuid: req.params.uuid }, include: [Organizer] }).then((session) => {
-      res.json(session);
+      if (session.state === 'draft') {
+        requireLogin(req, res, () => {
+          const user = getUser(req);
+          if (session.owner === user) {
+            res.json(session);
+          } else {
+            res.json({ error: 'Must be session owner to view draft' });
+          }
+        });
+      } else {
+        res.json(session);
+      }
     }).catch((error) => {
       res.json({ error });
     });
