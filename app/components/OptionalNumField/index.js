@@ -14,13 +14,13 @@ export default class OptionalNumField extends React.Component { // eslint-disabl
     super(props);
     this.state = {
       value: props.value || '',
-      bool: props.value ? true : false,
+      bool: props.value ? true : false, // eslint-disable-line no-unneeded-ternary
     };
     this.handleChange = this.handleChange.bind(this);
     this.radioChange = this.radioChange.bind(this);
   }
   componentWillReceiveProps(nextProps) {
-    this.setState({ value: nextProps.value, bool: nextProps.value ? true : false });
+    this.setState({ value: nextProps.value, bool: nextProps.value ? true : false }); // eslint-disable-line no-unneeded-ternary
   }
   handleChange(event) {
     const value = event.target.value;
@@ -42,7 +42,6 @@ export default class OptionalNumField extends React.Component { // eslint-disabl
       type: 'number',
       value: this.state.value
     };
-    const value = this.state.value;
     if (!this.state.bool) {
       attrs.type = 'hidden';
     }
