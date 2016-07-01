@@ -120,10 +120,10 @@ export default class Field extends React.Component { // eslint-disable-line reac
         this.setState({ relationState: 'typeNew' });
       };
       const inputEvents = (event) => {
-        if ((event.type === 'blur' && !event.target.value) || (event.type === 'keydown' && event.keyCode === 8)) {
+        if ((event.type === 'blur' && !event.target.value) || (event.type === 'keypress' && !event.target.value && event.keyCode === 8)) {
           this.setState({ relationState: 'none' });
           return;
-        } else if (event.type === 'keydown' && event.keyCode !== 13) {
+        } else if (event.type === 'keypress' && event.keyCode !== 13) {
           return;
         }
         event.preventDefault();
@@ -134,7 +134,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
       };
       let addControl = (<button onClick={onClick} className={styles.addRelation}>Add +</button>);
       if (this.state.relationState === 'typeNew') {
-        addControl = (<input onKeyDown={inputEvents} onBlur={inputEvents} className={styles.input} autoFocus />);
+        addControl = (<input onKeyPress={inputEvents} onBlur={inputEvents} className={styles.input} type="text" autoFocus />);
       }
       let selectBox = null;
       if (options.length) {

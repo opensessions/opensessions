@@ -28,15 +28,16 @@
   background: #FFF;
   padding: 2em;
   display: flex;
+  flex-wrap: wrap;
   & h1 {
     font-size: 1.6em;
     margin: .5em auto;
   }
   & .detailsImg {
-    flex-basis: 50%;
+    flex-grow: 1;
   }
   & .detailsText {
-    flex-basis: 50%;
+    flex-grow: 1;
   }
   & .dateDetail,
   & .locationDetail {
@@ -66,6 +67,7 @@
   margin: 1em auto;
   padding: 2em;
   display: flex;
+  flex-wrap: wrap;
   h2,
   h3,
   h4 {
@@ -84,7 +86,7 @@
   }
   & .description {
     white-space: pre-wrap;
-    max-width: 80rem;
+    max-width: 60rem;
   }
 }
 
