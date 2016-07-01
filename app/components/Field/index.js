@@ -3,6 +3,7 @@ import React from 'react';
 import BoolRadioField from 'components/BoolRadioField';
 import IconRadioField from 'components/IconRadioField';
 import RelationField from 'components/RelationField';
+import OptionalNumField from 'components/OptionalNumField';
 
 import styles from './styles.css';
 
@@ -162,6 +163,8 @@ export default class Field extends React.Component { // eslint-disable-line reac
         input = <BoolRadioField name={attrs.name} options={this.props.options} onChange={this.handleChange} trueText={this.props.options[1].text} falseText={this.props.options[0].text} value={attrs.value} />;
       } else if (type === 'Relation') {
         input = <RelationField name={attrs.name} onChange={this.handleChange} value={attrs.value} />;
+      } else if (type === 'OptionalNum') {
+        input = <OptionalNumField name={attrs.name} onChange={this.handleChange} value={attrs.value} />;
       }
     }
     let tip;

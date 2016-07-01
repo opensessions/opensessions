@@ -69,6 +69,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
           {this.date()}
         </div>
         <div className={styles.detailPrice}>
+          <img src="/images/tag.svg" role="presentation" />
           from £{session.price}
         </div>
         {organizerButton}
@@ -95,6 +96,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       <div className={styles.sideCol}>
         <h3>Pricing</h3>
         <div className={styles.floatingInfo}>
+          <img src="/images/tag.svg" role="presentation" />
           General £{session.price}
         </div>
         <h3>Session Leader</h3>

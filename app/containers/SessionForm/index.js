@@ -74,7 +74,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     const session = this.getSession();
     const locationCallback = this.locationCallback;
     const genderOptions = [
-      { text: 'Mixed', value: 'mixed', src: '/images/mixed.svg', selectedSrc: '/images/mixed-selected.svg' },
+      { text: 'None (Mixed)', value: 'mixed', src: '/images/mixed.svg', selectedSrc: '/images/mixed-selected.svg' },
       { text: 'Male only', value: 'male', src: '/images/male.svg', selectedSrc: '/images/male-selected.svg' },
       { text: 'Female only', value: 'female', src: '/images/female.svg', selectedSrc: '/images/female-selected.svg' }
     ];
@@ -112,6 +112,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
               <Fieldset label="Restrictions">
                 <Field label="Gender restrictions" type="IconRadio" name="genderRestriction" model={session} options={genderOptions} />
                 <Field label="Is there a minimum age?" name="minAgeRestriction" model={session} type="number" />
+                <Field label="Is there a minimum age?" name="minAgeRestriction" model={session} type="OptionalNum" />
                 <Field label="Is there a maximum age?" name="maxAgeRestriction" model={session} type="number" />
               </Fieldset>
               <Fieldset label="Contact info">

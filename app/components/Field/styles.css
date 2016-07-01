@@ -39,7 +39,8 @@
     outline-color: var(--errorRed);
   }
   textarea& {
-    min-height: 5em;
+    min-height: 10em;
+    line-height: 1.4;
   }
 }
 

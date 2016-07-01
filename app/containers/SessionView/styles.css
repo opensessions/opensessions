@@ -45,6 +45,7 @@
       height: var(--iconSizeBig);
       width: var(--iconSizeBig);
       padding: .5em;
+      opacity: .5;
     }
   }
   & .detailPrice {
@@ -133,6 +134,7 @@
 .contactButton {
   text-align: right;
   & a {
+    display: inline-block;
     padding: .4em .6em;
     background: var(--actionColor);
     color: #FFF;
