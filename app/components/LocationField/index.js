@@ -40,7 +40,7 @@ export default class LocationField extends React.Component {
       name,
       ref: 'input',
       onBlur: this.onBlur,
-      onFocus: this.onFocus
+      onChange: this.onFocus
     };
     return (
       <div className={styles.field}>
