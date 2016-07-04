@@ -20,8 +20,9 @@
   &:last-child {
     text-align: center;
     & > img {
-      max-width: 16em;
+      max-width: 12em;
       display: inline-block;
+      padding: 1em;
     }
   }
 }

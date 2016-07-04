@@ -1,0 +1,6 @@
+@import '../../containers/App/variables.css';
+
+.container {
+  max-width: var(--pagewidth);
+  margin: auto;
+}

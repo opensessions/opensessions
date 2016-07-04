@@ -30,10 +30,6 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  & h1 {
-    font-size: 1.6em;
-    margin: 1em auto;
-  }
   & .detailsImg {
     flex-grow: 1;
     & > img {
@@ -42,17 +38,25 @@
   }
   & .detailsText {
     flex-grow: 3;
+    font-size: 1.1em;
+    & h1 {
+      font-size: 1.5em;
+      margin: 1em auto;
+    }
   }
   & .dateDetail,
   & .locationDetail {
     margin: 1em auto;
-    font-size: 1.1em;
     & > img {
       height: var(--iconSizeBig);
       width: var(--iconSizeBig);
       padding: .5em;
       opacity: .7;
     }
+  }
+  & .locationText {
+    display: inline-block;
+    vertical-align: middle;
   }
   & .detailPrice {
     text-align: right;
@@ -66,9 +70,10 @@
     text-align: right;
     & a {
       display: inline-block;
-      padding: .4em 2em;
+      padding: .4em 4em;
       background: var(--actionColor);
       color: #FFF;
+      text-align: center;
     }
   }
 }

@@ -53,9 +53,15 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     }
     let locationDetail = null;
     if (session.location) {
+      const locationPieces = session.location.split(',');
+      let location = session.location;
+      if (locationPieces.length > 1) {
+        const firstLine = locationPieces.shift();
+        location = <span className={styles.locationText}>{firstLine}<br />{locationPieces.join(',')}</span>;
+      }
       locationDetail = (<div className={styles.locationDetail}>
         <img src="/images/map-pin.svg" role="presentation" />
-        {session.location}
+        {location}
       </div>);
     }
     return (<div className={styles.detailsSection}>
@@ -130,6 +136,12 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     if (session.hasCoaching) features.push('Coached');
     if (session.genderRestriction) {
       features.push(maps.gender[session.genderRestriction]);
+    }
+    if (session.minAgeRestriction) {
+      features.push(`Minimum age: ${session.minAgeRestriction}`);
+    }
+    if (session.maxAgeRestriction) {
+      features.push(`Maximum age: ${session.maxAgeRestriction}`);
     }
     return (<div className={styles.aboutSection}>
       <div className={styles.inner}>

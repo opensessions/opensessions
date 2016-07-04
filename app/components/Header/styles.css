@@ -33,6 +33,7 @@
   flex-grow: 4;
   text-align: right;
   padding: 0 1em;
+  font-size: 1.1em;
   & a:link {
     display: inline-block;
     padding: .75em;

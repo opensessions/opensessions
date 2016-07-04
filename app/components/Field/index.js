@@ -31,6 +31,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
       valid: undefined,
     };
     this.handleChange = this.handleChange.bind(this);
+    this.handleValueChange = this.handleValueChange.bind(this);
     if (props.type === 'relation') {
       this.fetchRelation(this.props.relationQuery);
     }
@@ -43,19 +44,22 @@ export default class Field extends React.Component { // eslint-disable-line reac
       self.setState({ options, value });
     });
   }
-  handleChange(event) {
-    const value = event.target.value;
-    const state = { value };
+  handleValueChange(value) {
+    const newState = { value };
     if (this.props.validation) {
-      state.valid = this.isValid(value);
+      newState.valid = this.isValid(value);
     }
-    this.setState(state);
+    this.setState(newState);
     if (this.props.onChange) {
-      this.props.onChange(event);
+      this.props.onChange(value);
     }
     if (this.props.model) {
       this.props.model.update(this.props.name, value);
     }
+  }
+  handleChange(event) {
+    const value = event.target.value;
+    this.handleValueChange(value);
   }
   isValid(value) {
     if (typeof value === 'undefined') value = this.state.value;
@@ -104,7 +108,6 @@ export default class Field extends React.Component { // eslint-disable-line reac
       className: `${styles.input} ${validClass}`,
       name: this.props.name,
       value: this.state.value,
-      id: this.props.id || this.props.name,
     };
     if (this.props.model) {
       attrs.value = this.props.model.hasOwnProperty(attrs.name) ? this.props.model[attrs.name] : '';
@@ -155,8 +158,6 @@ export default class Field extends React.Component { // eslint-disable-line reac
           .reverse()
           .join('-');
       }
-      attrs.type = type;
-      input = <input {...attrs} />;
       if (type === 'IconRadio') {
         input = <IconRadioField name={attrs.name} options={this.props.options} onChange={this.handleChange} value={attrs.value} />;
       } else if (type === 'BoolRadio') {
@@ -164,7 +165,10 @@ export default class Field extends React.Component { // eslint-disable-line reac
       } else if (type === 'Relation') {
         input = <RelationField name={attrs.name} onChange={this.handleChange} value={attrs.value} />;
       } else if (type === 'OptionalNum') {
-        input = <OptionalNumField name={attrs.name} onChange={this.handleChange} value={attrs.value} />;
+        input = <OptionalNumField name={attrs.name} onChange={this.handleValueChange} value={attrs.value} />;
+      } else {
+        attrs.type = type;
+        input = <input {...attrs} />;
       }
     }
     let tip;
