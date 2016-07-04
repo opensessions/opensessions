@@ -98,8 +98,8 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       <div className={styles.sideCol}>
         <h3>Pricing</h3>
         <div className={styles.floatingInfo}>
-          <span className="label">General</span>
-          <span className="price">
+          <span className={styles.label}>General</span>
+          <span className={styles.price}>
             <img src="/images/tag.svg" role="presentation" />
             £{session.price}
           </span>
@@ -120,14 +120,20 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   renderAbout() {
     const session = this.state.session;
     const features = [];
+    const maps = {
+      gender: {
+        male: 'Male only',
+        female: 'Female only',
+        mixed: 'Mixed gender'
+      }
+    };
     if (session.hasCoaching) features.push('Coached');
     if (session.genderRestriction) {
-      features.push(session.genderRestriction);
+      features.push(maps.gender[session.genderRestriction]);
     }
     return (<div className={styles.aboutSection}>
       <div className={styles.inner}>
         <h2>About this session</h2>
-        <p>Detail about requirements etc, coming soon</p>
         <ol>
           {features.map((feature) => <li>{feature}</li>)}
         </ol>
@@ -143,7 +149,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       position: defaultCenter,
       defaultAnimation: 2
     };
-    return (<section style={{ height: '100vh' }}>
+    return (<section style={{ minHeight: '24rem', height: '100vh', maxHeight: '72rem' }}>
       <GoogleMapLoader
         containerElement={
           <div style={{ height: '100%' }} />

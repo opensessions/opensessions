@@ -32,6 +32,7 @@
 .nav {
   flex-grow: 4;
   text-align: right;
+  padding: 0 1em;
   & a:link {
     display: inline-block;
     padding: .75em;
@@ -50,6 +51,6 @@
 .userIcon {
   max-width: var(--iconSize);
   max-height: var(--iconSize);
-  margin: 0 .5em;
+  margin-left: .5em;
   border-radius: 50%;
 }

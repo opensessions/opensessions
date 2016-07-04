@@ -3,15 +3,25 @@
 .footer {
   background: #000;
   color: #FFF;
-  padding: 1em;
+  padding: 0 1em;
 }
 
 .footerInner {
   max-width: var(--pagewidth);
   margin: auto;
   display: flex;
+  flex-wrap: wrap;
 }
 
 .column {
-  flex-basis: 25%;
+  flex-basis: 24rem;
+  flex-grow: 1;
+  padding: 1em 0;
+  &:last-child {
+    text-align: center;
+    & > img {
+      max-width: 16em;
+      display: inline-block;
+    }
+  }
 }

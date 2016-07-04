@@ -131,6 +131,19 @@
 .floatingInfo {
   background-color: #FFF;
   padding: 1em;
+  font-size: 1.1em;
+  & > .label {
+    display: inline-block;
+    width: 50%;
+  }
+  & > .price {
+    display: inline-block;
+    width: 50%;
+    text-align: right;
+    & > img {
+      margin-right: .5em;
+    }
+  }
 }
 
 .contactButton {
