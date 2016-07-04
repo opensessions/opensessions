@@ -24,33 +24,52 @@
 
 .detailsSection {
   max-width: var(--sectionWidth);
-  margin: 1em auto;
+  margin: 2em auto;
   background: #FFF;
-  padding: 2em;
+  padding: 1em;
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   & h1 {
     font-size: 1.6em;
-    margin: .5em auto;
+    margin: 1em auto;
   }
   & .detailsImg {
     flex-grow: 1;
+    & > img {
+      max-width: 48rem;
+    }
   }
   & .detailsText {
-    flex-grow: 1;
+    flex-grow: 3;
   }
   & .dateDetail,
   & .locationDetail {
     margin: 1em auto;
+    font-size: 1.1em;
     & > img {
       height: var(--iconSizeBig);
       width: var(--iconSizeBig);
       padding: .5em;
-      opacity: .5;
+      opacity: .7;
     }
   }
   & .detailPrice {
     text-align: right;
+    padding: .5em 0;
+    color: #888;
+    & img {
+      margin-right: .5em;
+    }
+  }
+  & .contactButton {
+    text-align: right;
+    & a {
+      display: inline-block;
+      padding: .4em 2em;
+      background: var(--actionColor);
+      color: #FFF;
+    }
   }
 }
 
@@ -146,12 +165,18 @@
   }
 }
 
-.contactButton {
-  text-align: right;
-  & a {
-    display: inline-block;
-    padding: .4em .6em;
-    background: var(--actionColor);
-    color: #FFF;
+.mapSection {
+  min-height: 24rem;
+  height: 100vh;
+  max-height: 72rem;
+  & .noLocation {
+    text-align: center;
+    font-size: 1.4em;
+    padding: 2em 0;
+    color: #888;
+    & img {
+      max-height: 2em;
+      margin-right: .5em;
+    }
   }
 }

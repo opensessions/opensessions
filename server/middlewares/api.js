@@ -78,12 +78,27 @@ module.exports = (app) => {
 
   api.get('/session', (req, res) => {
     const where = queryParse(req);
-    where.state = 'published';
-    Session.findAll({ where, include: [Organizer] }).then((sessions) => {
-      res.json(sessions);
-    }).catch((error) => {
-      res.json({ error });
-    });
+    if ('owner' in where) {
+      requireLogin(req, res, () => {
+        const user = getUser(req);
+        if (where.owner === user) {
+          Session.findAll({ where, include: [Organizer] }).then((sessions) => {
+            res.json(sessions);
+          }).catch((error) => {
+            res.json({ error });
+          });
+        } else {
+          res.json({ error: 'Must be logged in to search by owner' });
+        }
+      });
+    } else {
+      where.state = 'published';
+      Session.findAll({ where, include: [Organizer] }).then((sessions) => {
+        res.json(sessions);
+      }).catch((error) => {
+        res.json({ error });
+      });
+    }
   });
 
   api.all('/session/create', requireLogin, (req, res) => {
