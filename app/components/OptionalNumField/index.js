@@ -14,6 +14,7 @@ export default class OptionalNumField extends React.Component { // eslint-disabl
     this.state = {
       value: props.value || '',
       bool: props.value ? true : false, // eslint-disable-line no-unneeded-ternary
+      checkVal: props.value ? 'true' : 'false' // eslint-disable-line no-unneeded-ternary
     };
     this.handleChange = this.handleChange.bind(this);
     this.radioChange = this.radioChange.bind(this);
@@ -21,7 +22,8 @@ export default class OptionalNumField extends React.Component { // eslint-disabl
   componentWillReceiveProps(nextProps) {
     this.setState({
       value: nextProps.value,
-      bool: nextProps.value ? true : false // eslint-disable-line no-unneeded-ternary
+      bool: nextProps.value ? true : false, // eslint-disable-line no-unneeded-ternary
+      checkVal: nextProps.value ? 'true' : 'false' // eslint-disable-line no-unneeded-ternary
     });
   }
   handleChange(event) {
@@ -32,30 +34,35 @@ export default class OptionalNumField extends React.Component { // eslint-disabl
     }
   }
   radioChange(event) {
-    const bool = event.target.value === 'true';
-    if (!bool) {
-      this.handleChange(event);
-    }
-    this.setState({ bool });
+    const bool = event.target.value !== 'false';
+    this.setState({ bool, checkVal: event.target.value });
   }
   render() {
+    console.log("render OptionalNumField", this.props.name, this.state);
     const id = this.props.id || this.props.name;
     const attrs = {
-      onChange: this.handleChange,
-      name: this.props.name,
+      className: styles.inputField,
       type: 'number',
-      value: this.state.value
+      name: this.props.name,
+      value: this.state.value,
+      onChange: this.handleChange
     };
     let numberInput = null;
     if (this.state.bool) {
-      numberInput = <input className={styles.inputField} {...attrs} autoFocus />;
+      numberInput = <input {...attrs} autoFocus />;
     }
-    return (<div className={styles.boolRadio}>
+    const radioAttrs = {
+      type: 'radio',
+      name: `_${id}`,
+      onChange: this.radioChange
+    };
+    const yesIsChecked = this.state.checkVal === 'true';
+    return (<div className={styles.optionalNum}>
       <label>
-        <input type="radio" name={`_${id}`} value="false" selected={this.state.bool === false} onChange={this.radioChange} /> No
+        <input {...radioAttrs} value="false" checked={!yesIsChecked} /> No
       </label>
       <label>
-        <input type="radio" name={`_${id}`} value="true" selected={this.state.bool} onChange={this.radioChange} /> Yes
+        <input {...radioAttrs} value="true" checked={yesIsChecked} /> Yes
       </label>
       <label>
         {numberInput}

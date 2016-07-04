@@ -1,4 +1,4 @@
-.boolRadio {
+.optionalNum {
   display: flex;
   align-items: center;
   & label {

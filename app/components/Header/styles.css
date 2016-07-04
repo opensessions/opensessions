@@ -3,7 +3,8 @@
 .header {
   background: #FFF;
   padding: 10px 0;
-  box-shadow: 0 -1em 1em 1em #828282;
+  box-shadow: 0 -1em 1em 1em rgba(0, 0, 0, .5);
+  position: relative;
 }
 
 .pageMargin {
