@@ -120,10 +120,10 @@ export default class Field extends React.Component { // eslint-disable-line reac
         this.setState({ relationState: 'typeNew' });
       };
       const inputEvents = (event) => {
-        if ((event.type === 'blur' && !event.target.value) || (event.type === 'keypress' && !event.target.value && event.keyCode === 8)) {
+        if ((event.type === 'blur' && !event.target.value) || (event.type === 'keypress' && !event.target.value && event.charCode === 8)) {
           this.setState({ relationState: 'none' });
           return;
-        } else if (event.type === 'keypress' && event.keyCode !== 13) {
+        } else if (event.type === 'keypress' && event.charCode !== 13) {
           return;
         }
         event.preventDefault();

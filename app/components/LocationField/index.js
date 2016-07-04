@@ -4,13 +4,17 @@ import styles from '../Field/styles.css';
 export default class LocationField extends React.Component {
   static propTypes = {
     label: React.PropTypes.string,
-    name: React.PropTypes.string,
+    name: React.PropTypes.string.isRequired,
     callback: React.PropTypes.func,
+    value: React.PropTypes.string,
   }
   constructor(props) {
     super(props);
     this.onBlur = this.onBlur.bind(this);
     this.onFocus = this.onFocus.bind(this);
+    this.state = {
+      clean: true
+    };
   }
   componentDidMount() {
     const options = { types: ['geocode'] };
@@ -36,11 +40,11 @@ export default class LocationField extends React.Component {
     const { label, name } = this.props;
     const attrs = {
       type: 'text',
-      label,
       name,
       ref: 'input',
       onBlur: this.onBlur,
-      onChange: this.onFocus
+      onChange: this.onFocus,
+      placeholder: this.props.value
     };
     return (
       <div className={styles.field}>

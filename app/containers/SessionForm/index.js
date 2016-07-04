@@ -103,7 +103,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
                 <Field label="Will participants receive coaching?" type="BoolRadio" name="hasCoaching" model={session} options={coachOptions} />
               </Fieldset>
               <Fieldset label="Location">
-                <LocationField label="Location" name="location" callback={locationCallback} />
+                <LocationField label="Location" name="location" callback={locationCallback} value={session.location} />
                 <Field label="Meeting point" name="meetingPoint" model={session} />
               </Fieldset>
               <Fieldset label="Pricing">

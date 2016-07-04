@@ -47,6 +47,7 @@ export default class App extends React.Component { // eslint-disable-line react/
   setupProfile() {
     this.lock.getProfile(getUserToken(this.lock), (err, profile) => {
       if (err) {
+        localStorage.removeItem('userToken');
         return false;
       }
       profile.logout = () => {
@@ -57,7 +58,6 @@ export default class App extends React.Component { // eslint-disable-line react/
     });
   }
   createLock() {
-    // localStorage.removeItem('userToken');
     this.lock = new Auth0Lock('bSVd1LzdwXsKbjF7JXflIc1UuMacffUA', 'opensessions.eu.auth0.com');
   }
   render() {
