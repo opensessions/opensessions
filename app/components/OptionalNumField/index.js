@@ -38,7 +38,6 @@ export default class OptionalNumField extends React.Component { // eslint-disabl
     this.setState({ bool, checkVal: event.target.value });
   }
   render() {
-    console.log("render OptionalNumField", this.props.name, this.state);
     const id = this.props.id || this.props.name;
     const attrs = {
       className: styles.inputField,

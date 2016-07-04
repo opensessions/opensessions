@@ -1,6 +1,8 @@
 import React from 'react';
 import moment from 'moment';
 
+import { GoogleMapLoader, GoogleMap, Marker } from 'react-google-maps';
+
 import { Link } from 'react-router';
 
 import { apiFetch } from '../../utils/api';
@@ -58,7 +60,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     }
     return (<div className={styles.detailsSection}>
       <div className={styles.detailsImg}>
-        <img role="presentation" />
+        <img src="/images/placeholder.png" role="presentation" />
       </div>
       <div className={styles.detailsText}>
         {this.renderActions()}
@@ -96,8 +98,11 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       <div className={styles.sideCol}>
         <h3>Pricing</h3>
         <div className={styles.floatingInfo}>
-          <img src="/images/tag.svg" role="presentation" />
-          General £{session.price}
+          <span className="label">General</span>
+          <span className="price">
+            <img src="/images/tag.svg" role="presentation" />
+            £{session.price}
+          </span>
         </div>
         <h3>Session Leader</h3>
         <div className={styles.floatingInfo}>
@@ -105,7 +110,9 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         </div>
         <h3>Organiser</h3>
         <div className={styles.floatingInfo}>
-          {session.Organizer ? (<Link to={session.Organizer.href}>{session.Organizer.name}</Link>) : 'No organizer'}
+          <p>{session.Organizer ? (<Link to={session.Organizer.href}>{session.Organizer.name}</Link>) : 'No organizer'}</p>
+          <p>{session.contactPhone ? (<a href={`tel:${session.contactPhone}`}>{session.contactPhone}</a>) : ''}</p>
+          <p>{session.contactEmail ? (<a href={`mailto:${session.contactEmail}`}>{session.contactEmail}</a>) : ''}</p>
         </div>
       </div>
     </div>);
@@ -128,7 +135,31 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     </div>);
   }
   renderMap() {
-    return (<div>Map coming soon</div>);
+    const session = this.state.session;
+    const locData = JSON.parse(session.locationData);
+    const defaultCenter = { lat: locData.lat, lng: locData.lng };
+    const onMapClick = () => true;
+    const marker = {
+      position: defaultCenter,
+      defaultAnimation: 2
+    };
+    return (<section style={{ height: '100vh' }}>
+      <GoogleMapLoader
+        containerElement={
+          <div style={{ height: '100%' }} />
+        }
+        googleMapElement={
+          <GoogleMap
+            ref={(map) => console.log(map)}
+            defaultZoom={16}
+            defaultCenter={defaultCenter}
+            onClick={onMapClick}
+          >
+            <Marker {...marker} />
+          </GoogleMap>
+        }
+      />
+    </section>);
   }
   render() {
     if (this.state.session === null) return (<div>Loading</div>);
