@@ -111,6 +111,7 @@
   & .description {
     white-space: pre-wrap;
     max-width: 60rem;
+    color: #444;
   }
 }
 
@@ -124,11 +125,25 @@
   }
   & ol {
     font-size: 1.4em;
-    color: var(--actionColor);
+    padding: .5em 0;
     & > li {
       list-style: none;
-      padding: 1em;
+      padding: 1em .5em;
+      max-width: 6em;
       display: inline-block;
+      text-align: center;
+      vertical-align: top;
+      line-height: 1;
+      & .iconText {
+        color: var(--actionColor);
+        display: block;
+        margin: .5rem 0;
+        font-size: 2em;
+      }
+      & .iconImg {
+        margin: .5rem 0;
+        height: 2em;
+      }
     }
   }
 }

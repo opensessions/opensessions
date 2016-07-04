@@ -86,20 +86,32 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   }
   renderDescription() {
     const session = this.state.session;
+    let meetingPoint = null;
+    if (session.meetingPoint) {
+      meetingPoint = (<div>
+        <h3>Session meeting point</h3>
+        <div className={styles.description}>
+          {session.meetingPoint}
+        </div>
+      </div>);
+    }
+    let preparation = null;
+    if (session.preparation) {
+      preparation = (<div>
+        <h3>What you'll need</h3>
+        <div className={styles.description}>
+          {session.preparation}
+        </div>
+      </div>);
+    }
     return (<div className={styles.descriptionSection}>
       <div className={styles.mainCol}>
         <h2>Description</h2>
         <div className={styles.description}>
           {session.description}
         </div>
-        <h3>Session meeting point</h3>
-        <div className={styles.description}>
-          {session.meetingPoint}
-        </div>
-        <h3>What you'll need</h3>
-        <div className={styles.description}>
-          {session.preparation}
-        </div>
+        {meetingPoint}
+        {preparation}
       </div>
       <div className={styles.sideCol}>
         <h3>Pricing</h3>
@@ -128,20 +140,32 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     const features = [];
     const maps = {
       gender: {
-        male: 'Male only',
-        female: 'Female only',
-        mixed: 'Mixed gender'
+        male: {
+          text: 'Male Only',
+          img: '/images/male-selected.svg'
+        },
+        female: {
+          text: 'Female Only',
+          img: '/images/female-selected.svg'
+        },
+        mixed: {
+          text: 'Mixed Gender',
+          img: '/images/mixed-selected.svg'
+        }
       }
     };
-    if (session.hasCoaching) features.push('Coached');
+    if (session.hasCoaching) {
+      features.push(<span><img className={styles.iconImg} src="/images/coached.png" role="presentation" /><br />Coached</span>);
+    }
     if (session.genderRestriction) {
-      features.push(maps.gender[session.genderRestriction]);
+      const genderData = maps.gender[session.genderRestriction];
+      features.push(<span><img className={styles.iconImg} src={genderData.img} role="presentation" /><br />{genderData.text}</span>);
     }
     if (session.minAgeRestriction) {
-      features.push(`Minimum age: ${session.minAgeRestriction}`);
+      features.push(<span><span className={styles.iconText}>{session.minAgeRestriction}</span> Minimum Age</span>);
     }
     if (session.maxAgeRestriction) {
-      features.push(`Maximum age: ${session.maxAgeRestriction}`);
+      features.push(<span><span className={styles.iconText}>{session.maxAgeRestriction}</span> Maximum Age</span>);
     }
     return (<div className={styles.aboutSection}>
       <div className={styles.inner}>
