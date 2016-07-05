@@ -27,11 +27,39 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     apiFetch(`/api/session/${this.props.params.uuid}`)
       .then((session) => self.setState({ session }));
   }
+  getStartTime() {
+    return this.postgresTimeToDate(this.state.session.startTime);
+  }
+  getEndTime() {
+    return this.postgresTimeToDate(this.state.session.endTime);
+  }
+  getPrice() {
+    let price = this.state.session.price;
+    if (price !== Math.floor(price)) {
+      const minor = Math.ceil((price % 1) * 100);
+      const major = Math.floor(price);
+      price = `${major}.${minor}`;
+    }
+    return `£${price}`;
+  }
+  postgresTimeToDate(time) {
+    return new Date(`2000-01-01 ${time}`);
+  }
   date() {
-    const date = new Date(this.state.session.startDate);
-    const time = this.state.session.startTime ? this.state.session.startTime.split(':') : ['00', '00', '00'];
+    const { session } = this.state;
+    const date = new Date(session.startDate);
+    const time = session.startTime ? session.startTime.split(':') : ['00', '00', '00'];
     time.pop();
-    return `${moment(date).format('dddd D MMM')} at ${time.join(':')}`;
+    let duration = null;
+    if (session.endTime) {
+      const dur = moment.duration(moment(this.getEndTime()).diff(moment(this.getStartTime())));
+      duration = <span className={styles.duration}><img src="/images/clock.svg" role="presentation" />{dur.asHours()}h</span>;
+    }
+    return (<span>
+      {moment(date).format('dddd D MMM')}
+      <span className={styles.timespan}>at {time.join(':')}</span>
+      {duration}
+    </span>);
   }
   renderActions() {
     const user = this.context ? this.context.user : false;
@@ -78,7 +106,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         </div>
         <div className={styles.detailPrice}>
           <img src="/images/tag.svg" role="presentation" />
-          from £{session.price}
+          from {this.getPrice()}
         </div>
         {organizerButton}
       </div>
@@ -88,7 +116,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     const session = this.state.session;
     let meetingPoint = null;
     if (session.meetingPoint) {
-      meetingPoint = (<div>
+      meetingPoint = (<div className={styles.infoSection}>
         <h3>Session meeting point</h3>
         <div className={styles.description}>
           {session.meetingPoint}
@@ -97,7 +125,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     }
     let preparation = null;
     if (session.preparation) {
-      preparation = (<div>
+      preparation = (<div className={styles.infoSection}>
         <h3>What you'll need</h3>
         <div className={styles.description}>
           {session.preparation}
@@ -119,7 +147,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
           <span className={styles.label}>General</span>
           <span className={styles.price}>
             <img src="/images/tag.svg" role="presentation" />
-            £{session.price}
+            {this.getPrice()}
           </span>
         </div>
         <h3>Session Leader</h3>

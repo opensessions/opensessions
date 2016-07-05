@@ -44,6 +44,20 @@
       margin: 1em auto;
     }
   }
+  & .dateDetail {
+    & .timespan {
+      padding: 0 .5em;
+      font-weight: bold;
+    }
+    & .duration {
+      padding: 0 1em;
+      color: #888;
+      & img {
+        margin: 0 .2em;
+        vertical-align: initial;
+      }
+    }
+  }
   & .dateDetail,
   & .locationDetail {
     margin: 1em auto;
@@ -154,6 +168,10 @@
   & h3 {
     font-size: 1.4em;
     font-family: inherit;
+    margin: .75em 0;
+  }
+  & > .infoSection {
+    margin: 2em 0;
   }
 }
 

@@ -51,7 +51,7 @@ export default class BoolRadioField extends React.Component { // eslint-disable-
     const radios = (<ol>
       {options.map((option) => {
         const checked = option.value === value;
-        return (<li className={checked ? styles.selected : ''}>
+        return (<li className={checked ? styles.selected : ''} key={option.value}>
           <label>
             <input value={option.value} checked={checked} {...attrs} />
             {option.text}
