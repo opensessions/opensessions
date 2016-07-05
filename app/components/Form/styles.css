@@ -93,7 +93,7 @@
   transition: .1s ease all;
   opacity: 1;
   &.unsaved {
-    color: #BFBFBF;
+    color: transparent;
   }
   &.changed {
     color: #E4C383;

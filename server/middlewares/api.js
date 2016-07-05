@@ -40,16 +40,27 @@ module.exports = (app) => {
 
   api.get('/rdpe/sessions', (req, res) => {
     const fromTS = req.query.from || 0;
+    const afterID = req.query.after;
     const where = {
-      updatedAt: {
-        $gte: fromTS,
-      },
+      $or: [
+        {
+          updatedAt: fromTS,
+          uuid: {
+            $gte: afterID
+          }
+        }, {
+          updatedAt: {
+            $gte: fromTS,
+          },
+        }
+      ],
       state: {
         $in: ['published', 'deleted']
       }
     };
     const order = [
-      ['updatedAt', 'DESC']
+      ['updatedAt', 'ASC'],
+      ['uuid', 'ASC']
     ];
     const limit = 50;
     Session.findAll({ where, order, limit }).then((rawSessions) => {
@@ -64,9 +75,15 @@ module.exports = (app) => {
         };
       });
       const next = {
-        from: sessions.length ? sessions[sessions.length - 1].modified : 0,
-        after: sessions.length ? sessions[sessions.length - 1].id : 0,
+        from: 0,
+        after: 0
       };
+      if (sessions.length) {
+        const lastSession = sessions[sessions.length - 1];
+        const modifiedDate = new Date(lastSession.modified);
+        next.from = modifiedDate.getTime();
+        next.after = lastSession.id;
+      }
       res.json({
         items: sessions,
         next: `/api/rdpe/sessions?from=${next.from}&after=${next.after}`

@@ -57,6 +57,7 @@ class PostgresStorage {
       uuid,
       state: {
         type: sequelize.STRING,
+        defaultValue: 'draft',
         validation: {
           isIn: ['draft', 'published', 'deleted']
         }
@@ -102,6 +103,29 @@ class PostgresStorage {
           return `${this.title || 'Untitled'}${this.state === 'draft' ? ' (draft)' : ''}`;
         },
       },
+      classMethods: {
+        canPublish() {
+          const session = this;
+          const requiredFields = ['startDate'];
+          let canPublish = true;
+          requiredFields.forEach((field) => {
+            if (!session[field]) {
+              canPublish = false;
+            }
+          });
+          return canPublish;
+        }
+      },
+      hooks: {
+        beforeValidate(instance) {
+          if (instance.state === 'published') {
+            if (!instance.canPublish()) {
+              instance.state = 'draft';
+              console.log('INVALID SESSION PUBLISH ATTEMPT, RESET TO DRAFT');
+            }
+          }
+        }
+      }
     });
     Session.belongsTo(Organizer);
     Organizer.hasMany(Session);

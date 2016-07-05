@@ -24,17 +24,15 @@
 
 .detailsSection {
   max-width: var(--sectionWidth);
-  margin: 2em auto;
+  margin: 4em auto;
   background: #FFF;
-  padding: 1em;
+  padding: .5em;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   & .detailsImg {
     flex-grow: 1;
-    & > img {
-      max-width: 48rem;
-    }
+    max-width: 48rem;
   }
   & .detailsText {
     flex-grow: 3;
@@ -43,6 +41,10 @@
       font-size: 1.5em;
       margin: 1em auto;
     }
+  }
+  & .detailsImg,
+  & .detailsText {
+    padding: .5em;
   }
   & .dateDetail {
     & .timespan {
@@ -64,7 +66,8 @@
     & > img {
       height: var(--iconSizeBig);
       width: var(--iconSizeBig);
-      padding: .5em;
+      margin-right: 1em;
+      padding: .25em;
       opacity: .7;
     }
   }

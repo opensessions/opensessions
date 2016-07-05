@@ -53,7 +53,8 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     let duration = null;
     if (session.endTime) {
       const dur = moment.duration(moment(this.getEndTime()).diff(moment(this.getStartTime())));
-      duration = <span className={styles.duration}><img src="/images/clock.svg" role="presentation" />{dur.asHours()}h</span>;
+      const hours = (dur.asHours() + 24) % 24;
+      duration = <span className={styles.duration}><img src="/images/clock.svg" role="presentation" />{hours}h</span>;
     }
     return (<span>
       {moment(date).format('dddd D MMM')}
