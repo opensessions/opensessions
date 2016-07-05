@@ -9,6 +9,7 @@ export default class Form extends React.Component { // eslint-disable-line react
     autosave: React.PropTypes.bool,
     children: React.PropTypes.node.isRequired,
     model: React.PropTypes.object,
+    onPublish: React.PropTypes.func,
     submitText: React.PropTypes.string,
   }
   constructor(props) {
@@ -32,12 +33,11 @@ export default class Form extends React.Component { // eslint-disable-line react
     model.state = 'draft';
     this.saveModel(model);
   }
-  saveModel(model, verb) {
+  saveModel(model, verb, verbed) {
     this.setState({ saveState: `${verb || 'Saving'}...`, saveStateClass: styles.saving });
-    apiFetch(`/api/session/${model.uuid}`, { body: model })
-      .then(() => {
-        this.setState({ saveState: 'Saved!', saveStateClass: styles.saved });
-      });
+    return apiFetch(`/api/session/${model.uuid}`, { body: model }).then(() => {
+      this.setState({ saveState: `${verbed || 'Saved'}!`, saveStateClass: styles.saved });
+    });
   }
   formChange() {
     if (!this.props.autosave) return;
@@ -58,7 +58,11 @@ export default class Form extends React.Component { // eslint-disable-line react
     if (this.timeout) clearTimeout(this.timeout);
     const model = this.props.model;
     model.state = 'published';
-    this.saveModel(model, 'Publishing');
+    this.saveModel(model, 'Publishing', 'Published').then(() => {
+      if (this.props.onPublish) {
+        this.props.onPublish();
+      }
+    });
   }
   renderNav() {
     const self = this;

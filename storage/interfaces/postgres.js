@@ -103,7 +103,7 @@ class PostgresStorage {
           return `${this.title || 'Untitled'}${this.state === 'draft' ? ' (draft)' : ''}`;
         },
       },
-      classMethods: {
+      instanceMethods: {
         canPublish() {
           const session = this;
           const requiredFields = ['startDate'];

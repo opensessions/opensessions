@@ -24,8 +24,13 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   }
   componentDidMount() {
     const self = this;
-    apiFetch(`/api/session/${this.props.params.uuid}`)
-      .then((session) => self.setState({ session }));
+    apiFetch(`/api/session/${this.props.params.uuid}`).then((result) => {
+      if (!result.error) {
+        self.setState({ session: result });
+      } else {
+        self.setState({ error: result.error });
+      }
+    });
   }
   getStartTime() {
     return this.postgresTimeToDate(this.state.session.startTime);
@@ -143,23 +148,29 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         {preparation}
       </div>
       <div className={styles.sideCol}>
-        <h3>Pricing</h3>
-        <div className={styles.floatingInfo}>
-          <span className={styles.label}>General</span>
-          <span className={styles.price}>
-            <img src="/images/tag.svg" role="presentation" />
-            {this.getPrice()}
-          </span>
+        <div className={styles.info}>
+          <h3>Pricing</h3>
+          <div className={styles.floatingInfo}>
+            <span className={styles.label}>General</span>
+            <span className={styles.price}>
+              <img src="/images/tag.svg" role="presentation" />
+              {this.getPrice()}
+            </span>
+          </div>
         </div>
-        <h3>Session Leader</h3>
-        <div className={styles.floatingInfo}>
-          {session.leader}
+        <div className={styles.info}>
+          <h3>Session Leader</h3>
+          <div className={styles.floatingInfo}>
+            {session.leader}
+          </div>
         </div>
-        <h3>Organiser</h3>
-        <div className={styles.floatingInfo}>
-          <p>{session.Organizer ? (<Link to={session.Organizer.href}>{session.Organizer.name}</Link>) : 'No organizer'}</p>
-          <p>{session.contactPhone ? (<a href={`tel:${session.contactPhone}`}>{session.contactPhone}</a>) : ''}</p>
-          <p>{session.contactEmail ? (<a href={`mailto:${session.contactEmail}`}>{session.contactEmail}</a>) : ''}</p>
+        <div className={styles.info}>
+          <h3>Organiser</h3>
+          <div className={styles.floatingInfo}>
+            <p>{session.Organizer ? (<Link to={session.Organizer.href}>{session.Organizer.name}</Link>) : 'No organizer'}</p>
+            <p>{session.contactPhone ? (<a href={`tel:${session.contactPhone}`}>{session.contactPhone}</a>) : ''}</p>
+            <p>{session.contactEmail ? (<a href={`mailto:${session.contactEmail}`}>{session.contactEmail}</a>) : ''}</p>
+          </div>
         </div>
       </div>
     </div>);
@@ -207,14 +218,14 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   }
   renderMap() {
     const session = this.state.session;
-    const locData = JSON.parse(session.locationData);
     let map = null;
-    if (!locData) {
+    if (!session.locationData) {
       map = (<div className={styles.noLocation}>
         <img src="/images/map-pin.svg" role="presentation" />
         No location data
       </div>);
     } else {
+      const locData = JSON.parse(session.locationData);
       const defaultCenter = { lat: locData.lat, lng: locData.lng };
       const onMapClick = () => true;
       const marker = {
@@ -239,18 +250,21 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       {map}
     </section>);
   }
+  renderShare() {
+    return (<div className={styles.shareSection}>
+      <div className={styles.inner}>Share this session</div>
+    </div>);
+  }
   render() {
-    if (this.state.session === null) return (<div>Loading</div>);
-    return (
-      <div className={styles.sessionView}>
-        {this.renderDetails()}
-        <div className={styles.shareSection}>
-          <div className={styles.inner}>Share this session</div>
-        </div>
-        {this.renderDescription()}
-        {this.renderAbout()}
-        {this.renderMap()}
-      </div>
-    );
+    const topAttrs = { className: styles.sessionView };
+    if (this.state.error) return (<div {...topAttrs}>{this.state.error}</div>);
+    if (this.state.session === null) return (<div {...topAttrs}>Loading</div>);
+    return (<div {...topAttrs}>
+      {this.renderDetails()}
+      {this.renderShare()}
+      {this.renderDescription()}
+      {this.renderAbout()}
+      {this.renderMap()}
+    </div>);
   }
 }

@@ -1,7 +1,3 @@
-/*
- * SessionForm
- */
-
 import React from 'react';
 
 import SessionForm from 'containers/SessionForm';
@@ -12,7 +8,7 @@ export default class SessionEdit extends React.Component { // eslint-disable-lin
   }
   render() {
     return (
-      <SessionForm sessionID={this.props.params.uuid} />
+      <SessionForm sessionID={this.props.params.uuid} {...this.props} />
     );
   }
 }

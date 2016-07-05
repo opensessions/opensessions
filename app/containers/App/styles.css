@@ -2,18 +2,24 @@
 
 html {
   height: 100%;
-  font-size: 62.5%;
+  font-size: 56.25%;
   font-family: var(--bodyFont);
   line-height: 1.4;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+@media (min-width: 32rem) {
+  html {
+    font-size: 62.5%;
+  }
+}
+
 .root {
   font-size: 16px;
   font-size: 1.6rem;
   margin: auto;
-  color: #182750;
+  color: var(--defaultColor);
   background-color: var(--grey);
   & a {
     color: inherit;
@@ -48,14 +54,6 @@ img {
   content: '';
   display: block;
   clear: both;
-}
-
-:global .l__constrained {
-  margin: 0 3%;
-
-  @media screen and (min-width: 720px) {
-    margin: 0 1.5%;
-  }
 }
 
 /* -----------------------------------------

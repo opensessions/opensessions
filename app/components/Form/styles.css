@@ -110,7 +110,8 @@
 
 @media (min-width: 36rem) {
   .nav {
-    font-size: 1.2em;
+    font-size: 1.25em;
+    max-width: 28rem;
   }
 
   .tabs {

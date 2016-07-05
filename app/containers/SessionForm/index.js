@@ -14,6 +14,7 @@ import { apiFetch } from '../../utils/api';
 
 export default class SessionForm extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
+    history: React.PropTypes.object,
     session: React.PropTypes.object,
     sessionID: React.PropTypes.string,
   };
@@ -25,6 +26,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     this.state = { session: props.session || {} };
     this.updateSession = this.updateSession.bind(this);
     this.locationCallback = this.locationCallback.bind(this);
+    this.onPublish = this.onPublish.bind(this);
   }
   componentDidMount() {
     const self = this;
@@ -37,6 +39,12 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     apiFetch(sessionUri).then((session) => {
       self.setState({ session });
     });
+  }
+  onPublish() {
+    const { session } = this.state;
+    if (session && session.state === 'published') {
+      this.props.history.push(this.state.session.href);
+    }
   }
   getSession() {
     const session = this.state.session || {};
@@ -95,7 +103,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
             </div>
           </div>
           <div className={styles.formBody}>
-            <Form autosave model={session}>
+            <Form autosave model={session} onPublish={this.onPublish}>
               {this.renderDescriptionFieldset()}
               <Fieldset label="Additional info">
                 <Field label="What to bring" name="preparation" type="textarea" model={session} validation={{ maxLength: 2048 }} />
@@ -110,7 +118,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
                 <Field label="Price" name="price" model={session} type="number" />
               </Fieldset>
               <Fieldset label="Restrictions">
-                <Field label="Gender restrictions" type="IconRadio" name="genderRestriction" model={session} options={genderOptions} />
+                <Field label="Gender Restrictions" type="IconRadio" name="genderRestriction" model={session} options={genderOptions} />
                 <Field label="Is there a minimum age?" name="minAgeRestriction" model={session} type="OptionalNum" />
                 <Field label="Is there a maximum age?" name="maxAgeRestriction" model={session} type="OptionalNum" />
               </Fieldset>

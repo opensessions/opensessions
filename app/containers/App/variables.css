@@ -5,15 +5,19 @@
   --errorRed: #DE4C28;
   --validGreen: #57A540;
   --warnYellow: #E2A81C;
+  --defaultColor: var(--darkBlue);
   --actionColor: var(--lightBlue);
   --grey: #E6E6E6;
 
   /* Fonts */
   --bodyFont: 'Open Sans', 'Helvetica', sans-serif;
   --headingFont: 'Belgrano', 'Georgia', 'Times', serif;
+  --serifFont: 'Belgrano', serif;
 
   /* Layout / Structure */
   --pagewidth: 144rem;
   --iconSize: 4rem;
   --iconSizeBig: 6rem;
+  --mobileBreakpoint: 32rem;
+  --comfyBreakpoint: 96rem;
 }

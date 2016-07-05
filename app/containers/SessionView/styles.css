@@ -11,6 +11,7 @@
 .actions {
   float: right;
   & a {
+    display: inline-block;
     padding: .4em .6em;
     background: var(--actionColor);
     color: #FFF;
@@ -30,6 +31,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: space-around;
   & .detailsImg {
     flex-grow: 1;
     max-width: 48rem;
@@ -181,10 +183,16 @@
 .sideCol {
   flex-grow: 1;
   flex-basis: 20%;
-  min-width: 12rem;
-  padding: 1em;
+  min-width: 20rem;
+  padding: .5em;
+  display: flex;
+  flex-wrap: wrap;
   & h3 {
     text-align: right;
+  }
+  & .info {
+    padding: .5em;
+    flex-grow: 1;
   }
 }
 

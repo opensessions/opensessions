@@ -36,6 +36,11 @@ export default class Field extends React.Component { // eslint-disable-line reac
       this.fetchRelation(this.props.relationQuery);
     }
   }
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      value: nextProps.value || ''
+    });
+  }
   fetchRelation(query, value) {
     const self = this;
     return apiFetch(this.props.relationURL, { query }).then((options) => {
