@@ -12,3 +12,24 @@
     color: var(--actionColor);
   }
 }
+
+.relationWrap {
+  display: flex;
+  & select {
+    flex-grow: 1;
+  }
+}
+
+.addRelation {
+  background-color: var(--actionColor);
+  color: #FFF;
+  padding: .5em;
+  line-height: 1;
+  cursor: pointer;
+  min-width: 4em;
+  &:hover,
+  &:focus {
+    background-color: #FFF;
+    color: var(--actionColor);
+  }
+}

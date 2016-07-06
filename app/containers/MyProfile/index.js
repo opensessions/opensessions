@@ -33,11 +33,14 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
   fetchOrganizers() {
     const self = this;
     const { user } = this.context;
+    const newState = {};
     apiFetch('/api/organizer', {
       query: { owner: user.user_id },
-    }).then((organizers) => {
-      apiFetch(`/api/session?owner=${user.user_id}&OrganizerUuid=null`).then((sessions) => {
-        self.setState({ organizers, sessions });
+    }).then((result) => {
+      newState.organizers = result.instances;
+      apiFetch(`/api/session?owner=${user.user_id}&OrganizerUuid=null`).then((result2) => {
+        newState.sessions = result2.instances;
+        self.setState(newState);
       });
     });
   }

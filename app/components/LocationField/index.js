@@ -75,6 +75,7 @@ export default class LocationField extends React.Component {
       const center = this.state.location;
       const marker = {
         position: center,
+        icon: {url: '/images/map-pin.svg'},
         defaultAnimation: 2
       };
       map = (<GoogleMapLoader

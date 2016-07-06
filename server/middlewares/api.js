@@ -100,7 +100,7 @@ module.exports = (app) => {
         const user = getUser(req);
         if (where.owner === user) {
           Session.findAll({ where, include: [Organizer] }).then((sessions) => {
-            res.json(sessions);
+            res.json({ instances: sessions });
           }).catch((error) => {
             res.json({ error });
           });
@@ -111,7 +111,7 @@ module.exports = (app) => {
     } else {
       where.state = 'published';
       Session.findAll({ where, include: [Organizer] }).then((sessions) => {
-        res.json(sessions);
+        res.json({ instances: sessions });
       }).catch((error) => {
         res.json({ error });
       });
@@ -170,7 +170,7 @@ module.exports = (app) => {
 
   api.get('/me/sessions', (req, res) => {
     Session.findAll({ where: { owner: getUser(req) } }).then((sessions) => {
-      res.json(sessions);
+      res.json({ sessions });
     }).catch((error) => {
       res.json({ error });
     });
@@ -190,7 +190,7 @@ module.exports = (app) => {
       where: query,
       include: [Session],
     }).then((organizers) => {
-      res.json(organizers);
+      res.json({ instances: organizers });
     }).catch((error) => {
       res.json({ error });
     });

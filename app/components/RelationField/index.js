@@ -6,46 +6,32 @@ import { apiFetch } from '../../utils/api';
 
 export default class RelationField extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
+    inputStyle: React.PropTypes.string,
     model: React.PropTypes.object,
     name: React.PropTypes.string.isRequired,
     relationURL: React.PropTypes.string,
-    id: React.PropTypes.id,
+    relationQuery: React.PropTypes.object,
     onChange: React.PropTypes.func,
-    type: React.PropTypes.string,
-    validation: React.PropTypes.object,
     value: React.PropTypes.string,
   }
   constructor(props) {
     super(props);
     this.state = {
       value: props.value || '',
-      valid: undefined,
     };
-    this.handleChange = this.handleChange.bind(this);
-    if (props.type === 'relation') {
-      this.fetchRelation();
-    }
+    this.fetchRelation(this.props.relationQuery);
   }
-  fetchRelation(query) {
+  fetchRelation(query, value) {
     const self = this;
-    return apiFetch(this.props.relationURL, { query }).then((options) => {
-      self.setState({ options });
-    });
-  }
-  handleChange(event) {
-    const value = event.target.value;
-    const state = { value };
-    this.setState(state);
-    if (this.props.onChange) {
-      this.props.onChange(event);
-    }
-    if (this.props.model) {
+    return apiFetch(this.props.relationURL, { query }).then((result) => {
+      if (typeof value === 'undefined' && result.instances[0]) value = result.instances[0].uuid;
       this.props.model.update(this.props.name, value);
-    }
+      self.setState({ options: result.instances, value });
+    });
   }
   render() {
     const attrs = {
-      onChange: this.handleChange,
+      onChange: this.props.onChange,
       name: this.props.name,
       value: this.state.value,
       id: this.props.id || this.props.name,
@@ -58,33 +44,33 @@ export default class RelationField extends React.Component { // eslint-disable-l
       event.preventDefault();
       this.setState({ relationState: 'typeNew' });
     };
-    const onKeyDown = (event) => {
-      if (event.keyCode === 8 && !event.target.value) {
+    const inputEvents = (event) => {
+      if ((event.type === 'blur' && !event.target.value) || (event.type === 'keypress' && !event.target.value && event.charCode === 8)) {
         this.setState({ relationState: 'none' });
         return;
-      } else if (event.keyCode !== 13) {
+      } else if (event.type === 'keypress' && event.charCode !== 13) {
         return;
       }
       event.preventDefault();
       apiFetch(`${this.props.relationURL}/create`, { body: { name: event.target.value } }).then((relation) => {
-        this.setState({ value: relation.uuid, relationState: 'none' });
-        this.fetchRelation();
+        this.setState({ relationState: 'none' });
+        this.fetchRelation(this.props.relationQuery, relation.uuid);
       });
     };
     let addControl = (<button onClick={onClick} className={styles.addRelation}>Add +</button>);
     if (this.state.relationState === 'typeNew') {
-      addControl = (<input onKeyDown={onKeyDown} className={styles.input} autoFocus />);
+      addControl = (<input onKeyPress={inputEvents} onBlur={inputEvents} className={this.props.inputStyle} type="text" autoFocus />);
     }
     let selectBox = null;
     if (options.length) {
       selectBox = (<select {...attrs} defaultValue={this.state.value}>
+        <option value="">None</option>
         {options.map((option) => <option value={option.uuid}>{option.name}</option>)}
       </select>);
     }
-    const input = (<div>
-      {addControl}
+    return (<div className={styles.relationWrap}>
       {selectBox}
+      {addControl}
     </div>);
-    return input;
   }
 }
