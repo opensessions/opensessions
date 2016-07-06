@@ -8,15 +8,11 @@ import LocationField from 'components/LocationField';
 
 import styles from './styles.css';
 
-import { apiFetch } from '../../utils/api';
-
 export default class Field extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
     label: React.PropTypes.string.isRequired,
     model: React.PropTypes.object,
     name: React.PropTypes.string.isRequired,
-    relationURL: React.PropTypes.string,
-    relationQuery: React.PropTypes.object,
     id: React.PropTypes.string,
     onChange: React.PropTypes.func,
     tip: React.PropTypes.string,
@@ -33,21 +29,10 @@ export default class Field extends React.Component { // eslint-disable-line reac
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleValueChange = this.handleValueChange.bind(this);
-    if (props.type === 'relation') {
-      this.fetchRelation(this.props.relationQuery);
-    }
   }
   componentWillReceiveProps(nextProps) {
     this.setState({
       value: nextProps.value || ''
-    });
-  }
-  fetchRelation(query, value) {
-    const self = this;
-    return apiFetch(this.props.relationURL, { query }).then((options) => {
-      if (typeof value === 'undefined' && options[0]) value = options[0].uuid;
-      this.props.model.update(this.props.name, value);
-      self.setState({ options, value });
     });
   }
   handleValueChange(value) {
@@ -126,40 +111,6 @@ export default class Field extends React.Component { // eslint-disable-line reac
         attrs.className = `${attrs.className} ${styles.longText}`;
       }
       input = <textarea {...attrs} />;
-    } else if (type === 'relation') {
-      const options = this.state.options || [];
-      const onClick = (event) => {
-        event.preventDefault();
-        this.setState({ relationState: 'typeNew' });
-      };
-      const inputEvents = (event) => {
-        if ((event.type === 'blur' && !event.target.value) || (event.type === 'keypress' && !event.target.value && event.charCode === 8)) {
-          this.setState({ relationState: 'none' });
-          return;
-        } else if (event.type === 'keypress' && event.charCode !== 13) {
-          return;
-        }
-        event.preventDefault();
-        apiFetch(`${this.props.relationURL}/create`, { body: { name: event.target.value } }).then((relation) => {
-          this.setState({ relationState: 'none' });
-          this.fetchRelation(this.props.relationQuery, relation.uuid);
-        });
-      };
-      let addControl = (<button onClick={onClick} className={styles.addRelation}>Add +</button>);
-      if (this.state.relationState === 'typeNew') {
-        addControl = (<input onKeyPress={inputEvents} onBlur={inputEvents} className={styles.input} type="text" autoFocus />);
-      }
-      let selectBox = null;
-      if (options.length) {
-        selectBox = (<select {...attrs} defaultValue={this.state.value}>
-          <option value="">None</option>
-          {options.map((option) => <option value={option.uuid}>{option.name}</option>)}
-        </select>);
-      }
-      input = (<div className={styles.relationWrap}>
-        {selectBox}
-        {addControl}
-      </div>);
     } else {
       if (type === 'date') {
         const date = new Date(attrs.value);
@@ -173,7 +124,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
       } else if (type === 'BoolRadio') {
         input = <BoolRadioField name={attrs.name} options={this.props.options} onChange={this.handleChange} trueText={this.props.options[1].text} falseText={this.props.options[0].text} value={attrs.value} />;
       } else if (type === 'Relation') {
-        input = <RelationField name={attrs.name} onChange={this.handleChange} value={attrs.value} />;
+        input = <RelationField {...this.props} name={attrs.name} onChange={this.handleChange} inputStyle={styles.input} value={attrs.value} />;
       } else if (type === 'OptionalNum') {
         input = <OptionalNumField name={attrs.name} onChange={this.handleValueChange} value={attrs.value} />;
       } else if (type === 'Location') {

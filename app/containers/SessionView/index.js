@@ -195,23 +195,46 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       }
     };
     if (session.hasCoaching) {
-      features.push(<span><img className={styles.iconImg} src="/images/coached.png" role="presentation" /><br />Coached</span>);
+      features.push({
+        iconImg: '/images/coached.png',
+        text: 'Coached'
+      });
     }
     if (session.genderRestriction) {
       const genderData = maps.gender[session.genderRestriction];
-      features.push(<span><img className={styles.iconImg} src={genderData.img} role="presentation" /><br />{genderData.text}</span>);
+      features.push({
+        iconImg: genderData.img,
+        text: genderData.text
+      });
     }
     if (session.minAgeRestriction) {
-      features.push(<span><span className={styles.iconText}>{session.minAgeRestriction}</span> Minimum Age</span>);
+      features.push({
+        iconText: session.minAgeRestriction,
+        text: 'Minimum Age'
+      });
     }
     if (session.maxAgeRestriction) {
-      features.push(<span><span className={styles.iconText}>{session.maxAgeRestriction}</span> Maximum Age</span>);
+      features.push({
+        iconText: session.maxAgeRestriction,
+        text: 'Maximum Age'
+      });
     }
     return (<div className={styles.aboutSection}>
       <div className={styles.inner}>
         <h2>About this session</h2>
         <ol>
-          {features.map((feature) => <li>{feature}</li>)}
+          {features.map((feature) => {
+            let icon = null;
+            if (feature.iconImg) {
+              icon = <span><img className={styles.iconImg} src={feature.iconImg} role="presentation" /><br /></span>;
+            } else {
+              icon = <span className={styles.iconText}>{feature.iconText}</span>;
+            }
+            return (<li key={feature.text}>
+              {icon}
+              {feature.text}
+            </li>);
+          })}
         </ol>
       </div>
     </div>);
@@ -230,6 +253,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       const onMapClick = () => true;
       const marker = {
         position: defaultCenter,
+        icon: { url: '/images/map-pin.svg' },
         defaultAnimation: 2
       };
       map = (<GoogleMapLoader
@@ -240,6 +264,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
             defaultZoom={16}
             defaultCenter={defaultCenter}
             onClick={onMapClick}
+            options={{ streetViewControl: false }}
           >
             <Marker {...marker} />
           </GoogleMap>
