@@ -81,7 +81,8 @@
       "strict": 0,
       "comma-dangle": "off",
       "import/no-unresolved": 0,
-      "no-unresolved": 0
+      "no-unresolved": 0,
+      "no-underscore-dangle": ["warn", {"allowAfterThis": true}]
     },
     "settings": {
       "import/resolver": {

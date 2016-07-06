@@ -4,6 +4,7 @@ import BoolRadioField from 'components/BoolRadioField';
 import IconRadioField from 'components/IconRadioField';
 import RelationField from 'components/RelationField';
 import OptionalNumField from 'components/OptionalNumField';
+import LocationField from 'components/LocationField';
 
 import styles from './styles.css';
 
@@ -82,12 +83,13 @@ export default class Field extends React.Component { // eslint-disable-line reac
   }
   renderValidationMaxLength() {
     const maxLength = this.props.validation.maxLength;
-    let num = maxLength - this.state.value.length;
+    const text = this.state.value || this.props.model[this.props.name] || '';
+    let num = maxLength - text.length;
     let urgency = styles.valid;
     let characterState = 'remaining';
-    if (num / maxLength < .25) {
+    if (num / maxLength < .1) {
       urgency = styles.danger;
-    } else if (num / maxLength < .5) {
+    } else if (num / maxLength < .2) {
       urgency = styles.warn;
     }
     if (num < 0) {
@@ -120,6 +122,9 @@ export default class Field extends React.Component { // eslint-disable-line reac
     let input;
     const type = this.props.type || 'text';
     if (type === 'textarea') {
+      if (this.props.validation && this.props.validation.maxLength > 100) {
+        attrs.className = `${attrs.className} ${styles.longText}`;
+      }
       input = <textarea {...attrs} />;
     } else if (type === 'relation') {
       const options = this.state.options || [];
@@ -171,6 +176,8 @@ export default class Field extends React.Component { // eslint-disable-line reac
         input = <RelationField name={attrs.name} onChange={this.handleChange} value={attrs.value} />;
       } else if (type === 'OptionalNum') {
         input = <OptionalNumField name={attrs.name} onChange={this.handleValueChange} value={attrs.value} />;
+      } else if (type === 'Location') {
+        input = <LocationField {...this.props} name={attrs.name} callback={this.props.onChange} value={attrs.value} inputStyle={styles.input} />;
       } else {
         attrs.type = type;
         input = <input {...attrs} />;

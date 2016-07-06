@@ -15,12 +15,15 @@ export default class BoolRadioField extends React.Component { // eslint-disable-
   constructor(props) {
     super(props);
     this.state = {
-      value: props.hasOwnProperty('value') ? props.value.toString() : 'false'
+      value: this.valueFromProps(props)
     };
     this.handleChange = this.handleChange.bind(this);
   }
   componentWillReceiveProps(nextProps) {
-    this.setState({ value: nextProps.hasOwnProperty('value') ? nextProps.value.toString() : 'false' });
+    this.setState({ value: this.valueFromProps(nextProps) });
+  }
+  valueFromProps(props) {
+    return props.hasOwnProperty('value') && props.value.toString ? props.value.toString() : 'false';
   }
   handleChange(event) {
     const value = event.target.value;

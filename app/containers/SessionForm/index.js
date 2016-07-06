@@ -3,7 +3,6 @@ import React from 'react';
 import Fieldset from 'components/Fieldset';
 import Form from 'components/Form';
 import Field from 'components/Field';
-import LocationField from 'components/LocationField';
 
 import { Link } from 'react-router';
 import Authenticated from 'components/Authenticated';
@@ -40,8 +39,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       self.setState({ session });
     });
   }
-  onPublish() {
-    const { session } = this.state;
+  onPublish(session) {
     if (session && session.state === 'published') {
       this.props.history.push(this.state.session.href);
     }
@@ -111,11 +109,13 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
                 <Field label="Will participants receive coaching?" type="BoolRadio" name="hasCoaching" model={session} options={coachOptions} />
               </Fieldset>
               <Fieldset label="Location">
-                <LocationField label="Location" name="location" callback={locationCallback} value={session.location} />
-                <Field label="Meeting point" name="meetingPoint" model={session} />
+                <Field type="Location" label="Location" name="location" onChange={locationCallback} value={session.location} defaultLocation={session.locationData ? JSON.parse(session.locationData) : null} />
+                <Field label="Meeting point" name="meetingPoint" model={session} type="textarea" validation={{ maxLength: 50 }} />
               </Fieldset>
               <Fieldset label="Pricing">
+                <Field label="Attendance type" name="attendanceType" model={session} />
                 <Field label="Price" name="price" model={session} type="number" />
+                <Field label="Quantity" name="quantity" model={session} type="number" />
               </Fieldset>
               <Fieldset label="Restrictions">
                 <Field label="Gender Restrictions" type="IconRadio" name="genderRestriction" model={session} options={genderOptions} />

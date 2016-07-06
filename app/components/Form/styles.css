@@ -11,7 +11,6 @@
   & select,
   & textarea {
     padding: .4em;
-    line-height: 1;
     border: .1em solid #C2C2C2;
     background-color: #EFEFEF;
     transition: .2s ease background;
@@ -84,7 +83,8 @@
 }
 
 .hiddenTab {
-  display: none;
+  visibility: hidden;
+  height: 0;
 }
 
 .saveState {

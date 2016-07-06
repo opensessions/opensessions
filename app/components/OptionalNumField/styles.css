@@ -1,7 +1,7 @@
 .optionalNum {
   display: flex;
   align-items: flex-end;
-  min-height: 2em;
+  min-height: 2.5em;
   & label {
     flex-grow: 1;
     width: 33%;

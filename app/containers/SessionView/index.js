@@ -236,7 +236,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         containerElement={<div style={{ height: '100%' }} />}
         googleMapElement={
           <GoogleMap
-            ref={(mapRef) => console.log(mapRef)}
+            ref="map"
             defaultZoom={16}
             defaultCenter={defaultCenter}
             onClick={onMapClick}
