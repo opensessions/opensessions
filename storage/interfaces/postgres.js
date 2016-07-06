@@ -113,7 +113,7 @@ class PostgresStorage {
       instanceMethods: {
         canPublish() {
           const session = this;
-          const requiredFields = ['title', 'description', 'OrganizerUuid', 'startDate'];
+          const requiredFields = ['title', 'description', 'location', 'price', 'OrganizerUuid', 'startDate', 'startTime'];
           let canPublish = true;
           requiredFields.forEach((field) => {
             if (!session[field]) {
