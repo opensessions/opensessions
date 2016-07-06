@@ -62,9 +62,12 @@ export default class RelationField extends React.Component { // eslint-disable-l
     }
     let selectBox = null;
     if (options.length) {
-      selectBox = (<select {...attrs} defaultValue={this.state.value}>
+      if (this.state.value) {
+        attrs.value = this.state.value;
+      }
+      selectBox = (<select {...attrs}>
         <option value="">None</option>
-        {options.map((option) => <option value={option.uuid}>{option.name}</option>)}
+        {options.map((option) => <option value={option.uuid} key={option.uuid}>{option.name}</option>)}
       </select>);
     }
     return (<div className={styles.relationWrap}>

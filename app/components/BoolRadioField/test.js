@@ -5,10 +5,15 @@ import { shallow } from 'enzyme';
 import expect from 'expect';
 
 describe('<BoolRadioField />', () => {
+  const renderedComponent = shallow(
+    <BoolRadioField />
+  );
+  const radios = renderedComponent.find('input[type="radio"]');
+  it('should render two option buttons', () => {
+    expect(radios).to.have.length(2);
+  });
   it('should be off by default', () => {
-    const renderedComponent = shallow(
-      <BoolRadioField />
-    );
-    expect(renderedComponent.find('input[type="radio"]').prop('selected')).toEqual(false);
+    expect(radios[0].prop('value')).toEqual('true');
+    expect(radios[0].prop('selected')).toEqual(false);
   });
 });

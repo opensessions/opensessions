@@ -72,7 +72,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     const session = this.state.session || {};
     const actions = [];
     if (user && user.user_id === session.owner) {
-      actions.push(<Link to={`/session/${session.uuid}/edit`}>Edit</Link>);
+      actions.push(<Link to={`/session/${session.uuid}/edit`} key="edit">Edit</Link>);
     }
     if (!actions.length) return null;
     return (<div className={styles.actions}>

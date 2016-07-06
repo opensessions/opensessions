@@ -33,7 +33,12 @@ class PostgresStorage {
       // meta
       uuid,
       owner: sequelize.STRING,
-      name: sequelize.STRING,
+      name: {
+        type: sequelize.STRING,
+        validate: {
+          notEmpty: true
+        }
+      },
     }, {
       getterMethods: {
         href() {
