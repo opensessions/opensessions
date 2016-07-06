@@ -8,7 +8,7 @@ import styles from './styles.css';
 
 export default class LocationField extends React.Component {
   static propTypes = {
-    callback: React.PropTypes.func,
+    onChange: React.PropTypes.func,
     defaultLocation: React.PropTypes.object,
     inputStyle: React.PropTypes.string,
     name: React.PropTypes.string.isRequired,
@@ -36,7 +36,7 @@ export default class LocationField extends React.Component {
         const location = { lat: loc.lat(), lng: loc.lng() };
         this.changeCenter(location);
         this.setState({ clean: true, location });
-        return this.props.callback ? this.props.callback(autocomplete) : place;
+        return this.props.onChange ? this.props.onChange(autocomplete) : place;
       }
     );
   }
@@ -56,7 +56,9 @@ export default class LocationField extends React.Component {
     this.setState({ clean: false });
   }
   changeCenter(location) {
-    this.refs.component.panTo(location);
+    if (this.refs.component) {
+      this.refs.component.panTo(location);
+    }
   }
   render() {
     const { name } = this.props;

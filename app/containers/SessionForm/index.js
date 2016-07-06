@@ -78,7 +78,6 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   }
   render() {
     const session = this.getSession();
-    const locationCallback = this.locationCallback;
     const genderOptions = [
       { text: 'None (Mixed)', value: 'mixed', src: '/images/mixed.svg', selectedSrc: '/images/mixed-selected.svg' },
       { text: 'Male only', value: 'male', src: '/images/male.svg', selectedSrc: '/images/male-selected.svg' },
@@ -109,7 +108,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
                 <Field label="Will participants receive coaching?" type="BoolRadio" name="hasCoaching" model={session} options={coachOptions} />
               </Fieldset>
               <Fieldset label="Location">
-                <Field type="Location" label="Location" name="location" onChange={locationCallback} value={session.location} defaultLocation={session.locationData ? JSON.parse(session.locationData) : null} />
+                <Field type="Location" label="Location" name="location" onChange={this.locationCallback} value={session.location} defaultLocation={session.locationData ? JSON.parse(session.locationData) : null} />
                 <Field label="Meeting point" name="meetingPoint" model={session} type="textarea" validation={{ maxLength: 50 }} />
               </Fieldset>
               <Fieldset label="Pricing">

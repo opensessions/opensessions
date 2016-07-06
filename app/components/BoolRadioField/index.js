@@ -23,7 +23,7 @@ export default class BoolRadioField extends React.Component { // eslint-disable-
     this.setState({ value: this.valueFromProps(nextProps) });
   }
   valueFromProps(props) {
-    return props.hasOwnProperty('value') && props.value.toString ? props.value.toString() : 'false';
+    return ('value' in props && props.value && props.value.toString) ? props.value.toString() : 'false';
   }
   handleChange(event) {
     const value = event.target.value;
@@ -41,16 +41,13 @@ export default class BoolRadioField extends React.Component { // eslint-disable-
       type: 'radio'
     };
     const value = this.state.value;
-    const options = [
-      {
-        value: 'true',
-        text: this.props.trueText
-      },
-      {
-        value: 'false',
-        text: this.props.falseText
-      }
-    ];
+    const options = [{
+      value: 'true',
+      text: this.props.trueText
+    }, {
+      value: 'false',
+      text: this.props.falseText
+    }];
     const radios = (<ol>
       {options.map((option) => {
         const checked = option.value === value;

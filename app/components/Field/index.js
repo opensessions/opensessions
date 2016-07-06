@@ -177,7 +177,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
       } else if (type === 'OptionalNum') {
         input = <OptionalNumField name={attrs.name} onChange={this.handleValueChange} value={attrs.value} />;
       } else if (type === 'Location') {
-        input = <LocationField {...this.props} name={attrs.name} callback={this.props.onChange} value={attrs.value} inputStyle={styles.input} />;
+        input = <LocationField {...this.props} name={attrs.name} value={attrs.value} inputStyle={styles.input} />;
       } else {
         attrs.type = type;
         input = <input {...attrs} />;
