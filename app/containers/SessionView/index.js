@@ -1,7 +1,9 @@
 import React from 'react';
 import moment from 'moment';
 
-import { GoogleMapLoader, GoogleMap, Marker } from 'react-google-maps';
+import GoogleMapLoader from 'react-google-maps/lib/GoogleMapLoader';
+import GoogleMap from 'react-google-maps/lib/GoogleMap';
+import Marker from 'react-google-maps/lib/Marker';
 
 import { Link } from 'react-router';
 
@@ -59,9 +61,11 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     if (session.endTime) {
       const dur = moment.duration(moment(this.getEndTime()).diff(moment(this.getStartTime())));
       const hours = (dur.asHours() + 24) % 24;
-      duration = <span className={styles.duration}><img src="/images/clock.svg" role="presentation" />{hours}h</span>;
+      const hoursInt = Math.floor(hours);
+      const minsInt = Math.ceil((hours % 1) * 60);
+      duration = <span className={styles.duration}><img src="/images/clock.svg" role="presentation" />{hoursInt ? `${hoursInt}h` : ''}{minsInt ? ` ${minsInt}m` : ''}</span>;
     }
-    return (<span>
+    return (<span className={styles.detailText}>
       {moment(date).format('dddd D MMM')}
       <span className={styles.timespan}>at {time.join(':')}</span>
       {duration}
@@ -91,7 +95,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       let location = session.location;
       if (locationPieces.length > 1) {
         const firstLine = locationPieces.shift();
-        location = <span className={styles.locationText}>{firstLine}<br />{locationPieces.join(',')}</span>;
+        location = <span className={styles.detailText}>{firstLine}<br />{locationPieces.join(',')}</span>;
       }
       locationDetail = (<div className={styles.locationDetail}>
         <img src="/images/map-pin.svg" role="presentation" />
@@ -276,8 +280,21 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     </section>);
   }
   renderShare() {
+    const { session } = this.state;
+    const { title, href } = session;
+    const link = `${window.location.origin}${href}`;
+    const icons = [
+      { url: `http://www.facebook.com/share.php?u=${link}&title=${title}`, img: '/images/facebook.png' },
+      { url: `http://twitter.com/home?status=${title}+${link}`, img: '/images/twitter.png' },
+      { url: `mailto:?subject=${title}&body=${link}`, img: '/images/email.png' }
+    ];
     return (<div className={styles.shareSection}>
-      <div className={styles.inner}>Share this session</div>
+      <div className={styles.inner}>
+        Share this session
+        <ol>
+          {icons.map((icon) => <li><a href={icon.url}><img src={icon.img} role="presentation" /></a></li>)}
+        </ol>
+      </div>
     </div>);
   }
   render() {

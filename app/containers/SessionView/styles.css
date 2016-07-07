@@ -73,9 +73,9 @@
       opacity: .7;
     }
   }
-  & .locationText {
+  & .detailText {
     display: inline-block;
-    vertical-align: middle;
+    vertical-align: top;
   }
   & .detailPrice {
     text-align: right;
@@ -99,10 +99,23 @@
 
 .shareSection {
   background-color: #FFF;
+  color: #888;
   text-align: right;
   margin: 1em 0;
-  padding: 1em;
-  font-size: 1.2em;
+  padding: .25em;
+  font-size: 1.5em;
+  & ol {
+    display: inline-block;
+    padding: 0 .5em;
+    & > li {
+      list-style: none;
+      display: inline-block;
+      padding: .5em;
+      & a {
+        display: block;
+      }
+    }
+  }
 }
 
 .descriptionSection {
