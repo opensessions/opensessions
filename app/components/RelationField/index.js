@@ -23,8 +23,23 @@ export default class RelationField extends React.Component { // eslint-disable-l
     this.fetchRelation();
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.value && nextProps.value !== this.props.value ) {
+    if (nextProps.value && nextProps.value !== this.props.value) {
       this.setState({ value: nextProps.value });
+    }
+  }
+  onInputEvents(event) {
+    const { value } = event.target;
+    const ENTER_KEY = 13;
+    event.preventDefault();
+    if (event.type === 'blur' && !value) {
+      this.setState({ relationState: 'none' });
+    } else if (event.type === 'keypress' && event.charCode !== ENTER_KEY) {
+      event.stopPropagation();
+    } else {
+      apiFetch(`${this.props.relationURL}/create`, { body: { name: value } }).then((relation) => {
+        this.setState({ relationState: 'none' });
+        this.fetchRelation(relation.uuid);
+      });
     }
   }
   fetchRelation(value) {
@@ -34,21 +49,7 @@ export default class RelationField extends React.Component { // eslint-disable-l
       self.setState({ options: result.instances, value });
     });
   }
-  onInputEvents(event) {
-    if ((event.type === 'blur' && !event.target.value) || (event.type === 'keypress' && !event.target.value && event.charCode === 8)) {
-      this.setState({ relationState: 'none' });
-      return;
-    } else if (event.type === 'keypress' && event.charCode !== 13) {
-      return;
-    }
-    event.preventDefault();
-    apiFetch(`${this.props.relationURL}/create`, { body: { name: event.target.value } }).then((relation) => {
-      this.setState({ relationState: 'none' });
-      this.fetchRelation(relation.uuid);
-    });
-  }
   render() {
-    const self = this;
     const onClick = (event) => {
       event.preventDefault();
       this.setState({ relationState: 'typeNew' });
