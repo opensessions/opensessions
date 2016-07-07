@@ -5,6 +5,8 @@ import GoogleMapLoader from 'react-google-maps/lib/GoogleMapLoader';
 import GoogleMap from 'react-google-maps/lib/GoogleMap';
 import Marker from 'react-google-maps/lib/Marker';
 
+import SocialShareIcons from 'components/SocialShareIcons';
+
 import { Link } from 'react-router';
 
 import { apiFetch } from '../../utils/api';
@@ -280,20 +282,12 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     </section>);
   }
   renderShare() {
-    const { session } = this.state;
-    const { title, href } = session;
+    const { title, href } = this.state.session;
     const link = `${window.location.origin}${href}`;
-    const icons = [
-      { url: `http://www.facebook.com/share.php?u=${link}&title=${title}`, img: '/images/facebook.png' },
-      { url: `http://twitter.com/home?status=${title}+${link}`, img: '/images/twitter.png' },
-      { url: `mailto:?subject=${title}&body=${link}`, img: '/images/email.png' }
-    ];
     return (<div className={styles.shareSection}>
       <div className={styles.inner}>
         Share this session
-        <ol>
-          {icons.map((icon) => <li><a href={icon.url}><img src={icon.img} role="presentation" /></a></li>)}
-        </ol>
+        <SocialShareIcons link={link} title={title} />
       </div>
     </div>);
   }

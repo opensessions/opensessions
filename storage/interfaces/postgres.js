@@ -64,7 +64,7 @@ class PostgresStorage {
         type: sequelize.STRING,
         defaultValue: 'draft',
         validation: {
-          isIn: ['draft', 'published', 'deleted']
+          isIn: ['draft', 'published', 'unpublished', 'deleted']
         }
       },
       owner: sequelize.STRING,

@@ -45,7 +45,7 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
     });
   }
   renderOrganizers() {
-    if (this.state.organizers.length === 0) return (<div>No organizers yet</div>);
+    if (!this.state.organizers.length) return (<div>No organizers yet</div>);
     return (<div>
       <h2>Organized sessions</h2>
       <ul>
@@ -54,7 +54,7 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
     </div>);
   }
   renderSessions() {
-    if (this.state.sessions.length === 0) return null;
+    if (!this.state.sessions.length) return null;
     return (<div>
       <h2>Sessions without organizers</h2>
       <ul>

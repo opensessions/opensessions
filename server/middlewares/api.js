@@ -40,22 +40,25 @@ module.exports = (app) => {
 
   api.get('/rdpe/sessions', (req, res) => {
     const fromTS = req.query.from || 0;
-    const afterID = req.query.after;
+    let afterID = req.query.after;
+    if (afterID) {
+      afterID = afterID.substring(1, afterID.length - 1); // to convert `{uuid}` into `uuid`
+    }
     const where = {
       $or: [
         {
           updatedAt: fromTS,
           uuid: {
-            $gte: afterID
+            $gt: afterID
           }
         }, {
           updatedAt: {
-            $gte: fromTS,
+            $gt: fromTS,
           },
         }
       ],
       state: {
-        $in: ['published', 'deleted']
+        $in: ['published', 'deleted', 'unpublished']
       }
     };
     const order = [
@@ -65,24 +68,28 @@ module.exports = (app) => {
     const limit = 50;
     Session.findAll({ where, order, limit }).then((rawSessions) => {
       const sessions = rawSessions.map((session) => {
-        const state = session.state !== 'deleted' ? 'updated' : 'deleted';
-        return {
+        const state = session.state === 'published' ? 'updated' : 'deleted';
+        const item = {
           state,
           kind: 'session',
           id: `{${session.uuid}}`,
           modified: session.updatedAt,
-          data: session,
         };
+        if (state === 'updated') {
+          item.data = session;
+        }
+        return item;
       });
-      const next = {
+      let next = {
         from: 0,
         after: 0
       };
       if (sessions.length) {
         const lastSession = sessions[sessions.length - 1];
-        const modifiedDate = new Date(lastSession.modified);
-        next.from = modifiedDate.getTime();
+        next.from = lastSession.modified;
         next.after = lastSession.id;
+      } else {
+        next = req.query;
       }
       res.json({
         items: sessions,

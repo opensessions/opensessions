@@ -93,15 +93,15 @@ export default class Field extends React.Component { // eslint-disable-line reac
   }
   render() {
     let label = this.props.label;
-    const validClass = this.state.valid === false ? styles.invalid : '';
     const attrs = {
-      onChange: this.handleChange,
-      className: `${styles.input} ${validClass}`,
       name: this.props.name,
-      value: this.state.value,
+      onChange: this.handleChange,
+      className: `${styles.input} ${this.state.valid ? '' : styles.invalid}`
     };
     if (this.props.model) {
       attrs.value = this.props.model.hasOwnProperty(attrs.name) ? this.props.model[attrs.name] : '';
+    } else {
+      attrs.value = this.state.value;
     }
     let input;
     const type = this.props.type || 'text';
@@ -121,7 +121,9 @@ export default class Field extends React.Component { // eslint-disable-line reac
       if (type === 'IconRadio') {
         input = <IconRadioField options={this.props.options} {...attrs} />;
       } else if (type === 'BoolRadio') {
-        input = <BoolRadioField options={this.props.options} {...attrs} trueText={this.props.options[1].text} falseText={this.props.options[0].text} />;
+        attrs.falseText = this.props.options[0].text;
+        attrs.trueText = this.props.options[1].text;
+        input = <BoolRadioField options={this.props.options} {...attrs} />;
       } else if (type === 'Relation') {
         input = <RelationField {...this.props} {...attrs} inputStyle={styles.input} />;
       } else if (type === 'OptionalNum') {
@@ -141,15 +143,13 @@ export default class Field extends React.Component { // eslint-disable-line reac
         <p>{this.props.tip}</p>
       </div>);
     }
-    return (
-      <div className={styles.field} data-valid={this.state.valid}>
-        <label className={styles.label}>{label}</label>
-        <div className={styles.inputWrap}>
-          {input}
-          {tip}
-          {this.renderValidation()}
-        </div>
+    return (<div className={styles.field} data-valid={this.state.valid}>
+      <label className={styles.label}>{label}</label>
+      <div className={styles.inputWrap}>
+        {input}
+        {tip}
+        {this.renderValidation()}
       </div>
-    );
+    </div>);
   }
 }

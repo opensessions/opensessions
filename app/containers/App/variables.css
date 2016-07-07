@@ -16,6 +16,7 @@
 
   /* Layout / Structure */
   --pagewidth: 144rem;
+  --fieldWidth: 36rem;
   --iconSize: 4rem;
   --iconSizeBig: 6rem;
   --mobileBreakpoint: 32rem;

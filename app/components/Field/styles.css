@@ -68,7 +68,7 @@
 }
 
 .inputWrap {
-  width: 22em;
+  width: var(--fieldWidth);
   max-width: 100%;
 }
 

@@ -27,5 +27,4 @@ export default class LogoutLink extends React.Component {
   render() {
     return <span>{this.renderLogoutLink()}</span>;
   }
-
 }
