@@ -11,9 +11,8 @@ import styles from './styles.css';
 export default class Field extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
     label: React.PropTypes.string.isRequired,
-    model: React.PropTypes.object,
+    model: React.PropTypes.object.isRequired,
     name: React.PropTypes.string.isRequired,
-    id: React.PropTypes.string,
     onChange: React.PropTypes.func,
     tip: React.PropTypes.string,
     type: React.PropTypes.string,
@@ -120,13 +119,14 @@ export default class Field extends React.Component { // eslint-disable-line reac
           .join('-');
       }
       if (type === 'IconRadio') {
-        input = <IconRadioField name={attrs.name} options={this.props.options} onChange={this.handleChange} value={attrs.value} />;
+        input = <IconRadioField options={this.props.options} {...attrs} />;
       } else if (type === 'BoolRadio') {
-        input = <BoolRadioField name={attrs.name} options={this.props.options} onChange={this.handleChange} trueText={this.props.options[1].text} falseText={this.props.options[0].text} value={attrs.value} />;
+        input = <BoolRadioField options={this.props.options} {...attrs} trueText={this.props.options[1].text} falseText={this.props.options[0].text} />;
       } else if (type === 'Relation') {
-        input = <RelationField {...this.props} name={attrs.name} onChange={this.handleChange} inputStyle={styles.input} value={attrs.value} />;
+        input = <RelationField {...this.props} {...attrs} inputStyle={styles.input} />;
       } else if (type === 'OptionalNum') {
-        input = <OptionalNumField name={attrs.name} onChange={this.handleValueChange} value={attrs.value} />;
+        attrs.onChange = this.handleValueChange;
+        input = <OptionalNumField {...attrs} />;
       } else if (type === 'Location') {
         input = <LocationField {...this.props} name={attrs.name} value={attrs.value} inputStyle={styles.input} />;
       } else {
