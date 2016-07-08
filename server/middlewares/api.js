@@ -164,13 +164,11 @@ module.exports = (app) => {
   api.post('/session/:uuid', requireLogin, (req, res) => {
     Session.findOne({ where: { uuid: req.params.uuid } }).then((session) => {
       if (session.owner !== getUser(req)) {
-        res.json({ error: 'Must be session owner to modify session' });
-        return;
+        return res.json({ error: 'Must be session owner to modify session' });
       }
-      session.update(req.body).then((savedSession) => {
+      return session.update(req.body).then((savedSession) => {
         res.json(savedSession);
       }).catch((error) => {
-        console.log(error);
         res.json({ error: error.message });
       });
     }).catch((error) => {

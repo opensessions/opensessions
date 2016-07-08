@@ -9,7 +9,7 @@ export default class HomePage extends React.Component { // eslint-disable-line r
     return (
       <div className={styles.container}>
         <h1>Welcome to Open Sessions!</h1>
-        <p><Link to="/session/add">+ add session</Link></p>
+        <p><Link to="/session/add">+ Add a session</Link></p>
       </div>
     );
   }

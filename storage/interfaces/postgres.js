@@ -127,10 +127,11 @@ class PostgresStorage {
       hooks: {
         beforeUpdate(instance) {
           if (instance.state === 'published') {
-            const canPublish = instance.canPublish();
-            if (!canPublish) {
+            try {
+              instance.canPublish();
+            } catch (err) {
               instance.state = 'draft';
-              throw new Error('Can\'t publish, ');
+              throw err;
             }
           }
         }
