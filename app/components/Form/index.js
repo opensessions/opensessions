@@ -35,6 +35,9 @@ export default class Form extends React.Component { // eslint-disable-line react
   saveModel(model, verb, verbed) {
     this.setState({ saveState: `${verb || 'Saving'}...`, saveStateClass: styles.saving });
     return apiFetch(`/api/session/${model.uuid}`, { body: model }).then((result) => {
+      if (result.error) {
+        throw result.error;
+      }
       this.setState({ saveState: `${verbed || 'Saved'}!`, saveStateClass: styles.saved });
       return result;
     });
@@ -62,6 +65,8 @@ export default class Form extends React.Component { // eslint-disable-line react
       if (this.props.onPublish) {
         this.props.onPublish(resultModel);
       }
+    }).catch((error) => {
+      this.setState({ saveState: error, saveStateClass: styles.error });
     });
   }
   renderNav() {

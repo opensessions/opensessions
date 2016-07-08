@@ -13,6 +13,9 @@ html {
   html {
     font-size: 62.5%;
   }
+  .root {
+    padding-top: 5em;
+  }
 }
 
 .root {

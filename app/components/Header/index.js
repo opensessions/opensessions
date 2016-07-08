@@ -10,6 +10,9 @@ class Header extends React.Component { // eslint-disable-line react/prefer-state
     user: React.PropTypes.object,
     lock: React.PropTypes.object,
   }
+  static propTypes = {
+    lock: React.PropTypes.object,
+  }
   renderLoginButton() {
     const { user } = this.context;
     if (!user) return <LoginButton lock={this.props.lock}>Login</LoginButton>;

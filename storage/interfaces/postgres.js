@@ -42,7 +42,7 @@ class PostgresStorage {
     }, {
       getterMethods: {
         href() {
-          return `/${this.Model.name.toLowerCase()}/${this.uuid}`
+          return `/${this.Model.name.toLowerCase()}/${this.uuid}`;
         },
         displayName() {
           return this.name;
@@ -104,7 +104,7 @@ class PostgresStorage {
     }, {
       getterMethods: {
         href() {
-          return `/${this.Model.name.toLowerCase()}/${this.uuid}`
+          return `/${this.Model.name.toLowerCase()}/${this.uuid}`;
         },
         displayName() {
           return `${this.title || 'Untitled'}${this.state === 'draft' ? ' (draft)' : ''}`;
@@ -114,21 +114,23 @@ class PostgresStorage {
         canPublish() {
           const session = this;
           const requiredFields = ['title', 'description', 'location', 'price', 'OrganizerUuid', 'startDate', 'startTime'];
-          let canPublish = true;
+          const errors = [];
           requiredFields.forEach((field) => {
             if (!session[field]) {
-              canPublish = false;
+              errors.push(field);
             }
           });
-          return canPublish;
+          if (errors.length) throw new Error(`Missing fields: ${errors.join(', ')}`);
+          return true;
         }
       },
       hooks: {
-        beforeValidate(instance) {
+        beforeUpdate(instance) {
           if (instance.state === 'published') {
-            if (!instance.canPublish()) {
+            const canPublish = instance.canPublish();
+            if (!canPublish) {
               instance.state = 'draft';
-              console.log('INVALID SESSION PUBLISH ATTEMPT, RESET TO DRAFT');
+              throw new Error('Can\'t publish, ');
             }
           }
         }

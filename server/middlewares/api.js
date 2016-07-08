@@ -32,6 +32,13 @@ module.exports = (app) => {
     return query;
   };
 
+  const getSchema = ((model) => JSON.parse(JSON.stringify(model.fieldRawAttributesMap, (key, value) => {
+    if (key === 'Model') {
+      return;
+    }
+    return value; // eslint-disable-line consistent-return
+  })));
+
   api.get('/rdpe', (req, res) => {
     res.json({
       sessions: '/api/rdpe/sessions',
@@ -141,13 +148,13 @@ module.exports = (app) => {
         requireLogin(req, res, () => {
           const user = getUser(req);
           if (session.owner === user) {
-            res.json({ instance: session });
+            res.json({ instance: session, schema: getSchema(Session) });
           } else {
             res.json({ error: 'Must be session owner to view draft' });
           }
         });
       } else {
-        res.json({ instance: session });
+        res.json({ instance: session, schema: getSchema(Session) });
       }
     }).catch((error) => {
       res.json({ error: error.message });
@@ -160,12 +167,14 @@ module.exports = (app) => {
         res.json({ error: 'Must be session owner to modify session' });
         return;
       }
-      session.update(req.body);
-      session.save().then((savedSession) => {
+      session.update(req.body).then((savedSession) => {
         res.json(savedSession);
+      }).catch((error) => {
+        console.log(error);
+        res.json({ error: error.message });
       });
     }).catch((error) => {
-      res.json({ error });
+      res.json({ error: error.message });
     });
   });
 

@@ -107,6 +107,10 @@
     opacity: 0;
     transition: .1s ease color, 1.5s ease opacity;
   }
+  &.error {
+    color: #B32A2A;
+    opacity: .8;
+  }
 }
 
 @media (min-width: 36rem) {

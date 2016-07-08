@@ -92,10 +92,10 @@ export default class Field extends React.Component { // eslint-disable-line reac
     return false;
   }
   render() {
-    let label = this.props.label;
+    const { label, validation } = this.props;
     const attrs = {
       name: this.props.name,
-      validation: this.props.validation,
+      validation,
       onChange: this.handleChange,
       className: `${styles.input} ${this.state.valid ? '' : styles.invalid}`
     };
@@ -107,7 +107,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
     let input;
     const type = this.props.type || 'text';
     if (type === 'textarea') {
-      if (this.props.validation && this.props.validation.maxLength > 100) {
+      if (validation && validation.maxLength > 100) {
         attrs.className = `${attrs.className} ${styles.longText}`;
       }
       input = <textarea {...attrs} />;
@@ -134,7 +134,6 @@ export default class Field extends React.Component { // eslint-disable-line reac
           .reverse()
           .join('-');
       } else if (type === 'number') {
-        const { validation } = this.props;
         if (validation) {
           ['min', 'max'].forEach((prop) => {
             if (prop in validation) {

@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router';
 
 import OrganizerView from '../OrganizerView';
 import SessionTileView from '../SessionTileView';
