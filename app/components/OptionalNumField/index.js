@@ -5,9 +5,9 @@ import styles from './styles.css';
 export default class OptionalNumField extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
     name: React.PropTypes.string.isRequired,
-    id: React.PropTypes.string,
     onChange: React.PropTypes.func,
     value: React.PropTypes.string,
+    validation: React.PropTypes.object,
   }
   constructor(props) {
     super(props);
@@ -50,6 +50,14 @@ export default class OptionalNumField extends React.Component { // eslint-disabl
       value,
       onChange: this.handleChange
     };
+    if (this.props.validation) {
+      if ('min' in this.props.validation) {
+        attrs.min = this.props.validation.min;
+      }
+      if ('max' in this.props.validation) {
+        attrs.max = this.props.validation.max;
+      }
+    }
     let numberInput = null;
     if (bool) {
       numberInput = <input {...attrs} autoFocus />;

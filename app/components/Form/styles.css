@@ -85,6 +85,7 @@
 .hiddenTab {
   visibility: hidden;
   height: 0;
+  overflow: hidden;
 }
 
 .saveState {

@@ -95,6 +95,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
     let label = this.props.label;
     const attrs = {
       name: this.props.name,
+      validation: this.props.validation,
       onChange: this.handleChange,
       className: `${styles.input} ${this.state.valid ? '' : styles.invalid}`
     };
@@ -130,8 +131,15 @@ export default class Field extends React.Component { // eslint-disable-line reac
           .split('/')
           .reverse()
           .join('-');
-        attrs.onBlur = attrs.onChange;
-        delete attrs.onChange;
+      } else if (type === 'number') {
+        if (this.props.validation) {
+          if ('min' in this.props.validation) {
+            attrs.min = this.props.validation.min;
+          }
+          if ('max' in this.props.validation) {
+            attrs.max = this.props.validation.max;
+          }
+        }
       }
       attrs.type = type;
       input = <input {...attrs} />;

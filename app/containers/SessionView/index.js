@@ -32,7 +32,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       if (!result.error) {
         self.setState({ session: result });
       } else {
-        self.setState({ error: result.error });
+        self.setState({ error: result.error.message });
       }
     });
   }

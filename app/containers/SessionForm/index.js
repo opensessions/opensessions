@@ -113,13 +113,13 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
               </Fieldset>
               <Fieldset label="Pricing">
                 <Field label="Attendance type" name="attendanceType" model={session} />
-                <Field label="Price" name="price" model={session} type="number" />
-                <Field label="Quantity" name="quantity" model={session} type="number" />
+                <Field label="Price" name="price" model={session} type="number" validation={{ min: 0 }} />
+                <Field label="Quantity" name="quantity" model={session} type="number" validation={{ min: 0 }} />
               </Fieldset>
               <Fieldset label="Restrictions">
                 <Field label="Gender Restrictions" type="IconRadio" name="genderRestriction" model={session} options={genderOptions} />
-                <Field label="Is there a minimum age?" name="minAgeRestriction" model={session} type="OptionalNum" />
-                <Field label="Is there a maximum age?" name="maxAgeRestriction" model={session} type="OptionalNum" />
+                <Field label="Is there a minimum age?" name="minAgeRestriction" model={session} type="OptionalNum" validation={{ min: 0 }} />
+                <Field label="Is there a maximum age?" name="maxAgeRestriction" model={session} type="OptionalNum" validation={{ min: 0 }} />
               </Fieldset>
               <Fieldset label="Contact info">
                 <Field label="Phone" name="contactPhone" model={session} />
