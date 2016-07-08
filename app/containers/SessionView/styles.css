@@ -177,13 +177,14 @@
     margin: .75em 0;
   }
   & > .infoSection {
-    margin: 2em 0;
+    margin-top: 3em;
   }
 }
 
 .sideCol {
   flex-grow: 1;
   flex-basis: 20%;
+  align-content: flex-start;
   min-width: 20rem;
   padding: .5em;
   display: flex;
@@ -201,16 +202,21 @@
   background-color: #FFF;
   padding: 1em;
   font-size: 1.1em;
-  & > .label {
-    display: inline-block;
-    width: 50%;
-  }
-  & > .price {
-    display: inline-block;
-    width: 50%;
+  &.organizerInfo {
     text-align: right;
-    & > img {
-      margin-right: .5em;
+  }
+  &.pricing {
+    display: flex;
+    flex-wrap: wrap;
+    & > span {
+      flex-grow: 1;
+      &.price {
+        text-align: right;
+        white-space: nowrap;
+        & > img {
+          margin-right: .5em;
+        }
+      }
     }
   }
 }
@@ -228,5 +234,12 @@
       max-height: 2em;
       margin-right: .5em;
     }
+  }
+}
+
+a.organizerLink {
+  color: var(--actionColor);
+  & > img {
+    width: 1em;
   }
 }

@@ -156,7 +156,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       <div className={styles.sideCol}>
         <div className={styles.info}>
           <h3>Pricing</h3>
-          <div className={styles.floatingInfo}>
+          <div className={`${styles.floatingInfo} ${styles.pricing}`}>
             <span className={styles.label}>General</span>
             <span className={styles.price}>
               <img src="/images/tag.svg" role="presentation" />
@@ -172,10 +172,10 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         </div>
         <div className={styles.info}>
           <h3>Organiser</h3>
-          <div className={styles.floatingInfo}>
+          <div className={`${styles.floatingInfo} ${styles.organizerInfo}`}>
             <p>{session.Organizer ? (<Link to={session.Organizer.href}>{session.Organizer.name}</Link>) : 'No organizer'}</p>
-            <p>{session.contactPhone ? (<a href={`tel:${session.contactPhone}`}>{session.contactPhone}</a>) : ''}</p>
-            <p>{session.contactEmail ? (<a href={`mailto:${session.contactEmail}`}>{session.contactEmail}</a>) : ''}</p>
+            <p>{session.contactPhone ? (<a className={styles.organizerLink} href={`tel:${session.contactPhone}`}><img src="/images/phone.svg" role="presentation" /> {session.contactPhone}</a>) : ''}</p>
+            <p>{session.contactEmail ? (<a className={styles.organizerLink} href={`mailto:${session.contactEmail}`}><img src="/images/email.png" role="presentation" /> {session.contactEmail}</a>) : ''}</p>
           </div>
         </div>
       </div>
