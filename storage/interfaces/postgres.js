@@ -19,19 +19,19 @@ class PostgresStorage {
     return db.sync();
   }
   createModels(db) {
-    const uuid = {
+    const uuid = () => ({
       type: sequelize.UUID,
       defaultValue: sequelize.UUIDV1,
       primaryKey: true,
-    };
+    });
     db.define('Sport', {
       // meta
-      uuid,
+      uuid: uuid(),
       name: sequelize.STRING,
     });
     const Organizer = db.define('Organizer', {
       // meta
-      uuid,
+      uuid: uuid(),
       owner: sequelize.STRING,
       name: {
         type: sequelize.STRING,
@@ -42,7 +42,7 @@ class PostgresStorage {
     }, {
       getterMethods: {
         href() {
-          return `/organizer/${this.uuid}`;
+          return `/${this.Model.name.toLowerCase()}/${this.uuid}`
         },
         displayName() {
           return this.name;
@@ -59,7 +59,7 @@ class PostgresStorage {
     });
     const Session = db.define('Session', {
       // meta
-      uuid,
+      uuid: uuid(),
       state: {
         type: sequelize.STRING,
         defaultValue: 'draft',
@@ -104,7 +104,7 @@ class PostgresStorage {
     }, {
       getterMethods: {
         href() {
-          return `/session/${this.uuid}`;
+          return `/${this.Model.name.toLowerCase()}/${this.uuid}`
         },
         displayName() {
           return `${this.title || 'Untitled'}${this.state === 'draft' ? ' (draft)' : ''}`;

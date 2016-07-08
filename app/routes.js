@@ -26,14 +26,6 @@ export default function createRoutes() {
           .catch(errorLoading);
       },
     }, {
-      path: '/login',
-      name: 'Edit session',
-      getComponent(nextState, cb) {
-        System.import('containers/LoginPage')
-          .then(loadModule(cb))
-          .catch(errorLoading);
-      },
-    }, {
       path: '/forgot',
       name: 'forgot',
       getComponent(nextState, cb) {

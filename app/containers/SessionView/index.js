@@ -30,7 +30,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     const self = this;
     apiFetch(`/api/session/${this.props.params.uuid}`).then((result) => {
       if (!result.error) {
-        self.setState({ session: result });
+        self.setState({ session: result.instance });
       } else {
         self.setState({ error: result.error.message });
       }
@@ -157,7 +157,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         <div className={styles.info}>
           <h3>Pricing</h3>
           <div className={`${styles.floatingInfo} ${styles.pricing}`}>
-            <span className={styles.label}>General</span>
+            <span className={styles.label}>{session.attendanceType}</span>
             <span className={styles.price}>
               <img src="/images/tag.svg" role="presentation" />
               {this.getPrice()}
@@ -167,7 +167,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         <div className={styles.info}>
           <h3>Session Leader</h3>
           <div className={styles.floatingInfo}>
-            {session.leader}
+            {session.leader ? session.leader : 'No leader'}
           </div>
         </div>
         <div className={styles.info}>

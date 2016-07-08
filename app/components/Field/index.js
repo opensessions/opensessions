@@ -118,12 +118,14 @@ export default class Field extends React.Component { // eslint-disable-line reac
       attrs.trueText = this.props.options[1].text;
       input = <BoolRadioField options={this.props.options} {...attrs} />;
     } else if (type === 'Relation') {
-      input = <RelationField {...this.props} {...attrs} inputStyle={styles.input} />;
+      attrs.inputStyle = styles.input;
+      input = <RelationField {...this.props} {...attrs} />;
     } else if (type === 'OptionalNum') {
       attrs.onChange = this.handleValueChange;
       input = <OptionalNumField {...attrs} />;
     } else if (type === 'Location') {
-      input = <LocationField {...this.props} name={attrs.name} value={attrs.value} inputStyle={styles.input} />;
+      attrs.inputStyle = styles.input;
+      input = <LocationField {...this.props} {...attrs} />;
     } else {
       if (type === 'date') {
         const date = new Date(attrs.value);
@@ -132,13 +134,13 @@ export default class Field extends React.Component { // eslint-disable-line reac
           .reverse()
           .join('-');
       } else if (type === 'number') {
-        if (this.props.validation) {
-          if ('min' in this.props.validation) {
-            attrs.min = this.props.validation.min;
-          }
-          if ('max' in this.props.validation) {
-            attrs.max = this.props.validation.max;
-          }
+        const { validation } = this.props;
+        if (validation) {
+          ['min', 'max'].forEach((prop) => {
+            if (prop in validation) {
+              attrs[prop] = validation[prop];
+            }
+          });
         }
       }
       attrs.type = type;

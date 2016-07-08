@@ -35,8 +35,8 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     } else if (this.props.sessionID) {
       sessionUri = `/api/session/${this.props.sessionID}`;
     }
-    apiFetch(sessionUri).then((session) => {
-      self.setState({ session });
+    apiFetch(sessionUri).then((res) => {
+      self.setState({ session: res.instance });
     });
   }
   onPublish(session) {

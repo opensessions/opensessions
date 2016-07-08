@@ -141,16 +141,16 @@ module.exports = (app) => {
         requireLogin(req, res, () => {
           const user = getUser(req);
           if (session.owner === user) {
-            res.json(session);
+            res.json({ instance: session });
           } else {
             res.json({ error: 'Must be session owner to view draft' });
           }
         });
       } else {
-        res.json(session);
+        res.json({ instance: session });
       }
     }).catch((error) => {
-      res.json({ error });
+      res.json({ error: error.message });
     });
   });
 
@@ -215,7 +215,7 @@ module.exports = (app) => {
 
   api.get('/organizer/:uuid', (req, res) => {
     Organizer.findOne({ where: { uuid: req.params.uuid }, include: [Session] }).then((organizer) => {
-      res.json(organizer);
+      res.json({ instance: organizer });
     }).catch((error) => {
       res.json({ error });
     });

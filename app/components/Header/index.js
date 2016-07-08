@@ -1,15 +1,18 @@
 import React from 'react';
 import { Link } from 'react-router';
 
+import LoginButton from 'components/LoginButton';
+
 import styles from './styles.css';
 
 class Header extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
     user: React.PropTypes.object,
+    lock: React.PropTypes.object,
   }
   renderLoginButton() {
     const { user } = this.context;
-    if (!user) return <Link to="/login">Login</Link>;
+    if (!user) return <LoginButton lock={this.props.lock}>Login</LoginButton>;
     const name = user.nickname;
     let image = null;
     if (user.picture) {

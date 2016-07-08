@@ -20,7 +20,6 @@ import getUserToken from './getUserToken';
 import styles from './styles.css';
 
 export default class App extends React.Component { // eslint-disable-line react/prefer-stateless-function
-
   static propTypes = {
     children: React.PropTypes.node,
   };
@@ -63,7 +62,7 @@ export default class App extends React.Component { // eslint-disable-line react/
   render() {
     return (
       <div className={styles.root}>
-        <Header />
+        <Header lock={this.lock} />
         {this.props.children}
         <Footer />
       </div>

@@ -2,6 +2,8 @@ import React from 'react';
 import { Link } from 'react-router';
 
 import OrganizerView from '../OrganizerView';
+import SessionTileView from '../SessionTileView';
+
 import LogoutLink from 'components/LogoutLink';
 import Authenticated from 'components/Authenticated';
 
@@ -48,7 +50,7 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
     if (!this.state.organizers.length) return (<div>No organizers yet</div>);
     return (<div>
       <h2>Organized sessions</h2>
-      <ul>
+      <ul className={styles.organizerList}>
         {this.state.organizers.map((organizer) => <li key={organizer.uuid}><OrganizerView organizer={organizer} /></li>)}
       </ul>
     </div>);
@@ -57,8 +59,8 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
     if (!this.state.sessions.length) return null;
     return (<div>
       <h2>Sessions without organizers</h2>
-      <ul>
-        {this.state.sessions.map((session) => <li key={session.uuid}><Link to={session.href}>{session.displayName}</Link></li>)}
+      <ul className={styles.organizerList}>
+        {this.state.sessions.map((session) => <li key={session.uuid}><SessionTileView session={session} /></li>)}
       </ul>
     </div>);
   }

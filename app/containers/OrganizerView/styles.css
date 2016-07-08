@@ -1,12 +1,17 @@
-@import '../../containers/App/variables.css';
+@import '../App/variables.css';
 
 .container {
   max-width: var(--pagewidth);
   margin: auto;
 }
 
-.organizerList {
+.title {
+  font-size: 1.25em;
+}
+
+.sessionsList {
   & > li {
     list-style: none;
+    margin: 1em 0;
   }
 }
