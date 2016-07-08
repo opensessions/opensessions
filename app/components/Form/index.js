@@ -39,8 +39,8 @@ export default class Form extends React.Component { // eslint-disable-line react
       return result;
     });
   }
-  formChange() {
-    if (!this.props.autosave) return;
+  formChange(event) {
+    if (!event.target.name) return;
     if (this.timeout) clearTimeout(this.timeout);
     this.timeout = setTimeout(this.autosave, 2000);
     this.setState({ saveState: 'Saving...', saveStateClass: styles.saving });
@@ -106,7 +106,7 @@ export default class Form extends React.Component { // eslint-disable-line react
   }
   render() {
     return (
-      <form onChange={this.formChange} className={styles.form}>
+      <form onChange={this.props.autosave ? this.formChange : undefined} className={styles.form}>
         <nav className={styles.nav}>
           {this.renderNav()}
         </nav>

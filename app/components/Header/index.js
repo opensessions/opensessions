@@ -6,22 +6,10 @@ import styles from './styles.css';
 class Header extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
     user: React.PropTypes.object,
-    lock: React.PropTypes.object,
-  }
-  constructor() {
-    super();
-    this.showLock = this.showLock.bind(this);
-  }
-  showLock() {
-    const { lock } = this.context;
-    lock.show({
-      icon: '/images/open-sessions-icon.png',
-      socialBigButtons: true
-    });
   }
   renderLoginButton() {
     const { user } = this.context;
-    if (!user) return <button onClick={this.showLock}>Login</button>;
+    if (!user) return <Link to="/login">Login</Link>;
     const name = user.nickname;
     let image = null;
     if (user.picture) {

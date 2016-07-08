@@ -1,0 +1,10 @@
+@import '../App/variables.css';
+
+.container {
+  max-width: var(--pagewidth);
+  margin: auto;
+  text-align: center;
+  & a {
+    cursor: pointer;
+  }
+}

@@ -30,12 +30,13 @@ export default class RelationField extends React.Component { // eslint-disable-l
   onInputEvents(event) {
     const { value } = event.target;
     const ENTER_KEY = 13;
-    event.preventDefault();
     if (event.type === 'blur' && !value) {
       this.setState({ relationState: 'none' });
     } else if (event.type === 'keypress' && event.charCode !== ENTER_KEY) {
       event.stopPropagation();
     } else {
+      event.preventDefault();
+      if (!value) return;
       apiFetch(`${this.props.relationURL}/create`, { body: { name: value } }).then((relation) => {
         this.setState({ relationState: 'none' });
         this.fetchRelation(relation.uuid);

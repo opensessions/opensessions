@@ -24,7 +24,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
     super(props);
     this.state = {
       value: props.value || '',
-      valid: undefined,
+      valid: true,
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleValueChange = this.handleValueChange.bind(this);
@@ -110,6 +110,19 @@ export default class Field extends React.Component { // eslint-disable-line reac
         attrs.className = `${attrs.className} ${styles.longText}`;
       }
       input = <textarea {...attrs} />;
+    } else if (type === 'IconRadio') {
+      input = <IconRadioField options={this.props.options} {...attrs} />;
+    } else if (type === 'BoolRadio') {
+      attrs.falseText = this.props.options[0].text;
+      attrs.trueText = this.props.options[1].text;
+      input = <BoolRadioField options={this.props.options} {...attrs} />;
+    } else if (type === 'Relation') {
+      input = <RelationField {...this.props} {...attrs} inputStyle={styles.input} />;
+    } else if (type === 'OptionalNum') {
+      attrs.onChange = this.handleValueChange;
+      input = <OptionalNumField {...attrs} />;
+    } else if (type === 'Location') {
+      input = <LocationField {...this.props} name={attrs.name} value={attrs.value} inputStyle={styles.input} />;
     } else {
       if (type === 'date') {
         const date = new Date(attrs.value);
@@ -117,24 +130,11 @@ export default class Field extends React.Component { // eslint-disable-line reac
           .split('/')
           .reverse()
           .join('-');
+        attrs.onBlur = attrs.onChange;
+        delete attrs.onChange;
       }
-      if (type === 'IconRadio') {
-        input = <IconRadioField options={this.props.options} {...attrs} />;
-      } else if (type === 'BoolRadio') {
-        attrs.falseText = this.props.options[0].text;
-        attrs.trueText = this.props.options[1].text;
-        input = <BoolRadioField options={this.props.options} {...attrs} />;
-      } else if (type === 'Relation') {
-        input = <RelationField {...this.props} {...attrs} inputStyle={styles.input} />;
-      } else if (type === 'OptionalNum') {
-        attrs.onChange = this.handleValueChange;
-        input = <OptionalNumField {...attrs} />;
-      } else if (type === 'Location') {
-        input = <LocationField {...this.props} name={attrs.name} value={attrs.value} inputStyle={styles.input} />;
-      } else {
-        attrs.type = type;
-        input = <input {...attrs} />;
-      }
+      attrs.type = type;
+      input = <input {...attrs} />;
     }
     let tip;
     if (this.props.tip) {

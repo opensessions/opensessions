@@ -21,99 +21,65 @@ export default function createRoutes() {
       path: '/',
       name: 'home',
       getComponent(nextState, cb) {
-        const importModules = Promise.all([
-          System.import('containers/HomePage'),
-        ]);
-
-        const renderRoute = loadModule(cb);
-
-        importModules.then(([component]) => {
-          renderRoute(component);
-        }).catch(errorLoading);
+        System.import('containers/HomePage')
+          .then(loadModule(cb))
+          .catch(errorLoading);
+      },
+    }, {
+      path: '/login',
+      name: 'Edit session',
+      getComponent(nextState, cb) {
+        System.import('containers/LoginPage')
+          .then(loadModule(cb))
+          .catch(errorLoading);
       },
     }, {
       path: '/forgot',
       name: 'forgot',
       getComponent(nextState, cb) {
-        const importModules = Promise.all([
-          System.import('containers/ForgotPage'),
-        ]);
-
-        const renderRoute = loadModule(cb);
-
-        importModules.then(([component]) => {
-          renderRoute(component);
-        }).catch(errorLoading);
+        System.import('containers/ForgotPage')
+          .then(loadModule(cb))
+          .catch(errorLoading);
       },
     }, {
       path: '/profile',
       name: 'My profile',
       getComponent(nextState, cb) {
-        const importModules = Promise.all([
-          System.import('containers/MyProfile'),
-        ]);
-
-        const renderRoute = loadModule(cb);
-
-        importModules.then(([component]) => {
-          renderRoute(component);
-        }).catch(errorLoading);
+        System.import('containers/MyProfile')
+          .then(loadModule(cb))
+          .catch(errorLoading);
       },
     }, {
       path: '/organizer/:uuid',
       name: 'Organizer view',
       getComponent(nextState, cb) {
-        const importModules = Promise.all([
-          System.import('containers/OrganizerView'),
-        ]);
-
-        const renderRoute = loadModule(cb);
-
-        importModules.then(([component]) => {
-          renderRoute(component);
-        }).catch(errorLoading);
+        System.import('containers/OrganizerView')
+          .then(loadModule(cb))
+          .catch(errorLoading);
       },
     }, {
       path: '/session/add',
       name: 'add session',
       getComponent(nextState, cb) {
-        const importModules = Promise.all([
-          System.import('containers/SessionForm'),
-        ]);
-
-        const renderRoute = loadModule(cb);
-
-        importModules.then(([component]) => {
-          renderRoute(component);
-        }).catch(errorLoading);
+        System.import('containers/SessionForm')
+          .then(loadModule(cb))
+          .catch(errorLoading);
       },
     }, {
       path: '/session/:uuid',
       name: 'View session',
       getComponent(nextState, cb) {
-        const importModules = Promise.all([
-          System.import('containers/SessionView'),
-        ]);
-
-        const renderRoute = loadModule(cb);
-
-        importModules.then(([component]) => {
-          renderRoute(component);
-        }).catch(errorLoading);
+        System.import('containers/SessionView')
+          .then(loadModule(cb))
+          .catch(errorLoading);
       },
     }, {
       path: '/session/:uuid/edit',
       name: 'Edit session',
       getComponent(nextState, cb) {
-        const importModules = Promise.all([
-          System.import('containers/SessionEdit'),
-        ]);
-
-        const renderRoute = loadModule(cb);
-
-        importModules.then(([component]) => {
-          renderRoute(component);
-        }).catch(errorLoading);
+        System.import('containers/SessionEdit')
+          .then(loadModule(cb))
+          .catch(errorLoading);
       },
     }, {
       path: '*',
