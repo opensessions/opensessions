@@ -29,26 +29,30 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     }
   }
   renderSessions() {
-    const organizer = this.state.organizer;
+    const { organizer } = this.state;
     if (!organizer) return null;
     if (!organizer.Sessions.length) return <p>No sessions</p>;
-    return (<ol className={styles.sessionsList}>
-      {organizer.Sessions.map((session) => (<li key={session.uuid}><SessionTileView session={session} /></li>))}
-    </ol>);
+    return (<div>
+      <h2>{organizer.name}'s Sessions</h2>
+      <ol className={styles.sessionsList}>
+        {organizer.Sessions.map((session) => (<li key={session.uuid}><SessionTileView session={session} /></li>))}
+      </ol>
+    </div>);
   }
   renderOrganizer() {
-    const organizer = this.state.organizer;
+    const { organizer } = this.state;
     if (!organizer) return null;
     return (<div>
-      <h1 className={styles.title}>Organizer: <Link to={organizer.href}>{organizer.name}</Link></h1>
+      <div className={styles.bannerImage} style={{ background: 'url(/images/organizer-bg-default.png) no-repeat' }}></div>
+      <h1><div className={styles.container}>{organizer.name}</div></h1>
     </div>);
   }
   render() {
-    return (
+    return (<div className={styles.organizerView}>
+      {this.renderOrganizer()}
       <div className={styles.container}>
-        {this.renderOrganizer()}
         {this.renderSessions()}
       </div>
-    );
+    </div>);
   }
 }

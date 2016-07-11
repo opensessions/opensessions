@@ -67,14 +67,14 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
     const { user } = this.context;
     return (
       <div>
-        <div className={styles.container}>
-          <Authenticated message="You must be logged on to view your profile">
+        <Authenticated message="You must be logged on to view your profile">
+          <div className={styles.container}>
             <p>Hello, {user ? user.nickname : ''}!</p>
             <p>From here you can view your organizers and their sessions below, or <LogoutLink value="Log out" /></p>
-            {this.renderOrganizers()}
-            {this.renderSessions()}
-          </Authenticated>
-        </div>
+          </div>
+          {this.renderOrganizers()}
+          {this.renderSessions()}
+        </Authenticated>
       </div>
     );
   }

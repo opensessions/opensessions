@@ -2,4 +2,16 @@
   background: #FFF;
   max-width: 96rem;
   margin: auto;
+  display: flex;
+  flex-wrap: wrap;
+  & .imgCol {
+    flex-grow: 1;
+    padding: .5em;
+  }
+  & .textCol {
+    flex-grow: 1;
+  }
+  & .schedules {
+    flex-basis: 100%;
+  }
 }
