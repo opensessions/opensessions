@@ -9,8 +9,7 @@ export default class RelationField extends React.Component { // eslint-disable-l
     inputStyle: React.PropTypes.string,
     model: React.PropTypes.object,
     name: React.PropTypes.string.isRequired,
-    relationURL: React.PropTypes.string,
-    relationQuery: React.PropTypes.object,
+    relation: React.PropTypes.object,
     onChange: React.PropTypes.func,
     value: React.PropTypes.string,
   }
@@ -37,15 +36,15 @@ export default class RelationField extends React.Component { // eslint-disable-l
     } else {
       event.preventDefault();
       if (!value) return;
-      apiFetch(`${this.props.relationURL}/create`, { body: { name: value } }).then((relation) => {
+      apiFetch(`${this.props.relation.url}/create`, { body: { name: value } }).then((result) => {
         this.setState({ relationState: 'none' });
-        this.fetchRelation(relation.uuid);
+        this.fetchRelation(result.instance.uuid);
       });
     }
   }
   fetchRelation(value) {
     const self = this;
-    return apiFetch(this.props.relationURL, { query: this.props.relationQuery }).then((result) => {
+    return apiFetch(this.props.relation.url, { query: this.props.relation.query }).then((result) => {
       self.props.model.update(self.props.name, value);
       self.setState({ options: result.instances, value });
     });

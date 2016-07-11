@@ -5,7 +5,7 @@ import LoginButton from 'components/LoginButton';
 
 import styles from './styles.css';
 
-class Header extends React.Component { // eslint-disable-line react/prefer-stateless-function
+export default class Header extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
     user: React.PropTypes.object,
     lock: React.PropTypes.object,
@@ -17,11 +17,9 @@ class Header extends React.Component { // eslint-disable-line react/prefer-state
     const { user } = this.context;
     if (!user) return <LoginButton lock={this.props.lock}>Login</LoginButton>;
     const name = user.nickname;
-    let image = null;
-    if (user.picture) {
-      image = (<img src={user.picture} alt={name} className={styles.userIcon} />);
-    }
-    return <Link to="/profile">Hey there {name}! {image}</Link>;
+    const greet = 'Hello,';
+    const image = user.picture ? <img src={user.picture} alt={name} className={styles.userIcon} /> : null;
+    return <Link to="/profile">{greet} {name}! {image}</Link>;
   }
   render() {
     return (
@@ -40,5 +38,3 @@ class Header extends React.Component { // eslint-disable-line react/prefer-state
     );
   }
 }
-
-export default Header;

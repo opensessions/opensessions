@@ -5,7 +5,7 @@ import styles from './styles.css';
 export default class SocialShareIcons extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
     link: React.PropTypes.string.isRequired,
-    title: React.PropTypes.string.isRequired,
+    title: React.PropTypes.string,
   }
   render() {
     const { link, title } = this.props;

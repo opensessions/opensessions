@@ -10,6 +10,7 @@ export default class Form extends React.Component { // eslint-disable-line react
     children: React.PropTypes.node.isRequired,
     model: React.PropTypes.object,
     onPublish: React.PropTypes.func,
+    onChange: React.PropTypes.func,
   }
   constructor(props) {
     super(props);
@@ -47,6 +48,7 @@ export default class Form extends React.Component { // eslint-disable-line react
     if (this.timeout) clearTimeout(this.timeout);
     this.timeout = setTimeout(this.autosave, 2000);
     this.setState({ saveState: 'Saving...', saveStateClass: styles.saving });
+    if (this.props.onChange) this.props.onChange(this.props.model);
   }
   tabClick(event) {
     const key = Array.prototype.indexOf.call(event.target.parentNode.childNodes, event.target);
@@ -59,7 +61,7 @@ export default class Form extends React.Component { // eslint-disable-line react
   }
   submit() {
     if (this.timeout) clearTimeout(this.timeout);
-    const model = this.props.model;
+    const { model } = this.props;
     model.state = 'published';
     this.saveModel(model, 'Publishing', 'Published').then((resultModel) => {
       if (this.props.onPublish) {

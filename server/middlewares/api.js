@@ -136,7 +136,7 @@ module.exports = (app) => {
     const session = req.body;
     session.owner = getUser(req);
     Session.create(session).then((savedSession) => {
-      res.json(savedSession);
+      res.json({ instance: savedSession });
     }).catch((error) => {
       res.json({ error });
     });
@@ -214,7 +214,7 @@ module.exports = (app) => {
     const organizer = req.body;
     organizer.owner = getUser(req);
     Organizer.create(organizer).then((savedOrganizer) => {
-      res.json(savedOrganizer);
+      res.json({ instance: savedOrganizer });
     }).catch((error) => {
       res.json({ error });
     });

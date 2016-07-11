@@ -36,7 +36,8 @@ export default class LocationField extends React.Component {
         const location = { lat: loc.lat(), lng: loc.lng() };
         this.changeCenter(location);
         this.setState({ clean: true, location });
-        return this.props.onChange ? this.props.onChange(autocomplete) : place;
+        if (this.props.onChange) this.props.onChange(place);
+        return place;
       }
     );
   }
