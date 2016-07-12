@@ -1,17 +1,33 @@
+@import '../App/variables.css';
+
 .tile {
   background: #FFF;
-  max-width: 96rem;
+  max-width: var(--tileWidth);
   margin: auto;
   display: flex;
   flex-wrap: wrap;
   & .imgCol {
     flex-grow: 1;
     padding: .5em;
+    text-align: center;
+    & img {
+      max-width: 32rem;
+    }
   }
   & .textCol {
-    flex-grow: 1;
+    flex-grow: 3;
   }
   & .schedules {
     flex-basis: 100%;
+    & ol {
+      & > li {
+        list-style: none;
+      }
+    }
+  }
+  & ol.actions {
+    & > li {
+      list-style: none;
+    }
   }
 }

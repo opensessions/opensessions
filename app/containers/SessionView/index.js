@@ -1,5 +1,5 @@
 import React from 'react';
-import moment from 'moment';
+import { parseSchedule } from 'utils/postgres';
 
 import GoogleMapLoader from 'react-google-maps/lib/GoogleMapLoader';
 import GoogleMap from 'react-google-maps/lib/GoogleMap';
@@ -36,12 +36,6 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       }
     });
   }
-  getStartTime() {
-    return this.postgresTimeToDate(this.state.session.startTime);
-  }
-  getEndTime() {
-    return this.postgresTimeToDate(this.state.session.endTime);
-  }
   getPrice() {
     let price = this.state.session.price;
     if (price !== Math.floor(price)) {
@@ -51,25 +45,16 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     }
     return `£${price}`;
   }
-  postgresTimeToDate(time) {
-    return new Date(`2000-01-01 ${time}`);
-  }
   date() {
     const { session } = this.state;
-    const date = new Date(session.startDate);
-    const time = session.startTime ? session.startTime.split(':') : ['00', '00', '00'];
-    time.pop();
+    const data = parseSchedule(session);
     let duration = null;
-    if (session.endTime) {
-      const dur = moment.duration(moment(this.getEndTime()).diff(moment(this.getStartTime())));
-      const hours = (dur.asHours() + 24) % 24;
-      const hoursInt = Math.floor(hours);
-      const minsInt = Math.ceil((hours % 1) * 60);
-      duration = <span className={styles.duration}><img src="/images/clock.svg" role="presentation" />{hoursInt ? `${hoursInt}h` : ''}{minsInt ? ` ${minsInt}m` : ''}</span>;
+    if (data.duration) {
+      duration = <span className={styles.duration}><img src="/images/clock.svg" role="presentation" />{data.duration}</span>;
     }
     return (<span className={styles.detailText}>
-      {moment(date).format('dddd D MMM')}
-      <span className={styles.timespan}>at {time.join(':')}</span>
+      {data.date}
+      <span className={styles.timespan}>at {data.time}</span>
       {duration}
     </span>);
   }

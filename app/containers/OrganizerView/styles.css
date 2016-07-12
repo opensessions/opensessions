@@ -1,15 +1,24 @@
 @import '../App/variables.css';
 
 .organizerView {
-  & > h1 {
-    font-size: 2em;
-    font-weight: normal;
-    font-family: var(--serifFont);
+  & .name {
     background: #FFF;
-    padding: .75em 0;
+    padding: 1em 0;
+    & h1 {
+      font-family: var(--serifFont);
+      font-size: 2em;
+      font-weight: normal;
+    }
   }
   & h2 {
     font-family: var(--serifFont);
+    font-size: 1.4em;
+    font-weight: normal;
+  	margin: auto;
+  	max-width: var(--tileWidth);
+  }
+  & .sessions {
+    
   }
 }
 
@@ -30,5 +39,21 @@
 }
 
 .bannerImage {
-  height: 8em;
+  height: 16em;
+  & > .container {
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    & a {
+      text-decoration: none;
+      padding: 1em 1em;
+      color: #FFF;
+      opacity: .5;
+      transition: .5s ease all;
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
 }

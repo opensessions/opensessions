@@ -3,7 +3,7 @@ import React from 'react';
 export default class LoginButton extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
     lock: React.PropTypes.object,
-    children: React.PropTypes.element,
+    children: React.PropTypes.node,
   }
   constructor() {
     super();

@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router';
 
+import { parseSchedule } from 'utils/postgres';
+
 import styles from './styles.css';
 
 export default class SessionTileView extends React.Component { // eslint-disable-line react/prefer-stateless-function
@@ -16,13 +18,14 @@ export default class SessionTileView extends React.Component { // eslint-disable
     const actions = [
       { href: session.href, text: 'View' }
     ];
-    if (user && session.owner == user.user_id) actions.push({ href: `${session.href}/edit`, text: 'Edit' });
+    if (user && session.owner === user.user_id) actions.push({ href: `${session.href}/edit`, text: 'Edit' });
     return (<div>
-      <ol>{actions.map((action) => <li key={action.href}><Link to={action.href}>{action.text}</Link></li>)}</ol>
+      <ol className={styles.actions}>{actions.map((action) => <li key={action.href}><Link to={action.href}>{action.text}</Link></li>)}</ol>
     </div>);
   }
   render() {
     const { session } = this.props;
+    const date = parseSchedule(session);
     return (
       <article className={styles.tile}>
         <div className={styles.imgCol}>
@@ -37,7 +40,7 @@ export default class SessionTileView extends React.Component { // eslint-disable
         <div className={styles.schedules}>
           <div>1 schedule</div>
           <ol>
-            <li>{session.startDate} {session.startTime}</li>
+            <li>{date.date} at {date.time}</li>
           </ol>
         </div>
       </article>
