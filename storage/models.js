@@ -23,15 +23,7 @@ module.exports = (DataTypes) => ({
           displayName() {
             return this.name;
           },
-        },
-        classMethods: {
-          getQuery(req) {
-            return {
-              where: { owner: req.user.user_id },
-              include: [db.models.Session],
-            };
-          },
-        },
+        }
       }
     },
     Session: {

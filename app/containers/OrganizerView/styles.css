@@ -47,7 +47,7 @@
     justify-content: flex-end;
     & a {
       text-decoration: none;
-      padding: 1em 1em;
+      padding: 1em;
       color: #FFF;
       opacity: .5;
       transition: .5s ease all;

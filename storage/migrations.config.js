@@ -4,10 +4,10 @@ dotenv.config({ silent: true });
 dotenv.load();
 
 const connectDetails = {
-  "url": process.env.DATABASE_URL,
-  "dialect": "postgres"
+  url: process.env.DATABASE_URL,
+  dialect: 'postgres'
 };
 
 module.exports = {
-  "development": connectDetails
+  development: connectDetails
 };
