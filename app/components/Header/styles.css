@@ -18,7 +18,7 @@
   flex-grow: 1;
   color: #1F2C4D;
   font-size: 2rem;
-  padding: .25em 1em;
+  padding: .25em 0 .25em 1em;
   & img {
     max-height: 3em;
     &.beta {
@@ -32,7 +32,7 @@
 .nav {
   flex-grow: 4;
   text-align: right;
-  padding: 0 1em;
+  padding: 0 1em 0 0;
   font-size: 1.1em;
   & a:link {
     display: inline-block;

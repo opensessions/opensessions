@@ -12,13 +12,13 @@
   }
   & h2 {
     font-family: var(--serifFont);
-    font-size: 1.4em;
+    font-size: 1.75em;
     font-weight: normal;
-  	margin: auto;
-  	max-width: var(--tileWidth);
+    margin: 1em auto;
+    max-width: var(--tileWidth);
   }
   & .sessions {
-    
+    margin-top: 4em;
   }
 }
 

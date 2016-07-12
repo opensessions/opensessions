@@ -6,28 +6,60 @@
   margin: auto;
   display: flex;
   flex-wrap: wrap;
+  padding: .25em;
   & .imgCol {
     flex-grow: 1;
-    padding: .5em;
+    padding: .25em;
     text-align: center;
     & img {
       max-width: 32rem;
     }
   }
   & .textCol {
-    flex-grow: 3;
+    flex-grow: 8;
+    padding: .25em;
+    & .location {
+      color: #777;
+    }
+    & h1 {
+      font-size: 1.4em;
+      font-weight: normal;
+      padding: .25em 0;
+    }
   }
   & .schedules {
     flex-basis: 100%;
+    padding: 1em;
+    & > div {
+      font-weight: bold;
+      text-transform: uppercase;
+    }
     & ol {
       & > li {
         list-style: none;
+        background: #777;
+        color: #FFF;
+        margin: .5em auto;
+        padding: .25em .5em;
+        box-shadow: 0 .1em .75em 0 rgba(0, 0, 0, .5);
+        & img {
+          max-width: 2em;
+        }
       }
     }
   }
   & ol.actions {
     & > li {
       list-style: none;
+      display: inline-block;
+      margin-right: .1em;
+      & a {
+        display: block;
+        color: var(--actionColor);
+        border: .1em solid;
+        padding: .5em 1em;
+        line-height: 1;
+      }
     }
   }
 }

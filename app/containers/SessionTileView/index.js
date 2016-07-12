@@ -33,14 +33,14 @@ export default class SessionTileView extends React.Component { // eslint-disable
         </div>
         <div className={styles.textCol}>
           <h1><Link to={session.href}>{session.displayName}</Link></h1>
-          <div>{session.location}</div>
+          <div className={styles.location}>{session.location}</div>
           <div>{this.renderActions()}</div>
           <div className={styles.state}>{session.state}</div>
         </div>
         <div className={styles.schedules}>
           <div>1 schedule</div>
           <ol>
-            <li>{date.date} at {date.time}</li>
+            <li><img src="/images/calendar.svg" role="presentation" /> {date.date} at {date.time}</li>
           </ol>
         </div>
       </article>

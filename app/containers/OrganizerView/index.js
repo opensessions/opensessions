@@ -33,7 +33,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     if (!organizer) return null;
     if (!organizer.Sessions.length) return <p>No sessions</p>;
     return (<div className={styles.sessions}>
-      <h2>{organizer.name}'s Sessions</h2>
+      <h2>{organizer.name}&rsquo;{organizer.name[organizer.name.length - 1] !== 's' ? 's' : ''} Sessions</h2>
       <ol className={styles.sessionsList}>
         {organizer.Sessions.map((session) => (<li key={session.uuid}><SessionTileView session={session} /></li>))}
       </ol>
