@@ -18,13 +18,48 @@
   & .textCol {
     flex-grow: 8;
     padding: .25em;
+    display: flex;
+    flex-wrap: wrap;
+    & .info,
+    & .actions {
+      flex-basis: 100%;
+    }
+    & .actions {
+      align-self: flex-end;
+      justify-content: space-between;
+      display: flex;
+      & ol.actions {
+        display: inline-block;
+        & > li {
+          list-style: none;
+          display: inline-block;
+          margin-right: .1em;
+          & a {
+            display: block;
+            color: var(--actionColor);
+            border: .1em solid;
+            padding: .5em 1em;
+            line-height: 1;
+          }
+        }
+      }
+    }
     & .location {
       color: #777;
     }
     & h1 {
       font-size: 1.4em;
       font-weight: normal;
-      padding: .25em 0;
+    }
+    & .state {
+      display: inline-block;
+      border: .1em solid;
+      padding: .5em 1em;
+      color: orange;
+      &.live {
+        color: #FFF;
+        background: var(--liveColor);
+      }
     }
   }
   & .schedules {
@@ -37,28 +72,19 @@
     & ol {
       & > li {
         list-style: none;
-        background: #777;
+        background: #888;
         color: #FFF;
         margin: .5em auto;
         padding: .25em .5em;
         box-shadow: 0 .1em .75em 0 rgba(0, 0, 0, .5);
-        & img {
-          max-width: 2em;
+        & > svg {
+          max-height: 2em;
+          padding: 0 .5em;
+          vertical-align: middle;
         }
-      }
-    }
-  }
-  & ol.actions {
-    & > li {
-      list-style: none;
-      display: inline-block;
-      margin-right: .1em;
-      & a {
-        display: block;
-        color: var(--actionColor);
-        border: .1em solid;
-        padding: .5em 1em;
-        line-height: 1;
+        & .time {
+          font-weight: bold;
+        }
       }
     }
   }

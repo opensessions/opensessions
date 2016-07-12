@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router';
 
+import CalendarSvg from 'components/CalendarSvg';
+
 import { parseSchedule } from 'utils/postgres';
 
 import styles from './styles.css';
@@ -19,28 +21,34 @@ export default class SessionTileView extends React.Component { // eslint-disable
       { href: session.href, text: 'View' }
     ];
     if (user && session.owner === user.user_id) actions.push({ href: `${session.href}/edit`, text: 'Edit' });
-    return (<div>
-      <ol className={styles.actions}>{actions.map((action) => <li key={action.href}><Link to={action.href}>{action.text}</Link></li>)}</ol>
-    </div>);
+    return (<ol className={styles.actions}>
+      {actions.map((action) => <li key={action.href}><Link to={action.href}>{action.text}</Link></li>)}
+    </ol>);
   }
   render() {
     const { session } = this.props;
     const date = parseSchedule(session);
+    let stateStyle = styles.state;
+    if (session.state === 'published') stateStyle = `${stateStyle} ${styles.live}`;
     return (
       <article className={styles.tile}>
         <div className={styles.imgCol}>
           <img src="/images/placeholder.png" role="presentation" />
         </div>
         <div className={styles.textCol}>
-          <h1><Link to={session.href}>{session.displayName}</Link></h1>
-          <div className={styles.location}>{session.location}</div>
-          <div>{this.renderActions()}</div>
-          <div className={styles.state}>{session.state}</div>
+          <div className={styles.info}>
+            <h1><Link to={session.href}>{session.displayName}</Link></h1>
+            <div className={styles.location}>{session.location}</div>
+          </div>
+          <div className={styles.actions}>
+            {this.renderActions()}
+            <div className={stateStyle}>{session.state}</div>
+          </div>
         </div>
         <div className={styles.schedules}>
           <div>1 schedule</div>
           <ol>
-            <li><img src="/images/calendar.svg" role="presentation" /> {date.date} at {date.time}</li>
+            <li><CalendarSvg /> {date.date} <span className={styles.time}>at {date.time}</span></li>
           </ol>
         </div>
       </article>
