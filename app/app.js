@@ -12,7 +12,7 @@ import 'file?name=[name].[ext]!./.htaccess';      // eslint-disable-line import/
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { applyRouterMiddleware, browserHistory } from 'react-router';
+import { Router, applyRouterMiddleware, browserHistory } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
 import useScroll from 'react-router-scroll';
 import configureStore from './store';

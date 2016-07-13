@@ -70,7 +70,7 @@
   }
   & .schedules {
     flex-basis: 100%;
-    padding: 1em;
+    padding: .5em 1em 1em;
     & > div {
       font-weight: bold;
       text-transform: uppercase;
@@ -87,8 +87,12 @@
           padding: .25em .5em;
           box-shadow: 0 .1em .75em 0 rgba(0, 0, 0, .5);
           & > svg {
-            max-height: 2em;
-            padding: 0 .5em;
+            max-height: 1.6em;
+            margin: 0 .75em;
+            width: auto;
+            vertical-align: middle;
+          }
+          & > span {
             vertical-align: middle;
           }
           & .time {

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Authenticated } from 'components/Authenticated';
+import Authenticated from 'components/Authenticated';
 
 export default class ForgotPage extends React.Component { // eslint-disable-line react/prefer-stateless-function
   render() {
