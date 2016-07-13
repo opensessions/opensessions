@@ -43,10 +43,6 @@ const rootRoute = {
   childRoutes: createRoutes(store),
 };
 
-// Setup react stormpath
-import ReactStormpath, { Router } from 'react-stormpath';
-ReactStormpath.init({});
-
 ReactDOM.render(
   <Provider store={store}>
     <Router

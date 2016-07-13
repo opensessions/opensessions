@@ -22,10 +22,6 @@ app.use(bodyParser.json());
 app.use('/images', express.static('app/images'));
 app.use('/favicon.ico', express.static('app/favicon.ico'));
 
-// Initialize stormpath
-// const stormpathMiddleware = require('./middlewares/stormpathMiddleware');
-// app.use(stormpathMiddleware(app));
-
 // Initialise Auth0, Passport and express-session
 app.use(cookieParser());
 app.use(session({
