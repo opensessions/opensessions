@@ -8,6 +8,7 @@
       font-family: var(--serifFont);
       font-size: 2em;
       font-weight: normal;
+      padding: 0 .5em;
     }
   }
   & h2 {

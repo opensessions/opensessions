@@ -75,9 +75,11 @@ export default class Form extends React.Component { // eslint-disable-line react
     const self = this;
     return this.getFieldsets().map((fieldset, key) => {
       const className = self.state.activeTab === key ? styles.active : '';
-      let isComplete;
-      if (fieldset.props.validity) {
+      let isComplete = <span className={styles.tickNone}>+</span>;
+      if (fieldset.props.validity === true) {
         isComplete = <span className={styles.tick}>&#10003;</span>;
+      } else if (fieldset.props.validity === 'none') {
+        isComplete = null;
       }
       return <a className={className} onClick={this.tabClick} key={key}>{fieldset.props.label} {isComplete}</a>;
     });

@@ -26,11 +26,11 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       session: props.session || {},
       fieldsets: [
         { required: ['title', 'OrganizerUuid', 'description'], props: { validity: false } },
-        { props: { validity: false } },
+        { props: { validity: 'none' } },
         { required: ['location'], props: { validity: false } },
         { required: ['price'], props: { validity: false } },
-        { props: { validity: false } },
-        { props: { validity: false } },
+        { props: { validity: 'none' } },
+        { props: { validity: 'none' } },
         { required: ['startDate', 'startTime'], props: { validity: false } }
       ]
     };
@@ -48,14 +48,16 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       sessionUri = `/api/session/${this.props.sessionID}`;
     }
     apiFetch(sessionUri).then((res) => {
+      self.onChange(res.instance);
       self.setState({ session: res.instance });
     });
   }
   onChange(session) {
     const { fieldsets } = this.state;
     fieldsets.forEach((fieldset, key) => {
-      let validity = true;
+      let validity = 'none';
       if (fieldset.required) {
+        validity = true;
         fieldset.required.forEach((field) => {
           if (!session[field]) {
             validity = false;
@@ -91,7 +93,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     };
     this.updateSession('location', place.formatted_address);
     this.updateSession('locationData', JSON.stringify(data));
-    return place;
+    return place.formatted_address;
   }
   renderDescriptionFieldset() {
     const session = this.getSession();
@@ -153,7 +155,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
                 <Field label="Email" name="contactEmail" model={session} type="email" />
               </Fieldset>
               {/* <Fieldset label="Photos">
-                <Field label="Example" name="example" model={session} />
+                <Field label="Photo" name="photo" model={session} type="Image" />
               </Fieldset> */}
               <Fieldset label="Schedule" {...this.state.fieldsets[6].props}>
                 <Field label="Start date" name="startDate" type="date" model={session} />
