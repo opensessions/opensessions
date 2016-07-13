@@ -25,11 +25,20 @@ export default class SessionTileView extends React.Component { // eslint-disable
       {actions.map((action) => <li key={action.href}><Link to={action.href}>{action.text}</Link></li>)}
     </ol>);
   }
+  renderAddSchedule() {
+    return (<li className={styles.addSchedule}>
+      <Link to={`${this.props.session.href}/edit`}><b>+</b> Add a schedule</Link>
+    </li>);
+  }
   render() {
     const { session } = this.props;
     const date = parseSchedule(session);
     let stateStyle = styles.state;
     if (session.state === 'published') stateStyle = `${stateStyle} ${styles.live}`;
+    const schedules = [];
+    if (date.date || date.time) {
+      schedules.push(<li className={styles.schedule}><CalendarSvg /> {date.date} <span className={styles.time}>at {date.time}</span></li>);
+    }
     return (
       <article className={styles.tile}>
         <div className={styles.imgCol}>
@@ -46,9 +55,9 @@ export default class SessionTileView extends React.Component { // eslint-disable
           </div>
         </div>
         <div className={styles.schedules}>
-          <div>1 schedule</div>
+          <div>{schedules.length} SCHEDULED</div>
           <ol>
-            <li><CalendarSvg /> {date.date} <span className={styles.time}>at {date.time}</span></li>
+            {schedules.length ? schedules : this.renderAddSchedule()}
           </ol>
         </div>
       </article>
