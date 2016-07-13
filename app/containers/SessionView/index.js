@@ -45,18 +45,24 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     }
     return `£${price}`;
   }
-  date() {
+  renderDate() {
     const { session } = this.state;
     const data = parseSchedule(session);
+    if (!(data.date || data.time)) {
+      return null;
+    }
     let duration = null;
     if (data.duration) {
       duration = <span className={styles.duration}><img src="/images/clock.svg" role="presentation" />{data.duration}</span>;
     }
-    return (<span className={styles.detailText}>
-      {data.date}
-      <span className={styles.timespan}>at {data.time}</span>
-      {duration}
-    </span>);
+    return (<div className={styles.dateDetail}>
+      <img src="/images/calendar.svg" role="presentation" />
+      <span className={styles.detailText}>
+        {data.date}
+        <span className={styles.timespan}>at {data.time}</span>
+        {duration}
+      </span>
+    </div>);
   }
   renderActions() {
     const user = this.context ? this.context.user : false;
@@ -97,10 +103,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         {this.renderActions()}
         <h1>{session.displayName}</h1>
         {locationDetail}
-        <div className={styles.dateDetail}>
-          <img src="/images/calendar.svg" role="presentation" />
-          {this.date()}
-        </div>
+        {this.renderDate()}
         <div className={styles.detailPrice}>
           <img src="/images/tag.svg" role="presentation" />
           from {this.getPrice()}
