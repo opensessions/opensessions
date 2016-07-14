@@ -30,70 +30,81 @@
   padding: .5em;
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-around;
-  & .detailsImg {
-    flex-grow: 1;
-    max-width: 48rem;
-  }
-  & .detailsText {
-    flex-grow: 3;
-    font-size: 1.1em;
-    & h1 {
-      font-size: 1.5em;
-      margin: 1em auto;
-    }
-  }
+  align-items: stretch;
+  justify-content: center;
   & .detailsImg,
   & .detailsText {
     padding: .5em;
   }
-  & .dateDetail {
-    & .timespan {
-      padding: 0 .5em;
-      font-weight: bold;
+  & .detailsImg {
+    max-width: 48rem;
+  }
+  & .detailsText {
+    flex-grow: 1;
+    font-size: 1.1em;
+    padding: 1em;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    & h1 {
+      font-size: 1.5em;
     }
-    & .duration {
-      padding: 0 1em;
-      color: #888;
-      & img {
-        margin: 0 .2em;
-        vertical-align: initial;
+    & .dateDetail {
+      & .timespan {
+        padding: 0 .5em;
+        font-weight: bold;
+      }
+      & .duration {
+        padding: 0 1em;
+        color: #888;
+        & img {
+          margin: 0 .2em;
+          vertical-align: initial;
+        }
       }
     }
-  }
-  & .dateDetail,
-  & .locationDetail {
-    margin: 1em auto;
-    & > img {
-      height: var(--iconSizeBig);
-      width: var(--iconSizeBig);
-      margin-right: 1em;
-      padding: .25em;
-      opacity: .7;
+    & .dateDetail,
+    & .locationDetail {
+      margin: .25em 0;
+      & > img {
+        height: var(--iconSizeBig);
+        width: var(--iconSizeBig);
+        margin-right: .75em;
+        padding: .5em;
+        opacity: .8;
+      }
+    }
+    & .detailPrice,
+    & .contactButton {
+      text-align: right;
+      align-self: flex-end;
+    }
+    & .detailPrice {
+      padding: .5em 0;
+      color: #888;
+      & img {
+        margin-right: .5em;
+      }
+      & b {
+        font-weight: normal;
+        color: var(--defaultColor);
+      }
+    }
+    & .contactButton {
+      & a {
+        display: inline-block;
+        padding: .4em 1em;
+        background: var(--actionColor);
+        color: #FFF;
+        text-align: center;
+      }
     }
   }
   & .detailText {
     display: inline-block;
     vertical-align: top;
-  }
-  & .detailPrice {
-    text-align: right;
-    padding: .5em 0;
-    color: #888;
-    & img {
-      margin-right: .5em;
-    }
-  }
-  & .contactButton {
-    text-align: right;
-    & a {
-      display: inline-block;
-      padding: .4em 4em;
-      background: var(--actionColor);
-      color: #FFF;
-      text-align: center;
-    }
   }
 }
 

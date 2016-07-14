@@ -15,6 +15,9 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     organizerList: React.PropTypes.array,
     onOrganizerChange: React.PropTypes.func,
   }
+  static contextTypes = {
+    user: React.PropTypes.object
+  }
   constructor(props) {
     super(props);
     this.state = {
@@ -36,6 +39,11 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     if (nextProps.organizer) {
       this.setState({ organizer: nextProps.organizer });
     }
+  }
+  isOwner() {
+    const { organizer } = this.state;
+    const { user } = this.context;
+    return user && organizer && organizer.owner === user.user_id;
   }
   toggleSessions() {
     const { showSessions } = this.state;
@@ -72,16 +80,22 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
   renderSessions() {
     const { organizer } = this.state;
     if (!organizer) return null;
-    if (!organizer.Sessions.length) return <p>No sessions</p>;
+    let sessionsDisplay = <li>No sessions yet</li>;
+    const sessions = organizer.Sessions;
+    if (sessions.length) sessionsDisplay = sessions.map((session) => (<li key={session.uuid}><SessionTileView session={session} /></li>));
+    let newSessionLink = null;
+    if (this.isOwner()) {
+      newSessionLink = (<li className={styles.new}>
+        <Link to={`/session/add?OrganizerUuid=${organizer.uuid}`}><b>+</b> Add {sessions.length ? 'another' : 'a'} session</Link>
+      </li>);
+    }
     return (<div className={styles.sessions}>
       <h2>{organizer.name}&rsquo;{organizer.name[organizer.name.length - 1] !== 's' ? 's' : ''} Sessions</h2>
       <ol className={styles.sessionsList}>
-        {organizer.Sessions.map((session) => (<li key={session.uuid}><SessionTileView session={session} /></li>))}
-        <li className={styles.new}>
-          <Link to={`/session/add?OrganizerUuid=${organizer.uuid}`}><b>+</b> Add another session</Link>
-        </li>
+        {sessionsDisplay}
+        {newSessionLink}
       </ol>
-      {this.renderUnassignedSessions()}
+      {this.isOwner() ? this.renderUnassignedSessions() : null}
     </div>);
   }
   renderOrganizer() {

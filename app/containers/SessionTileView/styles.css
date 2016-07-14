@@ -4,11 +4,11 @@
   background: #FFF;
   max-width: var(--tileWidth);
   margin: auto;
+  padding: .25em;
   display: flex;
   flex-wrap: wrap;
-  padding: .25em;
+  justify-content: center;
   & .imgCol {
-    flex-grow: 1;
     padding: .25em;
     text-align: center;
     & img {
@@ -16,7 +16,7 @@
     }
   }
   & .textCol {
-    flex-grow: 64;
+    flex-grow: 1;
     padding: .25em;
     display: flex;
     flex-wrap: wrap;

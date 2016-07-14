@@ -18,6 +18,12 @@ html {
   }
 }
 
+@media (min-width: 104rem) {
+  html {
+    font-size: 68.75%;
+  }
+}
+
 .root {
   font-size: 16px;
   font-size: 1.6rem;

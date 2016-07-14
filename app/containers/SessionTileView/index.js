@@ -14,18 +14,23 @@ export default class SessionTileView extends React.Component { // eslint-disable
   static contextTypes = {
     user: React.PropTypes.object,
   }
-  renderActions() {
+  isOwner() {
     const { session } = this.props;
     const { user } = this.context;
+    return user && session.owner === user.user_id;
+  }
+  renderActions() {
+    const { session } = this.props;
     const actions = [
       { href: session.href, text: 'View' }
     ];
-    if (user && session.owner === user.user_id) actions.push({ href: `${session.href}/edit`, text: 'Edit' });
+    if (this.isOwner()) actions.push({ href: `${session.href}/edit`, text: 'Edit' });
     return (<ol className={styles.actions}>
       {actions.map((action) => <li key={action.href}><Link to={action.href}>{action.text}</Link></li>)}
     </ol>);
   }
   renderAddSchedule() {
+    if (!this.isOwner()) return (<li>No schedule yet</li>);
     return (<li className={styles.addSchedule}>
       <Link to={`${this.props.session.href}/edit`}><b>+</b> Add a schedule</Link>
     </li>);

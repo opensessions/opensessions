@@ -100,13 +100,12 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         <img src="/images/placeholder.png" role="presentation" />
       </div>
       <div className={styles.detailsText}>
-        {this.renderActions()}
         <h1>{session.displayName}</h1>
         {locationDetail}
         {this.renderDate()}
         <div className={styles.detailPrice}>
           <img src="/images/tag.svg" role="presentation" />
-          from {this.getPrice()}
+          from <b>{this.getPrice()}</b>
         </div>
         {organizerButton}
       </div>
@@ -284,6 +283,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     if (this.state.error) return (<div {...topAttrs}>{this.state.error}</div>);
     if (this.state.session === null) return (<div {...topAttrs}>Loading</div>);
     return (<div {...topAttrs}>
+      {this.renderActions()}
       {this.renderDetails()}
       {this.renderShare()}
       {this.renderDescription()}

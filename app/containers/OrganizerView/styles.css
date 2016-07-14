@@ -20,7 +20,7 @@
       background: #E5E5E5;
       color: #666;
       border: 1px solid #CCC;
-      flex-grow: 1;
+      min-width: 16em;
     }
   }
   & h2 {
@@ -32,6 +32,17 @@
   }
   & .sessions {
     margin-top: 4em;
+    & .unassigned {
+      & a.toggle {
+        text-align: center;
+        display: block;
+        padding: .5em;
+        font-size: 1.1em;
+      }
+      & li {
+        list-style: none;
+      }
+    }
   }
 }
 
@@ -48,9 +59,9 @@
   & > li {
     list-style: none;
     margin: 1em auto;
+    max-width: var(--tileWidth);
     &.new {
-      max-width: var(--tileWidth);
-      padding: 4em 0;
+      padding: 2em 0;
       & > a {
         padding: .75em .5em;
         text-align: center;
@@ -87,14 +98,5 @@
         opacity: 1;
       }
     }
-  }
-}
-
-.unassigned {
-  & a.toggle {
-    text-align: center;
-    display: block;
-    padding: .5em;
-    font-size: 1.1em;
   }
 }
