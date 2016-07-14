@@ -11,12 +11,16 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
   static propTypes = {
     organizer: React.PropTypes.object,
     params: React.PropTypes.object,
+    unassignedSessions: React.PropTypes.array,
+    organizerList: React.PropTypes.array,
+    onOrganizerChange: React.PropTypes.func,
   }
   constructor(props) {
     super(props);
     this.state = {
       organizer: props.organizer || null,
     };
+    this.toggleSessions = this.toggleSessions.bind(this);
   }
   componentDidMount() {
     const self = this;
@@ -27,6 +31,43 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
         self.setState({ organizer: res.instance });
       });
     }
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.organizer) {
+      this.setState({ organizer: nextProps.organizer });
+    }
+  }
+  toggleSessions() {
+    const { showSessions } = this.state;
+    this.setState({ showSessions: !showSessions });
+  }
+  renderUnassignedSessions() {
+    const sessions = this.props.unassignedSessions;
+    if (!sessions) return null;
+    const { showSessions } = this.state;
+    const linkProps = { className: styles.toggle, onClick: this.toggleSessions };
+    let unassignedSessions;
+    if (!showSessions) {
+      unassignedSessions = <a {...linkProps}>{sessions.length} {sessions.length === 1 ? 'session is' : 'sessions are'} currently unassigned to an organizer</a>;
+    } else {
+      unassignedSessions = (<div>
+        <p><a {...linkProps}>Hide unassigned sessions</a></p>
+        <ul className={styles.organizerList}>
+          {sessions.map((session) => <li key={session.uuid}><SessionTileView session={session} /></li>)}
+        </ul>
+      </div>);
+    }
+    return (<div className={styles.unassigned}>
+      {unassignedSessions}
+    </div>);
+  }
+  renderOrganizerSelect() {
+    const { organizerList } = this.props;
+    if (!organizerList) return null;
+    return (<select onChange={this.props.onOrganizerChange}>
+      <option>Select organizer</option>
+      {organizerList.map((organizer) => <option value={organizer.uuid}>{organizer.name}</option>)}
+    </select>);
   }
   renderSessions() {
     const { organizer } = this.state;
@@ -40,6 +81,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
           <Link to={`/session/add?OrganizerUuid=${organizer.uuid}`}><b>+</b> Add another session</Link>
         </li>
       </ol>
+      {this.renderUnassignedSessions()}
     </div>);
   }
   renderOrganizer() {
@@ -55,6 +97,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
       <div className={styles.name}>
         <div className={styles.container}>
           <h1><Link to={organizer.href}>{organizer.name}</Link></h1>
+          {this.renderOrganizerSelect()}
         </div>
       </div>
     </div>);

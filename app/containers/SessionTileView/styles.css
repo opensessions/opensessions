@@ -16,7 +16,7 @@
     }
   }
   & .textCol {
-    flex-grow: 16;
+    flex-grow: 64;
     padding: .25em;
     display: flex;
     flex-wrap: wrap;

@@ -1,7 +1,6 @@
 import React from 'react';
 
 import OrganizerView from '../OrganizerView';
-import SessionTileView from '../SessionTileView';
 
 import LogoutLink from 'components/LogoutLink';
 import Authenticated from 'components/Authenticated';
@@ -21,6 +20,7 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
       organizers: [],
       sessions: [],
     };
+    this.onOrganizerChange = this.onOrganizerChange.bind(this);
   }
   componentDidMount() {
     if (this.context.user) {
@@ -31,51 +31,45 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
       }, 1000);
     }
   }
+  onOrganizerChange(event) {
+    const { value } = event.target;
+    console.log('onOrganizerChange', value);
+    this.setState({ selectedOrganizer: value });
+  }
   fetchOrganizers() {
     const self = this;
     const { user } = this.context;
-    const newState = {};
     apiFetch('/api/organizer', {
       query: { owner: user.user_id },
     }).then((result) => {
-      newState.organizers = result.instances;
-      apiFetch(`/api/session?owner=${user.user_id}&OrganizerUuid=null`).then((result2) => {
-        newState.sessions = result2.instances;
-        self.setState(newState);
+      const organizers = result.instances;
+      const selectedOrganizer = organizers[0].uuid;
+      apiFetch(`/api/session?owner=${user.user_id}&OrganizerUuid=null`).then((sessionResult) => {
+        let sessions;
+        let error;
+        if (sessionResult.error) {
+          error = sessionResult.error;
+        } else if (sessionResult.instances) {
+          sessions = sessionResult.instances;
+        }
+        self.setState({ selectedOrganizer, organizers, sessions, error });
       });
     });
   }
   renderOrganizers() {
-    if (!this.state.organizers.length) return (<div>No organizers yet</div>);
-    return (<div>
-      <h2>Organized sessions</h2>
-      <ul className={styles.organizerList}>
-        {this.state.organizers.map((organizer) => <li key={organizer.uuid}><OrganizerView organizer={organizer} /></li>)}
-      </ul>
-    </div>);
-  }
-  renderSessions() {
-    if (!this.state.sessions.length) return null;
-    return (<div>
-      <h2>Sessions without organizers</h2>
-      <ul className={styles.organizerList}>
-        {this.state.sessions.map((session) => <li key={session.uuid}><SessionTileView session={session} /></li>)}
-      </ul>
-    </div>);
+    const { sessions, organizers, selectedOrganizer } = this.state;
+    if (!organizers.length) return (<div>No organizers yet</div>);
+    const organizer = organizers.filter((item) => item.uuid === selectedOrganizer)[0];
+    return <OrganizerView organizer={organizer} unassignedSessions={sessions} organizerList={organizers} onOrganizerChange={this.onOrganizerChange} />;
   }
   render() {
-    const { user } = this.context;
-    return (
-      <div>
-        <Authenticated message="You must be logged on to view your profile">
-          <div className={styles.container}>
-            <p>Hello, {user ? user.nickname : ''}!</p>
-            <p>From here you can view your organizers and their sessions below, or <LogoutLink value="Log out" /></p>
-          </div>
-          {this.renderOrganizers()}
-          {this.renderSessions()}
-        </Authenticated>
-      </div>
-    );
+    return (<div>
+      <Authenticated message="You must be logged on to view your profile">
+        {this.renderOrganizers()}
+        <div className={styles.container}>
+          <p><LogoutLink value="Log out" /></p>
+        </div>
+      </Authenticated>
+    </div>);
   }
 }

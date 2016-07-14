@@ -4,11 +4,23 @@
   & .name {
     background: #FFF;
     padding: 1em 0;
+    & .container {
+      display: flex;
+      align-items: center;
+      padding: 0 .5em;
+    }
     & h1 {
       font-family: var(--serifFont);
       font-size: 2em;
       font-weight: normal;
-      padding: 0 .5em;
+      flex-grow: 4;
+    }
+    & select {
+      padding: .125em .5em;
+      background: #E5E5E5;
+      color: #666;
+      border: 1px solid #CCC;
+      flex-grow: 1;
     }
   }
   & h2 {
@@ -75,5 +87,14 @@
         opacity: 1;
       }
     }
+  }
+}
+
+.unassigned {
+  & a.toggle {
+    text-align: center;
+    display: block;
+    padding: .5em;
+    font-size: 1.1em;
   }
 }
