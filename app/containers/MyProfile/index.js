@@ -13,6 +13,7 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
   static contextTypes = {
     user: React.PropTypes.object,
     lock: React.PropTypes.object,
+    router: React.PropTypes.object,
   }
   constructor(props) {
     super(props);
@@ -43,7 +44,7 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
       query: { owner: user.user_id },
     }).then((result) => {
       const organizers = result.instances;
-      const selectedOrganizer = organizers[0].uuid;
+      const selectedOrganizer = organizers.length ? organizers[0].uuid : 0;
       apiFetch(`/api/session?owner=${user.user_id}&OrganizerUuid=null`).then((sessionResult) => {
         let sessions;
         let error;
@@ -60,7 +61,7 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
     const { sessions, organizers, selectedOrganizer } = this.state;
     if (!organizers.length) return (<div>No organizers yet</div>);
     const organizer = organizers.filter((item) => item.uuid === selectedOrganizer)[0];
-    return <OrganizerView organizer={organizer} unassignedSessions={sessions} organizerList={organizers} onOrganizerChange={this.onOrganizerChange} />;
+    return <OrganizerView router={this.context.router} organizer={organizer} unassignedSessions={sessions} organizerList={organizers} onOrganizerChange={this.onOrganizerChange} />;
   }
   render() {
     return (<div>

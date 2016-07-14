@@ -20,10 +20,8 @@
     padding: .25em;
     display: flex;
     flex-wrap: wrap;
-    & .info,
-    & .actions {
-      flex-basis: 100%;
-    }
+    flex-direction: column;
+    justify-content: space-between;
     & .info {
       & .location {
         color: #777;
@@ -34,7 +32,6 @@
       }
     }
     & .actions {
-      align-self: flex-end;
       justify-content: space-between;
       display: flex;
       font-size: 1.1em;

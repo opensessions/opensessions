@@ -23,9 +23,13 @@ export default class App extends React.Component { // eslint-disable-line react/
   static propTypes = {
     children: React.PropTypes.node,
   };
+  static contextTypes = {
+    router: React.PropTypes.object,
+  };
   static childContextTypes = {
     user: React.PropTypes.object,
     lock: React.PropTypes.object,
+    router: React.PropTypes.object,
   };
   constructor() {
     super();
@@ -37,6 +41,7 @@ export default class App extends React.Component { // eslint-disable-line react/
     return {
       user: this.state.profile,
       lock: this.lock, // both user and lock are stored in context as they both need to be accessible from multiple components across the app
+      router: this.context.router,
     };
   }
   componentWillMount() {

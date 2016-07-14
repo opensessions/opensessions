@@ -9,6 +9,7 @@ import styles from './styles.css';
 
 export default class OrganizerView extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
+    router: React.PropTypes.object,
     organizer: React.PropTypes.object,
     params: React.PropTypes.object,
     unassignedSessions: React.PropTypes.array,
@@ -16,7 +17,8 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     onOrganizerChange: React.PropTypes.func,
   }
   static contextTypes = {
-    user: React.PropTypes.object
+    user: React.PropTypes.object,
+    router: React.PropTypes.object,
   }
   constructor(props) {
     super(props);
@@ -24,6 +26,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
       organizer: props.organizer || null,
     };
     this.toggleSessions = this.toggleSessions.bind(this);
+    this.deleteOrganizer = this.deleteOrganizer.bind(this);
   }
   componentDidMount() {
     const self = this;
@@ -48,6 +51,17 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
   toggleSessions() {
     const { showSessions } = this.state;
     this.setState({ showSessions: !showSessions });
+  }
+  deleteOrganizer() {
+    const self = this;
+    const { organizer } = this.state;
+    apiFetch(`/api/organizer/${organizer.uuid}/delete`).then((res) => {
+      if (res.status === 'success') {
+        (self.props.router ? self.props.router : self.context.router).push('/');
+      } else {
+        alert('failed to delete organizer, ', res.error);
+      }
+    });
   }
   renderUnassignedSessions() {
     const sessions = this.props.unassignedSessions;
@@ -80,8 +94,8 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
   renderSessions() {
     const { organizer } = this.state;
     if (!organizer) return null;
-    let sessionsDisplay = <li>No sessions yet</li>;
     const sessions = organizer.Sessions;
+    let sessionsDisplay = <li>No sessions yet <a onClick={this.deleteOrganizer}>delete this organizer</a></li>;
     if (sessions.length) sessionsDisplay = sessions.map((session) => (<li key={session.uuid}><SessionTileView session={session} /></li>));
     let newSessionLink = null;
     if (this.isOwner()) {

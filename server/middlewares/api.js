@@ -252,7 +252,7 @@ module.exports = (app) => {
     switch (action) {
       case 'delete':
         Organizer.findOne({ where: { uuid, owner: getUser(req) }, include: [Session] }).then((organizer) => {
-          organizer.delete().then(() => {
+          organizer.destroy().then(() => {
             res.json({ status: 'success' });
           }).catch((error) => {
             res.json({ status: 'failure', error: error.message });
