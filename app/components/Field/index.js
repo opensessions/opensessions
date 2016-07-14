@@ -125,6 +125,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
       input = <OptionalNumField {...attrs} />;
     } else if (type === 'Location') {
       attrs.inputStyle = styles.input;
+      delete attrs.onChange;
       input = <LocationField {...this.props} {...attrs} />;
     } else {
       if (type === 'date') {

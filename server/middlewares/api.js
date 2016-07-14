@@ -200,13 +200,21 @@ module.exports = (app) => {
         delete query.name__contains;
       }
     }
-    Organizer.findAll({
-      where: query,
-      include: [Session],
-    }).then((organizers) => {
-      res.json({ instances: organizers });
-    }).catch((error) => {
-      res.json({ error });
+    requireLogin(req, res, () => {
+      const findAll = {
+        where: query,
+        include: [],
+      };
+      if (!req.user) {
+        findAll.include.push({ model: Session, where: { state: { $in: ['published'] } } });
+      } else {
+        findAll.include.push(Session);
+      }
+      Organizer.findAll(findAll).then((organizers) => {
+        res.json({ instances: organizers });
+      }).catch((error) => {
+        res.json({ error });
+      });
     });
   });
 
@@ -221,11 +229,41 @@ module.exports = (app) => {
   });
 
   api.get('/organizer/:uuid', (req, res) => {
-    Organizer.findOne({ where: { uuid: req.params.uuid }, include: [Session] }).then((organizer) => {
-      res.json({ instance: organizer });
-    }).catch((error) => {
-      res.json({ error });
+    const findOne = {
+      where: { uuid: req.params.uuid },
+      include: []
+    };
+    requireLogin(req, res, () => {
+      if (!req.user) {
+        findOne.include.push({ model: Session, where: { state: { $in: ['published'] } } });
+      } else {
+        findOne.include.push(Session);
+      }
+      Organizer.findOne(findOne).then((organizer) => {
+        res.json({ instance: organizer });
+      }).catch((error) => {
+        res.json({ error });
+      });
     });
+  });
+
+  api.get('/organizer/:uuid/:action', requireLogin, (req, res) => {
+    const { uuid, action } = req.params;
+    switch (action) {
+      case 'delete':
+        Organizer.findOne({ where: { uuid, owner: getUser(req) }, include: [Session] }).then((organizer) => {
+          organizer.delete().then(() => {
+            res.json({ status: 'success' });
+          }).catch((error) => {
+            res.json({ status: 'failure', error: error.message });
+          });
+        }).catch((error) => {
+          res.json({ error: error.message });
+        });
+        break;
+      default:
+        break;
+    }
   });
 
   app.use('/api', api);
