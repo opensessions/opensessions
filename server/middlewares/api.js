@@ -3,6 +3,8 @@ const Storage = require('../../storage/interfaces/postgres.js');
 const jwt = require('express-jwt');
 const dotenv = require('dotenv');
 
+const capitalize = (string) => `${string[0].toUpperCase()}${string.substr(1)}`;
+
 dotenv.config({ silent: true });
 dotenv.load();
 
@@ -132,13 +134,19 @@ module.exports = (app) => {
     }
   });
 
-  api.all('/session/create', requireLogin, (req, res) => {
-    const session = req.body;
-    session.owner = getUser(req);
-    Session.create(session).then((savedSession) => {
-      res.json({ instance: savedSession });
+  api.all('/:model/create', requireLogin, (req, res, next) => {
+    const modelName = capitalize(req.params.model);
+    const Model = database.models[modelName];
+    if (!Model) {
+      res.json({ error: `Model '${req.params.model}' does not exist` });
+      next();
+    }
+    const instance = req.body;
+    instance.owner = getUser(req);
+    Model.create(instance).then((savedInstance) => {
+      res.json({ instance: savedInstance });
     }).catch((error) => {
-      res.json({ error });
+      res.json({ error: error.message });
     });
   });
 
@@ -215,16 +223,6 @@ module.exports = (app) => {
       }).catch((error) => {
         res.json({ error });
       });
-    });
-  });
-
-  api.all('/organizer/create', requireLogin, (req, res) => {
-    const organizer = req.body;
-    organizer.owner = getUser(req);
-    Organizer.create(organizer).then((savedOrganizer) => {
-      res.json({ instance: savedOrganizer });
-    }).catch((error) => {
-      res.json({ error });
     });
   });
 

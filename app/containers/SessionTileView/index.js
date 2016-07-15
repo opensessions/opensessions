@@ -42,7 +42,7 @@ export default class SessionTileView extends React.Component { // eslint-disable
     if (session.state === 'published') stateStyle = `${stateStyle} ${styles.live}`;
     const schedules = [];
     if (date.date || date.time) {
-      schedules.push(<li className={styles.schedule}>
+      schedules.push(<li className={styles.schedule} key="schedule1">
         <CalendarSvg />
         <span>{date.date} <span className={styles.time}>at {date.time}</span></span>
       </li>);

@@ -2,12 +2,9 @@ import React from 'react';
 
 import OrganizerView from '../OrganizerView';
 
-import LogoutLink from 'components/LogoutLink';
 import Authenticated from 'components/Authenticated';
 
 import { apiFetch } from '../../utils/api';
-
-import styles from './styles.css';
 
 export default class MyProfile extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
@@ -67,9 +64,6 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
     return (<div>
       <Authenticated message="You must be logged on to view your profile">
         {this.renderOrganizers()}
-        <div className={styles.container}>
-          <p><LogoutLink value="Log out" /></p>
-        </div>
       </Authenticated>
     </div>);
   }

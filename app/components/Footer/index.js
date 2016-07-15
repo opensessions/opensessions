@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router';
 
+import LogoutLink from 'components/LogoutLink';
+
 import styles from './styles.css';
 
 export default class Footer extends React.Component { // eslint-disable-line react/prefer-stateless-function
@@ -16,6 +18,7 @@ export default class Footer extends React.Component { // eslint-disable-line rea
           <div className={styles.column}>
             <h2>Support</h2>
             <p><Link to="/">Help Desk</Link></p>
+            <p><LogoutLink value="Log out" invisible /></p>
           </div>
           <div className={styles.column}>
             <h2>Info</h2>

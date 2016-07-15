@@ -5,6 +5,7 @@ import { Link } from 'react-router';
 export default class LogoutLink extends React.Component {
   static propTypes = {
     value: React.PropTypes.string,
+    invisible: React.PropTypes.bool,
   }
   static contextTypes = {
     user: React.PropTypes.object,
@@ -21,7 +22,7 @@ export default class LogoutLink extends React.Component {
   renderLogoutLink() {
     const { value } = this.props;
     const { user } = this.context;
-    if (!user) return <span>You're already logged out!</span>;
+    if (!user) return this.props.invisible ? null : <span>You're already logged out!</span>;
     return <Link to="/" onClick={this.onClick}>{value}</Link>;
   }
   render() {

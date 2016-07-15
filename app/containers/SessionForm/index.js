@@ -16,6 +16,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     history: React.PropTypes.object,
     session: React.PropTypes.object,
     sessionID: React.PropTypes.string,
+    location: React.PropTypes.object,
   };
   static contextTypes = {
     user: React.PropTypes.object,
@@ -42,12 +43,15 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   componentDidMount() {
     const self = this;
     let sessionUri = '/api/session/create';
+    const options = {};
     if (this.props.session) {
       sessionUri = `/api/session/${this.props.session.uuid}`;
     } else if (this.props.sessionID) {
       sessionUri = `/api/session/${this.props.sessionID}`;
+    } else {
+      options.body = this.props.location.query;
     }
-    apiFetch(sessionUri).then((res) => {
+    apiFetch(sessionUri, options).then((res) => {
       self.onChange(res.instance);
       self.setState({ session: res.instance });
     });

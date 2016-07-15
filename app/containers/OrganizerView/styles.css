@@ -3,17 +3,20 @@
 .organizerView {
   & .name {
     background: #FFF;
-    padding: 1em 0;
+    padding: .5em 0;
     & .container {
       display: flex;
       align-items: center;
       padding: 0 .5em;
+      flex-wrap: wrap;
+      justify-content: space-around;
     }
     & h1 {
       font-family: var(--serifFont);
       font-size: 2em;
       font-weight: normal;
       flex-grow: 4;
+      padding: .25em 0;
     }
     & select {
       padding: .125em .5em;
