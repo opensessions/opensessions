@@ -5,11 +5,20 @@ const dotenv = require('dotenv');
 
 const capitalize = (string) => `${string[0].toUpperCase()}${string.substr(1)}`;
 
+const getSchema = ((model) => JSON.parse(JSON.stringify(model.fieldRawAttributesMap, (key, value) => {
+  if (key === 'Model') {
+    return;
+  }
+  return value; // eslint-disable-line consistent-return
+})));
+
+
 dotenv.config({ silent: true });
 dotenv.load();
 
 module.exports = (app) => {
   const api = express();
+  const rdpe = express();
   const storage = new Storage();
   const database = storage.getInstance();
   const { Session, Organizer } = database.models;
@@ -19,6 +28,17 @@ module.exports = (app) => {
     secret: new Buffer(process.env.AUTH0_CLIENT_SECRET, 'base64'),
     audience: process.env.AUTH0_CLIENT_ID,
   });
+
+  const resolveModel = (req, res, next) => {
+    const modelName = capitalize(req.params.model);
+    const Model = database.models[modelName];
+    if (!Model) {
+      res.json({ error: `Model '${modelName}' does not exist` });
+    } else {
+      req.Model = Model;
+      next();
+    }
+  };
 
   const queryParse = (req) => {
     const query = req.query || {};
@@ -34,20 +54,13 @@ module.exports = (app) => {
     return query;
   };
 
-  const getSchema = ((model) => JSON.parse(JSON.stringify(model.fieldRawAttributesMap, (key, value) => {
-    if (key === 'Model') {
-      return;
-    }
-    return value; // eslint-disable-line consistent-return
-  })));
-
-  api.get('/rdpe', (req, res) => {
+  rdpe.get('/', (req, res) => {
     res.json({
       sessions: '/api/rdpe/sessions',
     });
   });
 
-  api.get('/rdpe/sessions', (req, res) => {
+  rdpe.get('/sessions', (req, res) => {
     const fromTS = req.query.from || 0;
     let afterID = req.query.after;
     if (afterID) {
@@ -109,6 +122,8 @@ module.exports = (app) => {
     });
   });
 
+  api.use('/rdpe', rdpe);
+
   api.get('/session', (req, res) => {
     const where = queryParse(req);
     if ('owner' in where) {
@@ -134,13 +149,8 @@ module.exports = (app) => {
     }
   });
 
-  api.all('/:model/create', requireLogin, (req, res, next) => {
-    const modelName = capitalize(req.params.model);
-    const Model = database.models[modelName];
-    if (!Model) {
-      res.json({ error: `Model '${req.params.model}' does not exist` });
-      next();
-    }
+  api.all('/:model/create', requireLogin, resolveModel, (req, res) => {
+    const Model = req.Model;
     const instance = req.body;
     instance.owner = getUser(req);
     Model.create(instance).then((savedInstance) => {
@@ -169,13 +179,14 @@ module.exports = (app) => {
     });
   });
 
-  api.post('/session/:uuid', requireLogin, (req, res) => {
-    Session.findOne({ where: { uuid: req.params.uuid } }).then((session) => {
-      if (session.owner !== getUser(req)) {
-        return res.json({ error: 'Must be session owner to modify session' });
+  api.post('/:model/:uuid', requireLogin, resolveModel, (req, res) => {
+    const Model = req.Model;
+    Model.findOne({ where: { uuid: req.params.uuid } }).then((instance) => {
+      if (instance.owner !== getUser(req)) {
+        return res.json({ error: `Must be owner to modify ${Model.name}` });
       }
-      return session.update(req.body).then((savedSession) => {
-        res.json(savedSession);
+      return instance.update(req.body).then((savedInstance) => {
+        res.json({ instance: savedInstance });
       }).catch((error) => {
         res.json({ error: error.message });
       });
@@ -184,13 +195,7 @@ module.exports = (app) => {
     });
   });
 
-  api.use('/me', requireLogin);
-
-  api.get('/me', (req, res) => {
-    res.json(req.user);
-  });
-
-  api.get('/me/sessions', (req, res) => {
+  api.get('/me/sessions', requireLogin, (req, res) => {
     Session.findAll({ where: { owner: getUser(req) } }).then((sessions) => {
       res.json({ sessions });
     }).catch((error) => {
@@ -237,10 +242,14 @@ module.exports = (app) => {
       } else {
         findOne.include.push(Session);
       }
-      Organizer.findOne(findOne).then((organizer) => {
-        res.json({ instance: organizer });
+      Organizer.findOne(findOne).then((instance) => {
+        if (instance) {
+          res.json({ instance });
+        } else {
+          res.json({ error: 'Organizer could not be retrieved' });
+        }
       }).catch((error) => {
-        res.json({ error });
+        res.json({ error: error.message });
       });
     });
   });

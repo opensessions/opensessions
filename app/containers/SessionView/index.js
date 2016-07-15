@@ -32,7 +32,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       if (!result.error) {
         self.setState({ session: result.instance });
       } else {
-        self.setState({ error: result.error.message });
+        self.setState({ error: result.error });
       }
     });
   }
@@ -275,7 +275,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   render() {
     const topAttrs = { className: styles.sessionView };
     if (this.state.error) return (<div {...topAttrs}>{this.state.error}</div>);
-    if (this.state.session === null) return (<div {...topAttrs}>Loading</div>);
+    if (this.state.session === null) return (<div {...topAttrs}>Loading...</div>);
     return (<div {...topAttrs}>
       {this.renderActions()}
       {this.renderDetails()}

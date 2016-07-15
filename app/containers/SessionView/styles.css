@@ -1,11 +1,12 @@
 @import '../App/variables.css';
 
 :root {
-  --sectionWidth: 128rem;
+  --sectionWidth: 112rem;
 }
 
 .sessionView {
   overflow: hidden;
+  text-align: center;
 }
 
 .actions {
@@ -25,6 +26,7 @@
 
 .detailsSection {
   max-width: var(--sectionWidth);
+  text-align: left;
   margin: 4em auto;
   background: #FFF;
   display: flex;
@@ -118,9 +120,10 @@
 }
 
 .descriptionSection {
+  text-align: left;
   max-width: var(--sectionWidth);
   margin: 1em auto;
-  padding: 2em;
+  padding: 2em 1em;
   display: flex;
   flex-wrap: wrap;
   h2,
@@ -147,6 +150,7 @@
 }
 
 .aboutSection {
+  text-align: left;
   background-color: #FFF;
   padding: 2em;
   & h2 {
@@ -180,8 +184,8 @@
 }
 
 .mainCol {
-  flex-grow: 4;
-  padding: 1em;
+  flex-grow: 3;
+  padding: .5em;
   & h3 {
     font-size: 1.4em;
     font-family: inherit;

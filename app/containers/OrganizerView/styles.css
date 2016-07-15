@@ -1,15 +1,28 @@
 @import '../App/variables.css';
 
 .organizerView {
+  & .container {
+    max-width: var(--pagewidth);
+    margin: auto;
+    padding: 0 1em;
+  }
   & .name {
     background: #FFF;
     padding: .5em 0;
     & .container {
       display: flex;
       align-items: center;
-      padding: 0 .5em;
       flex-wrap: wrap;
       justify-content: space-around;
+      & a.rename {
+        color: #777;
+        font-size: .8em;
+        opacity: .4;
+        transition: .25s all ease;
+        &:hover {
+          opacity: 1;
+        }
+      }
     }
     & h1 {
       font-family: var(--serifFont);
@@ -47,11 +60,6 @@
       }
     }
   }
-}
-
-.container {
-  max-width: var(--pagewidth);
-  margin: auto;
 }
 
 .title {

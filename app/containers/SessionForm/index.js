@@ -27,7 +27,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       session: props.session || {},
       fieldsets: [
         { required: ['title', 'OrganizerUuid', 'description'], props: { validity: false } },
-        { props: { validity: 'none' } },
+        { required: ['leader'], props: { validity: false } },
         { required: ['location'], props: { validity: false } },
         { required: ['price'], props: { validity: false } },
         { props: { validity: 'none' } },

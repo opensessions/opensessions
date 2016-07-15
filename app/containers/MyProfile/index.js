@@ -31,7 +31,6 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
   }
   onOrganizerChange(event) {
     const { value } = event.target;
-    console.log('onOrganizerChange', value);
     this.setState({ selectedOrganizer: value });
   }
   fetchOrganizers() {

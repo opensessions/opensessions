@@ -27,6 +27,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     };
     this.toggleSessions = this.toggleSessions.bind(this);
     this.deleteOrganizer = this.deleteOrganizer.bind(this);
+    this.renameOrganizer = this.renameOrganizer.bind(this);
   }
   componentDidMount() {
     const self = this;
@@ -34,7 +35,11 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     if (this.props.params && this.props.params.uuid) {
       uuid = this.props.params.uuid;
       apiFetch(`/api/organizer/${uuid}`).then((res) => {
-        self.setState({ organizer: res.instance });
+        if (!res.error) {
+          self.setState({ organizer: res.instance });
+        } else {
+          self.setState({ error: res.error });
+        }
       });
     }
   }
@@ -44,13 +49,31 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     }
   }
   isOwner() {
-    const { organizer } = this.state;
     const { user } = this.context;
+    const { organizer } = this.state;
     return user && organizer && organizer.owner === user.user_id;
   }
   toggleSessions() {
     const { showSessions } = this.state;
     this.setState({ showSessions: !showSessions });
+  }
+  renameOrganizer() {
+    const self = this;
+    const { organizer } = this.state;
+    const options = { body: {} };
+    options.body.name = prompt('Enter a new name:', organizer.name);
+    if (!options.body.name) return;
+    apiFetch(`/api/organizer/${organizer.uuid}`, options).then((res) => {
+      const { instance } = res;
+      Object.keys(instance).forEach((field) => {
+        organizer[field] = instance[field];
+      });
+      if (!res.error) {
+        self.setState({ organizer });
+      } else {
+        alert('failed to rename organizer, ', res.error);
+      }
+    });
   }
   deleteOrganizer() {
     const self = this;
@@ -124,7 +147,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
       </div>
       <div className={styles.name}>
         <div className={styles.container}>
-          <h1><Link to={organizer.href}>{organizer.name}</Link></h1>
+          <h1><Link to={organizer.href}>{organizer.name}</Link> {this.isOwner() ? <a onClick={this.renameOrganizer} className={styles.rename}>(rename)</a> : null}</h1>
           {this.renderOrganizerSelect()}
         </div>
       </div>

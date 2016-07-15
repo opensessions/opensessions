@@ -67,17 +67,18 @@ module.exports = (DataTypes) => ({
             return `/${this.Model.name.toLowerCase()}/${this.uuid}`;
           },
           displayName() {
-            return `${this.title || 'Untitled'}${this.state === 'draft' ? ' (draft)' : ''}`;
+            return `${this.title || 'Untitled'}${['draft', 'unpublished'].indexOf(this.state) !== -1 ? ` (${this.state})` : ''}`;
           },
         },
         instanceMethods: {
           canPublish() {
             const session = this;
             const requiredFields = ['title', 'description', 'location', 'price', 'OrganizerUuid', 'startDate', 'startTime'];
+            const prettyNames = { OrganizerUuid: 'organizer', startDate: 'start date', startTime: 'start time' };
             const errors = [];
             requiredFields.forEach((field) => {
               if (!session[field]) {
-                errors.push(field);
+                errors.push(field in prettyNames ? prettyNames[field] : field);
               }
             });
             if (errors.length) throw new Error(`Missing fields: ${errors.join(', ')}`);
@@ -93,6 +94,9 @@ module.exports = (DataTypes) => ({
                 instance.state = 'draft';
                 throw err;
               }
+            }
+            if (instance.state === 'draft' && instance.changed('state')) {
+              instance.state = 'unpublished';
             }
           }
         }

@@ -30,7 +30,9 @@ export default class Form extends React.Component { // eslint-disable-line react
   }
   autosave() {
     const { model } = this.props;
-    model.state = 'draft';
+    if (model.state !== 'unpublished') {
+      model.state = 'draft';
+    }
     this.saveModel(model);
   }
   saveModel(model, verb, verbed) {
@@ -39,7 +41,7 @@ export default class Form extends React.Component { // eslint-disable-line react
       if (result.error) {
         throw result.error;
       }
-      this.setState({ saveState: `${verbed || 'Saved'}!`, saveStateClass: styles.saved });
+      this.setState({ saveState: `${verbed || 'Saved'} ${model.state ? model.state : ''}!`, saveStateClass: styles.saved });
       return result;
     });
   }

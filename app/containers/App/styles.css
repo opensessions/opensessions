@@ -9,7 +9,7 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
-@media (min-width: 32rem) {
+@media (min-width: 36rem) {
   html {
     font-size: 62.5%;
   }

@@ -2,7 +2,7 @@
 
 .header {
   background: #FFF;
-  padding: .5em 0 .25em;
+  padding: .5em 0;
   box-shadow: 0 -1em 1em 1em rgba(0, 0, 0, .5);
   position: relative;
   & .pageMargin {
@@ -17,9 +17,12 @@
       padding: .25em 0 .25em .5em;
       & img {
         max-height: 3em;
+        &:first-child {
+          margin-bottom: -.25em;
+        }
         &.beta {
           width: 2.5em;
-          margin: .5em;
+          margin: .25em;
           position: absolute;
           top: 0;
           margin-left: 5em;
@@ -59,7 +62,7 @@
   }
 }
 
-@media (min-width: 32rem) {
+@media (min-width: 36rem) {
   .header {
     position: fixed;
     top: 0;
