@@ -175,30 +175,20 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       gender: {
         male: {
           text: 'Male Only',
-          img: '/images/male-selected.svg'
+          iconImg: '/images/male-selected.svg'
         },
         female: {
           text: 'Female Only',
-          img: '/images/female-selected.svg'
+          iconImg: '/images/female-selected.svg'
         },
         mixed: {
           text: 'Mixed Gender',
-          img: '/images/mixed-selected.svg'
+          iconImg: '/images/mixed-selected.svg'
         }
       }
     };
-    if (session.hasCoaching) {
-      features.push({
-        iconImg: '/images/coached.png',
-        text: 'Coached'
-      });
-    }
     if (session.genderRestriction) {
-      const genderData = maps.gender[session.genderRestriction];
-      features.push({
-        iconImg: genderData.img,
-        text: genderData.text
-      });
+      features.push(maps.gender[session.genderRestriction]);
     }
     if (session.minAgeRestriction) {
       features.push({
@@ -212,16 +202,20 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         text: 'Maximum Age'
       });
     }
+    if (session.hasCoaching) {
+      features.push({
+        iconImg: '/images/coached.png',
+        text: 'Coached'
+      });
+    }
     return (<div className={styles.aboutSection}>
       <div className={styles.inner}>
         <h2>About this session</h2>
         <ol>
           {features.map((feature) => {
-            let icon = null;
+            let icon = <span className={styles.iconText}>{feature.iconText}</span>;
             if (feature.iconImg) {
               icon = <span><img className={styles.iconImg} src={feature.iconImg} role="presentation" /><br /></span>;
-            } else {
-              icon = <span className={styles.iconText}>{feature.iconText}</span>;
             }
             return (<li key={feature.text}>
               {icon}
@@ -246,7 +240,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       const onMapClick = () => true;
       const marker = {
         position: defaultCenter,
-        icon: { url: '/images/map-pin.svg' },
+        icon: { url: '/images/map-pin-active.svg' },
         defaultAnimation: 2
       };
       map = (<GoogleMapLoader

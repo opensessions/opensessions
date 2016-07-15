@@ -27,14 +27,13 @@
   max-width: var(--sectionWidth);
   margin: 4em auto;
   background: #FFF;
-  padding: .5em;
   display: flex;
   flex-wrap: wrap;
   align-items: stretch;
   justify-content: center;
   & .detailsImg,
   & .detailsText {
-    padding: .5em;
+    padding: 1em;
   }
   & .detailsImg {
     max-width: 48rem;
@@ -50,6 +49,7 @@
     justify-content: space-between;
     & h1 {
       font-size: 1.5em;
+      padding: .25em 0;
     }
     & .dateDetail {
       & .timespan {
@@ -72,7 +72,7 @@
         height: var(--iconSizeBig);
         width: var(--iconSizeBig);
         margin-right: .75em;
-        padding: .5em;
+        padding: .25em 0;
         opacity: .8;
       }
     }

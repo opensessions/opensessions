@@ -88,7 +88,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     if (!organizerList) return null;
     return (<select onChange={this.props.onOrganizerChange}>
       <option>Select organizer</option>
-      {organizerList.map((organizer) => <option value={organizer.uuid}>{organizer.name}</option>)}
+      {organizerList.map((organizer) => <option key={organizer.uuid} value={organizer.uuid}>{organizer.name}</option>)}
     </select>);
   }
   renderSessions() {

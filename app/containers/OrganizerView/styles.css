@@ -34,7 +34,7 @@
     max-width: var(--tileWidth);
   }
   & .sessions {
-    margin-top: 4em;
+    margin: 4em auto;
     & .unassigned {
       & a.toggle {
         text-align: center;

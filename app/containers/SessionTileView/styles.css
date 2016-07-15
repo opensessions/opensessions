@@ -17,7 +17,7 @@
   }
   & .textCol {
     flex-grow: 1;
-    padding: .25em;
+    padding: .25em 1em;
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
