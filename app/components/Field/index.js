@@ -128,7 +128,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
           attrs.className = `${attrs.className} ${styles.longText}`;
         }
       } else if (type === 'date') {
-        attrs.value = (new Date(attrs.value)).toISOString().substr(0, 10);
+        if (attrs.value) attrs.value = (new Date(attrs.value)).toISOString().substr(0, 10);
         attrs.onChange = this.handleDateChange;
       } else if (type === 'number') {
         if (validation) {

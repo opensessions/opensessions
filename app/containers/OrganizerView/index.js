@@ -25,9 +25,6 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     this.state = {
       organizer: props.organizer || null,
     };
-    this.toggleSessions = this.toggleSessions.bind(this);
-    this.deleteOrganizer = this.deleteOrganizer.bind(this);
-    this.renameOrganizer = this.renameOrganizer.bind(this);
   }
   componentDidMount() {
     const self = this;
@@ -53,11 +50,11 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     const { organizer } = this.state;
     return user && organizer && organizer.owner === user.user_id;
   }
-  toggleSessions() {
+  toggleSessions = () => {
     const { showSessions } = this.state;
     this.setState({ showSessions: !showSessions });
   }
-  renameOrganizer() {
+  renameOrganizer = () => {
     const self = this;
     const { organizer } = this.state;
     const options = { body: {} };
@@ -75,7 +72,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
       }
     });
   }
-  deleteOrganizer() {
+  deleteOrganizer = () => {
     const self = this;
     const { organizer } = this.state;
     apiFetch(`/api/organizer/${organizer.uuid}/delete`).then((res) => {
