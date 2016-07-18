@@ -5,11 +5,7 @@ export default class LoginButton extends React.Component { // eslint-disable-lin
     lock: React.PropTypes.object,
     children: React.PropTypes.node,
   }
-  constructor() {
-    super();
-    this.showLock = this.showLock.bind(this);
-  }
-  showLock() {
+  showLock = () => {
     const { lock } = this.props;
     lock.show({
       icon: '/images/app-icon.png',

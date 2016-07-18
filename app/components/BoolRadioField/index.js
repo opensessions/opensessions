@@ -16,7 +16,6 @@ export default class BoolRadioField extends React.Component { // eslint-disable-
     this.state = {
       value: this.valueFromProps(props)
     };
-    this.handleChange = this.handleChange.bind(this);
   }
   componentWillReceiveProps(nextProps) {
     this.setState({ value: this.valueFromProps(nextProps) });
@@ -24,8 +23,8 @@ export default class BoolRadioField extends React.Component { // eslint-disable-
   valueFromProps(props) {
     return ('value' in props && props.value && props.value.toString) ? props.value.toString() : 'false';
   }
-  handleChange(event) {
-    const value = event.target.value;
+  handleChange = (event) => {
+    const { value } = event.target;
     const state = { value };
     this.setState(state);
     if (this.props.onChange) {

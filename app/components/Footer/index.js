@@ -10,18 +10,19 @@ export default class Footer extends React.Component { // eslint-disable-line rea
     return (
       <footer className={styles.footer}>
         <div className={styles.footerInner}>
-          <div className={styles.column}>
+          {/* <div className={styles.column}>
             <h2>Providers</h2>
             <p><Link to="/">Register your club</Link></p>
             <p><Link to="/">Become a partner</Link></p>
-          </div>
+          </div> */}
           <div className={styles.column}>
-            <h2>Support</h2>
+            <h2>Your account</h2>
             <p><Link to="/">Help Desk</Link></p>
             <p><LogoutLink value="Log out" invisible /></p>
           </div>
           <div className={styles.column}>
             <h2>Info</h2>
+            <p><a href="http://opensessions.io">About this site</a></p>
             <p><Link to="/">Contact us</Link></p>
             <p><Link to="/">About this site</Link></p>
             <p><Link to="/">Terms & Conditions</Link></p>

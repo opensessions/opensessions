@@ -18,7 +18,6 @@ export default class LocationField extends React.Component {
   }
   constructor(props) {
     super(props);
-    this.changeCenter = this.changeCenter.bind(this);
     this.state = {
       clean: true,
       location: props.defaultLocation
@@ -60,7 +59,7 @@ export default class LocationField extends React.Component {
   onChange = () => {
     this.setState({ clean: false });
   }
-  changeCenter(location) {
+  changeCenter = (location) => {
     if (this.refs.component) {
       this.refs.component.panTo(location);
     }

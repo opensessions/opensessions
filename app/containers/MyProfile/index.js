@@ -19,7 +19,6 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
       sessions: [],
       status: 'Loading organizers...'
     };
-    this.onOrganizerChange = this.onOrganizerChange.bind(this);
   }
   componentDidMount() {
     if (this.context.user) {
@@ -30,7 +29,7 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
       }, 1000);
     }
   }
-  onOrganizerChange(event) {
+  onOrganizerChange = (event) => {
     const { value } = event.target;
     this.setState({ selectedOrganizer: value });
   }

@@ -16,8 +16,6 @@ export default class OptionalNumField extends React.Component { // eslint-disabl
       bool: props.value ? true : false, // eslint-disable-line no-unneeded-ternary
       initialized: false
     };
-    this.handleChange = this.handleChange.bind(this);
-    this.radioClick = this.radioClick.bind(this);
   }
   componentWillReceiveProps(nextProps) {
     const newState = { value: nextProps.value };
@@ -26,14 +24,14 @@ export default class OptionalNumField extends React.Component { // eslint-disabl
     }
     this.setState(newState);
   }
-  handleChange(event) {
+  handleChange = (event) => {
     const value = event.target.value;
     this.setState({ initialized: true, value });
     if (this.props.onChange) {
       this.props.onChange(value);
     }
   }
-  radioClick(event) {
+  radioClick = (event) => {
     const bool = event.target.value === 't';
     this.setState({ initialized: true, bool });
     if (this.props.onChange && bool === false) {

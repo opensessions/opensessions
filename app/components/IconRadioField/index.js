@@ -14,12 +14,11 @@ export default class IconRadioField extends React.Component { // eslint-disable-
     this.state = {
       value: props.value || '',
     };
-    this.handleChange = this.handleChange.bind(this);
   }
   componentWillReceiveProps(nextProps) {
     this.setState({ value: nextProps.value });
   }
-  handleChange(event) {
+  handleChange = (event) => {
     const { value } = event.target;
     const state = { value };
     this.setState(state);
@@ -45,10 +44,8 @@ export default class IconRadioField extends React.Component { // eslint-disable-
         </li>);
       })}
     </ol>);
-    return (
-      <div className={styles.iconRadio}>
-        {radios}
-      </div>
-    );
+    return (<div className={styles.iconRadio}>
+      {radios}
+    </div>);
   }
 }

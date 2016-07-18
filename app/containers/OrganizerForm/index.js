@@ -19,7 +19,6 @@ export default class OrganizerForm extends React.Component { // eslint-disable-l
   constructor(props) {
     super(props);
     this.state = { session: props.session || {} };
-    this.updateSession = this.updateSession.bind(this);
   }
   componentDidMount() {
     const self = this;
@@ -38,7 +37,7 @@ export default class OrganizerForm extends React.Component { // eslint-disable-l
     session.update = this.updateSession;
     return session;
   }
-  updateSession(name, value) {
+  updateSession = (name, value) => {
     const session = this.getSession();
     session[name] = value;
     this.setState({ session });

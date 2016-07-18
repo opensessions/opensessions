@@ -20,9 +20,6 @@ export default class RelationField extends React.Component { // eslint-disable-l
     this.state = {
       value: props.value || '',
     };
-    this.onInputEvents = this.onInputEvents.bind(this);
-    this.onAdd = this.onAdd.bind(this);
-    this.handleChange = this.handleChange.bind(this);
     this.fetchRelation();
   }
   componentWillReceiveProps(nextProps) {
@@ -30,7 +27,7 @@ export default class RelationField extends React.Component { // eslint-disable-l
       this.setState({ value: nextProps.value });
     }
   }
-  onInputEvents(event) {
+  onInputEvents = (event) => {
     const { value } = event.target;
     const ENTER_KEY = 13;
     if (event.type === 'blur' && !value) {
@@ -46,11 +43,11 @@ export default class RelationField extends React.Component { // eslint-disable-l
       });
     }
   }
-  onAdd(event) {
+  onAdd = (event) => {
     event.preventDefault();
     this.setState({ relationState: 'typeNew' });
   }
-  handleChange(event) {
+  handleChange = (event) => {
     if (this.props.onChange) this.props.onChange(event.target.value);
   }
   fetchRelation(value) {
