@@ -24,12 +24,13 @@ export default class Field extends React.Component { // eslint-disable-line reac
     super(props);
     this.state = {
       valid: true,
+      hasFocus: false
     };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleValueChange = this.handleValueChange.bind(this);
-    this.handleDateChange = this.handleDateChange.bind(this);
   }
-  handleValueChange(value) {
+  onFocusChange = (event) => {
+    this.setState({ hasFocus: event.type === 'focus' });
+  }
+  handleValueChange = (value) => {
     if (this.props.validation) {
       this.setState({ valid: this.isValid(value) });
     }
@@ -40,12 +41,12 @@ export default class Field extends React.Component { // eslint-disable-line reac
       this.props.model.update(this.props.name, value);
     }
   }
-  handleDateChange(event) {
+  handleDateChange = (event) => {
     let { value } = event.target;
     value = (new Date(value)).toISOString().substr(0, 10);
     this.handleValueChange(value);
   }
-  handleChange(event) {
+  handleChange = (event) => {
     const { value } = event.target;
     this.handleValueChange(value);
   }
@@ -101,6 +102,8 @@ export default class Field extends React.Component { // eslint-disable-line reac
     if (this.props.model) {
       attrs.value = this.props.model.hasOwnProperty(attrs.name) ? this.props.model[attrs.name] : '';
     }
+    attrs.onFocus = this.onFocusChange;
+    attrs.onBlur = this.onFocusChange;
     let input;
     const type = this.props.type || 'text';
     if (type === 'IconRadio') {
@@ -146,7 +149,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
         <p>{this.props.tip}</p>
       </div>);
     }
-    return (<div className={styles.field} data-valid={this.state.valid}>
+    return (<div className={styles.field} data-valid={this.state.valid} data-hasfocus={this.state.hasFocus}>
       <label className={styles.label}>{label}</label>
       <div className={styles.inputWrap}>
         {input}

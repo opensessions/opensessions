@@ -17,7 +17,7 @@ export default class Header extends React.Component { // eslint-disable-line rea
     const { user } = this.context;
     if (!user) return <LoginButton lock={this.props.lock}>Login</LoginButton>;
     const name = user.nickname;
-    const greet = 'Hello,';
+    const greet = 'Hello, ';
     const image = user.picture ? <img src={user.picture} alt={name} className={styles.userIcon} /> : null;
     return <Link to="/profile">{greet} {name}! {image}</Link>;
   }

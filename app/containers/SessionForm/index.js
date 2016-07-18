@@ -21,7 +21,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   };
   static contextTypes = {
     user: React.PropTypes.object,
-  };
+  }
   constructor(props) {
     super(props);
     this.state = {
@@ -36,10 +36,6 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
         { required: ['startDate', 'startTime'], props: { validity: false } }
       ]
     };
-    this.updateSession = this.updateSession.bind(this);
-    this.locationCallback = this.locationCallback.bind(this);
-    this.onPublish = this.onPublish.bind(this);
-    this.onChange = this.onChange.bind(this);
   }
   componentDidMount() {
     const self = this;
@@ -57,7 +53,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       self.setState({ session: res.instance });
     });
   }
-  onChange(session) {
+  onChange = (session) => {
     const { fieldsets } = this.state;
     let pendingSteps = 0;
     fieldsets.forEach((fieldset, key) => {
@@ -75,7 +71,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     });
     this.setState({ fieldsets, pendingSteps });
   }
-  onPublish(session) {
+  onPublish = (session) => {
     if (session && session.state === 'published') {
       this.props.history.push(this.state.session.href);
     }
@@ -87,12 +83,12 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     return session;
   }
   _locationInput = null
-  updateSession(name, value) {
+  updateSession = (name, value) => {
     const session = this.getSession();
     session[name] = value;
     this.setState({ session });
   }
-  locationCallback(place) {
+  locationCallback = (place) => {
     const data = {
       formatted_address: place.formatted_address,
       lat: place.geometry.location.lat(),
@@ -140,11 +136,11 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
               {this.renderDescriptionFieldset()}
               <Fieldset label="Additional info" {...this.state.fieldsets[1].props}>
                 <Field label="What to bring" name="preparation" type="textarea" model={session} validation={{ maxLength: 2048 }} />
-                <Field label="Session leader" name="leader" model={session} />
+                <Field label="Session leader" name="leader" model={session} tip="Who will run the session?" />
                 <Field label="Will participants receive coaching?" type="BoolRadio" name="hasCoaching" model={session} options={coachOptions} />
               </Fieldset>
               <Fieldset label="Location" {...this.state.fieldsets[2].props}>
-                <Field type="Location" label="Location" name="location" model={session} onChange={this.locationCallback} value={session.location} defaultLocation={session.locationData ? JSON.parse(session.locationData) : null} />
+                <Field type="Location" label="Location" name="location" model={session} onChange={this.locationCallback} value={session.location} defaultLocation={session.locationData ? JSON.parse(session.locationData) : null} tip="Type to search an address and select from the dropdown" />
                 <Field label="Meeting point" name="meetingPoint" model={session} type="textarea" validation={{ maxLength: 50 }} />
               </Fieldset>
               <Fieldset label="Pricing" {...this.state.fieldsets[3].props}>

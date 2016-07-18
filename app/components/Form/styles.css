@@ -40,8 +40,20 @@
       cursor: default;
       font-weight: bold;
       letter-spacing: -.0425em;
-      & span {
-        letter-spacing: 0;
+    }
+    & span {
+      letter-spacing: 0;
+      pointer-events: none;
+      padding: 0 .5em;
+      font-family: monospace;
+      font-weight: normal;
+      font-size: 1.6em;
+      line-height: 0;
+      &.tick {
+        color: #88C541;
+      }
+      &.tickNone {
+        color: #999;
       }
     }
   }
@@ -80,24 +92,6 @@
       text-decoration: none;
     }
   }
-}
-
-.tick {
-  color: #88C541;
-  padding: 0 .5em;
-  pointer-events: none;
-  font-weight: normal;
-  font-size: 1.2em;
-  line-height: 0;
-}
-
-.tickNone {
-  color: #999;
-  padding: 0 .5em;
-  pointer-events: none;
-  font-weight: normal;
-  font-size: 1.2em;
-  line-height: 0;
 }
 
 .hiddenTab {

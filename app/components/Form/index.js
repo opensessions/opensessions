@@ -14,11 +14,6 @@ export default class Form extends React.Component { // eslint-disable-line react
   }
   constructor(props) {
     super(props);
-    this.autosave = this.autosave.bind(this);
-    this.tabClick = this.tabClick.bind(this);
-    this.actionClick = this.actionClick.bind(this);
-    this.formChange = this.formChange.bind(this);
-    this.submit = this.submit.bind(this);
     this.state = {
       activeTab: 0,
       saveState: 'Unsaved',
@@ -28,7 +23,7 @@ export default class Form extends React.Component { // eslint-disable-line react
   getFieldsets() {
     return this.props.children instanceof Array ? this.props.children : [this.props.children];
   }
-  autosave() {
+  autosave = () => {
     const { model } = this.props;
     if (model.state !== 'unpublished') {
       model.state = 'draft';
@@ -45,23 +40,23 @@ export default class Form extends React.Component { // eslint-disable-line react
       return result;
     });
   }
-  formChange(event) {
+  formChange = (event) => {
     if (!event.target.name) return;
     if (this.timeout) clearTimeout(this.timeout);
     this.timeout = setTimeout(this.autosave, 2000);
     this.setState({ saveState: 'Saving...', saveStateClass: styles.saving });
     if (this.props.onChange) this.props.onChange(this.props.model);
   }
-  tabClick(event) {
+  tabClick = (event) => {
     const key = Array.prototype.indexOf.call(event.target.parentNode.childNodes, event.target);
     if (this.state.activeTab === key) return;
     this.setState({ activeTab: key });
   }
-  actionClick(event) {
+  actionClick = (event) => {
     const delta = event.target.text === 'Next' ? 1 : -1;
     this.setState({ activeTab: this.state.activeTab + delta });
   }
-  submit() {
+  submit = () => {
     if (this.timeout) clearTimeout(this.timeout);
     const { model } = this.props;
     model.state = 'published';
@@ -98,9 +93,11 @@ export default class Form extends React.Component { // eslint-disable-line react
     const backAttr = {
       onClick: this.actionClick,
       className: styles.backButton,
+      tabIndex: 0
     };
     const nextAttr = {
       onClick: this.actionClick,
+      tabIndex: 0
     };
     let nextText = 'Next';
     if (this.state.activeTab === 0) {

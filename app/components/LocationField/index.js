@@ -8,6 +8,8 @@ import styles from './styles.css';
 
 export default class LocationField extends React.Component {
   static propTypes = {
+    onFocus: React.PropTypes.func,
+    onBlur: React.PropTypes.func,
     onChange: React.PropTypes.func,
     defaultLocation: React.PropTypes.object,
     inputStyle: React.PropTypes.string,
@@ -16,8 +18,6 @@ export default class LocationField extends React.Component {
   }
   constructor(props) {
     super(props);
-    this.onBlur = this.onBlur.bind(this);
-    this.onFocus = this.onFocus.bind(this);
     this.changeCenter = this.changeCenter.bind(this);
     this.state = {
       clean: true,
@@ -48,12 +48,16 @@ export default class LocationField extends React.Component {
       });
     }
   }
-  onBlur(event) {
+  onBlur = (event) => {
     if (!this.state.clean) {
       event.target.value = '';
     }
+    if (this.props.onBlur) this.props.onBlur(event);
   }
-  onFocus() {
+  onFocus = (event) => {
+    if (this.props.onFocus) this.props.onFocus(event);
+  }
+  onChange = () => {
     this.setState({ clean: false });
   }
   changeCenter(location) {
@@ -62,13 +66,13 @@ export default class LocationField extends React.Component {
     }
   }
   render() {
-    const { name } = this.props;
     const attrs = {
       type: 'text',
-      name,
+      className: this.props.inputStyle,
       ref: 'input',
+      onFocus: this.onFocus,
       onBlur: this.onBlur,
-      onChange: this.onFocus,
+      onChange: this.onChange,
       placeholder: this.props.value
     };
     let map = null;
@@ -94,7 +98,7 @@ export default class LocationField extends React.Component {
       />);
     }
     return (<div>
-      <input {...attrs} className={this.props.inputStyle} />
+      <input {...attrs} />
       {map}
     </div>);
   }

@@ -6,11 +6,13 @@ import { apiFetch } from '../../utils/api';
 
 export default class RelationField extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
+    onFocus: React.PropTypes.func,
+    onBlur: React.PropTypes.func,
+    onChange: React.PropTypes.func,
     inputStyle: React.PropTypes.string,
     model: React.PropTypes.object,
     name: React.PropTypes.string.isRequired,
     relation: React.PropTypes.object,
-    onChange: React.PropTypes.func,
     value: React.PropTypes.string,
   }
   constructor(props) {
@@ -77,6 +79,8 @@ export default class RelationField extends React.Component { // eslint-disable-l
       } else if (this.props.model) {
         attrs.defaultValue = this.props.model[this.props.name];
       }
+      if (this.props.onFocus) attrs.onFocus = this.props.onFocus;
+      if (this.props.onBlur) attrs.onBlur = this.props.onBlur;
       selectBox = (<select {...attrs}>
         <option value="">None</option>
         {options.map((option) => <option value={option.uuid} key={option.uuid}>{option.name}</option>)}
