@@ -71,7 +71,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
       if (!res.error) {
         self.setState({ organizer });
       } else {
-        alert('failed to rename organizer, ', res.error);
+        console.error('failed to rename organizer, ', res.error);
       }
     });
   }
@@ -82,7 +82,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
       if (res.status === 'success') {
         (self.props.router ? self.props.router : self.context.router).push('/');
       } else {
-        alert('failed to delete organizer, ', res.error);
+        console.error('failed to delete organizer, ', res.error);
       }
     });
   }

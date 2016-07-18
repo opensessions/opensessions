@@ -28,6 +28,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleValueChange = this.handleValueChange.bind(this);
+    this.handleDateChange = this.handleDateChange.bind(this);
   }
   componentWillReceiveProps(nextProps) {
     this.setState({
@@ -47,12 +48,16 @@ export default class Field extends React.Component { // eslint-disable-line reac
       this.props.model.update(this.props.name, value);
     }
   }
+  handleDateChange(event) {
+    let { value } = event.target;
+    value = (new Date(value)).toISOString().substr(0, 10);
+    this.handleValueChange(value);
+  }
   handleChange(event) {
     const { value } = event.target;
     this.handleValueChange(value);
   }
   isValid(value) {
-    if (typeof value === 'undefined') value = this.state.value;
     const opts = this.props.validation || '';
     let valid = true;
     if (opts.maxLength) {
@@ -67,7 +72,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
   }
   renderValidationMaxLength() {
     const maxLength = this.props.validation.maxLength;
-    const text = this.state.value || this.props.model[this.props.name] || '';
+    const text = this.props.model[this.props.name] || '';
     let num = maxLength - text.length;
     let urgency = styles.valid;
     let characterState = 'remaining';
@@ -101,8 +106,6 @@ export default class Field extends React.Component { // eslint-disable-line reac
     };
     if (this.props.model) {
       attrs.value = this.props.model.hasOwnProperty(attrs.name) ? this.props.model[attrs.name] : '';
-    } else {
-      attrs.value = this.state.value;
     }
     let input;
     const type = this.props.type || 'text';
@@ -128,8 +131,8 @@ export default class Field extends React.Component { // eslint-disable-line reac
           attrs.className = `${attrs.className} ${styles.longText}`;
         }
       } else if (type === 'date') {
-        const date = new Date(attrs.value);
-        attrs.value = date.toISOString().substr(0, 10);
+        attrs.value = (new Date(attrs.value)).toISOString().substr(0, 10);
+        attrs.onChange = this.handleDateChange;
       } else if (type === 'number') {
         if (validation) {
           ['min', 'max'].forEach((prop) => {

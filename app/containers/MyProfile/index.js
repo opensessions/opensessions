@@ -17,6 +17,7 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
     this.state = {
       organizers: [],
       sessions: [],
+      status: 'Loading organizers...'
     };
     this.onOrganizerChange = this.onOrganizerChange.bind(this);
   }
@@ -36,6 +37,7 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
   fetchOrganizers() {
     const self = this;
     const { user } = this.context;
+    this.setState({ status: 'Loading organizers...' });
     apiFetch('/api/organizer', {
       query: { owner: user.user_id },
     }).then((result) => {
@@ -49,13 +51,13 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
         } else if (sessionResult.instances) {
           sessions = sessionResult.instances;
         }
-        self.setState({ selectedOrganizer, organizers, sessions, error });
+        self.setState({ selectedOrganizer, organizers, sessions, status: error });
       });
     });
   }
   renderOrganizers() {
     const { sessions, organizers, selectedOrganizer } = this.state;
-    if (!organizers.length) return (<div>No organizers yet</div>);
+    if (!organizers.length) return (<div>{this.state.status}</div>);
     const organizer = organizers.filter((item) => item.uuid === selectedOrganizer)[0];
     return <OrganizerView router={this.context.router} organizer={organizer} unassignedSessions={sessions} organizerList={organizers} onOrganizerChange={this.onOrganizerChange} />;
   }

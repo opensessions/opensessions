@@ -100,7 +100,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         <img src="/images/placeholder.png" role="presentation" />
       </div>
       <div className={styles.detailsText}>
-        <h1>{session.displayName}</h1>
+        <h1>{session.title}</h1>
         {locationDetail}
         {this.renderDate()}
         <div className={styles.detailPrice}>

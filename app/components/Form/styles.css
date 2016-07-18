@@ -39,6 +39,10 @@
     &.active {
       cursor: default;
       font-weight: bold;
+      letter-spacing: -.0425em;
+      & span {
+        letter-spacing: 0;
+      }
     }
   }
 }

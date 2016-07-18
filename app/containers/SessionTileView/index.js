@@ -58,7 +58,7 @@ export default class SessionTileView extends React.Component { // eslint-disable
         </div>
         <div className={styles.textCol}>
           <div className={styles.info}>
-            <h1><Link to={session.href}>{session.displayName}</Link></h1>
+            <h1><Link to={session.href}>{session.title}</Link></h1>
             <div className={styles.location}>{session.location}</div>
           </div>
           <div className={styles.actions}>

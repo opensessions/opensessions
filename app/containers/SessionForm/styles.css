@@ -22,7 +22,6 @@
   margin: auto;
   justify-content: space-between;
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
 }
 
@@ -34,11 +33,11 @@
   box-shadow: inset 0 .25em .5em rgba(0, 0, 0, .5);
   h1,
   h2,
-  h3,
-  h4 {
+  h3 {
     display: inline-block;
     padding: .5em .75em;
     font-weight: normal;
+    line-height: 1;
   }
   h2 {
     font-size: 1.2em;

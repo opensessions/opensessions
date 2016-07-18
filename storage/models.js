@@ -20,9 +20,6 @@ module.exports = (DataTypes) => ({
           href() {
             return `/${this.Model.name.toLowerCase()}/${this.uuid}`;
           },
-          displayName() {
-            return this.name;
-          },
         },
         classMethods: {
           makeAssociations(models) {
@@ -70,9 +67,6 @@ module.exports = (DataTypes) => ({
         getterMethods: {
           href() {
             return `/${this.Model.name.toLowerCase()}/${this.uuid}`;
-          },
-          displayName() {
-            return `${this.title || 'Untitled'}${['draft', 'unpublished'].indexOf(this.state) !== -1 ? ` (${this.state})` : ''}`;
           },
         },
         instanceMethods: {
