@@ -23,24 +23,16 @@ export default class Field extends React.Component { // eslint-disable-line reac
   constructor(props) {
     super(props);
     this.state = {
-      value: props.value || '',
       valid: true,
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleValueChange = this.handleValueChange.bind(this);
     this.handleDateChange = this.handleDateChange.bind(this);
   }
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      value: nextProps.value || ''
-    });
-  }
   handleValueChange(value) {
-    const newState = { value };
     if (this.props.validation) {
-      newState.valid = this.isValid(value);
+      this.setState({ valid: this.isValid(value) });
     }
-    this.setState(newState);
     if (this.props.onChange) {
       this.props.onChange(value);
     }
@@ -100,10 +92,12 @@ export default class Field extends React.Component { // eslint-disable-line reac
     const { label, validation } = this.props;
     const attrs = {
       name: this.props.name,
-      validation,
       onChange: this.handleValueChange,
       className: `${styles.input} ${this.state.valid ? '' : styles.invalid}`
     };
+    if (validation) {
+      attrs.validation = validation;
+    }
     if (this.props.model) {
       attrs.value = this.props.model.hasOwnProperty(attrs.name) ? this.props.model[attrs.name] : '';
     }

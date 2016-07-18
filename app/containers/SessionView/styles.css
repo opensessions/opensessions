@@ -49,6 +49,12 @@
     flex-direction: column;
     align-items: flex-start;
     justify-content: space-between;
+    & .state {
+      color: #AAA;
+      margin-left: .5em;
+      font-size: .8em;
+      font-weight: normal;
+    }
     & h1 {
       font-size: 1.5em;
       padding: .25em 0;
