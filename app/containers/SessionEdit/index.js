@@ -8,7 +8,7 @@ export default class SessionEdit extends React.Component { // eslint-disable-lin
   }
   render() {
     return (
-      <SessionForm sessionID={this.props.params.uuid} {...this.props} />
+      <SessionForm headerText="Edit session" sessionID={this.props.params.uuid} {...this.props} />
     );
   }
 }

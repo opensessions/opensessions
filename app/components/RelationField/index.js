@@ -19,6 +19,8 @@ export default class RelationField extends React.Component { // eslint-disable-l
       value: props.value || '',
     };
     this.onInputEvents = this.onInputEvents.bind(this);
+    this.onAdd = this.onAdd.bind(this);
+    this.handleChange = this.handleChange.bind(this);
     this.fetchRelation();
   }
   componentWillReceiveProps(nextProps) {
@@ -42,6 +44,13 @@ export default class RelationField extends React.Component { // eslint-disable-l
       });
     }
   }
+  onAdd(event) {
+    event.preventDefault();
+    this.setState({ relationState: 'typeNew' });
+  }
+  handleChange(event) {
+    if (this.props.onChange) this.props.onChange(event.target.value);
+  }
   fetchRelation(value) {
     const self = this;
     return apiFetch(this.props.relation.url, { query: this.props.relation.query }).then((result) => {
@@ -50,11 +59,7 @@ export default class RelationField extends React.Component { // eslint-disable-l
     });
   }
   render() {
-    const onClick = (event) => {
-      event.preventDefault();
-      this.setState({ relationState: 'typeNew' });
-    };
-    let addControl = (<button onClick={onClick} className={styles.addRelation}>Add +</button>);
+    let addControl = (<button onClick={this.onAdd} className={styles.addRelation}>Add +</button>);
     if (this.state.relationState === 'typeNew') {
       addControl = (<input onKeyPress={this.onInputEvents} onBlur={this.onInputEvents} className={this.props.inputStyle} type="text" autoFocus />);
     }
@@ -64,7 +69,7 @@ export default class RelationField extends React.Component { // eslint-disable-l
       const attrs = {
         name: this.props.name,
         defaultValue: this.state.value,
-        onChange: this.props.onChange,
+        onChange: this.handleChange,
       };
       if (this.state.value) {
         attrs.defaultValue = this.state.value;

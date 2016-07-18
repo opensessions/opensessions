@@ -5,7 +5,6 @@ import styles from './styles.css';
 export default class IconRadioField extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
     name: React.PropTypes.string.isRequired,
-    id: React.PropTypes.string,
     onChange: React.PropTypes.func,
     value: React.PropTypes.string,
     options: React.PropTypes.array,
@@ -21,20 +20,19 @@ export default class IconRadioField extends React.Component { // eslint-disable-
     this.setState({ value: nextProps.value });
   }
   handleChange(event) {
-    const value = event.target.value;
+    const { value } = event.target;
     const state = { value };
     this.setState(state);
     if (this.props.onChange) {
-      this.props.onChange(event);
+      this.props.onChange(value);
     }
   }
   render() {
     const attrs = {
       onChange: this.handleChange,
       name: this.props.name,
-      id: this.props.id || this.props.name,
     };
-    const value = this.state.value;
+    const { value } = this.state;
     const radios = (<ol>
       {this.props.options.map((option) => {
         const selected = option.value === value;

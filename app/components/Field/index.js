@@ -48,7 +48,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
     }
   }
   handleChange(event) {
-    const value = event.target.value;
+    const { value } = event.target;
     this.handleValueChange(value);
   }
   isValid(value) {
@@ -96,7 +96,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
     const attrs = {
       name: this.props.name,
       validation,
-      onChange: this.handleChange,
+      onChange: this.handleValueChange,
       className: `${styles.input} ${this.state.valid ? '' : styles.invalid}`
     };
     if (this.props.model) {
@@ -106,12 +106,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
     }
     let input;
     const type = this.props.type || 'text';
-    if (type === 'textarea') {
-      if (validation && validation.maxLength > 100) {
-        attrs.className = `${attrs.className} ${styles.longText}`;
-      }
-      input = <textarea {...attrs} />;
-    } else if (type === 'IconRadio') {
+    if (type === 'IconRadio') {
       input = <IconRadioField options={this.props.options} {...attrs} />;
     } else if (type === 'BoolRadio') {
       attrs.falseText = this.props.options[0].text;
@@ -121,19 +116,20 @@ export default class Field extends React.Component { // eslint-disable-line reac
       attrs.inputStyle = styles.input;
       input = <RelationField {...this.props} {...attrs} />;
     } else if (type === 'OptionalNum') {
-      attrs.onChange = this.handleValueChange;
       input = <OptionalNumField {...attrs} />;
     } else if (type === 'Location') {
       attrs.inputStyle = styles.input;
       delete attrs.onChange;
       input = <LocationField {...this.props} {...attrs} />;
     } else {
-      if (type === 'date') {
+      attrs.onChange = this.handleChange;
+      if (type === 'textarea') {
+        if (validation && validation.maxLength > 100) {
+          attrs.className = `${attrs.className} ${styles.longText}`;
+        }
+      } else if (type === 'date') {
         const date = new Date(attrs.value);
-        attrs.value = date.toLocaleDateString()
-          .split('/')
-          .reverse()
-          .join('-');
+        attrs.value = date.toISOString().substr(0, 10);
       } else if (type === 'number') {
         if (validation) {
           ['min', 'max'].forEach((prop) => {
@@ -144,7 +140,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
         }
       }
       attrs.type = type;
-      input = <input {...attrs} />;
+      input = type === 'textarea' ? <textarea {...attrs} /> : <input {...attrs} />;
     }
     let tip;
     if (this.props.tip) {

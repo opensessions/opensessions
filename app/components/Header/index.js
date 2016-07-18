@@ -22,6 +22,7 @@ export default class Header extends React.Component { // eslint-disable-line rea
     return <Link to="/profile">{greet} {name}! {image}</Link>;
   }
   render() {
+    const addSession = <span><span className={styles.plus}>+</span> Add a session</span>;
     return (
       <header className={styles.header}>
         <div className={styles.pageMargin}>
@@ -30,7 +31,7 @@ export default class Header extends React.Component { // eslint-disable-line rea
             <img src="/images/beta.svg" alt="beta" className={styles.beta} />
           </Link>
           <nav className={styles.nav}>
-            <Link to="/session/add" activeClassName="active"><span className={styles.plus}>+</span> Add a session</Link>
+            {this.context.user ? <Link to="/session/add" activeClassName="active">{addSession}</Link> : <LoginButton lock={this.props.lock}>{addSession}</LoginButton>}
             {this.renderLoginButton()}
           </nav>
         </div>

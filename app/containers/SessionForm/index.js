@@ -17,6 +17,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     session: React.PropTypes.object,
     sessionID: React.PropTypes.string,
     location: React.PropTypes.object,
+    headerText: React.PropTypes.string
   };
   static contextTypes = {
     user: React.PropTypes.object,
@@ -58,6 +59,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   }
   onChange(session) {
     const { fieldsets } = this.state;
+    let pendingSteps = 0;
     fieldsets.forEach((fieldset, key) => {
       let validity = 'none';
       if (fieldset.required) {
@@ -67,10 +69,11 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
             validity = false;
           }
         });
+        if (!validity) pendingSteps += 1;
       }
       fieldsets[key].props.validity = validity;
     });
-    this.setState({ fieldsets });
+    this.setState({ fieldsets, pendingSteps });
   }
   onPublish(session) {
     if (session && session.state === 'published') {
@@ -105,8 +108,8 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     return (<Fieldset label="Description" ref="descriptionFieldset" {...this.state.fieldsets[0].props}>
       <Field label="Title" name="title" model={session} validation={{ maxLength: 50 }} tip="Enter a title for your session E.g. Volleyball training" />
       <Field label="Organizer" name="OrganizerUuid" model={session} type="Relation" relation={{ url: '/api/organizer', query: { owner: user.user_id } }} tip="Enter a club or session organiser name E.g. Richmond Rovers" />
-      <Field label="Description" name="description" model={session} type="textarea" />
-      <Field label="Sport / activity type" name="activityType" model={session} />
+      <Field label="Description" name="description" model={session} type="textarea" tip="Enter a description (detail on the activities you'll be doing)" />
+      <Field label="Sport / activity type" name="activityType" model={session} tip="Enter the type of sport or activity E.g. Football, Yoga" />
     </Fieldset>);
   }
   render() {
@@ -126,7 +129,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
           <div className={styles.titleBar}>
             <div className={styles.titleInner}>
               <div>
-                <h2>Add a session</h2>
+                <h2>{this.props.headerText ? this.props.headerText : 'Add a session'}</h2>
                 <h3>{session.title || <i>Untitled</i>}</h3>
               </div>
               <Link to={`/session/${session.uuid}`} className={styles.previewButton}>Preview</Link>

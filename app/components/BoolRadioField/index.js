@@ -29,7 +29,7 @@ export default class BoolRadioField extends React.Component { // eslint-disable-
     const state = { value };
     this.setState(state);
     if (this.props.onChange) {
-      this.props.onChange(event);
+      this.props.onChange(value);
     }
   }
   render() {

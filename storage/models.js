@@ -23,6 +23,11 @@ module.exports = (DataTypes) => ({
           displayName() {
             return this.name;
           },
+        },
+        classMethods: {
+          makeAssociations(models) {
+            models.Organizer.hasMany(models.Session);
+          }
         }
       }
     },
@@ -73,7 +78,7 @@ module.exports = (DataTypes) => ({
         instanceMethods: {
           canPublish() {
             const session = this;
-            const requiredFields = ['title', 'description', 'location', 'price', 'OrganizerUuid', 'startDate', 'startTime'];
+            const requiredFields = ['title', 'description', 'leader', 'location', 'price', 'OrganizerUuid', 'startDate', 'startTime'];
             const prettyNames = { OrganizerUuid: 'organizer', startDate: 'start date', startTime: 'start time' };
             const errors = [];
             requiredFields.forEach((field) => {
@@ -83,6 +88,11 @@ module.exports = (DataTypes) => ({
             });
             if (errors.length) throw new Error(`Missing fields: ${errors.join(', ')}`);
             return true;
+          }
+        },
+        classMethods: {
+          makeAssociations(models) {
+            models.Session.belongsTo(models.Organizer);
           }
         },
         hooks: {

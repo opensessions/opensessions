@@ -65,9 +65,9 @@ export default class Form extends React.Component { // eslint-disable-line react
     if (this.timeout) clearTimeout(this.timeout);
     const { model } = this.props;
     model.state = 'published';
-    this.saveModel(model, 'Publishing', 'Published').then((resultModel) => {
+    this.saveModel(model, 'Publishing', 'Published').then((result) => {
       if (this.props.onPublish) {
-        this.props.onPublish(resultModel);
+        this.props.onPublish(result.instance);
       }
     }).catch((error) => {
       this.setState({ saveState: error, saveStateClass: styles.error });
