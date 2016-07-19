@@ -3,9 +3,20 @@
 .field {
   position: relative;
   padding: .5em 0;
+  & .maxLength {
+    font-size: .825em;
+    text-align: right;
+    opacity: 0;
+    transition: .1s all ease;
+  }
   &:hover,
   &[data-hasfocus='true'] {
     & .tip {
+      opacity: 1;
+    }
+  }
+  &[data-hasfocus='true'] {
+    & .maxLength {
       opacity: 1;
     }
   }
@@ -24,12 +35,6 @@
     outline-color: #00AEEF;
     background-color: #FFF;
   }
-  &:focus,
-  &:hover {
-    & + .tip {
-      opacity: 1;
-    }
-  }
   &.invalid {
     outline-color: var(--errorRed);
   }
@@ -45,7 +50,7 @@
 .tip {
   position: absolute;
   opacity: 0;
-  transition: .5s all ease;
+  transition: .3s all ease;
   background-color: #FFF;
   padding: .75em;
   max-width: 16em;
@@ -71,11 +76,6 @@
 .inputWrap {
   width: var(--fieldWidth);
   max-width: 100%;
-}
-
-.maxLength {
-  font-size: .825em;
-  text-align: right;
 }
 
 .valid,

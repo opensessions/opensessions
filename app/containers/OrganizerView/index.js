@@ -4,6 +4,7 @@ import { Link } from 'react-router';
 import { apiFetch } from '../../utils/api';
 
 import SessionTileView from '../SessionTileView';
+import LoadingMessage from 'components/LoadingMessage';
 
 import styles from './styles.css';
 
@@ -132,9 +133,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
       {this.isOwner() ? this.renderUnassignedSessions() : null}
     </div>);
   }
-  renderOrganizer() {
-    const { organizer } = this.state;
-    if (!organizer) return null;
+  renderOrganizer(organizer) {
     const imageUrl = '/images/organizer-bg-default.png';
     return (<div>
       <div className={styles.bannerImage} style={{ background: `url(${imageUrl}) no-repeat`, backgroundSize: 'cover' }}>
@@ -151,8 +150,9 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     </div>);
   }
   render() {
+    const { organizer } = this.state;
     return (<div className={styles.organizerView}>
-      {this.renderOrganizer()}
+      {organizer ? this.renderOrganizer(organizer) : <LoadingMessage message={this.state.error} />}
       <div className={styles.container}>
         {this.renderSessions()}
       </div>

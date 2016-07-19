@@ -15,6 +15,6 @@ export default class LoginButton extends React.Component { // eslint-disable-lin
     });
   }
   render() {
-    return <a onClick={this.showLock}>{this.props.children}</a>;
+    return <a tabIndex="0" onClick={this.showLock}>{this.props.children}</a>;
   }
 }

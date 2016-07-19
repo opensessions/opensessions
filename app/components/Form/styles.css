@@ -39,12 +39,12 @@
     &.active {
       cursor: default;
       font-weight: bold;
-      letter-spacing: -.0425em;
+      letter-spacing: -.041em;
     }
     & span {
       letter-spacing: 0;
       pointer-events: none;
-      padding: 0 .5em;
+      padding: 0 .2em;
       font-family: monospace;
       font-weight: normal;
       font-size: 1.6em;
@@ -56,6 +56,13 @@
         color: #999;
       }
     }
+  }
+  & .pending {
+    display: none;
+    font-size: .7em;
+    padding: .5em 1em;
+    font-weight: bold;
+    text-transform: uppercase;
   }
 }
 

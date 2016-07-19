@@ -3,6 +3,7 @@ import React from 'react';
 import OrganizerView from '../OrganizerView';
 
 import Authenticated from 'components/Authenticated';
+import LoadingMessage from 'components/LoadingMessage';
 
 import { apiFetch } from '../../utils/api';
 
@@ -56,7 +57,7 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
   }
   renderOrganizers() {
     const { sessions, organizers, selectedOrganizer } = this.state;
-    if (!organizers.length) return (<div>{this.state.status}</div>);
+    if (!organizers.length) return (<LoadingMessage message={this.state.status} ellipsis />);
     const organizer = organizers.filter((item) => item.uuid === selectedOrganizer)[0];
     return <OrganizerView router={this.context.router} organizer={organizer} unassignedSessions={sessions} organizerList={organizers} onOrganizerChange={this.onOrganizerChange} />;
   }

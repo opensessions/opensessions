@@ -22,6 +22,10 @@ module.exports = (DataTypes) => ({
           },
         },
         classMethods: {
+          getQuery(query, models, user) {
+            query.include = user ? [models.Session] : [{ model: models.Session, where: { state: { $in: ['published'] } } }];
+            return query;
+          },
           makeAssociations(models) {
             models.Organizer.hasMany(models.Session);
           }
@@ -85,6 +89,13 @@ module.exports = (DataTypes) => ({
           }
         },
         classMethods: {
+          getQuery(query, models, user) {
+            query.include = [models.Organizer];
+            if (!user) {
+              query.where.state = 'published';
+            }
+            return query;
+          },
           makeAssociations(models) {
             models.Session.belongsTo(models.Organizer);
           }

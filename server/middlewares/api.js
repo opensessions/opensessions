@@ -12,7 +12,6 @@ const getSchema = ((model) => JSON.parse(JSON.stringify(model.fieldRawAttributes
   return value; // eslint-disable-line consistent-return
 })));
 
-
 dotenv.config({ silent: true });
 dotenv.load();
 
@@ -124,27 +123,39 @@ module.exports = (app) => {
 
   api.use('/rdpe', rdpe);
 
-  api.get('/session', (req, res) => {
-    const where = queryParse(req);
-    if ('owner' in where) {
-      requireLogin(req, res, () => {
-        const user = getUser(req);
-        if (where.owner === user) {
-          Session.findAll({ where, include: [Organizer] }).then((sessions) => {
-            res.json({ instances: sessions });
-          }).catch((error) => {
-            res.json({ error });
-          });
-        } else {
-          res.json({ error: 'Must be logged in to search by owner' });
-        }
-      });
+  api.get('/:model', resolveModel, (req, res) => {
+    const Model = req.Model;
+    if (Model.name === 'Session') {
+      const where = queryParse(req);
+      if ('owner' in where) {
+        requireLogin(req, res, () => {
+          const user = getUser(req);
+          if (where.owner === user) {
+            Session.findAll({ where, include: [Organizer] }).then((sessions) => {
+              res.json({ instances: sessions });
+            }).catch((error) => {
+              res.json({ error });
+            });
+          } else {
+            res.json({ error: 'Must be logged in to search by owner' });
+          }
+        });
+      } else {
+        where.state = 'published';
+        Session.findAll({ where, include: [Organizer] }).then((sessions) => {
+          res.json({ instances: sessions });
+        }).catch((error) => {
+          res.json({ error });
+        });
+      }
     } else {
-      where.state = 'published';
-      Session.findAll({ where, include: [Organizer] }).then((sessions) => {
-        res.json({ instances: sessions });
-      }).catch((error) => {
-        res.json({ error });
+      requireLogin(req, res, () => {
+        const query = Model.getQuery({ where: req.query }, database.models, req.user);
+        Model.findAll(query).then((instances) => {
+          res.json({ instances });
+        }).catch((error) => {
+          res.json({ error: error.message });
+        });
       });
     }
   });
@@ -160,22 +171,20 @@ module.exports = (app) => {
     });
   });
 
-  api.get('/session/:uuid', (req, res) => {
-    Session.findOne({ where: { uuid: req.params.uuid }, include: [Organizer] }).then((session) => {
-      if (session.state === 'draft') {
-        requireLogin(req, res, () => {
-          const user = getUser(req);
-          if (session.owner === user) {
-            res.json({ instance: session, schema: getSchema(Session) });
-          } else {
-            res.json({ error: 'Must be session owner to view draft' });
-          }
-        });
-      } else {
-        res.json({ instance: session, schema: getSchema(Session) });
-      }
-    }).catch((error) => {
-      res.json({ error: error.message });
+  api.get('/:model/:uuid', resolveModel, (req, res) => {
+    const Model = req.Model;
+    const { uuid } = req.params;
+    requireLogin(req, res, () => {
+      const query = Model.getQuery({ where: { uuid } }, database.models, req.user);
+      Model.findOne(query).then((instance) => {
+        if (instance) {
+          res.json({ instance, schema: getSchema(Model) });
+        } else {
+          res.json({ error: 'Instance could not be retrieved' });
+        }
+      }).catch((error) => {
+        res.json({ error: error.message });
+      });
     });
   });
 
@@ -185,72 +194,18 @@ module.exports = (app) => {
       if (instance.owner !== getUser(req)) {
         return res.json({ error: `Must be owner to modify ${Model.name}` });
       }
-      return instance.update(req.body).then((savedInstance) => {
+      Object.keys(req.body).filter((key) => key.slice(-4) === 'Uuid').forEach((key) => {
+        if (req.body[key] === null) {
+          instance[`set${key.substr(0, key.length - 4)}`](null);
+        }
+      });
+      return instance.update(req.body, { returning: true }).then((savedInstance) => {
         res.json({ instance: savedInstance });
       }).catch((error) => {
         res.json({ error: error.message });
       });
     }).catch((error) => {
       res.json({ error: error.message });
-    });
-  });
-
-  api.get('/me/sessions', requireLogin, (req, res) => {
-    Session.findAll({ where: { owner: getUser(req) } }).then((sessions) => {
-      res.json({ sessions });
-    }).catch((error) => {
-      res.json({ error });
-    });
-  });
-
-  api.get('/organizer', (req, res) => {
-    const query = req.query;
-    if (query) {
-      if (query.hasOwnProperty('name__contains')) {
-        query.name = {
-          $like: `%${query.name__contains}%`,
-        };
-        delete query.name__contains;
-      }
-    }
-    requireLogin(req, res, () => {
-      const findAll = {
-        where: query,
-        include: [],
-      };
-      if (!req.user) {
-        findAll.include.push({ model: Session, where: { state: { $in: ['published'] } } });
-      } else {
-        findAll.include.push(Session);
-      }
-      Organizer.findAll(findAll).then((organizers) => {
-        res.json({ instances: organizers });
-      }).catch((error) => {
-        res.json({ error });
-      });
-    });
-  });
-
-  api.get('/organizer/:uuid', (req, res) => {
-    const findOne = {
-      where: { uuid: req.params.uuid },
-      include: []
-    };
-    requireLogin(req, res, () => {
-      if (!req.user) {
-        findOne.include.push({ model: Session, where: { state: { $in: ['published'] } } });
-      } else {
-        findOne.include.push(Session);
-      }
-      Organizer.findOne(findOne).then((instance) => {
-        if (instance) {
-          res.json({ instance });
-        } else {
-          res.json({ error: 'Organizer could not be retrieved' });
-        }
-      }).catch((error) => {
-        res.json({ error: error.message });
-      });
     });
   });
 
@@ -271,6 +226,14 @@ module.exports = (app) => {
       default:
         break;
     }
+  });
+
+  api.get('/me/sessions', requireLogin, (req, res) => {
+    Session.findAll({ where: { owner: getUser(req) } }).then((sessions) => {
+      res.json({ sessions });
+    }).catch((error) => {
+      res.json({ error });
+    });
   });
 
   app.use('/api', api);

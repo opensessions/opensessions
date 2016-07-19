@@ -6,6 +6,7 @@ import GoogleMap from 'react-google-maps/lib/GoogleMap';
 import Marker from 'react-google-maps/lib/Marker';
 
 import SocialShareIcons from 'components/SocialShareIcons';
+import LoadingMessage from 'components/LoadingMessage';
 
 import { Link } from 'react-router';
 
@@ -20,11 +21,9 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   static propTypes = {
     params: React.PropTypes.object,
   }
-  constructor(props) {
-    super(props);
-    this.state = {
-      session: null,
-    };
+  constructor() {
+    super();
+    this.state = {};
   }
   componentDidMount() {
     const self = this;
@@ -37,9 +36,9 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     });
   }
   getPrice() {
-    let price = this.state.session.price;
+    let { price } = this.state.session;
     if (price !== Math.floor(price)) {
-      const minor = Math.ceil((price % 1) * 100);
+      const minor = `0${Math.ceil((price % 1) * 100)}`.slice(-2);
       const major = Math.floor(price);
       price = `${major}.${minor}`;
     }
@@ -49,6 +48,10 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     let { state } = this.state.session;
     if (state !== 'published') return <span className={styles.state}>({state})</span>;
     return null;
+  }
+  getTitle() {
+    const { session } = this.state;
+    return `${session.title ? session.title : '(Untitled)'}`;
   }
   renderDate() {
     const { session } = this.state;
@@ -105,7 +108,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         <img src="/images/placeholder.png" role="presentation" />
       </div>
       <div className={styles.detailsText}>
-        <h1>{session.title}{this.getState()}</h1>
+        <h1>{this.getTitle()}{this.getState()}</h1>
         {locationDetail}
         {this.renderDate()}
         <div className={styles.detailPrice}>
@@ -279,8 +282,9 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   }
   render() {
     const topAttrs = { className: styles.sessionView };
-    if (this.state.error) return (<div {...topAttrs}>{this.state.error}</div>);
-    if (this.state.session === null) return (<div {...topAttrs}>Loading...</div>);
+    const { session, error } = this.state;
+    if (error) return (<div {...topAttrs}><LoadingMessage message={error} /></div>);
+    if (!session) return (<div {...topAttrs}><LoadingMessage message="Loading" ellipsis /></div>);
     return (<div {...topAttrs}>
       {this.renderActions()}
       {this.renderDetails()}

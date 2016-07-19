@@ -61,7 +61,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       if (fieldset.required) {
         validity = true;
         fieldset.required.forEach((field) => {
-          if (!session[field]) {
+          if ([null, ''].indexOf(session[field]) !== -1) {
             validity = false;
           }
         });
@@ -76,27 +76,22 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       this.props.history.push(this.state.session.href);
     }
   }
+  onPreview = () => {
+  }
   getSession() {
     let { session } = this.state;
     if (!session) session = {};
     session.update = this.updateSession;
     return session;
   }
+  hasChanged = () => {
+    this.onChange(this.state.session);
+  }
   _locationInput = null
   updateSession = (name, value) => {
     const session = this.getSession();
     session[name] = value;
     this.setState({ session });
-  }
-  locationCallback = (place) => {
-    const data = {
-      formatted_address: place.formatted_address,
-      lat: place.geometry.location.lat(),
-      lng: place.geometry.location.lng(),
-    };
-    this.updateSession('location', place.formatted_address);
-    this.updateSession('locationData', JSON.stringify(data));
-    return place.formatted_address;
   }
   renderDescriptionFieldset() {
     const session = this.getSession();
@@ -128,11 +123,11 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
                 <h2>{this.props.headerText ? this.props.headerText : 'Add a session'}</h2>
                 <h3>{session.title || <i>Untitled</i>}</h3>
               </div>
-              <Link to={`/session/${session.uuid}`} className={styles.previewButton}>Preview</Link>
+              <Link to={`/session/${session.uuid}`} onClick={this.onPreview} className={styles.previewButton}>Preview</Link>
             </div>
           </div>
           <div className={styles.formBody}>
-            <Form autosave model={session} onPublish={this.onPublish} onChange={this.onChange}>
+            <Form autosave model={session} onPublish={this.onPublish} onChange={this.onChange} pendingSteps={this.state.pendingSteps}>
               {this.renderDescriptionFieldset()}
               <Fieldset label="Additional info" {...this.state.fieldsets[1].props}>
                 <Field label="What to bring" name="preparation" type="textarea" model={session} validation={{ maxLength: 2048 }} />
@@ -140,12 +135,12 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
                 <Field label="Will participants receive coaching?" type="BoolRadio" name="hasCoaching" model={session} options={coachOptions} />
               </Fieldset>
               <Fieldset label="Location" {...this.state.fieldsets[2].props}>
-                <Field type="Location" label="Location" name="location" model={session} onChange={this.locationCallback} value={session.location} defaultLocation={session.locationData ? JSON.parse(session.locationData) : null} tip="Type to search an address and select from the dropdown" />
+                <Field type="Location" label="Location" name="location" dataName="locationData" model={session} hasChanged={this.hasChanged} tip="Type to search an address and select from the dropdown" />
                 <Field label="Meeting point" name="meetingPoint" model={session} type="textarea" validation={{ maxLength: 50 }} />
               </Fieldset>
               <Fieldset label="Pricing" {...this.state.fieldsets[3].props}>
-                <Field label="Attendance type" name="attendanceType" model={session} />
-                <Field label="Price" name="price" model={session} type="number" validation={{ min: 0 }} />
+                {/* <Field label="Attendance type" name="attendanceType" model={session} /> */}
+                <Field label="Price" name="price" model={session} type="OptionalNum" validation={{ min: 0 }} no="Free" yes="Paid" />
                 <Field label="Quantity" name="quantity" model={session} type="number" validation={{ min: 0 }} />
               </Fieldset>
               <Fieldset label="Restrictions" {...this.state.fieldsets[4].props}>

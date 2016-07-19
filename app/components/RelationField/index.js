@@ -13,19 +13,9 @@ export default class RelationField extends React.Component { // eslint-disable-l
     model: React.PropTypes.object,
     name: React.PropTypes.string.isRequired,
     relation: React.PropTypes.object,
-    value: React.PropTypes.string,
   }
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: props.value || '',
-    };
+  componentDidMount() {
     this.fetchRelation();
-  }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.value && nextProps.value !== this.props.value) {
-      this.setState({ value: nextProps.value });
-    }
   }
   onInputEvents = (event) => {
     const { value } = event.target;
@@ -48,43 +38,39 @@ export default class RelationField extends React.Component { // eslint-disable-l
     this.setState({ relationState: 'typeNew' });
   }
   handleChange = (event) => {
-    if (this.props.onChange) this.props.onChange(event.target.value);
+    const value = event.target.value;
+    if (this.props.onChange) this.props.onChange(value === 'none' ? null : value);
   }
   fetchRelation(value) {
     const self = this;
     return apiFetch(this.props.relation.url, { query: this.props.relation.query }).then((result) => {
       self.props.model.update(self.props.name, value);
-      self.setState({ options: result.instances, value });
+      self.setState({ options: result.instances });
     });
   }
   render() {
+    const state = this.state || {};
     let addControl = (<button onClick={this.onAdd} className={styles.addRelation}>Add +</button>);
-    if (this.state.relationState === 'typeNew') {
-      addControl = (<input onKeyPress={this.onInputEvents} onBlur={this.onInputEvents} className={this.props.inputStyle} type="text" autoFocus />);
+    if (state.relationState === 'typeNew') {
+      addControl = <input onKeyPress={this.onInputEvents} onBlur={this.onInputEvents} className={this.props.inputStyle} type="text" autoFocus />;
     }
-    let selectBox = null;
-    const options = this.state.options || [];
+    let select = null;
+    const options = 'options' in state ? state.options : [];
     if (options.length) {
       const attrs = {
         name: this.props.name,
-        defaultValue: this.state.value,
         onChange: this.handleChange,
       };
-      if (this.state.value) {
-        attrs.defaultValue = this.state.value;
-        attrs.value = this.state.value;
-      } else if (this.props.model) {
-        attrs.defaultValue = this.props.model[this.props.name];
-      }
+      attrs.value = this.props.model[this.props.name];
       if (this.props.onFocus) attrs.onFocus = this.props.onFocus;
       if (this.props.onBlur) attrs.onBlur = this.props.onBlur;
-      selectBox = (<select {...attrs}>
-        <option value="">None</option>
+      select = (<select {...attrs}>
+        <option value="none">None</option>
         {options.map((option) => <option value={option.uuid} key={option.uuid}>{option.name}</option>)}
       </select>);
     }
     return (<div className={styles.relationWrap}>
-      {selectBox}
+      {select}
       {addControl}
     </div>);
   }

@@ -10,14 +10,13 @@ import styles from './styles.css';
 
 export default class Field extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
-    label: React.PropTypes.string.isRequired,
+    label: React.PropTypes.string,
+    tip: React.PropTypes.string,
     model: React.PropTypes.object.isRequired,
     name: React.PropTypes.string.isRequired,
     onChange: React.PropTypes.func,
-    tip: React.PropTypes.string,
     type: React.PropTypes.string,
     validation: React.PropTypes.object,
-    value: React.PropTypes.string,
     options: React.PropTypes.array
   }
   constructor(props) {
@@ -30,7 +29,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
   onFocusChange = (event) => {
     this.setState({ hasFocus: event.type === 'focus' });
   }
-  handleValueChange = (value) => {
+  handleValueChangeByName = (name, value) => {
     if (this.props.validation) {
       this.setState({ valid: this.isValid(value) });
     }
@@ -38,8 +37,11 @@ export default class Field extends React.Component { // eslint-disable-line reac
       this.props.onChange(value);
     }
     if (this.props.model) {
-      this.props.model.update(this.props.name, value);
+      this.props.model.update(name, value);
     }
+  }
+  handleValueChange = (value) => {
+    this.handleValueChangeByName(this.props.name, value);
   }
   handleDateChange = (event) => {
     let { value } = event.target;
@@ -90,18 +92,14 @@ export default class Field extends React.Component { // eslint-disable-line reac
     return false;
   }
   render() {
-    const { label, validation } = this.props;
+    const { label, validation, name } = this.props;
     const attrs = {
-      name: this.props.name,
+      name,
+      value: '',
       onChange: this.handleValueChange,
       className: `${styles.input} ${this.state.valid ? '' : styles.invalid}`
     };
-    if (validation) {
-      attrs.validation = validation;
-    }
-    if (this.props.model) {
-      attrs.value = this.props.model.hasOwnProperty(attrs.name) ? this.props.model[attrs.name] : '';
-    }
+    if (this.props.model && name in this.props.model) attrs.value = this.props.model[name];
     attrs.onFocus = this.onFocusChange;
     attrs.onBlur = this.onFocusChange;
     let input;
@@ -116,10 +114,12 @@ export default class Field extends React.Component { // eslint-disable-line reac
       attrs.inputStyle = styles.input;
       input = <RelationField {...this.props} {...attrs} />;
     } else if (type === 'OptionalNum') {
-      input = <OptionalNumField {...attrs} />;
+      if (validation) attrs.validation = validation;
+      input = <OptionalNumField {...this.props} {...attrs} />;
     } else if (type === 'Location') {
       attrs.inputStyle = styles.input;
       delete attrs.onChange;
+      attrs.onValueChangeByName = this.handleValueChangeByName;
       input = <LocationField {...this.props} {...attrs} />;
     } else {
       attrs.onChange = this.handleChange;

@@ -14,6 +14,10 @@ export default class SessionTileView extends React.Component { // eslint-disable
   static contextTypes = {
     user: React.PropTypes.object,
   }
+  getTitle() {
+    const { session } = this.props;
+    return `${session.title ? session.title : '(Untitled)'}`;
+  }
   isOwner() {
     const { session } = this.props;
     const { user } = this.context;
@@ -58,7 +62,7 @@ export default class SessionTileView extends React.Component { // eslint-disable
         </div>
         <div className={styles.textCol}>
           <div className={styles.info}>
-            <h1><Link to={session.href}>{session.title}</Link></h1>
+            <h1><Link to={session.href}>{this.getTitle()}</Link></h1>
             <div className={styles.location}>{session.location}</div>
           </div>
           <div className={styles.actions}>

@@ -11,41 +11,29 @@ export default class LocationField extends React.Component {
     onFocus: React.PropTypes.func,
     onBlur: React.PropTypes.func,
     onChange: React.PropTypes.func,
+    onValueChangeByName: React.PropTypes.func,
+    hasChanged: React.PropTypes.func,
     defaultLocation: React.PropTypes.object,
     inputStyle: React.PropTypes.string,
+    model: React.PropTypes.object,
     name: React.PropTypes.string.isRequired,
+    dataName: React.PropTypes.string,
     value: React.PropTypes.string,
   }
   constructor(props) {
     super(props);
-    this.state = {
-      clean: true,
-      location: props.defaultLocation
-    };
+    this.state = { clean: true };
   }
   componentDidMount() {
     const options = { types: ['geocode'] };
-    const element = this.refs.input;
-    const autocomplete = new window.google.maps.places.Autocomplete(element, options);
-    window.google.maps.event.addListener(autocomplete,
-      'place_changed',
-      () => {
-        const place = autocomplete.getPlace();
-        const loc = place.geometry.location;
-        const location = { lat: loc.lat(), lng: loc.lng() };
-        this.changeCenter(location);
-        this.setState({ clean: true, location });
-        if (this.props.onChange) this.props.onChange(place);
-        return place;
-      }
-    );
-  }
-  componentWillReceiveProps(nextProps) {
-    if (JSON.stringify(nextProps.defaultLocation) !== JSON.stringify(this.state.location)) {
-      this.setState({
-        location: nextProps.defaultLocation
-      });
-    }
+    const { input } = this.refs;
+    const { maps } = window.google;
+    const autocomplete = new maps.places.Autocomplete(input, options);
+    maps.event.addListener(autocomplete, 'place_changed', () => {
+      const place = autocomplete.getPlace();
+      this.onPlaceChange(place);
+      return place;
+    });
   }
   onBlur = (event) => {
     if (!this.state.clean) {
@@ -56,44 +44,65 @@ export default class LocationField extends React.Component {
   onFocus = (event) => {
     if (this.props.onFocus) this.props.onFocus(event);
   }
-  onChange = () => {
+  onChange = (event) => {
     this.setState({ clean: false });
+    if (event.detail && event.detail.generated) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
   }
-  changeCenter = (location) => {
+  onPlaceChange = (place) => {
+    const locationData = {
+      lat: place.geometry.location.lat(),
+      lng: place.geometry.location.lng(),
+    };
+    this.changeCenter(locationData);
+    this.props.onValueChangeByName(this.props.name, place.formatted_address);
+    this.props.onValueChangeByName(this.props.dataName, JSON.stringify(locationData));
+    if (this.props.hasChanged) this.props.hasChanged();
+    this.setState({ clean: true });
+  }
+  onMapClick = (event) => {
+    this.onPlaceChange({ formatted_address: this.props.model[this.props.name], geometry: { location: event.latLng } });
+  }
+  changeCenter = (locationData) => {
     if (this.refs.component) {
-      this.refs.component.panTo(location);
+      this.refs.component.panTo(locationData);
     }
   }
   render() {
+    const { model, name, dataName, inputStyle } = this.props;
     const attrs = {
       type: 'text',
-      className: this.props.inputStyle,
+      name,
+      className: inputStyle,
       ref: 'input',
       onFocus: this.onFocus,
       onBlur: this.onBlur,
       onChange: this.onChange,
-      placeholder: this.props.value
+      placeholder: model[name],
+      defaultValue: model[name] // this.props.value
     };
     let map = null;
-    if (this.state.location) {
-      const center = this.state.location;
+    const locationData = model[dataName] ? JSON.parse(model[dataName]) : null;
+    if (locationData) {
       const marker = {
-        position: center,
+        position: locationData,
         icon: { url: '/images/map-pin-active.svg' },
         defaultAnimation: 2
       };
+      const mapProps = {
+        defaultZoom: 15,
+        defaultCenter: locationData,
+        center: locationData,
+        ref: 'component',
+        onClick: this.onMapClick
+      };
       map = (<GoogleMapLoader
         containerElement={<div className={styles.mapView} />}
-        googleMapElement={
-          <GoogleMap
-            defaultZoom={15}
-            defaultCenter={center}
-            center={center}
-            ref="component"
-          >
-            <Marker {...marker} />
-          </GoogleMap>
-        }
+        googleMapElement={<GoogleMap {...mapProps}>
+          <Marker {...marker} />
+        </GoogleMap>}
       />);
     }
     return (<div>

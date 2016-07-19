@@ -6,8 +6,10 @@ export default class OptionalNumField extends React.Component { // eslint-disabl
   static propTypes = {
     name: React.PropTypes.string.isRequired,
     onChange: React.PropTypes.func,
-    value: React.PropTypes.string,
+    value: React.PropTypes.any,
     validation: React.PropTypes.object,
+    no: React.PropTypes.any,
+    yes: React.PropTypes.any,
   }
   constructor(props) {
     super(props);
@@ -67,10 +69,10 @@ export default class OptionalNumField extends React.Component { // eslint-disabl
     };
     return (<div className={styles.optionalNum}>
       <label>
-        <input {...radioAttrs} value="0" checked={!bool} /> No
+        <input {...radioAttrs} value="0" checked={!bool} /> {'no' in this.props ? this.props.no : 'No'}
       </label>
       <label>
-        <input {...radioAttrs} value="t" checked={bool} /> Yes
+        <input {...radioAttrs} value="t" checked={bool} /> {'yes' in this.props ? this.props.yes : 'Yes'}
       </label>
       <label>
         {numberInput}

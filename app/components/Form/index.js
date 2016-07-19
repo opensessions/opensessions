@@ -9,6 +9,7 @@ export default class Form extends React.Component { // eslint-disable-line react
     autosave: React.PropTypes.bool,
     children: React.PropTypes.node.isRequired,
     model: React.PropTypes.object,
+    pendingSteps: React.PropTypes.any,
     onPublish: React.PropTypes.func,
     onChange: React.PropTypes.func,
   }
@@ -23,12 +24,21 @@ export default class Form extends React.Component { // eslint-disable-line react
   getFieldsets() {
     return this.props.children instanceof Array ? this.props.children : [this.props.children];
   }
-  autosave = () => {
-    const { model } = this.props;
-    if (model.state !== 'unpublished') {
-      model.state = 'draft';
-    }
-    this.saveModel(model);
+  autosave = (ms) => {
+    if (this.timeout) clearTimeout(this.timeout);
+    this.timeout = setTimeout(() => {
+      const { model } = this.props;
+      if (model.state !== 'unpublished') {
+        model.state = 'draft';
+      }
+      Object.keys(model).forEach((key) => {
+        if (model[key] instanceof Object && !(model[key] instanceof Function)) {
+          delete model[key];
+        }
+      });
+      this.saveModel(model);
+    }, ms);
+    this.setState({ saveState: 'Saving...', saveStateClass: styles.saving });
   }
   saveModel(model, verb, verbed) {
     this.setState({ saveState: `${verb || 'Saving'}...`, saveStateClass: styles.saving });
@@ -42,9 +52,7 @@ export default class Form extends React.Component { // eslint-disable-line react
   }
   formChange = (event) => {
     if (!event.target.name) return;
-    if (this.timeout) clearTimeout(this.timeout);
-    this.timeout = setTimeout(this.autosave, 2000);
-    this.setState({ saveState: 'Saving...', saveStateClass: styles.saving });
+    this.autosave(2000);
     if (this.props.onChange) this.props.onChange(this.props.model);
   }
   tabClick = (event) => {
@@ -89,7 +97,7 @@ export default class Form extends React.Component { // eslint-disable-line react
     });
   }
   renderActionButtons() {
-    const inactive = styles.inactive;
+    const { inactive } = styles;
     const backAttr = {
       onClick: this.actionClick,
       className: styles.backButton,
@@ -117,6 +125,7 @@ export default class Form extends React.Component { // eslint-disable-line react
       <form onChange={this.props.autosave ? this.formChange : undefined} className={styles.form}>
         <nav className={styles.nav}>
           {this.renderNav()}
+          <div className={styles.pending}>{this.props.pendingSteps ? `${this.props.pendingSteps} pending steps` : 'Ready to publish!'}</div>
         </nav>
         <div className={styles.tabs}>
           <div className={`${styles.saveState} ${this.state.saveStateClass}`}>{this.state.saveState}</div>
