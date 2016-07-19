@@ -1,0 +1,34 @@
+@import '../../containers/App/variables.css';
+
+.loadingMessage {
+  text-align: center;
+  margin: auto;
+  max-width: var(--pagewidth);
+  padding: 4em 1em;
+  & .ellipsis {
+    display: inline-block;
+    width: 2em;
+    &::before {
+      content: '...';
+      animation-duration: 1s;
+      animation-name: ellipsis;
+      animation-iteration-count: infinite;
+      animation-timing-function: step-end;
+    }
+  }
+}
+
+@keyframes ellipsis {
+  0% {
+    content: '.';
+    opacity: .3;
+  }
+  33% {
+    content: '..';
+    opacity: .6;
+  }
+  66% {
+    content: '...';
+    opacity: .9;
+  }
+}

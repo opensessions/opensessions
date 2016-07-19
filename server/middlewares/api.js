@@ -126,15 +126,14 @@ module.exports = (app) => {
   api.get('/:model', resolveModel, (req, res) => {
     const Model = req.Model;
     if (Model.name === 'Session') {
-      const where = queryParse(req);
+      const query = Model.getQuery({ where: queryParse(req) });
       if ('owner' in where) {
         requireLogin(req, res, () => {
-          const user = getUser(req);
-          if (where.owner === user) {
-            Session.findAll({ where, include: [Organizer] }).then((sessions) => {
-              res.json({ instances: sessions });
+          if (query.where.owner === getUser(req)) {
+            Model.findAll({ where, include: [Organizer] }).then((instances) => {
+              res.json({ instances });
             }).catch((error) => {
-              res.json({ error });
+              res.json({ error: error.message });
             });
           } else {
             res.json({ error: 'Must be logged in to search by owner' });
@@ -142,10 +141,10 @@ module.exports = (app) => {
         });
       } else {
         where.state = 'published';
-        Session.findAll({ where, include: [Organizer] }).then((sessions) => {
-          res.json({ instances: sessions });
+        Model.findAll({ where, include: [Organizer] }).then((instances) => {
+          res.json({ instances });
         }).catch((error) => {
-          res.json({ error });
+          res.json({ error: error.message });
         });
       }
     } else {
@@ -201,26 +200,24 @@ module.exports = (app) => {
       });
       return instance.update(req.body, { returning: true }).then((savedInstance) => {
         res.json({ instance: savedInstance });
-      }).catch((error) => {
-        res.json({ error: error.message });
       });
     }).catch((error) => {
       res.json({ error: error.message });
     });
   });
 
-  api.get('/organizer/:uuid/:action', requireLogin, (req, res) => {
+  api.get('/:model/:uuid/:action', requireLogin, resolveModel, (req, res) => {
+    const Model = req.Model;
     const { uuid, action } = req.params;
     switch (action) {
       case 'delete':
-        Organizer.findOne({ where: { uuid, owner: getUser(req) }, include: [Session] }).then((organizer) => {
-          organizer.destroy().then(() => {
+        const query = Model.getQuery({ where: { uuid, owner: getUser(req) } }, database.models, req.user);
+        Model.findOne(query).then((instance) => {
+          return instance.destroy().then(() => {
             res.json({ status: 'success' });
-          }).catch((error) => {
-            res.json({ status: 'failure', error: error.message });
           });
         }).catch((error) => {
-          res.json({ error: error.message });
+          res.json({ status: 'failure', error: error.message });
         });
         break;
       default:
