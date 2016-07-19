@@ -42,10 +42,9 @@ export default class RelationField extends React.Component { // eslint-disable-l
     if (this.props.onChange) this.props.onChange(value === 'none' ? null : value);
   }
   fetchRelation(value) {
-    const self = this;
     return apiFetch(this.props.relation.url, { query: this.props.relation.query }).then((result) => {
-      self.props.model.update(self.props.name, value);
-      self.setState({ options: result.instances });
+      if (value) this.props.model.update(this.props.name, value);
+      this.setState({ options: result.instances });
     });
   }
   render() {
@@ -62,6 +61,7 @@ export default class RelationField extends React.Component { // eslint-disable-l
         onChange: this.handleChange,
       };
       attrs.value = this.props.model[this.props.name];
+      console.log('RelationField.render()', this.props.model, this.props.name);
       if (this.props.onFocus) attrs.onFocus = this.props.onFocus;
       if (this.props.onBlur) attrs.onBlur = this.props.onBlur;
       select = (<select {...attrs}>

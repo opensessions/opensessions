@@ -31,11 +31,6 @@ export default class Form extends React.Component { // eslint-disable-line react
       if (model.state !== 'unpublished') {
         model.state = 'draft';
       }
-      Object.keys(model).forEach((key) => {
-        if (model[key] instanceof Object && !(model[key] instanceof Function)) {
-          delete model[key];
-        }
-      });
       this.saveModel(model);
     }, ms);
     this.setState({ saveState: 'Saving...', saveStateClass: styles.saving });
