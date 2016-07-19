@@ -20,7 +20,7 @@ module.exports = (app) => {
   const rdpe = express();
   const storage = new Storage();
   const database = storage.getInstance();
-  const { Session, Organizer } = database.models;
+  const { Session } = database.models;
   const getUser = (req) => (req.user ? req.user.sub : null);
 
   const requireLogin = jwt({
@@ -125,38 +125,23 @@ module.exports = (app) => {
 
   api.get('/:model', resolveModel, (req, res) => {
     const Model = req.Model;
-    if (Model.name === 'Session') {
-      const query = Model.getQuery({ where: queryParse(req) });
-      if ('owner' in where) {
-        requireLogin(req, res, () => {
-          if (query.where.owner === getUser(req)) {
-            Model.findAll({ where, include: [Organizer] }).then((instances) => {
-              res.json({ instances });
-            }).catch((error) => {
-              res.json({ error: error.message });
-            });
-          } else {
+    requireLogin(req, res, () => {
+      const query = Model.getQuery({ where: queryParse(req) }, database.models, req.user);
+      if (Model.name === 'Session') {
+        if ('owner' in query.where) {
+          if (query.where.owner !== getUser(req)) {
             res.json({ error: 'Must be logged in to search by owner' });
           }
-        });
-      } else {
-        where.state = 'published';
-        Model.findAll({ where, include: [Organizer] }).then((instances) => {
-          res.json({ instances });
-        }).catch((error) => {
-          res.json({ error: error.message });
-        });
+        } else {
+          query.where.state = 'published';
+        }
       }
-    } else {
-      requireLogin(req, res, () => {
-        const query = Model.getQuery({ where: req.query }, database.models, req.user);
-        Model.findAll(query).then((instances) => {
-          res.json({ instances });
-        }).catch((error) => {
-          res.json({ error: error.message });
-        });
+      Model.findAll(query).then((instances) => {
+        res.json({ instances });
+      }).catch((error) => {
+        res.json({ error: error.message });
       });
-    }
+    });
   });
 
   api.all('/:model/create', requireLogin, resolveModel, (req, res) => {
@@ -209,19 +194,14 @@ module.exports = (app) => {
   api.get('/:model/:uuid/:action', requireLogin, resolveModel, (req, res) => {
     const Model = req.Model;
     const { uuid, action } = req.params;
-    switch (action) {
-      case 'delete':
-        const query = Model.getQuery({ where: { uuid, owner: getUser(req) } }, database.models, req.user);
-        Model.findOne(query).then((instance) => {
-          return instance.destroy().then(() => {
-            res.json({ status: 'success' });
-          });
-        }).catch((error) => {
+    if (action === 'delete') {
+      const query = Model.getQuery({ where: { uuid, owner: getUser(req) } }, database.models, req.user);
+      Model.findOne(query)
+        .then((instance) => instance.destroy())
+        .then(() => res.json({ status: 'success' }))
+        .catch((error) => {
           res.json({ status: 'failure', error: error.message });
         });
-        break;
-      default:
-        break;
     }
   });
 
