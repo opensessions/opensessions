@@ -5,11 +5,14 @@
   margin: auto;
   max-width: var(--pagewidth);
   padding: 4em 1em;
+  font-size: 1.5em;
   & .ellipsis {
     display: inline-block;
-    width: 2em;
+    width: 1em;
+    font-size: 2em;
+    line-height: 1;
     &::before {
-      content: '...';
+      content: '';
       animation-duration: 1s;
       animation-name: ellipsis;
       animation-iteration-count: infinite;

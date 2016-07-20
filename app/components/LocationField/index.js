@@ -42,6 +42,7 @@ export default class LocationField extends React.Component {
     if (this.props.onBlur) this.props.onBlur(event);
   }
   onFocus = (event) => {
+    event.target.select();
     if (this.props.onFocus) this.props.onFocus(event);
   }
   onChange = (event) => {
@@ -81,7 +82,7 @@ export default class LocationField extends React.Component {
       onBlur: this.onBlur,
       onChange: this.onChange,
       placeholder: model[name],
-      defaultValue: model[name] // this.props.value
+      defaultValue: model[name]
     };
     let map = null;
     const locationData = model[dataName] ? JSON.parse(model[dataName]) : null;

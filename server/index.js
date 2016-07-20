@@ -32,16 +32,6 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get('/callback',
-  passport.authenticate('auth0', { failureRedirect: '/login' }),
-  (req, res) => {
-    if (!req.user) {
-      throw new Error('user null');
-    }
-    res.redirect('/user');
-  }
-);
-
 // Initialize api
 const apiMiddleware = require('./middlewares/api');
 apiMiddleware(app);

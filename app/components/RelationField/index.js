@@ -1,5 +1,7 @@
 import React from 'react';
 
+import SearchableSelect from 'components/SearchableSelect';
+
 import styles from './styles.css';
 
 import { apiFetch } from '../../utils/api';
@@ -27,18 +29,20 @@ export default class RelationField extends React.Component { // eslint-disable-l
     } else {
       event.preventDefault();
       if (!value) return;
-      apiFetch(`${this.props.relation.url}/create`, { body: { name: value } }).then((result) => {
-        this.setState({ relationState: 'none' });
-        this.fetchRelation(result.instance.uuid);
-      });
+      this.newRelation(value);
     }
   }
   onAdd = (event) => {
     event.preventDefault();
     this.setState({ relationState: 'typeNew' });
   }
-  handleChange = (event) => {
-    const value = event.target.value;
+  newRelation = (name) => {
+    apiFetch(`${this.props.relation.url}/create`, { body: { name } }).then((result) => {
+      this.setState({ relationState: 'none' });
+      this.fetchRelation(result.instance.uuid);
+    });
+  }
+  handleValueChange = (value) => {
     if (this.props.onChange) this.props.onChange(value === 'none' ? null : value);
   }
   fetchRelation(value) {
@@ -49,29 +53,9 @@ export default class RelationField extends React.Component { // eslint-disable-l
   }
   render() {
     const state = this.state || {};
-    let addControl = (<button onClick={this.onAdd} className={styles.addRelation}>Add +</button>);
-    if (state.relationState === 'typeNew') {
-      addControl = <input onKeyPress={this.onInputEvents} onBlur={this.onInputEvents} className={this.props.inputStyle} type="text" autoFocus />;
-    }
-    let select = null;
     const options = 'options' in state ? state.options : [];
-    if (options.length) {
-      const attrs = {
-        name: this.props.name,
-        onChange: this.handleChange,
-      };
-      attrs.value = this.props.model[this.props.name];
-      console.log('RelationField.render()', this.props.model, this.props.name);
-      if (this.props.onFocus) attrs.onFocus = this.props.onFocus;
-      if (this.props.onBlur) attrs.onBlur = this.props.onBlur;
-      select = (<select {...attrs}>
-        <option value="none">None</option>
-        {options.map((option) => <option value={option.uuid} key={option.uuid}>{option.name}</option>)}
-      </select>);
-    }
     return (<div className={styles.relationWrap}>
-      {select}
-      {addControl}
+      <SearchableSelect options={options} value={this.props.model[this.props.name]} onChange={this.handleValueChange} inputStyle={this.props.inputStyle} addItem={this.newRelation} />
     </div>);
   }
 }

@@ -1,0 +1,30 @@
+@import '../../containers/App/variables.css';
+
+.searchableSelect {
+  position: relative;
+  & > input {
+    cursor: default;
+    &:focus {
+      cursor: text;
+    }
+    &:first-child {
+      position: absolute;
+    }
+  }
+  & .searchResults {
+    width: 100%;
+    background: #FFF;
+    position: absolute;
+    z-index: 1;
+    margin-top: .1em;
+    box-shadow: 0 .2em .2em rgba(0, 0, 0, .3);
+    & > li {
+      padding: .25em;
+      list-style: none;
+      &.highlight {
+        background: var(--actionColor);
+        color: #FFF;
+      }
+    }
+  }
+}

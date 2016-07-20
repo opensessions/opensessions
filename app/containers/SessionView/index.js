@@ -251,20 +251,21 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         icon: { url: '/images/map-pin-active.svg' },
         defaultAnimation: 2
       };
-      map = (<GoogleMapLoader
-        containerElement={<div style={{ height: '100%' }} />}
-        googleMapElement={
-          <GoogleMap
-            ref="map"
-            defaultZoom={16}
-            defaultCenter={defaultCenter}
-            onClick={onMapClick}
-            options={{ streetViewControl: false }}
-          >
+      const googleMap = {
+        ref: 'map',
+        defaultZoom: 16,
+        defaultCenter,
+        onClick: onMapClick,
+        options: { streetViewControl: false }
+      };
+      map = (<div className={styles.mapFrame}>
+        <GoogleMapLoader
+          containerElement={<div style={{ height: '100%' }} />}
+          googleMapElement={<GoogleMap {...googleMap}>
             <Marker {...marker} />
-          </GoogleMap>
-        }
-      />);
+          </GoogleMap>}
+        />
+      </div>);
     }
     return (<section className={styles.mapSection}>
       {map}

@@ -243,9 +243,11 @@
 }
 
 .mapSection {
-  min-height: 24rem;
-  height: 100vh;
-  max-height: 72rem;
+  & > .mapFrame {
+    min-height: 24rem;
+    height: 100vh;
+    max-height: 72rem;
+  }
   & .noLocation {
     text-align: center;
     font-size: 1.4em;

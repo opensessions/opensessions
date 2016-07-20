@@ -2,6 +2,7 @@ const express = require('express');
 const Storage = require('../../storage/interfaces/postgres.js');
 const jwt = require('express-jwt');
 const dotenv = require('dotenv');
+const RDPE = require('./rdpe.js');
 
 const capitalize = (string) => `${string[0].toUpperCase()}${string.substr(1)}`;
 
@@ -22,6 +23,9 @@ module.exports = (app) => {
   const database = storage.getInstance();
   const { Session } = database.models;
   const getUser = (req) => (req.user ? req.user.sub : null);
+
+  const rdpe = RDPE(app, database);
+  api.use('/rdpe', rdpe);
 
   const requireLogin = jwt({
     secret: new Buffer(process.env.AUTH0_CLIENT_SECRET, 'base64'),
@@ -52,76 +56,6 @@ module.exports = (app) => {
     }
     return query;
   };
-
-  rdpe.get('/', (req, res) => {
-    res.json({
-      sessions: '/api/rdpe/sessions',
-    });
-  });
-
-  rdpe.get('/sessions', (req, res) => {
-    const fromTS = req.query.from || 0;
-    let afterID = req.query.after;
-    if (afterID) {
-      afterID = afterID.substring(1, afterID.length - 1); // to convert `{uuid}` into `uuid`
-    }
-    const where = {
-      $or: [
-        {
-          updatedAt: fromTS,
-          uuid: {
-            $gt: afterID
-          }
-        }, {
-          updatedAt: {
-            $gt: fromTS,
-          },
-        }
-      ],
-      state: {
-        $in: ['published', 'deleted', 'unpublished']
-      }
-    };
-    const order = [
-      ['updatedAt', 'ASC'],
-      ['uuid', 'ASC']
-    ];
-    const limit = 50;
-    Session.findAll({ where, order, limit }).then((rawSessions) => {
-      const sessions = rawSessions.map((session) => {
-        const state = session.state === 'published' ? 'updated' : 'deleted';
-        const item = {
-          state,
-          kind: 'session',
-          id: `{${session.uuid}}`,
-          modified: session.updatedAt,
-        };
-        if (state === 'updated') {
-          item.data = session;
-        }
-        return item;
-      });
-      let next = {
-        from: 0,
-        after: 0
-      };
-      if (sessions.length) {
-        const lastSession = sessions[sessions.length - 1];
-        next.from = lastSession.modified;
-        next.after = lastSession.id;
-      } else {
-        next = req.query;
-      }
-      res.json({
-        items: sessions,
-        next: `/api/rdpe/sessions?from=${next.from}&after=${next.after}`
-      });
-    }).catch((error) => {
-      res.json({ error });
-    });
-  });
-
-  api.use('/rdpe', rdpe);
 
   api.get('/:model', resolveModel, (req, res) => {
     const Model = req.Model;
