@@ -18,7 +18,6 @@ dotenv.load();
 
 module.exports = (app) => {
   const api = express();
-  const rdpe = express();
   const storage = new Storage();
   const database = storage.getInstance();
   const { Session } = database.models;

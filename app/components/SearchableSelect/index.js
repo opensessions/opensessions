@@ -7,6 +7,7 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
     onFocus: React.PropTypes.func,
     onBlur: React.PropTypes.func,
     onChange: React.PropTypes.func,
+    addItem: React.PropTypes.func,
     inputStyle: React.PropTypes.string,
     value: React.PropTypes.any,
     options: React.PropTypes.array
@@ -21,7 +22,7 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
   }
   filterOptions = (search) => {
     let opts = this.props.options;
-    if (search) opts = opts.filter((option) => option.name.toLowerCase().match(search.toLowerCase()));
+    if (search) opts = opts.filter((option) => option.name.match(new RegExp(search, 'i')));
     return opts.map((option) => ({ text: option.name, props: { key: option.uuid, onMouseOver: this.itemHover, onClick: this.itemClick } }));
   }
   searchEvent = (event) => {
@@ -34,10 +35,11 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
     } else if (type === 'keydown') {
       const { keyCode } = event;
       const { filteredOptions, highlightIndex } = this.state;
-      let deltas = { 38: -1, 40: 1 };
+      const deltas = { 38: -1, 40: 1 };
       if (keyCode in deltas) {
         const maxIndex = filteredOptions.length - 1;
         newState.highlightIndex = [0, highlightIndex + deltas[keyCode], maxIndex].sort()[1];
+        event.preventDefault();
       } else if (keyCode === 13) {
         const selected = filteredOptions[highlightIndex];
         const { key } = selected.props;
@@ -55,17 +57,17 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
         input.focus();
         input.select();
       }, 50);
-      this.props.onFocus ? this.props.onFocus(event) : null;
+      if (this.props.onFocus) this.props.onFocus(event);
     } else if (type === 'blur') {
       if (!this.state.ignoreBlur) {
         this.setState({ visible: false, search: '' });
       }
-      this.props.onBlur ? this.props.onBlur(event) : null;
+      if (this.props.onBlur) this.props.onBlur(event);
     }
     this.setState(newState);
   }
   itemHover = (event) => {
-    this.setState({ highlightIndex: parseInt(event.target.dataset.index) });
+    this.setState({ highlightIndex: parseInt(event.target.dataset.index, 10) });
   }
   itemClick = (event) => {
     const value = event.target.dataset.key;
@@ -76,7 +78,7 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
     this.setState({ visible: false, search: '' });
   }
   dropdownEvent = (event) => {
-    const { type, target } = event;
+    const { type } = event;
     if (type === 'mouseover') {
       this.setState({ ignoreBlur: true });
     } else if (type === 'mouseout') {
@@ -84,7 +86,7 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
     }
   }
   render() {
-    const { value, options, inputStyle, onChange, onFocus, onBlur } = this.props;
+    const { value, options, inputStyle } = this.props;
     const { visible, search, filteredOptions } = this.state;
     const searchAttrs = {
       type: 'text',
@@ -106,11 +108,10 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
       searchResults = (<ol className={styles.searchResults} onMouseOver={this.dropdownEvent} onMouseOut={this.dropdownEvent}>
         {filteredOptions.map((opt) => {
           index += 1;
-          return <li data-key={opt.props.key} data-index={index} {...opt.props} className={index === this.state.highlightIndex ? styles.highlight : null}>{opt.text}</li>;
+          return <li data-key={opt.props.key} data-index={index} {...opt.props} className={index === this.state.highlightIndex ? styles.highlight : null} dangerouslySetInnerHTML={{ __html: opt.text.replace(new RegExp(`(${search})`, 'ig'), '<b>$1</b>') }} />;
         })}
       </ol>);
     }
-    let select = null;
     return (<div className={styles.searchableSelect}>
       {input}
       {output}
