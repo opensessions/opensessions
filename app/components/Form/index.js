@@ -115,21 +115,25 @@ export default class Form extends React.Component { // eslint-disable-line react
       <a {...nextAttr}>{nextText}</a>
     </div>);
   }
+  onFocus = (event) => {
+    this.setState({ hasFocus: true });
+  }
+  onBlur = (event) => {
+    this.setState({ hasFocus: false });
+  }
   render() {
-    return (
-      <form onChange={this.props.autosave ? this.formChange : undefined} className={styles.form}>
-        <nav className={styles.nav}>
-          {this.renderNav()}
-          <div className={styles.pending}>{this.props.pendingSteps ? `${this.props.pendingSteps} pending steps` : 'Ready to publish!'}</div>
+    return (<form onChange={this.props.autosave ? this.formChange : undefined} onFocus={this.onFocus} onBlur={this.onBlur} className={styles.form} data-hasFocus={this.state.hasFocus}>
+      <nav className={styles.nav}>
+        {this.renderNav()}
+        <div className={styles.pending}>{this.props.pendingSteps ? `${this.props.pendingSteps} pending steps` : 'Ready to publish!'}</div>
+      </nav>
+      <div className={styles.tabs}>
+        <div className={`${styles.saveState} ${this.state.saveStateClass}`}>{this.state.saveState}</div>
+        {this.renderTab()}
+        <nav className={styles.formNav}>
+          {this.renderActionButtons()}
         </nav>
-        <div className={styles.tabs}>
-          <div className={`${styles.saveState} ${this.state.saveStateClass}`}>{this.state.saveState}</div>
-          {this.renderTab()}
-          <nav className={styles.formNav}>
-            {this.renderActionButtons()}
-          </nav>
-        </div>
-      </form>
-    );
+      </div>
+    </form>);
   }
 }

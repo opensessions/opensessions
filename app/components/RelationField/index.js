@@ -54,8 +54,9 @@ export default class RelationField extends React.Component { // eslint-disable-l
   render() {
     const state = this.state || {};
     const options = 'options' in state ? state.options : [];
+    const searchableAttrs = { options, value: this.props.model[this.props.name], onFocus: this.props.onFocus, onBlur: this.props.onBlur };
     return (<div className={styles.relationWrap}>
-      <SearchableSelect options={options} value={this.props.model[this.props.name]} onChange={this.handleValueChange} inputStyle={this.props.inputStyle} addItem={this.newRelation} />
+      <SearchableSelect {...searchableAttrs} onChange={this.handleValueChange} inputStyle={this.props.inputStyle} addItem={this.newRelation} />
     </div>);
   }
 }

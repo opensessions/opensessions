@@ -1,10 +1,14 @@
 import React from 'react';
+import DatePicker from 'react-datepicker';
+import moment from 'moment';
+require('react-datepicker/dist/react-datepicker.css');
 
 import BoolRadioField from 'components/BoolRadioField';
 import IconRadioField from 'components/IconRadioField';
 import RelationField from 'components/RelationField';
 import OptionalNumField from 'components/OptionalNumField';
 import LocationField from 'components/LocationField';
+import TimePicker from 'components/TimePicker';
 
 import styles from './styles.css';
 
@@ -12,6 +16,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
   static propTypes = {
     label: React.PropTypes.string,
     tip: React.PropTypes.string,
+    placeholder: React.PropTypes.string,
     model: React.PropTypes.object.isRequired,
     name: React.PropTypes.string.isRequired,
     onChange: React.PropTypes.func,
@@ -43,9 +48,8 @@ export default class Field extends React.Component { // eslint-disable-line reac
   handleValueChange = (value) => {
     this.handleValueChangeByName(this.props.name, value);
   }
-  handleDateChange = (event) => {
-    let { value } = event.target;
-    value = (new Date(value)).toISOString().substr(0, 10);
+  handleDateChange = (date) => {
+    const value = date.toISOString().substr(0, 10);
     this.handleValueChange(value);
   }
   handleChange = (event) => {
@@ -92,12 +96,13 @@ export default class Field extends React.Component { // eslint-disable-line reac
     return false;
   }
   render() {
-    const { label, validation, name } = this.props;
+    const { label, placeholder, validation, name } = this.props;
     const attrs = {
       name,
+      placeholder,
       value: '',
       onChange: this.handleValueChange,
-      className: `${styles.input} ${this.state.valid ? '' : styles.invalid}`
+      className: `${styles.input} ${this.state.valid ? '' : styles.invalid}`,
     };
     if (this.props.model && name in this.props.model) attrs.value = this.props.model[name];
     attrs.onFocus = this.onFocusChange;
@@ -121,15 +126,19 @@ export default class Field extends React.Component { // eslint-disable-line reac
       delete attrs.onChange;
       attrs.onValueChangeByName = this.handleValueChangeByName;
       input = <LocationField {...this.props} {...attrs} />;
+    } else if (type === 'date') {
+      const now = moment(Date.now());
+      const value = attrs.value ? moment(attrs.value) : now;
+      const dateAttrs = { selected: value, onChange: this.handleDateChange, minDate: now };
+      input = <DatePicker {...dateAttrs} />;
+    } else if (type === 'time') {
+      input = <TimePicker {...attrs} />;
     } else {
       attrs.onChange = this.handleChange;
       if (type === 'textarea') {
         if (validation && validation.maxLength > 100) {
           attrs.className = `${attrs.className} ${styles.longText}`;
         }
-      } else if (type === 'date') {
-        if (attrs.value) attrs.value = (new Date(attrs.value)).toISOString().substr(0, 10);
-        attrs.onChange = this.handleDateChange;
       } else if (type === 'number') {
         if (validation) {
           ['min', 'max'].forEach((prop) => {

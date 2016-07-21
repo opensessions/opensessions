@@ -41,7 +41,7 @@ export default class OptionalNumField extends React.Component { // eslint-disabl
     }
   }
   render() {
-    const { name } = this.props;
+    const { name, validation } = this.props;
     const { value, bool } = this.state;
     const attrs = {
       className: styles.inputField,
@@ -50,18 +50,13 @@ export default class OptionalNumField extends React.Component { // eslint-disabl
       value,
       onChange: this.handleChange
     };
-    if (this.props.validation) {
-      if ('min' in this.props.validation) {
-        attrs.min = this.props.validation.min;
-      }
-      if ('max' in this.props.validation) {
-        attrs.max = this.props.validation.max;
-      }
+    if (validation) {
+      ['min', 'max'].forEach((rule) => {
+        if (rule in validation) attrs[rule] = validation[rule];
+      });
     }
     let numberInput = null;
-    if (bool) {
-      numberInput = <input {...attrs} autoFocus />;
-    }
+    if (bool) numberInput = <input {...attrs} autoFocus />;
     const radioAttrs = {
       id: `${name}_optionalNumField`,
       type: 'radio',

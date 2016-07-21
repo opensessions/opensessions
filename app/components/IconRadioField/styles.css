@@ -20,10 +20,12 @@
           cursor: default;
         }
       }
+      & svg,
       & img {
         display: block;
         margin: .5em auto;
         height: 6rem;
+        width: 6rem;
       }
       & input {
         display: none;

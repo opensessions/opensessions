@@ -1,0 +1,37 @@
+@import '../../containers/App/variables.css';
+
+.timePicker {
+  display: flex;
+  width: 10em;
+  & input, & select {
+    width: 3em;
+    text-align: center;
+  }
+  & select {
+    text-align-last: center;
+    &:first-child {
+      border-right: 0;
+    }
+    &:last-child {
+      border-left: 0;
+    }
+  }
+  & .rocker {
+    display: inline-flex;
+    vertical-align: middle;
+    flex-direction: column;
+    align-self: stretch;
+    justify-content: space-between;
+    background: var(--actionColor);
+    & a {
+      text-decoration: none;
+      flex-grow: 1;
+      line-height: .6;
+      font-family: monospace;
+      padding: .2em .1em;
+      color: #FFF;
+      font-weight: bold;
+      font-size: 1.5em;
+    }
+  }
+}

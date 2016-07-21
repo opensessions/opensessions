@@ -21,6 +21,9 @@
     & > li {
       padding: .25em;
       list-style: none;
+      & > b {
+        pointer-events: none;
+      }
       &.highlight {
         background: var(--actionColor);
         color: #FFF;

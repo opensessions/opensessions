@@ -37,6 +37,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   }
   getPrice() {
     let { price } = this.state.session;
+    if (!price) return 'Free';
     if (price !== Math.floor(price)) {
       const minor = `0${Math.ceil((price % 1) * 100)}`.slice(-2);
       const major = Math.floor(price);
@@ -113,7 +114,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         {this.renderDate()}
         <div className={styles.detailPrice}>
           <img src="/images/tag.svg" role="presentation" />
-          from <b>{this.getPrice()}</b>
+          <b>{this.getPrice()}</b>
         </div>
         {organizerButton}
       </div>
@@ -143,7 +144,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       <div className={styles.mainCol}>
         <h2>Description</h2>
         <div className={styles.description}>
-          {session.description}
+          {session.description || <i>This session has no description</i>}
         </div>
         {meetingPoint}
         {preparation}
@@ -152,7 +153,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         <div className={styles.info}>
           <h3>Pricing</h3>
           <div className={`${styles.floatingInfo} ${styles.pricing}`}>
-            <span className={styles.label}>{session.attendanceType}</span>
+            <span className={styles.label}>{session.attendanceType || 'General'}</span>
             <span className={styles.price}>
               <img src="/images/tag.svg" role="presentation" />
               {this.getPrice()}
@@ -285,7 +286,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     const topAttrs = { className: styles.sessionView };
     const { session, error } = this.state;
     if (error) return (<div {...topAttrs}><LoadingMessage message={error} /></div>);
-    if (!session) return (<div {...topAttrs}><LoadingMessage message="Loading" ellipsis /></div>);
+    if (!session) return (<div {...topAttrs}><LoadingMessage message="Loading session" ellipsis /></div>);
     return (<div {...topAttrs}>
       {this.renderActions()}
       {this.renderDetails()}

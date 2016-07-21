@@ -3,6 +3,7 @@ import React from 'react';
 import Fieldset from 'components/Fieldset';
 import Form from 'components/Form';
 import Field from 'components/Field';
+import GenderSvg from 'components/GenderSvg';
 
 import { Link } from 'react-router';
 import Authenticated from 'components/Authenticated';
@@ -97,7 +98,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     const session = this.getSession();
     const user = this.context.user || {};
     return (<Fieldset label="Description" ref="descriptionFieldset" {...this.state.fieldsets[0].props}>
-      <Field label="Title" name="title" model={session} validation={{ maxLength: 50 }} tip="Enter a title for your session E.g. Volleyball training" />
+      <Field label="Title" name="title" model={session} validation={{ maxLength: 50 }} tip="Enter a title for your session" placeholder="E.g. Volleyball training" />
       <Field label="Organizer" name="OrganizerUuid" model={session} type="Relation" relation={{ url: '/api/organizer', query: { owner: user.user_id } }} tip="Enter a club or session organiser name E.g. Richmond Rovers" />
       <Field label="Description" name="description" model={session} type="textarea" tip="Enter a description (detail on the activities you'll be doing)" />
       <Field label="Sport / activity type" name="activityType" model={session} tip="Enter the type of sport or activity E.g. Football, Yoga" />
@@ -106,9 +107,9 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   render() {
     const session = this.getSession();
     const genderOptions = [
-      { text: 'None (Mixed)', value: 'mixed', src: '/images/mixed.svg', selectedSrc: '/images/mixed-selected.svg' },
-      { text: 'Male only', value: 'male', src: '/images/male.svg', selectedSrc: '/images/male-selected.svg' },
-      { text: 'Female only', value: 'female', src: '/images/female.svg', selectedSrc: '/images/female-selected.svg' }
+      { text: 'None (Mixed)', value: 'mixed', icon: <GenderSvg /> },
+      { text: 'Male only', value: 'male', icon: <GenderSvg only="male" /> },
+      { text: 'Female only', value: 'female', icon: <GenderSvg only="female" /> }
     ];
     const coachOptions = [
       { text: 'Uncoached' },
@@ -141,7 +142,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
               <Fieldset label="Pricing" {...this.state.fieldsets[3].props}>
                 {/* <Field label="Attendance type" name="attendanceType" model={session} /> */}
                 <Field label="Price" name="price" model={session} type="OptionalNum" validation={{ min: 0 }} no="Free" yes="Paid" />
-                <Field label="Quantity" name="quantity" model={session} type="number" validation={{ min: 0 }} />
+                <Field label="Quantity" name="quantity" model={session} type="number" validation={{ min: 0 }} tip="How many spaces are available?" />
               </Fieldset>
               <Fieldset label="Restrictions" {...this.state.fieldsets[4].props}>
                 <Field label="Gender Restrictions" type="IconRadio" name="genderRestriction" model={session} options={genderOptions} />

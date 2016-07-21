@@ -49,7 +49,7 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
           this.onChange(key);
         }
       }
-    } else if (type === 'click') {
+    } else if (type === 'focus') {
       newState.visible = true;
       newState.filteredOptions = this.filterOptions(this.state.search);
       newState.search = output.value;
@@ -98,7 +98,7 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
     const selected = options.filter((option) => option.uuid === value)[0];
     const valueDisplay = selected ? selected.name : 'None';
     let input = <input {...searchAttrs} ref="input" onBlur={this.searchEvent} defaultValue={search || valueDisplay} style={{ visibility: visible ? 'visible' : 'hidden' }} autoFocus />;
-    let output = <input {...searchAttrs} ref="output" onClick={this.searchEvent} value={valueDisplay} style={{ visibility: visible ? 'hidden' : 'visible' }} />;
+    let output = <input {...searchAttrs} ref="output" onFocus={this.searchEvent} value={valueDisplay} readOnly style={{ visibility: visible ? 'hidden' : 'visible' }} />;
     let searchResults = null;
     if (visible) {
       let index = -1;

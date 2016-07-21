@@ -9,7 +9,11 @@
     opacity: 0;
     transition: .1s all ease;
   }
-  &:hover,
+  form[data-hasFocus='false'] &:hover {
+    & .tip {
+      opacity: 1;
+    }
+  }
   &[data-hasfocus='true'] {
     & .tip {
       opacity: 1;

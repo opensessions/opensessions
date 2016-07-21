@@ -76,7 +76,7 @@ module.exports = (DataTypes) => ({
         instanceMethods: {
           canPublish() {
             const session = this;
-            const requiredFields = ['title', 'description', 'leader', 'location', 'price', 'OrganizerUuid', 'startDate', 'startTime'];
+            const requiredFields = ['title', 'description', 'leader', 'location', 'OrganizerUuid', 'startDate', 'startTime'];
             const prettyNames = { OrganizerUuid: 'organizer', startDate: 'start date', startTime: 'start time' };
             const errors = [];
             requiredFields.forEach((field) => {

@@ -13,7 +13,8 @@
     padding: .4em;
     border: .1em solid #C2C2C2;
     background-color: #EFEFEF;
-    transition: .2s ease background;
+    transition: .2s ease;
+    transition-property: background, opacity;
     outline: .05em solid transparent;
     &:focus {
       outline-width: .15em;
