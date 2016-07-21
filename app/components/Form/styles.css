@@ -59,7 +59,6 @@
     }
   }
   & .pending {
-    display: none;
     font-size: .7em;
     padding: .5em 1em;
     font-weight: bold;
@@ -70,10 +69,12 @@
 .tabs {
   flex-grow: 6;
   background-color: #E6E6E6;
+  max-width: 100%;
 }
 
 .formNav {
-  padding: 1em .5em;
+  margin: 0 1em;
+  padding: 1em 0;
   max-width: var(--fieldWidth);
 }
 

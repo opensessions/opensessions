@@ -131,7 +131,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
             <Form autosave model={session} onPublish={this.onPublish} onChange={this.onChange} pendingSteps={this.state.pendingSteps}>
               {this.renderDescriptionFieldset()}
               <Fieldset label="Additional info" {...this.state.fieldsets[1].props}>
-                <Field label="What to bring" name="preparation" type="textarea" model={session} validation={{ maxLength: 2048 }} />
+                <Field label="What to bring" name="preparation" type="textarea" model={session} validation={{ maxLength: 2048 }} placeholder="Just bring yourself..." />
                 <Field label="Session leader" name="leader" model={session} tip="Who will run the session?" />
                 <Field label="Will participants receive coaching?" type="BoolRadio" name="hasCoaching" model={session} options={coachOptions} />
               </Fieldset>

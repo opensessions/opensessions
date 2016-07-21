@@ -32,7 +32,7 @@
 }
 
 .input {
-  width: 22em;
+  width: var(--fieldWidth);
   max-width: 100%;
   &:focus {
     outline-width: .15em;

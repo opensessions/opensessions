@@ -51,8 +51,7 @@ export default class Form extends React.Component { // eslint-disable-line react
       return result;
     });
   }
-  formChange = (event) => {
-    if (!event.target.name) return;
+  formChange = () => {
     this.autosave(2000);
     if (this.props.onChange) this.props.onChange(this.props.model);
   }

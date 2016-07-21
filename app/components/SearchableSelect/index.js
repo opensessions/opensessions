@@ -19,6 +19,8 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
   onChange = (value) => {
     this.props.onChange(value);
     this.setState({ visible: false, search: '' });
+    const changeEvent = new Event('input', { bubbles: true });
+    this.refs.input.dispatchEvent(changeEvent);
   }
   filterOptions = (search) => {
     let opts = this.props.options;

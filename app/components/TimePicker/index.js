@@ -4,7 +4,7 @@ import styles from './styles.css';
 
 export default class TimePicker extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
-    value: React.PropTypes.string.isRequired,
+    value: React.PropTypes.string,
     onChange: React.PropTypes.func,
   }
   constructor() {
@@ -34,7 +34,7 @@ export default class TimePicker extends React.Component { // eslint-disable-line
       hours += 1;
       minutes -= 60;
       if (hours > 23) {
-        return;
+        hours -= 24;
       }
     }
     this.changeTime(hours, minutes);
@@ -46,7 +46,7 @@ export default class TimePicker extends React.Component { // eslint-disable-line
       hours -= 1;
       minutes += 60;
       if (hours < 0) {
-        return;
+        hours += 24;
       }
     }
     this.changeTime(hours, minutes);
@@ -64,6 +64,8 @@ export default class TimePicker extends React.Component { // eslint-disable-line
       } else if (event.deltaY < 0) {
         this.minsInc();
       }
+    } else if (type === 'change') {
+      this.setState({ minutes: parseInt(event.target.value, 10) });
     }
   }
   meridianChange = (event) => {
@@ -80,7 +82,7 @@ export default class TimePicker extends React.Component { // eslint-disable-line
       <select value={hours} onChange={this.hourChange}>
         {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((hour) => <option key={hour} value={meridian === 'am' ? hour : hour + 12}>{hour < 10 ? '0' : ''}{hour}</option>)}
       </select>
-      <input type="text" value={`${minutes < 10 ? '0' : ''}${minutes}`} readOnly onKeyDown={this.minsEvent} onWheel={this.minsEvent} />
+      <input type="text" value={`${minutes < 10 ? '0' : ''}${minutes}`} onChange={this.minsEvent} onKeyDown={this.minsEvent} onWheel={this.minsEvent} />
       <span className={styles.rocker}>
         <a onClick={this.minsInc}>+</a>
         <a onClick={this.minsDec}>-</a>

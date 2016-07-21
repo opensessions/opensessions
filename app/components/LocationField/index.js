@@ -47,7 +47,7 @@ export default class LocationField extends React.Component {
   }
   onChange = (event) => {
     this.setState({ clean: false });
-    if (event.detail && event.detail.generated) {
+    if (!(event.detail && event.detail === 'generated')) {
       event.stopPropagation();
       event.preventDefault();
     }
@@ -62,6 +62,8 @@ export default class LocationField extends React.Component {
     this.props.onValueChangeByName(this.props.dataName, JSON.stringify(locationData));
     if (this.props.hasChanged) this.props.hasChanged();
     this.setState({ clean: true });
+    const changeEvent = new Event('input', { bubbles: true, detail: 'generated' });
+    this.refs.input.dispatchEvent(changeEvent);
   }
   onMapClick = (event) => {
     this.onPlaceChange({ formatted_address: this.props.model[this.props.name], geometry: { location: event.latLng } });
