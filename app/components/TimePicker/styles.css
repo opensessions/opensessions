@@ -3,7 +3,8 @@
 .timePicker {
   display: flex;
   width: 10em;
-  & input, & select {
+  & input,
+  & select {
     width: 3em;
     text-align: center;
   }

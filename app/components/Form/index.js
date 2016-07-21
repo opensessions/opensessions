@@ -21,6 +21,12 @@ export default class Form extends React.Component { // eslint-disable-line react
       saveStateClass: styles.unsaved,
     };
   }
+  onFocus = () => {
+    this.setState({ hasFocus: true });
+  }
+  onBlur = () => {
+    this.setState({ hasFocus: false });
+  }
   getFieldsets() {
     return this.props.children instanceof Array ? this.props.children : [this.props.children];
   }
@@ -114,12 +120,6 @@ export default class Form extends React.Component { // eslint-disable-line react
       <a {...backAttr}>Back</a>
       <a {...nextAttr}>{nextText}</a>
     </div>);
-  }
-  onFocus = (event) => {
-    this.setState({ hasFocus: true });
-  }
-  onBlur = (event) => {
-    this.setState({ hasFocus: false });
   }
   render() {
     return (<form onChange={this.props.autosave ? this.formChange : undefined} onFocus={this.onFocus} onBlur={this.onBlur} className={styles.form} data-hasFocus={this.state.hasFocus}>

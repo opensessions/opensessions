@@ -25,7 +25,7 @@ export default class TimePicker extends React.Component { // eslint-disable-line
     if (this.props.onChange) this.props.onChange(time);
   }
   hourChange = (event) => {
-    this.changeTime(parseInt(event.target.value), this.state.minutes);
+    this.changeTime(parseInt(event.target.value, 10), this.state.minutes);
   }
   minsInc = () => {
     let { hours, minutes } = this.state;
@@ -74,7 +74,6 @@ export default class TimePicker extends React.Component { // eslint-disable-line
     }
   }
   render() {
-    const { value } = this.props;
     const { hours, minutes } = this.state;
     const meridian = hours >= 12 ? 'pm' : 'am';
     return (<div className={styles.timePicker}>
