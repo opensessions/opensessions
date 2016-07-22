@@ -23,6 +23,7 @@ export default class OptionalNumField extends React.Component { // eslint-disabl
     const newState = { value: nextProps.value };
     if (!this.state.initialized) {
       newState.bool = !!nextProps.value;
+      newState.initialized = true;
     }
     this.setState(newState);
   }

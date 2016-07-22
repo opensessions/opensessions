@@ -6,7 +6,7 @@ export default class BoolRadioField extends React.Component { // eslint-disable-
   static propTypes = {
     name: React.PropTypes.string.isRequired,
     onChange: React.PropTypes.func,
-    value: React.PropTypes.string,
+    value: React.PropTypes.any,
     options: React.PropTypes.array,
     trueText: React.PropTypes.string,
     falseText: React.PropTypes.string,
@@ -37,7 +37,7 @@ export default class BoolRadioField extends React.Component { // eslint-disable-
       name: this.props.name,
       type: 'radio'
     };
-    const value = this.state.value;
+    const { value } = this.state;
     const options = [{
       value: 'true',
       text: this.props.trueText

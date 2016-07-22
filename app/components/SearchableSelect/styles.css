@@ -7,8 +7,11 @@
     &:focus {
       cursor: text;
     }
-    &:first-child {
+    &.output {
       position: absolute;
+      left: 0;
+      pointer-events: none;
+      transition: none;
     }
   }
   & .searchResults {

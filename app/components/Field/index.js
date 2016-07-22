@@ -7,6 +7,7 @@ import BoolRadioField from 'components/BoolRadioField';
 import IconRadioField from 'components/IconRadioField';
 import RelationField from 'components/RelationField';
 import OptionalNumField from 'components/OptionalNumField';
+import OptionalField from 'components/OptionalField';
 import LocationField from 'components/LocationField';
 import TimePicker from 'components/TimePicker';
 
@@ -105,8 +106,6 @@ export default class Field extends React.Component { // eslint-disable-line reac
       className: `${styles.input} ${this.state.valid ? '' : styles.invalid}`,
     };
     if (this.props.model && name in this.props.model) attrs.value = this.props.model[name];
-    attrs.onFocus = this.onFocusChange;
-    attrs.onBlur = this.onFocusChange;
     let input;
     const type = this.props.type || 'text';
     if (type === 'IconRadio') {
@@ -116,13 +115,14 @@ export default class Field extends React.Component { // eslint-disable-line reac
       attrs.trueText = this.props.options[1].text;
       input = <BoolRadioField options={this.props.options} {...attrs} />;
     } else if (type === 'Relation') {
-      attrs.inputStyle = styles.input;
       input = <RelationField {...this.props} {...attrs} />;
     } else if (type === 'OptionalNum') {
       if (validation) attrs.validation = validation;
       input = <OptionalNumField {...this.props} {...attrs} />;
+    } else if (type === 'Optional') {
+      if (validation) attrs.validation = validation;
+      input = <OptionalField {...this.props} {...attrs} />;
     } else if (type === 'Location') {
-      attrs.inputStyle = styles.input;
       delete attrs.onChange;
       attrs.onValueChangeByName = this.handleValueChangeByName;
       input = <LocationField {...this.props} {...attrs} />;
@@ -158,13 +158,13 @@ export default class Field extends React.Component { // eslint-disable-line reac
         <p>{this.props.tip}</p>
       </div>);
     }
-    return (<div className={styles.field} data-valid={this.state.valid} data-hasfocus={this.state.hasFocus}>
+    return (<div className={styles.field} data-valid={this.state.valid} data-hasfocus={this.state.hasFocus} onFocus={this.onFocusChange} onBlur={this.onFocusChange}>
       <label className={styles.label}>{label}</label>
       <div className={styles.inputWrap}>
         {input}
-        {tip}
         {this.renderValidation()}
       </div>
+      {tip}
     </div>);
   }
 }

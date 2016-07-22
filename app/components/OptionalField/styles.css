@@ -1,0 +1,51 @@
+@import '../../containers/App/variables.css';
+
+.optionalField {
+  display: flex;
+  align-items: center;
+  min-height: 2.5em;
+  &.multiline {
+    flex-wrap: wrap;
+    & label:last-child {
+      flex-basis: 100%;
+      & .inputField {
+        width: var(--fieldWidth);
+        animation: appear-top .2s;
+      }
+    }
+  }
+  & label {
+    flex-grow: 1;
+    width: 33%;
+    padding: .25em 0;
+    &:last-child {
+      width: 50%;
+    }
+    & .inputField {
+      width: 8rem;
+      animation: appear .2s;
+    }
+  }
+}
+
+@keyframes appear {
+  from {
+    margin-left: -4em;
+    opacity: 0;
+  }
+  to {
+    margin-left: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes appear-top {
+  from {
+    margin-top: -4em;
+    opacity: 0;
+  }
+  to {
+    margin-top: 0;
+    opacity: 1;
+  }
+}

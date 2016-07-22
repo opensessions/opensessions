@@ -12,13 +12,11 @@ export default class LocationField extends React.Component {
     onBlur: React.PropTypes.func,
     onChange: React.PropTypes.func,
     onValueChangeByName: React.PropTypes.func,
-    hasChanged: React.PropTypes.func,
     defaultLocation: React.PropTypes.object,
-    inputStyle: React.PropTypes.string,
+    className: React.PropTypes.string,
     model: React.PropTypes.object,
     name: React.PropTypes.string.isRequired,
     dataName: React.PropTypes.string,
-    value: React.PropTypes.string,
   }
   constructor(props) {
     super(props);
@@ -46,27 +44,32 @@ export default class LocationField extends React.Component {
     if (this.props.onFocus) this.props.onFocus(event);
   }
   onChange = (event) => {
-    this.setState({ clean: false });
-    if (!(event.detail && event.detail === 'generated')) {
+    if (!(event.nativeEvent.detail && event.nativeEvent.detail === 'generated')) {
+      this.setState({ clean: false });
       event.stopPropagation();
       event.preventDefault();
     }
   }
   onPlaceChange = (place) => {
-    const locationData = {
-      lat: place.geometry.location.lat(),
-      lng: place.geometry.location.lng(),
-    };
-    this.changeCenter(locationData);
+    this.latLngChange(place.geometry.location);
     this.props.onValueChangeByName(this.props.name, place.formatted_address);
-    this.props.onValueChangeByName(this.props.dataName, JSON.stringify(locationData));
-    if (this.props.hasChanged) this.props.hasChanged();
     this.setState({ clean: true });
-    const changeEvent = new Event('input', { bubbles: true, detail: 'generated' });
-    this.refs.input.dispatchEvent(changeEvent);
+    this.dispatchChange();
   }
   onMapClick = (event) => {
     this.onPlaceChange({ formatted_address: this.props.model[this.props.name], geometry: { location: event.latLng } });
+  }
+  dispatchChange = () => {
+    const changeEvent = new CustomEvent('input', { bubbles: true, detail: 'generated' });
+    this.refs.input.dispatchEvent(changeEvent);
+  }
+  latLngChange = (latLng) => {
+    const locationData = {
+      lat: latLng.lat(),
+      lng: latLng.lng(),
+    };
+    this.changeCenter(locationData);
+    this.props.onValueChangeByName(this.props.dataName, JSON.stringify(locationData));
   }
   changeCenter = (locationData) => {
     if (this.refs.component) {
@@ -74,11 +77,11 @@ export default class LocationField extends React.Component {
     }
   }
   render() {
-    const { model, name, dataName, inputStyle } = this.props;
+    const { model, name, dataName, className } = this.props;
     const attrs = {
       type: 'text',
       name,
-      className: inputStyle,
+      className,
       ref: 'input',
       onFocus: this.onFocus,
       onBlur: this.onBlur,
@@ -92,7 +95,12 @@ export default class LocationField extends React.Component {
       const marker = {
         position: locationData,
         icon: { url: '/images/map-pin-active.svg' },
-        defaultAnimation: 2
+        defaultAnimation: 2,
+        draggable: true,
+        onDragend: (drag) => {
+          this.latLngChange(drag.latLng);
+          this.dispatchChange();
+        }
       };
       const mapProps = {
         defaultZoom: 15,

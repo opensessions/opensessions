@@ -111,12 +111,14 @@ module.exports = (app) => {
       if (instance.owner !== getUser(req)) {
         return res.json({ error: `Must be owner to modify ${Model.name}` });
       }
-      Object.keys(req.body).filter((key) => key.slice(-4) === 'Uuid').forEach((key) => {
+      const fields = Object.keys(req.body);
+      fields.filter((key) => key.slice(-4) === 'Uuid').forEach((key) => {
         if (req.body[key] === null) {
           instance[`set${key.substr(0, key.length - 4)}`](null);
         }
       });
-      return instance.update(req.body, { returning: true }).then((savedInstance) => {
+      console.log('fields', fields);
+      return instance.update(req.body, { fields, returning: true }).then((savedInstance) => {
         res.json({ instance: savedInstance });
       });
     }).catch((error) => {

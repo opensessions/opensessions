@@ -4,22 +4,20 @@ import styles from './styles.css';
 
 export default class SearchableSelect extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
-    onFocus: React.PropTypes.func,
-    onBlur: React.PropTypes.func,
     onChange: React.PropTypes.func,
     addItem: React.PropTypes.func,
-    inputStyle: React.PropTypes.string,
+    className: React.PropTypes.string,
     value: React.PropTypes.any,
     options: React.PropTypes.array
   }
   constructor() {
     super();
-    this.state = { search: '', filteredOptions: [], highlightIndex: 0, visible: false };
+    this.state = { search: '', filteredOptions: [], highlightIndex: 0, visible: false, ignoreBlur: false };
   }
   onChange = (value) => {
     this.props.onChange(value);
-    this.setState({ visible: false, search: '' });
-    const changeEvent = new Event('input', { bubbles: true });
+    this.setState({ visible: false, search: '', ignoreBlur: false });
+    const changeEvent = new CustomEvent('input', { bubbles: true, detail: 'generated' });
     this.refs.input.dispatchEvent(changeEvent);
   }
   filterOptions = (search) => {
@@ -28,23 +26,29 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
     return opts.map((option) => ({ text: option.name, props: { key: option.uuid, onMouseOver: this.itemHover, onClick: this.itemClick } }));
   }
   searchEvent = (event) => {
-    const { type, target } = event;
-    const { input, output } = this.refs;
+    const { type, target, nativeEvent } = event;
+    const { input } = this.refs;
+    const { filteredOptions, highlightIndex } = this.state;
     const newState = {};
     if (type === 'change') {
       newState.search = target.value || '';
       newState.filteredOptions = this.filterOptions(newState.search);
+      newState.highlightIndex = highlightIndex;
+      if (nativeEvent.detail !== 'generated') {
+        event.preventDefault();
+        event.stopPropagation();
+      }
     } else if (type === 'keydown') {
       const { keyCode } = event;
-      const { filteredOptions, highlightIndex } = this.state;
       const deltas = { 38: -1, 40: 1 };
       if (keyCode in deltas) {
-        const maxIndex = filteredOptions.length - 1;
-        newState.highlightIndex = [0, highlightIndex + deltas[keyCode], maxIndex].sort()[1];
+        newState.highlightIndex = highlightIndex + deltas[keyCode];
         event.preventDefault();
+        event.stopPropagation();
       } else if (keyCode === 13) {
         const selected = filteredOptions[highlightIndex];
         const { key } = selected.props;
+        if (input) input.blur();
         if (key === 'none') {
           this.addItem(newState.search);
         } else {
@@ -53,18 +57,18 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
       }
     } else if (type === 'focus') {
       newState.visible = true;
-      newState.filteredOptions = this.filterOptions(this.state.search);
-      newState.search = output.value;
-      setTimeout(() => {
-        input.focus();
-        input.select();
-      }, 50);
-      if (this.props.onFocus) this.props.onFocus(event);
+      newState.search = '';
+      newState.filteredOptions = this.filterOptions(newState.search);
+      newState.highlightIndex = 0;
+      if (input) input.select();
     } else if (type === 'blur') {
       if (!this.state.ignoreBlur) {
         this.setState({ visible: false, search: '' });
       }
-      if (this.props.onBlur) this.props.onBlur(event);
+    }
+    if (newState.highlightIndex) {
+      const maxIndex = (newState.filteredOptions || filteredOptions).length - 1;
+      newState.highlightIndex = [0, newState.highlightIndex, maxIndex].sort()[1];
     }
     this.setState(newState);
   }
@@ -88,19 +92,19 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
     }
   }
   render() {
-    const { value, options, inputStyle } = this.props;
+    const { value, options, className } = this.props;
     const { visible, search, filteredOptions } = this.state;
     const searchAttrs = {
       type: 'text',
-      placeholder: 'None',
-      className: inputStyle,
+      placeholder: 'Search...',
+      className,
       onChange: this.searchEvent,
       onKeyDown: this.searchEvent
     };
     const selected = options.filter((option) => option.uuid === value)[0];
     const valueDisplay = selected ? selected.name : 'None';
-    let input = <input {...searchAttrs} ref="input" onBlur={this.searchEvent} defaultValue={search || valueDisplay} style={{ visibility: visible ? 'visible' : 'hidden' }} autoFocus />;
-    let output = <input {...searchAttrs} ref="output" onFocus={this.searchEvent} value={valueDisplay} readOnly style={{ visibility: visible ? 'hidden' : 'visible' }} />;
+    let input = <input {...searchAttrs} ref="input" onFocus={this.searchEvent} onBlur={this.searchEvent} defaultValue={valueDisplay} />;
+    let output = <input {...searchAttrs} className={`${className} ${styles.output}`} ref="output" value={valueDisplay} readOnly style={{ opacity: visible ? 0 : 1 }} />;
     let searchResults = null;
     if (visible) {
       let index = -1;

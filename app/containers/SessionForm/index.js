@@ -3,6 +3,8 @@ import React from 'react';
 import Fieldset from 'components/Fieldset';
 import Form from 'components/Form';
 import Field from 'components/Field';
+import NumField from 'components/NumField';
+import TextField from 'components/TextField';
 import GenderSvg from 'components/GenderSvg';
 
 import { Link } from 'react-router';
@@ -31,7 +33,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
         { required: ['title', 'OrganizerUuid', 'description'], props: { validity: false } },
         { required: ['leader'], props: { validity: false } },
         { required: ['location'], props: { validity: false } },
-        { required: ['price'], props: { validity: false } },
+        { props: { validity: 'none' } },
         { props: { validity: 'none' } },
         { props: { validity: 'none' } },
         { required: ['startDate', 'startTime'], props: { validity: false } }
@@ -85,9 +87,6 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     session.update = this.updateSession;
     return session;
   }
-  hasChanged = () => {
-    this.onChange(this.state.session);
-  }
   _locationInput = null
   updateSession = (name, value) => {
     const session = this.getSession();
@@ -131,23 +130,23 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
             <Form autosave model={session} onPublish={this.onPublish} onChange={this.onChange} pendingSteps={this.state.pendingSteps}>
               {this.renderDescriptionFieldset()}
               <Fieldset label="Additional info" {...this.state.fieldsets[1].props}>
-                <Field label="What to bring" name="preparation" type="textarea" model={session} validation={{ maxLength: 2048 }} placeholder="Just bring yourself..." />
+                <Field label="What to bring" name="preparation" type="textarea" model={session} validation={{ maxLength: 2048 }} placeholder="Just bring yourself..." tip="Include any specialist equipment or clothing people will need to bring" />
                 <Field label="Session leader" name="leader" model={session} tip="Who will run the session?" />
                 <Field label="Will participants receive coaching?" type="BoolRadio" name="hasCoaching" model={session} options={coachOptions} />
               </Fieldset>
               <Fieldset label="Location" {...this.state.fieldsets[2].props}>
-                <Field type="Location" label="Location" name="location" dataName="locationData" model={session} hasChanged={this.hasChanged} tip="Type to search an address and select from the dropdown" />
-                <Field label="Meeting point" name="meetingPoint" model={session} type="textarea" validation={{ maxLength: 50 }} />
+                <Field type="Location" label="Location" name="location" dataName="locationData" model={session} tip="Type to search an address and select from the dropdown" />
+                <Field label="Meeting point" name="meetingPoint" model={session} type="Optional" component={{ type: TextField, props: { validation: { maxLength: 50 } } }} multiline no="None" yes="Add details" tip="If the meeting point is not obvious from the location, add details here" />
               </Fieldset>
               <Fieldset label="Pricing" {...this.state.fieldsets[3].props}>
                 {/* <Field label="Attendance type" name="attendanceType" model={session} /> */}
-                <Field label="Price" name="price" model={session} type="OptionalNum" validation={{ min: 0 }} no="Free" yes="Paid" />
+                <Field label="Price" name="price" model={session} type="Optional" component={{ type: NumField, props: { validation: { min: 0 } } }} no="Free" yes="Paid" />
                 <Field label="Quantity" name="quantity" model={session} type="number" validation={{ min: 0 }} tip="How many spaces are available?" />
               </Fieldset>
               <Fieldset label="Restrictions" {...this.state.fieldsets[4].props}>
                 <Field label="Gender Restrictions" type="IconRadio" name="genderRestriction" model={session} options={genderOptions} />
-                <Field label="Is there a minimum age?" name="minAgeRestriction" model={session} type="OptionalNum" validation={{ min: 0 }} />
-                <Field label="Is there a maximum age?" name="maxAgeRestriction" model={session} type="OptionalNum" validation={{ min: 0 }} />
+                <Field label="Is there a minimum age?" name="minAgeRestriction" model={session} type="Optional" component={{ type: NumField, props: { validation: { min: 0 } } }} />
+                <Field label="Is there a maximum age?" name="maxAgeRestriction" model={session} type="Optional" component={{ type: NumField, props: { validation: { min: 0 } } }} />
               </Fieldset>
               <Fieldset label="Contact info" {...this.state.fieldsets[5].props}>
                 <Field label="Phone" name="contactPhone" model={session} />
@@ -157,7 +156,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
                 <Field label="Photo" name="photo" model={session} type="Image" />
               </Fieldset> */}
               <Fieldset label="Schedule" {...this.state.fieldsets[6].props}>
-                <Field label="Start date" name="startDate" type="date" model={session} />
+                <Field label="Date" name="startDate" type="date" model={session} />
                 <Field label="Start time" name="startTime" type="time" model={session} />
                 <Field label="End time" name="endTime" type="time" model={session} />
               </Fieldset>

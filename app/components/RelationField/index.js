@@ -11,7 +11,7 @@ export default class RelationField extends React.Component { // eslint-disable-l
     onFocus: React.PropTypes.func,
     onBlur: React.PropTypes.func,
     onChange: React.PropTypes.func,
-    inputStyle: React.PropTypes.string,
+    className: React.PropTypes.string,
     model: React.PropTypes.object,
     name: React.PropTypes.string.isRequired,
     relation: React.PropTypes.object,
@@ -56,7 +56,7 @@ export default class RelationField extends React.Component { // eslint-disable-l
     const options = 'options' in state ? state.options : [];
     const searchableAttrs = { options, value: this.props.model[this.props.name], onFocus: this.props.onFocus, onBlur: this.props.onBlur };
     return (<div className={styles.relationWrap}>
-      <SearchableSelect {...searchableAttrs} onChange={this.handleValueChange} inputStyle={this.props.inputStyle} addItem={this.newRelation} />
+      <SearchableSelect {...searchableAttrs} onChange={this.handleValueChange} className={this.props.className} addItem={this.newRelation} />
     </div>);
   }
 }
