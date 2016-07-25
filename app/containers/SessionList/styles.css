@@ -1,0 +1,5 @@
+.sessionList {
+  & ol > li {
+    list-style: none;
+  }
+}
