@@ -52,8 +52,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     return user && organizer && organizer.owner === user.user_id;
   }
   toggleSessions = () => {
-    const { showSessions } = this.state;
-    this.setState({ showSessions: !showSessions });
+    this.setState({ showSessions: !this.state.showSessions });
   }
   renameOrganizer = (name) => {
     if (typeof name === 'string') {

@@ -34,8 +34,7 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
     const { value } = event.target;
     this.setState({ selectedOrganizer: value });
   }
-  fetchOrganizers() {
-    const self = this;
+  fetchOrganizers = () => {
     const { user } = this.context;
     this.setState({ status: 'Loading organizers...' });
     apiFetch('/api/organizer', {
@@ -51,7 +50,7 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
         } else if (sessionResult.instances) {
           sessions = sessionResult.instances;
         }
-        self.setState({ selectedOrganizer, organizers, sessions, status: error });
+        this.setState({ selectedOrganizer, organizers, sessions, status: error });
       });
     });
   }

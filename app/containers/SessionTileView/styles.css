@@ -3,6 +3,7 @@
 .tile {
   background: #FFF;
   max-width: var(--tileWidth);
+  text-align: left;
   margin: auto;
   padding: .25em;
   display: flex;
