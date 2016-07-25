@@ -65,7 +65,8 @@ module.exports = (app, database) => {
       }
       res.json({
         items: sessions,
-        next: `/api/rdpe/sessions?from=${next.from}&after=${next.after}`
+        next: `/api/rdpe/sessions?from=${encodeURIComponent(next.from)}&after=${next.after}`,
+        license: 'https://creativecommons.org/licenses/by/4.0/'
       });
     }).catch((error) => {
       res.json({ error });

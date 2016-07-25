@@ -135,8 +135,8 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
                 <Field label="Will participants receive coaching?" type="BoolRadio" name="hasCoaching" model={session} options={coachOptions} />
               </Fieldset>
               <Fieldset label="Location" {...this.state.fieldsets[2].props}>
-                <Field type="Location" label="Location" name="location" dataName="locationData" model={session} tip="Type to search an address and select from the dropdown" />
-                <Field label="Meeting point" name="meetingPoint" model={session} type="Optional" component={{ type: TextField, props: { validation: { maxLength: 50 } } }} multiline no="None" yes="Add details" tip="If the meeting point is not obvious from the location, add details here" null="" />
+                <Field label="Address" type="Location" name="location" dataName="locationData" model={session} tip="Type to search an address and select from the dropdown" />
+                <Field label="Meeting point" name="meetingPoint" model={session} type="Optional" component={{ type: TextField, props: { validation: { maxLength: 50 } } }} multiline no="None" yes="Add details" tip="If the meeting point is not obvious from the address, add details here" null="" />
               </Fieldset>
               <Fieldset label="Pricing" {...this.state.fieldsets[3].props}>
                 {/* <Field label="Attendance type" name="attendanceType" model={session} /> */}

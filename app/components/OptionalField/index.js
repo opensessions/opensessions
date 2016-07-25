@@ -18,23 +18,18 @@ export default class OptionalField extends React.Component { // eslint-disable-l
     this.state = { showInput: false, clean: true };
   }
   componentWillReceiveProps(nextProps) {
-    const model = nextProps.model || this.props.model;
-    const name = nextProps.name || this.props.name;
-    if (this.state.clean && name in model) this.setState({ showInput: !!model[name] });
+    const { model, name } = nextProps;
+    if (this.state.clean && name in model && this.props.model[this.props.name] !== model[name]) this.setState({ showInput: !!model[name] });
   }
   handleChange = (event) => {
     const { target } = event;
     const value = target ? target.value : event;
-    if (this.props.onChange) {
-      this.props.onChange(value);
-    }
+    if (this.props.onChange) this.props.onChange(value);
   }
   radioClick = (event) => {
     const showInput = event.target.value === 'true';
     this.setState({ showInput, clean: false });
-    if (this.props.onChange && !showInput) {
-      this.props.onChange(this.props.null || null);
-    }
+    if (this.props.onChange && !showInput) this.props.onChange(this.props.null || null);
   }
   render() {
     const { name, model, component, multiline } = this.props;

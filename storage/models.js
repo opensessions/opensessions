@@ -102,16 +102,17 @@ module.exports = (DataTypes) => ({
         },
         hooks: {
           beforeUpdate(instance) {
-            if (instance.state === 'published') {
-              try {
-                instance.canPublish();
-              } catch (err) {
-                instance.state = 'draft';
-                throw err;
+            if (instance.changed('state')) {
+              if (instance.state === 'published') {
+                try {
+                  instance.canPublish();
+                } catch (err) {
+                  throw err;
+                }
               }
-            }
-            if (instance.state === 'draft' && instance.changed('state')) {
-              instance.state = 'unpublished';
+              if (instance.state === 'draft') {
+                instance.state = 'unpublished';
+              }
             }
           }
         }

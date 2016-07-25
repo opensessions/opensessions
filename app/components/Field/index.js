@@ -129,9 +129,8 @@ export default class Field extends React.Component { // eslint-disable-line reac
         attrs.type = 'date';
         if (attrs.value) attrs.value = (new Date(attrs.value)).toISOString().substr(0, 10);
         attrs.onChange = (event) => {
-          let { value } = event.target;
-          value = (new Date(value)).toISOString().substr(0, 10);
-          this.handleValueChange(value);
+          const { value } = event.target;
+          this.handleDateChange(new Date(value));
         };
         input = <input {...attrs} />;
       } else {

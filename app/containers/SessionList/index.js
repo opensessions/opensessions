@@ -5,6 +5,8 @@ import { apiFetch } from '../../utils/api';
 import SessionTileView from 'containers/SessionTileView';
 import LoadingMessage from 'components/LoadingMessage';
 
+import styles from './styles.css';
+
 export default class SessionList extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
     query: React.PropTypes.string
@@ -38,7 +40,7 @@ export default class SessionList extends React.Component { // eslint-disable-lin
     </div>);
   }
   render() {
-    return (<div>
+    return (<div className={styles.sessionList}>
       {this.renderSessions()}
     </div>);
   }

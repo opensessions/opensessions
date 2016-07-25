@@ -20,7 +20,6 @@ module.exports = (app) => {
   const api = express();
   const storage = new Storage();
   const database = storage.getInstance();
-  const { Session } = database.models;
   const getUser = (req) => (req.user ? req.user.sub : null);
 
   const rdpe = RDPE(app, database);
@@ -57,7 +56,7 @@ module.exports = (app) => {
   };
 
   api.get('/:model', resolveModel, (req, res) => {
-    const Model = req.Model;
+    const { Model } = req;
     requireLogin(req, res, () => {
       const query = Model.getQuery({ where: queryParse(req) }, database.models, req.user);
       if (Model.name === 'Session') {
@@ -78,7 +77,7 @@ module.exports = (app) => {
   });
 
   api.all('/:model/create', requireLogin, resolveModel, (req, res) => {
-    const Model = req.Model;
+    const { Model } = req;
     const instance = req.body;
     instance.owner = getUser(req);
     Model.create(instance).then((savedInstance) => {
@@ -97,7 +96,7 @@ module.exports = (app) => {
         if (instance) {
           res.json({ instance, schema: getSchema(Model) });
         } else {
-          res.json({ error: 'Instance could not be retrieved' });
+          throw new Error('Instance could not be retrieved');
         }
       }).catch((error) => {
         res.json({ error: error.message });
@@ -106,11 +105,9 @@ module.exports = (app) => {
   });
 
   api.post('/:model/:uuid', requireLogin, resolveModel, (req, res) => {
-    const Model = req.Model;
+    const { Model } = req;
     Model.findOne({ where: { uuid: req.params.uuid } }).then((instance) => {
-      if (instance.owner !== getUser(req)) {
-        return res.json({ error: `Must be owner to modify ${Model.name}` });
-      }
+      if (instance.owner !== getUser(req)) throw new Error(`Must be owner to modify ${Model.name}`);
       const fields = Object.keys(req.body);
       fields.filter((key) => key.slice(-4) === 'Uuid').forEach((key) => {
         if (req.body[key] === null) {
@@ -126,25 +123,15 @@ module.exports = (app) => {
   });
 
   api.get('/:model/:uuid/:action', requireLogin, resolveModel, (req, res) => {
-    const Model = req.Model;
+    const { Model } = req;
     const { uuid, action } = req.params;
     if (action === 'delete') {
       const query = Model.getQuery({ where: { uuid, owner: getUser(req) } }, database.models, req.user);
       Model.findOne(query)
         .then((instance) => instance.destroy())
         .then(() => res.json({ status: 'success' }))
-        .catch((error) => {
-          res.json({ status: 'failure', error: error.message });
-        });
+        .catch((error) => res.json({ status: 'failure', error: error.message }));
     }
-  });
-
-  api.get('/me/sessions', requireLogin, (req, res) => {
-    Session.findAll({ where: { owner: getUser(req) } }).then((sessions) => {
-      res.json({ sessions });
-    }).catch((error) => {
-      res.json({ error });
-    });
   });
 
   app.use('/api', api);

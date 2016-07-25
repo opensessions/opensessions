@@ -66,15 +66,11 @@ export default class Form extends React.Component { // eslint-disable-line react
   }
   submit = () => {
     if (this.timeout) clearTimeout(this.timeout);
-    const { model } = this.props;
+    const { model, onPublish } = this.props;
     model.state = 'published';
-    this.saveModel(model, 'Publishing', 'Published').then((result) => {
-      if (this.props.onPublish) {
-        this.props.onPublish(result.instance);
-      }
-    }).catch((error) => {
-      this.setState({ saveState: error, saveStateClass: styles.error });
-    });
+    this.saveModel(model, 'Publishing', 'Published')
+      .then((result) => (onPublish ? onPublish(result.instance) : null))
+      .catch((error) => this.setState({ saveState: error, saveStateClass: styles.error }));
   }
   renderNav() {
     const self = this;
