@@ -117,7 +117,6 @@ module.exports = (app) => {
           instance[`set${key.substr(0, key.length - 4)}`](null);
         }
       });
-      console.log('fields', fields);
       return instance.update(req.body, { fields, returning: true }).then((savedInstance) => {
         res.json({ instance: savedInstance });
       });

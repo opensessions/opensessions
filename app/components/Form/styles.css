@@ -2,7 +2,6 @@
 
 .form {
   display: flex;
-  flex-wrap: wrap;
   & input[type=text],
   & input[type=email],
   & input[type=number],
@@ -138,13 +137,15 @@
   .nav {
     font-size: 1.25em;
   }
-
   .tabs {
     padding: 2em 2%;
   }
 }
 
 @media (max-width: 36rem) {
+  .form {
+    flex-wrap: wrap;
+  }
   .nav {
     padding: .5em;
     display: flex;

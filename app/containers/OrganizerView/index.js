@@ -55,23 +55,27 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     const { showSessions } = this.state;
     this.setState({ showSessions: !showSessions });
   }
-  renameOrganizer = () => {
-    const self = this;
-    const { organizer } = this.state;
-    const options = { body: {} };
-    options.body.name = prompt('Enter a new name:', organizer.name);
-    if (!options.body.name) return;
-    apiFetch(`/api/organizer/${organizer.uuid}`, options).then((res) => {
-      const { instance } = res;
-      Object.keys(instance).forEach((field) => {
-        organizer[field] = instance[field];
-      });
-      if (!res.error) {
-        self.setState({ organizer });
-      } else {
-        console.error('failed to rename organizer, ', res.error);
+  renameOrganizer = (name) => {
+    if (typeof name === 'string') {
+      const { organizer } = this.state;
+      const options = { body: { name } };
+      if (options.body.name) {
+        apiFetch(`/api/organizer/${organizer.uuid}`, options).then((res) => {
+          const { instance, error } = res;
+          Object.keys(instance).forEach((field) => {
+            organizer[field] = instance[field];
+          });
+          if (!error) {
+            this.setState({ organizer, actionState: 'none' });
+          } else {
+            console.error('failed to rename organizer, ', error);
+            this.setState({ actionState: 'none' });
+          }
+        });
       }
-    });
+    } else {
+      this.setState({ actionState: 'rename' });
+    }
   }
   deleteOrganizer = () => {
     const self = this;
@@ -83,6 +87,19 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
         console.error('failed to delete organizer, ', res.error);
       }
     });
+  }
+  renameEvents = (event) => {
+    const { type, keyCode, target } = event;
+    console.log('renameEvents', type, keyCode, target.value);
+    if (type === 'keydown') {
+      if (keyCode === 13) {
+        this.setState({ actionState: 'renaming' });
+        console.log('renameEvents', this.state);
+        this.renameOrganizer(target.value);
+      }
+    } else if (type === 'blur') {
+      this.setState({ actionState: 'none' });
+    }
   }
   renderUnassignedSessions() {
     const sessions = this.props.unassignedSessions;
@@ -133,6 +150,10 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
       {this.isOwner() ? this.renderUnassignedSessions() : null}
     </div>);
   }
+  renderName(organizer) {
+    if (this.state.actionState && this.state.actionState === 'rename') return <input defaultValue={organizer.name} onKeyDown={this.renameEvents} onBlur={this.renameEvents} autoFocus />;
+    return [<Link to={organizer.href}>{organizer.name}</Link>, ' ', this.isOwner() ? <a onClick={this.renameOrganizer} className={styles.rename}>(rename)</a> : null];
+  }
   renderOrganizer(organizer) {
     const imageUrl = '/images/organizer-bg-default.png';
     return (<div>
@@ -143,7 +164,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
       </div>
       <div className={styles.name}>
         <div className={styles.container}>
-          <h1><Link to={organizer.href}>{organizer.name}</Link> {this.isOwner() ? <a onClick={this.renameOrganizer} className={styles.rename}>(rename)</a> : null}</h1>
+          <h1>{this.renderName(organizer)}</h1>
           {this.renderOrganizerSelect()}
         </div>
       </div>

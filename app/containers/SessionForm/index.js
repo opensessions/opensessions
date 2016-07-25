@@ -97,8 +97,8 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     const session = this.getSession();
     const user = this.context.user || {};
     return (<Fieldset label="Description" ref="descriptionFieldset" {...this.state.fieldsets[0].props}>
-      <Field label="Title" name="title" model={session} validation={{ maxLength: 50 }} tip="Enter a title for your session" placeholder="E.g. Volleyball training" />
-      <Field label="Organizer" name="OrganizerUuid" model={session} type="Relation" relation={{ url: '/api/organizer', query: { owner: user.user_id } }} tip="Enter a club or session organiser name E.g. Richmond Rovers" />
+      <Field label="Session title" name="title" model={session} validation={{ maxLength: 50 }} tip="Enter a title for your session" placeholder="E.g. Volleyball training" />
+      <Field label="Organizer" name="OrganizerUuid" model={session} type="Relation" relation={{ url: '/api/organizer', query: { owner: user.user_id } }} tip="Group or organization running the session" />
       <Field label="Description" name="description" model={session} type="textarea" tip="Enter a description (detail on the activities you'll be doing)" />
       <Field label="Sport / activity type" name="activityType" model={session} tip="Enter the type of sport or activity E.g. Football, Yoga" />
     </Fieldset>);
@@ -136,17 +136,17 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
               </Fieldset>
               <Fieldset label="Location" {...this.state.fieldsets[2].props}>
                 <Field type="Location" label="Location" name="location" dataName="locationData" model={session} tip="Type to search an address and select from the dropdown" />
-                <Field label="Meeting point" name="meetingPoint" model={session} type="Optional" component={{ type: TextField, props: { validation: { maxLength: 50 } } }} multiline no="None" yes="Add details" tip="If the meeting point is not obvious from the location, add details here" />
+                <Field label="Meeting point" name="meetingPoint" model={session} type="Optional" component={{ type: TextField, props: { validation: { maxLength: 50 } } }} multiline no="None" yes="Add details" tip="If the meeting point is not obvious from the location, add details here" null="" />
               </Fieldset>
               <Fieldset label="Pricing" {...this.state.fieldsets[3].props}>
                 {/* <Field label="Attendance type" name="attendanceType" model={session} /> */}
-                <Field label="Price" name="price" model={session} type="Optional" component={{ type: NumField, props: { validation: { min: 0 } } }} no="Free" yes="Paid" />
+                <Field label="Price" name="price" model={session} type="Optional" component={{ type: NumField, props: { validation: { min: 0 }, format: '£ :', step: '0.25' } }} no="Free" yes="Paid" />
                 <Field label="Quantity" name="quantity" model={session} type="number" validation={{ min: 0 }} tip="How many spaces are available?" />
               </Fieldset>
               <Fieldset label="Restrictions" {...this.state.fieldsets[4].props}>
                 <Field label="Gender Restrictions" type="IconRadio" name="genderRestriction" model={session} options={genderOptions} />
-                <Field label="Is there a minimum age?" name="minAgeRestriction" model={session} type="Optional" component={{ type: NumField, props: { validation: { min: 0 } } }} />
-                <Field label="Is there a maximum age?" name="maxAgeRestriction" model={session} type="Optional" component={{ type: NumField, props: { validation: { min: 0 } } }} />
+                <Field label="Is there a minimum age?" name="minAgeRestriction" model={session} type="Optional" component={{ type: NumField, props: { validation: { min: 0 }, format: ': years old' } }} null="0" />
+                <Field label="Is there a maximum age?" name="maxAgeRestriction" model={session} type="Optional" component={{ type: NumField, props: { validation: { min: 0 }, format: ': years old' } }} null="0" />
               </Fieldset>
               <Fieldset label="Contact info" {...this.state.fieldsets[5].props}>
                 <Field label="Phone" name="contactPhone" model={session} />

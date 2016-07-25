@@ -6,7 +6,6 @@ require('react-datepicker/dist/react-datepicker.css');
 import BoolRadioField from 'components/BoolRadioField';
 import IconRadioField from 'components/IconRadioField';
 import RelationField from 'components/RelationField';
-import OptionalNumField from 'components/OptionalNumField';
 import OptionalField from 'components/OptionalField';
 import LocationField from 'components/LocationField';
 import TimePicker from 'components/TimePicker';
@@ -29,7 +28,8 @@ export default class Field extends React.Component { // eslint-disable-line reac
     super(props);
     this.state = {
       valid: true,
-      hasFocus: false
+      hasFocus: false,
+      isMobile: navigator.userAgent.match(/(android|iphone)/i) !== null
     };
   }
   onFocusChange = (event) => {
@@ -97,15 +97,16 @@ export default class Field extends React.Component { // eslint-disable-line reac
     return false;
   }
   render() {
-    const { label, placeholder, validation, name } = this.props;
+    const { label, placeholder, validation, model, name } = this.props;
+    const { valid, isMobile } = this.state;
     const attrs = {
       name,
       placeholder,
       value: '',
       onChange: this.handleValueChange,
-      className: `${styles.input} ${this.state.valid ? '' : styles.invalid}`,
+      className: `${styles.input} ${valid ? '' : styles.invalid}`,
     };
-    if (this.props.model && name in this.props.model) attrs.value = this.props.model[name];
+    if (model && name in model) attrs.value = model[name];
     let input;
     const type = this.props.type || 'text';
     if (type === 'IconRadio') {
@@ -116,9 +117,6 @@ export default class Field extends React.Component { // eslint-disable-line reac
       input = <BoolRadioField options={this.props.options} {...attrs} />;
     } else if (type === 'Relation') {
       input = <RelationField {...this.props} {...attrs} />;
-    } else if (type === 'OptionalNum') {
-      if (validation) attrs.validation = validation;
-      input = <OptionalNumField {...this.props} {...attrs} />;
     } else if (type === 'Optional') {
       if (validation) attrs.validation = validation;
       input = <OptionalField {...this.props} {...attrs} />;
@@ -127,12 +125,29 @@ export default class Field extends React.Component { // eslint-disable-line reac
       attrs.onValueChangeByName = this.handleValueChangeByName;
       input = <LocationField {...this.props} {...attrs} />;
     } else if (type === 'date') {
-      const now = moment(Date.now());
-      const value = attrs.value ? moment(attrs.value) : now;
-      const dateAttrs = { selected: value, onChange: this.handleDateChange, minDate: now };
-      input = <DatePicker {...dateAttrs} />;
+      if (isMobile) {
+        attrs.type = 'date';
+        if (attrs.value) attrs.value = (new Date(attrs.value)).toISOString().substr(0, 10);
+        attrs.onChange = (event) => {
+          let { value } = event.target;
+          value = (new Date(value)).toISOString().substr(0, 10);
+          this.handleValueChange(value);
+        };
+        input = <input {...attrs} />;
+      } else {
+        const now = moment(Date.now());
+        const value = attrs.value ? moment(attrs.value) : now;
+        const dateAttrs = { selected: value, onChange: this.handleDateChange, minDate: now };
+        input = <DatePicker {...dateAttrs} />;
+      }
     } else if (type === 'time') {
-      input = <TimePicker {...attrs} />;
+      if (isMobile) {
+        attrs.type = 'time';
+        attrs.onChange = this.handleChange;
+        input = <input {...attrs} />;
+      } else {
+        input = <TimePicker {...attrs} />;
+      }
     } else {
       attrs.onChange = this.handleChange;
       if (type === 'textarea') {

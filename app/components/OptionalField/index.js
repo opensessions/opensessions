@@ -9,6 +9,7 @@ export default class OptionalField extends React.Component { // eslint-disable-l
     model: React.PropTypes.object,
     no: React.PropTypes.any,
     yes: React.PropTypes.any,
+    null: React.PropTypes.string,
     component: React.PropTypes.object,
     multiline: React.PropTypes.bool
   }
@@ -32,7 +33,7 @@ export default class OptionalField extends React.Component { // eslint-disable-l
     const showInput = event.target.value === 'true';
     this.setState({ showInput, clean: false });
     if (this.props.onChange && !showInput) {
-      this.props.onChange('');
+      this.props.onChange(this.props.null || null);
     }
   }
   render() {

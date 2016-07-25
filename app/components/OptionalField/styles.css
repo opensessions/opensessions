@@ -6,8 +6,11 @@
   min-height: 2.5em;
   &.multiline {
     flex-wrap: wrap;
-    & label:last-child {
-      flex-basis: 100%;
+    & label {
+      padding: .25em 0;
+      &:last-child {
+        flex-basis: 100%;
+      }
       & .inputField {
         width: var(--fieldWidth);
         animation: appear-top .2s;
@@ -17,7 +20,6 @@
   & label {
     flex-grow: 1;
     width: 33%;
-    padding: .25em 0;
     &:last-child {
       width: 50%;
     }

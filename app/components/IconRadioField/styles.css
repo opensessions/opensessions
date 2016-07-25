@@ -4,15 +4,19 @@
   & ol {
     display: flex;
     padding: .5em 0;
+    color: #AAA;
     & > li {
       text-align: center;
       list-style: none;
-      color: #AAA;
       flex-grow: 1;
       flex-basis: 5em;
       text-transform: uppercase;
       & label {
         cursor: pointer;
+        display: block;
+        &:hover {
+          color: #09699A;
+        }
       }
       &.selected {
         color: var(--actionColor);
