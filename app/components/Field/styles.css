@@ -12,23 +12,66 @@
   form[data-hasFocus='false'] &:hover {
     & .tip {
       opacity: 1;
+      bottom: 100%;
     }
   }
   &[data-hasfocus='true'] {
     & .tip {
       opacity: 1;
+      bottom: 100%;
     }
-  }
-  &[data-hasfocus='true'] {
     & .maxLength {
       opacity: 1;
     }
   }
-}
-
-.label {
-  display: block;
-  line-height: 2;
+  & .label {
+    display: block;
+    line-height: 2;
+  }
+  & .tip {
+    position: absolute;
+    opacity: 0;
+    transition: .3s all ease;
+    background-color: #FFF;
+    padding: .75em;
+    max-width: 16em;
+    pointer-events: none;
+    bottom: 0%;
+    top: auto;
+    &::before {
+      content: 'i';
+      position: absolute;
+      border-radius: 1em;
+      background-color: #00AEEF;
+      color: #FFF;
+      line-height: 1;
+      width: 1em;
+      text-align: center;
+      font-style: italic;
+      font-family: serif;
+      font-size: 1.5em;
+      top: -.5em;
+      left: -.5em;
+    }
+  }
+  & .inputWrap {
+    width: var(--fieldWidth);
+    max-width: 100%;
+  }
+  & .valid,
+  & .warn,
+  & .danger {
+    font-weight: bold;
+  }
+  & .valid {
+    color: var(--validGreen);
+  }
+  & .warn {
+    color: var(--warnYellow);
+  }
+  & .danger {
+    color: var(--errorRed);
+  }
 }
 
 .input {
@@ -39,9 +82,6 @@
     outline-color: #00AEEF;
     background-color: #FFF;
   }
-  &.invalid {
-    outline-color: var(--errorRed);
-  }
   textarea& {
     min-height: 6em;
     line-height: 1.4;
@@ -51,51 +91,24 @@
   }
 }
 
-.tip {
-  position: absolute;
-  opacity: 0;
-  transition: .3s all ease;
-  background-color: #FFF;
-  padding: .75em;
-  max-width: 16em;
-  top: 2em;
-  left: 26em;
-  &::before {
-    content: 'i';
-    position: absolute;
-    border-radius: 1em;
-    background-color: #00AEEF;
-    color: #FFF;
-    line-height: 1;
-    width: 1em;
-    text-align: center;
-    font-style: italic;
-    font-family: serif;
-    font-size: 1.5em;
-    top: -.5em;
-    left: -.5em;
+@media (min-width: 36rem) {
+  .field {
+    .tip {
+      top: 2em;
+      left: 26em;
+      bottom: auto;
+    }
+    form[data-hasFocus='false'] &:hover {
+      & .tip {
+        opacity: 1;
+        bottom: auto;
+      }
+    }
+    &[data-hasfocus='true'] {
+      & .tip {
+        opacity: 1;
+        bottom: auto;
+      }
+    }
   }
-}
-
-.inputWrap {
-  width: var(--fieldWidth);
-  max-width: 100%;
-}
-
-.valid,
-.warn,
-.danger {
-  font-weight: bold;
-}
-
-.valid {
-  color: var(--validGreen);
-}
-
-.warn {
-  color: var(--warnYellow);
-}
-
-.danger {
-  color: var(--errorRed);
 }

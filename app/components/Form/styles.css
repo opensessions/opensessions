@@ -21,6 +21,10 @@
       background-color: #FFF;
     }
   }
+  & input[type=number] {
+    padding: 0 0 0 .4em;
+    line-height: 2em;
+  }
 }
 
 .nav {
@@ -61,7 +65,7 @@
     font-size: .7em;
     padding: .5em 1em;
     font-weight: bold;
-    text-transform: uppercase;
+    max-width: 14em;
   }
 }
 

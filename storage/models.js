@@ -109,9 +109,8 @@ module.exports = (DataTypes) => ({
                 } catch (err) {
                   throw err;
                 }
-              }
-              if (instance.state === 'draft') {
-                instance.state = 'unpublished';
+              } else if (instance.state === 'draft') {
+                if (instance.previous('state') === 'published') instance.state = 'unpublished';
               }
             }
           }

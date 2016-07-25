@@ -117,10 +117,11 @@ export default class Form extends React.Component { // eslint-disable-line react
     </div>);
   }
   render() {
+    const { pendingSteps } = this.props;
     return (<form onChange={this.props.autosave ? this.formChange : undefined} onFocus={this.onFocus} onBlur={this.onBlur} className={styles.form} data-hasFocus={this.state.hasFocus}>
       <nav className={styles.nav}>
         {this.renderNav()}
-        <div className={styles.pending}>{this.props.pendingSteps ? `${this.props.pendingSteps} pending steps` : 'Ready to publish!'}</div>
+        <div className={styles.pending}>{pendingSteps ? `Complete ${pendingSteps} more step${pendingSteps === 1 ? '' : 's'} to finish your listing` : 'Ready to publish!'}</div>
       </nav>
       <div className={styles.tabs}>
         <div className={`${styles.saveState} ${this.state.saveStateClass}`}>{this.state.saveState}</div>

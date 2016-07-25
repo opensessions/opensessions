@@ -55,8 +55,8 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
     });
   }
   renderOrganizers() {
-    const { sessions, organizers, selectedOrganizer } = this.state;
-    if (!organizers.length) return (<LoadingMessage message={this.state.status} ellipsis />);
+    const { sessions, organizers, selectedOrganizer, status } = this.state;
+    if (!organizers.length) return (<LoadingMessage message={status} ellipsis />);
     const organizer = organizers.filter((item) => item.uuid === selectedOrganizer)[0];
     return <OrganizerView router={this.context.router} organizer={organizer} unassignedSessions={sessions} organizerList={organizers} onOrganizerChange={this.onOrganizerChange} />;
   }

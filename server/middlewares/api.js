@@ -32,12 +32,11 @@ module.exports = (app) => {
 
   const resolveModel = (req, res, next) => {
     const modelName = capitalize(req.params.model);
-    const Model = database.models[modelName];
-    if (!Model) {
-      res.json({ error: `Model '${modelName}' does not exist` });
-    } else {
-      req.Model = Model;
+    if (modelName in database.models) {
+      req.Model = database.models[modelName];
       next();
+    } else {
+      res.json({ error: `Model '${modelName}' does not exist` });
     }
   };
 
@@ -88,7 +87,7 @@ module.exports = (app) => {
   });
 
   api.get('/:model/:uuid', resolveModel, (req, res) => {
-    const Model = req.Model;
+    const { Model } = req;
     const { uuid } = req.params;
     requireLogin(req, res, () => {
       const query = Model.getQuery({ where: { uuid } }, database.models, req.user);

@@ -100,7 +100,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       <Field label="Session title" name="title" model={session} validation={{ maxLength: 50 }} tip="Enter a title for your session" placeholder="E.g. Volleyball training" />
       <Field label="Organizer" name="OrganizerUuid" model={session} type="Relation" relation={{ url: '/api/organizer', query: { owner: user.user_id } }} tip="Group or organization running the session" />
       <Field label="Description" name="description" model={session} type="textarea" tip="Enter a description (detail on the activities you'll be doing)" />
-      <Field label="Sport / activity type" name="activityType" model={session} tip="Enter the type of sport or activity E.g. Football, Yoga" />
+      <Field label="Sport / activity type" name="activityType" model={session} tip="Enter the type of sport or activity E.g. Football, Yoga" placeholder="E.g. Volleyball" />
     </Fieldset>);
   }
   render() {

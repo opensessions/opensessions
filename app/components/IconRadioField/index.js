@@ -20,8 +20,7 @@ export default class IconRadioField extends React.Component { // eslint-disable-
   }
   handleChange = (event) => {
     const { value } = event.target;
-    const state = { value };
-    this.setState(state);
+    this.setState({ value });
     if (this.props.onChange) {
       this.props.onChange(value);
     }

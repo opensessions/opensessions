@@ -2,7 +2,7 @@ const express = require('express');
 
 module.exports = (app, database) => {
   const rdpe = express();
-  const { Session } = database.models;
+  const { Session, Organizer } = database.models;
 
   rdpe.get('/', (req, res) => {
     res.json({
@@ -38,17 +38,34 @@ module.exports = (app, database) => {
       ['uuid', 'ASC']
     ];
     const limit = 50;
-    Session.findAll({ where, order, limit }).then((rawSessions) => {
+    Session.findAll({ where, order, limit, include: [Organizer] }).then((rawSessions) => {
       const sessions = rawSessions.map((session) => {
         const state = session.state === 'published' ? 'updated' : 'deleted';
         const item = {
           state,
           kind: 'session',
           id: `{${session.uuid}}`,
-          modified: session.updatedAt,
+          modified: session.updatedAt.toISOString(),
         };
         if (state === 'updated') {
-          item.data = session;
+          item.data = session.toJSON();
+          if (item.data.locationData) item.data.locationData = JSON.parse(item.data.locationData);
+          if (item.data.startDate) {
+            const timeFx = ['setHours', 'setMinutes', 'setSeconds'];
+            if (item.data.startTime) {
+              const startTime = item.data.startTime.split(':');
+              timeFx.forEach((fx) => {
+                item.data.startDate[fx](startTime.shift());
+              });
+            }
+            if (item.data.endTime) {
+              item.data.endDate = new Date(item.data.startDate.getTime());
+              const endTime = item.data.endTime.split(':');
+              timeFx.forEach((fx) => {
+                item.data.endDate[fx](endTime.shift());
+              });
+            }
+          }
         }
         return item;
       });
@@ -65,7 +82,7 @@ module.exports = (app, database) => {
       }
       res.json({
         items: sessions,
-        next: `/api/rdpe/sessions?from=${encodeURIComponent(next.from)}&after=${next.after}`,
+        next: `/api/rdpe/sessions?from=${encodeURIComponent(next.from)}&after=${encodeURIComponent(next.after)}`,
         license: 'https://creativecommons.org/licenses/by/4.0/'
       });
     }).catch((error) => {
