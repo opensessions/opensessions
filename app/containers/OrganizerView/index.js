@@ -25,6 +25,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     super(props);
     this.state = {
       organizer: props.organizer || null,
+      status: 'Loading organizer'
     };
   }
   componentDidMount() {
@@ -67,8 +68,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
           if (!error) {
             this.setState({ organizer, actionState: 'none' });
           } else {
-            console.error('failed to rename organizer, ', error);
-            this.setState({ actionState: 'none' });
+            this.setState({ actionState: 'none', error: 'failed to rename organizer' });
           }
         });
       }
@@ -83,17 +83,15 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
       if (res.status === 'success') {
         (self.props.router ? self.props.router : self.context.router).push('/');
       } else {
-        console.error('failed to delete organizer, ', res.error);
+        this.setState({ error: 'failed to delete organizer' });
       }
     });
   }
   renameEvents = (event) => {
     const { type, keyCode, target } = event;
-    console.log('renameEvents', type, keyCode, target.value);
     if (type === 'keydown') {
       if (keyCode === 13) {
         this.setState({ actionState: 'renaming' });
-        console.log('renameEvents', this.state);
         this.renameOrganizer(target.value);
       }
     } else if (type === 'blur') {
@@ -121,9 +119,9 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     </div>);
   }
   renderOrganizerSelect() {
-    const { organizerList } = this.props;
+    const { organizerList, onOrganizerChange } = this.props;
     if (!organizerList) return null;
-    return (<select onChange={this.props.onOrganizerChange}>
+    return (<select onChange={onOrganizerChange}>
       <option>Select organizer</option>
       {organizerList.map((organizer) => <option key={organizer.uuid} value={organizer.uuid}>{organizer.name}</option>)}
     </select>);
@@ -151,7 +149,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
   }
   renderName(organizer) {
     if (this.state.actionState && this.state.actionState === 'rename') return <input defaultValue={organizer.name} onKeyDown={this.renameEvents} onBlur={this.renameEvents} autoFocus />;
-    return [<Link to={organizer.href}>{organizer.name}</Link>, ' ', this.isOwner() ? <a onClick={this.renameOrganizer} className={styles.rename}>(rename)</a> : null];
+    return (<span><Link to={organizer.href}>{organizer.name}</Link> {this.isOwner() ? <a onClick={this.renameOrganizer} className={styles.rename}>(rename)</a> : null}</span>);
   }
   renderOrganizer(organizer) {
     const imageUrl = '/images/organizer-bg-default.png';
@@ -170,9 +168,10 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     </div>);
   }
   render() {
-    const { organizer } = this.state;
+    const { organizer, error, status } = this.state;
     return (<div className={styles.organizerView}>
-      {organizer ? this.renderOrganizer(organizer) : <LoadingMessage message={this.state.error} />}
+      {organizer ? this.renderOrganizer(organizer) : <LoadingMessage message={status} ellipsis />}
+      {error ? <LoadingMessage message={error} /> : null}
       <div className={styles.container}>
         {this.renderSessions()}
       </div>

@@ -15,7 +15,7 @@
         cursor: pointer;
         display: block;
         &:hover {
-          color: #09699A;
+          color: var(--actionColor);
         }
       }
       &.selected {

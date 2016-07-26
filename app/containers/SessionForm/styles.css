@@ -2,6 +2,7 @@
 
 .form {
   background-color: #EFEFEF;
+  border-bottom: .5em solid #BBB;
   input[type='submit'] {
     cursor: pointer;
     background-color: var(--actionColor);

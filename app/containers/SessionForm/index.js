@@ -79,7 +79,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       this.props.history.push(this.state.session.href);
     }
   }
-  onPreview = () => {
+  onAutosaveEvent = () => {
   }
   getSession() {
     let { session } = this.state;
@@ -127,7 +127,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
             </div>
           </div>
           <div className={styles.formBody}>
-            <Form autosave model={session} onPublish={this.onPublish} onChange={this.onChange} pendingSteps={this.state.pendingSteps}>
+            <Form autosave model={session} autosaveEvent={this.onAutosaveEvent} onPublish={this.onPublish} onChange={this.onChange} pendingSteps={this.state.pendingSteps}>
               {this.renderDescriptionFieldset()}
               <Fieldset label="Additional info" {...this.state.fieldsets[1].props}>
                 <Field label="What to bring" name="preparation" type="textarea" model={session} validation={{ maxLength: 2048 }} placeholder="Just bring yourself..." tip="Include any specialist equipment or clothing people will need to bring" />

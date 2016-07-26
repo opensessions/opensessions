@@ -19,7 +19,7 @@ export default class HomePage extends React.Component { // eslint-disable-line r
   render() {
     return (<div className={styles.container}>
       <h1>Welcome to Open Sessions!</h1>
-      <Authenticated message="Log in to add a session!" button>
+      <Authenticated message="Log in to add a session!" button="Log in">
         {this.renderSessionList()}
         <p><Link to="/session/add">+ Add a session</Link></p>
       </Authenticated>
