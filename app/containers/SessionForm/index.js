@@ -29,6 +29,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     super(props);
     this.state = {
       session: props.session || {},
+      autosaveState: 'none',
       fieldsets: [
         { required: ['title', 'OrganizerUuid', 'description'], props: { validity: false } },
         { required: ['leader'], props: { validity: false } },
@@ -79,7 +80,8 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       this.props.history.push(this.state.session.href);
     }
   }
-  onAutosaveEvent = () => {
+  onAutosaveEvent = (event) => {
+    this.setState({ autosaveState: event.type });
   }
   getSession() {
     let { session } = this.state;
@@ -114,56 +116,54 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       { text: 'Uncoached' },
       { text: 'Coached' }
     ];
-    return (
-      <div className={styles.form}>
-        <Authenticated message="You must login before you can add a session">
-          <div className={styles.titleBar}>
-            <div className={styles.titleInner}>
-              <div>
-                <h2>{this.props.headerText ? this.props.headerText : 'Add a session'}</h2>
-                <h3>{session.title || <i>Untitled</i>}</h3>
-              </div>
-              <Link to={`/session/${session.uuid}`} onClick={this.onPreview} className={styles.previewButton}>Preview</Link>
+    return (<div className={styles.form}>
+      <Authenticated message="You must login before you can add a session">
+        <div className={styles.titleBar}>
+          <div className={styles.titleInner}>
+            <div>
+              <h2>{this.props.headerText ? this.props.headerText : 'Add a session'}</h2>
+              <h3>{session.title || <i>Untitled</i>}</h3>
             </div>
+            <Link to={`/session/${session.uuid}`} className={`${styles.previewButton} ${this.state.autosaveState === 'pending' ? styles.disabled : ''}`}>{session.state === 'published' ? 'View' : 'Preview'}</Link>
           </div>
-          <div className={styles.formBody}>
-            <Form autosave model={session} autosaveEvent={this.onAutosaveEvent} onPublish={this.onPublish} onChange={this.onChange} pendingSteps={this.state.pendingSteps}>
-              {this.renderDescriptionFieldset()}
-              <Fieldset label="Additional info" {...this.state.fieldsets[1].props}>
-                <Field label="What to bring" name="preparation" type="textarea" model={session} validation={{ maxLength: 2048 }} placeholder="Just bring yourself..." tip="Include any specialist equipment or clothing people will need to bring" />
-                <Field label="Session leader" name="leader" model={session} tip="Who will run the session?" />
-                <Field label="Will participants receive coaching?" type="BoolRadio" name="hasCoaching" model={session} options={coachOptions} />
-              </Fieldset>
-              <Fieldset label="Location" {...this.state.fieldsets[2].props}>
-                <Field label="Address" type="Location" name="location" dataName="locationData" model={session} tip="Type to search an address and select from the dropdown" />
-                <Field label="Meeting point" name="meetingPoint" model={session} type="Optional" component={{ type: TextField, props: { validation: { maxLength: 50 } } }} multiline no="None" yes="Add details" tip="If the meeting point is not obvious from the address, add details here" null="" />
-              </Fieldset>
-              <Fieldset label="Pricing" {...this.state.fieldsets[3].props}>
-                {/* <Field label="Attendance type" name="attendanceType" model={session} /> */}
-                <Field label="Price" name="price" model={session} type="Optional" component={{ type: NumField, props: { validation: { min: 0 }, format: '£ :', step: '0.25' } }} no="Free" yes="Paid" />
-                <Field label="Quantity" name="quantity" model={session} type="number" validation={{ min: 0 }} tip="How many spaces are available?" />
-              </Fieldset>
-              <Fieldset label="Restrictions" {...this.state.fieldsets[4].props}>
-                <Field label="Gender Restrictions" type="IconRadio" name="genderRestriction" model={session} options={genderOptions} />
-                <Field label="Is there a minimum age?" name="minAgeRestriction" model={session} type="Optional" component={{ type: NumField, props: { validation: { min: 0 }, format: ': years old' } }} null="0" />
-                <Field label="Is there a maximum age?" name="maxAgeRestriction" model={session} type="Optional" component={{ type: NumField, props: { validation: { min: 0 }, format: ': years old' } }} null="0" />
-              </Fieldset>
-              <Fieldset label="Contact info" {...this.state.fieldsets[5].props}>
-                <Field label="Phone" name="contactPhone" model={session} />
-                <Field label="Email" name="contactEmail" model={session} type="email" />
-              </Fieldset>
-              {/* <Fieldset label="Photos">
-                <Field label="Photo" name="photo" model={session} type="Image" />
-              </Fieldset> */}
-              <Fieldset label="Schedule" {...this.state.fieldsets[6].props}>
-                <Field label="Date" name="startDate" type="date" model={session} />
-                <Field label="Start time" name="startTime" type="time" model={session} />
-                <Field label="End time" name="endTime" type="time" model={session} />
-              </Fieldset>
-            </Form>
-          </div>
-        </Authenticated>
-      </div>
-    );
+        </div>
+        <div className={styles.formBody}>
+          <Form autosave model={session} autosaveEvent={this.onAutosaveEvent} onPublish={this.onPublish} onChange={this.onChange} pendingSteps={this.state.pendingSteps}>
+            {this.renderDescriptionFieldset()}
+            <Fieldset label="Additional info" {...this.state.fieldsets[1].props}>
+              <Field label="What to bring" name="preparation" type="textarea" model={session} validation={{ maxLength: 2048 }} placeholder="Just bring yourself..." tip="Include any specialist equipment or clothing people will need to bring" />
+              <Field label="Session leader" name="leader" model={session} tip="Who will run the session?" />
+              <Field label="Will participants receive coaching?" type="BoolRadio" name="hasCoaching" model={session} options={coachOptions} />
+            </Fieldset>
+            <Fieldset label="Location" {...this.state.fieldsets[2].props}>
+              <Field label="Address" type="Location" name="location" dataName="locationData" model={session} tip="Type to search an address and select from the dropdown" />
+              <Field label="Meeting point" name="meetingPoint" model={session} type="Optional" component={{ type: TextField, props: { validation: { maxLength: 50 } } }} multiline no="None" yes="Add details" tip="If the meeting point is not obvious from the address, add details here" null="" />
+            </Fieldset>
+            <Fieldset label="Pricing" {...this.state.fieldsets[3].props}>
+              {/* <Field label="Attendance type" name="attendanceType" model={session} /> */}
+              <Field label="Price" name="price" model={session} type="Optional" component={{ type: NumField, props: { validation: { min: 0 }, format: '£ :', step: '0.25' } }} no="Free" yes="Paid" />
+              <Field label="Quantity" name="quantity" model={session} type="number" validation={{ min: 0 }} tip="How many spaces are available?" />
+            </Fieldset>
+            <Fieldset label="Restrictions" {...this.state.fieldsets[4].props}>
+              <Field label="Gender Restrictions" type="IconRadio" name="genderRestriction" model={session} options={genderOptions} />
+              <Field label="Is there a minimum age?" name="minAgeRestriction" model={session} type="Optional" component={{ type: NumField, props: { validation: { min: 0 }, format: ': years old' } }} null="0" />
+              <Field label="Is there a maximum age?" name="maxAgeRestriction" model={session} type="Optional" component={{ type: NumField, props: { validation: { min: 0 }, format: ': years old' } }} null="0" />
+            </Fieldset>
+            <Fieldset label="Contact info" {...this.state.fieldsets[5].props}>
+              <Field label="Phone" name="contactPhone" model={session} />
+              <Field label="Email" name="contactEmail" model={session} type="email" />
+            </Fieldset>
+            {/* <Fieldset label="Photos">
+              <Field label="Photo" name="photo" model={session} type="Image" />
+            </Fieldset> */}
+            <Fieldset label="Schedule" {...this.state.fieldsets[6].props}>
+              <Field label="Date" name="startDate" type="date" model={session} />
+              <Field label="Start time" name="startTime" type="time" model={session} />
+              <Field label="End time" name="endTime" type="time" model={session} />
+            </Fieldset>
+          </Form>
+        </div>
+      </Authenticated>
+    </div>);
   }
 }

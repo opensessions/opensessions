@@ -7,6 +7,7 @@ import { apiFetch } from '../../utils/api';
 export default class Form extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
     autosave: React.PropTypes.bool,
+    autosaveEvent: React.PropTypes.func,
     children: React.PropTypes.node.isRequired,
     model: React.PropTypes.object,
     pendingSteps: React.PropTypes.any,
@@ -32,22 +33,24 @@ export default class Form extends React.Component { // eslint-disable-line react
   }
   autosave = (ms) => {
     if (this.timeout) clearTimeout(this.timeout);
+    if (this.props.autosaveEvent) this.props.autosaveEvent({ type: 'pending' });
     this.timeout = setTimeout(() => {
       const { model } = this.props;
       if (model.state !== 'unpublished') {
         model.state = 'draft';
       }
-      this.saveModel(model);
+      this.saveModel(model, 'Saving', 'Saved');
     }, ms);
     this.setState({ saveState: 'Saving...', saveStateClass: styles.saving });
   }
   saveModel(model, verb, verbed) {
-    this.setState({ saveState: `${verb || 'Saving'}...`, saveStateClass: styles.saving });
+    this.setState({ saveState: `${verb}...`, saveStateClass: styles.saving });
     return apiFetch(`/api/session/${model.uuid}`, { body: model }).then((result) => {
       if (result.error) {
         throw result.error;
       }
-      this.setState({ saveState: `${verbed || 'Saved'} ${model.state ? model.state : ''}!`, saveStateClass: styles.saved });
+      if (this.props.autosaveEvent) this.props.autosaveEvent({ type: 'saved', state: result.instance.state });
+      this.setState({ saveState: `${verbed} ${model.state === 'published' ? 'and published' : 'as draft'}!`, saveStateClass: styles.saved });
       return result;
     });
   }

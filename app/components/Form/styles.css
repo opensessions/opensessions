@@ -30,7 +30,6 @@
 .nav {
   flex-grow: 1;
   padding: 4em .5em;
-  max-width: 13em;
   & > a {
     padding: .5em 1em;
     cursor: pointer;
@@ -63,10 +62,11 @@
     }
   }
   & .pending {
-    font-size: .7em;
-    padding: .5em 1em;
+    font-size: .75em;
+    padding: .5em;
     border-top: 1px solid;
     margin: 2em 1em 1em;
+    flex-basis: 100%;
   }
 }
 
@@ -141,6 +141,7 @@
 @media (min-width: 36rem) {
   .nav {
     font-size: 1.25em;
+    max-width: 13em;
   }
   .tabs {
     padding: 2em 2%;
