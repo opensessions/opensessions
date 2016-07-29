@@ -107,7 +107,8 @@ export default class LocationField extends React.Component {
         defaultCenter: locationData,
         center: locationData,
         ref: 'component',
-        onClick: this.onMapClick
+        onClick: this.onMapClick,
+        options: { streetViewControl: false, scrollwheel: false, mapTypeControl: false }
       };
       map = (<GoogleMapLoader
         containerElement={<div className={styles.mapView} />}

@@ -42,20 +42,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     };
   }
   componentDidMount() {
-    const self = this;
-    let sessionUri = '/api/session/create';
-    const options = {};
-    if (this.props.session) {
-      sessionUri = `/api/session/${this.props.session.uuid}`;
-    } else if (this.props.sessionID) {
-      sessionUri = `/api/session/${this.props.sessionID}`;
-    } else {
-      options.body = this.props.location.query;
-    }
-    apiFetch(sessionUri, options).then((res) => {
-      self.onChange(res.instance);
-      self.setState({ session: res.instance });
-    });
+    this.fetchData();
   }
   onChange = (session) => {
     const { fieldsets } = this.state;
@@ -88,6 +75,22 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     if (!session) session = {};
     session.update = this.updateSession;
     return session;
+  }
+  fetchData = () => {
+    let sessionUri = '/api/session/create';
+    const { session, sessionID, location } = this.props;
+    const options = {};
+    if (session) {
+      sessionUri = `/api/session/${session.uuid}`;
+    } else if (sessionID) {
+      sessionUri = `/api/session/${sessionID}`;
+    } else {
+      options.body = location.query;
+    }
+    apiFetch(sessionUri, options).then((res) => {
+      this.onChange(res.instance);
+      this.setState({ session: res.instance });
+    });
   }
   _locationInput = null
   updateSession = (name, value) => {

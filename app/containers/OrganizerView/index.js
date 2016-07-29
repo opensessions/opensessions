@@ -5,6 +5,7 @@ import { apiFetch } from '../../utils/api';
 
 import SessionTileView from '../SessionTileView';
 import LoadingMessage from 'components/LoadingMessage';
+import SessionList from 'containers/SessionList';
 
 import styles from './styles.css';
 
@@ -29,22 +30,19 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     };
   }
   componentDidMount() {
-    const self = this;
-    let uuid;
-    if (this.props.params && this.props.params.uuid) {
-      uuid = this.props.params.uuid;
-      apiFetch(`/api/organizer/${uuid}`).then((res) => {
-        if (!res.error) {
-          self.setState({ organizer: res.instance });
-        } else {
-          self.setState({ error: res.error });
-        }
-      });
-    }
+    this.fetchData();
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.organizer) {
       this.setState({ organizer: nextProps.organizer });
+    }
+  }
+  fetchData = () => {
+    const { params } = this.props;
+    if (params && params.uuid) {
+      apiFetch(`/api/organizer/${params.uuid}`).then((res) => {
+        this.setState(res.error ? { error: res.error } : { organizer: res.instance });
+      });
     }
   }
   isOwner() {
@@ -103,19 +101,11 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     if (!sessions) return null;
     const { showSessions } = this.state;
     const linkProps = { className: styles.toggle, onClick: this.toggleSessions };
-    let unassignedSessions;
-    if (!showSessions) {
-      unassignedSessions = <a {...linkProps}>{sessions.length} {sessions.length === 1 ? 'session is' : 'sessions are'} currently unassigned to an organizer</a>;
-    } else {
-      unassignedSessions = (<div>
-        <p><a {...linkProps}>Hide unassigned sessions</a></p>
-        <ul className={styles.organizerList}>
-          {sessions.map((session) => <li key={session.uuid}><SessionTileView session={session} /></li>)}
-        </ul>
-      </div>);
-    }
+    let text = 'Hide unassigned sessions';
+    if (!showSessions) text = `${sessions.length} session${sessions.length === 1 ? ' is' : 's are'} currently unassigned to an organizer`;
     return (<div className={styles.unassigned}>
-      {unassignedSessions}
+      <p><a {...linkProps}>{text}</a></p>
+      {showSessions ? <SessionList sessions={sessions} /> : null}
     </div>);
   }
   renderOrganizerSelect() {

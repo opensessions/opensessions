@@ -26,14 +26,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     this.state = {};
   }
   componentDidMount() {
-    const self = this;
-    apiFetch(`/api/session/${this.props.params.uuid}`).then((result) => {
-      if (!result.error) {
-        self.setState({ session: result.instance });
-      } else {
-        self.setState({ error: result.error });
-      }
-    });
+    this.fetchData();
   }
   getPrice() {
     let { price } = this.state.session;
@@ -53,6 +46,12 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   getTitle() {
     const { session } = this.state;
     return `${session.title ? session.title : '(Untitled)'}`;
+  }
+  fetchData = () => {
+    apiFetch(`/api/session/${this.props.params.uuid}`).then((result) => {
+      if (result.error) this.setState({ error: result.error });
+      if (result.instance) this.setState({ session: result.instance });
+    });
   }
   renderDate() {
     const { session } = this.state;
@@ -257,7 +256,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         defaultZoom: 16,
         defaultCenter,
         onClick: onMapClick,
-        options: { streetViewControl: false }
+        options: { streetViewControl: false, scrollwheel: false }
       };
       map = (<div className={styles.mapFrame}>
         <GoogleMapLoader

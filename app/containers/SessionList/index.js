@@ -21,7 +21,7 @@ export default class SessionList extends React.Component { // eslint-disable-lin
   }
   componentDidMount() {
     if (!this.props.sessions) {
-      this.fetchSessions();
+      this.fetchData();
     }
   }
   componentWillReceiveProps(props) {
@@ -30,14 +30,11 @@ export default class SessionList extends React.Component { // eslint-disable-lin
       this.setState({ sessions: props.sessions, status: 'passed' });
     }
   }
-  fetchSessions() {
+  fetchData() {
     apiFetch(`/api/session?${this.props.query}`).then((result) => {
       const { instances, error } = result;
-      if (error) {
-        this.setState({ status: error });
-      } else if (instances) {
-        this.setState({ sessions: instances, status: 'done' });
-      }
+      if (instances) this.setState({ sessions: instances, status: 'done' });
+      if (error) this.setState({ status: error });
     });
   }
   renderSessions() {
