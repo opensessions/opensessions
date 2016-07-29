@@ -14,6 +14,7 @@
       & label {
         cursor: pointer;
         display: block;
+        transition: .2s all ease;
         &:hover {
           color: var(--actionColor);
         }

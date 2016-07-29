@@ -56,9 +56,7 @@ img {
   max-width: 100%; /* Adhere to container width. */
 }
 
-/* -----------------------------------------
- * Global layout classes
- * ----------------------------------------- */
+/* Global layout classes */
 
 :global .clearfix::after {
   content: '';
@@ -66,9 +64,7 @@ img {
   clear: both;
 }
 
-/* -----------------------------------------
- * Buttons
- * ----------------------------------------- */
+/* Buttons */
 
 :global .btn {
   display: block;
@@ -95,4 +91,20 @@ img {
 
 :global a {
   user-select: none;
+}
+
+:global body .cc_container {
+  font-family: 'Open Sans', sans-serif;
+  background: var(--darkBlue);
+  & .cc_btn {
+    background-color: var(--actionColor);
+    color: #FFF;
+    border-radius: 0;
+    font-family: Belgrano, serif;
+    font-size: 1.25em;
+    margin-top: .5em;
+  }
+  & .cc_logo {
+    display: none;
+  }
 }

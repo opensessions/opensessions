@@ -1,5 +1,12 @@
 .sessionList {
-  & ol > li {
-    list-style: none;
+  & p.intro {
+    text-align: center;
+    margin: 1.5em auto;
+  }
+  & ol.list {
+    & > li {
+      list-style: none;
+      margin: 1em auto;
+    }
   }
 }

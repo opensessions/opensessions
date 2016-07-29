@@ -43,11 +43,8 @@ export default class SessionTileView extends React.Component { // eslint-disable
     const { session } = this.props;
     const date = parseSchedule(session);
     let { state } = session;
-    let stateStyle = styles.state;
-    if (state === 'published') {
-      stateStyle = `${stateStyle} ${styles.live}`;
-      state = 'live';
-    }
+    const stateDisplayNames = { published: 'live', unpublished: 'draft' };
+    if (state in stateDisplayNames) state = stateDisplayNames[state];
     const schedules = [];
     if (date.date || date.time) {
       schedules.push(<li className={styles.schedule} key="schedule1">
@@ -67,7 +64,7 @@ export default class SessionTileView extends React.Component { // eslint-disable
           </div>
           <div className={styles.actions}>
             {this.renderActions()}
-            <div className={stateStyle}>{state}</div>
+            <div className={`${styles.state} ${state === 'live' ? styles.live : ''}`}>{state}</div>
           </div>
         </div>
         <div className={styles.schedules}>

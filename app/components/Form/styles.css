@@ -63,10 +63,11 @@
   }
   & .pending {
     font-size: .75em;
-    padding: .5em;
+    padding: 2em .25em 1em;
     border-top: 1px solid;
-    margin: 2em 1em 1em;
+    margin: 3em 1em 0;
     flex-basis: 100%;
+    color: #555;
   }
 }
 
@@ -89,6 +90,7 @@
   & > a {
     cursor: pointer;
     font-size: 1.2em;
+    font-family: Belgrano, serif;
     padding: .5em 1.5em;
     line-height: 1;
     background-color: var(--actionColor);
