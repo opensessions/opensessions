@@ -102,10 +102,10 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     const session = this.getSession();
     const user = this.context.user || {};
     return (<Fieldset label="Description" ref="descriptionFieldset" {...this.state.fieldsets[0].props}>
-      <Field label="Session title" name="title" model={session} validation={{ maxLength: 50 }} tip="Enter a title for your session" placeholder="E.g. Volleyball training" />
-      <Field label="Organizer" name="OrganizerUuid" model={session} type="Relation" relation={{ url: '/api/organizer', query: { owner: user.user_id } }} tip="Group or organization running the session" />
-      <Field label="Description" name="description" model={session} type="textarea" tip="Enter a description (detail on the activities you'll be doing)" />
-      <Field label="Sport / activity type" name="activityType" model={session} tip="Enter the type of sport or activity E.g. Football, Yoga" placeholder="E.g. Volleyball" />
+      <Field label="Session title" name="title" model={session} validation={{ maxLength: 50 }} tip="Enter a title for your session" example="E.g. Volleyball training" />
+      <Field label="Organizer name" name="OrganizerUuid" model={session} type="Relation" relation={{ url: '/api/organizer', query: { owner: user.user_id } }} tip="Enter the name of your club or organisation. If you don't represent a club or organisation, enter your own name" example="E.g. Richmond Volleyball" />
+      <Field label="Session description" name="description" model={session} type="textarea" tip="Let people know what's great about the session! Remember: the more detail you provide, the more likely people are to decide to attend." example="Tips: Who is this session for? What benefits will people get from it? What will the session be like? What will we do? Is any prior experience needed?" />
+      <Field label="Sport or activity type" name="activityType" model={session} tip="Enter the type of activity or sport on offer for this session. If multiple activities are on offer at this session, please write 'Multiple Activities'" placeholder="E.g. Volleyball" example="E.g. Volleyball" />
     </Fieldset>);
   }
   render() {
@@ -134,13 +134,13 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
           <Form autosave model={session} autosaveEvent={this.onAutosaveEvent} onPublish={this.onPublish} onChange={this.onChange} pendingSteps={this.state.pendingSteps}>
             {this.renderDescriptionFieldset()}
             <Fieldset label="Additional info" {...this.state.fieldsets[1].props}>
-              <Field label="What to bring" name="preparation" type="textarea" model={session} validation={{ maxLength: 2048 }} placeholder="Just bring yourself..." tip="Include any specialist equipment or clothing people will need to bring" />
-              <Field label="Session leader" name="leader" model={session} tip="Who will run the session?" />
+              <Field label="Is there anything participants should bring?" name="preparation" type="Optional" component={{ type: TextField, props: { maxLength: 50 } }} model={session} placeholder="Sensible running shoes that you don't mind ruining with sand." tip="Let participants know how to prepare for your session. Is there anything they will need to bring?" multiline />
+              <Field label="Who is the leader for this session?" name="leader" model={session} type="Optional" component={{ type: TextField, props: {} }} tip="Enter the name of the person who will be leading the session. It's helpful for participants to know who's in charge when they arrive" example="E.g. John Smith" multiline no="None" yes="Add leader" />
               <Field label="Will participants receive coaching?" type="BoolRadio" name="hasCoaching" model={session} options={coachOptions} />
             </Fieldset>
             <Fieldset label="Location" {...this.state.fieldsets[2].props}>
               <Field label="Address" type="Location" name="location" dataName="locationData" model={session} tip="Type to search an address and select from the dropdown" />
-              <Field label="Meeting point" name="meetingPoint" model={session} type="Optional" component={{ type: TextField, props: { validation: { maxLength: 50 } } }} multiline no="None" yes="Add details" tip="If the meeting point is not obvious from the address, add details here" null="" />
+              <Field label="Meeting Instructions" name="meetingPoint" model={session} type="Optional" component={{ type: TextField, props: { validation: { maxLength: 50 } } }} multiline no="None" yes="Add details" tip="What should participants do when they arrive at the venue or location? Try to be as specific as possible." example="E.g. Meet in the main reception area" null="" />
             </Fieldset>
             <Fieldset label="Pricing" {...this.state.fieldsets[3].props}>
               {/* <Field label="Attendance type" name="attendanceType" model={session} /> */}

@@ -16,6 +16,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
   static propTypes = {
     label: React.PropTypes.string,
     tip: React.PropTypes.string,
+    example: React.PropTypes.string,
     placeholder: React.PropTypes.string,
     model: React.PropTypes.object.isRequired,
     name: React.PropTypes.string.isRequired,
@@ -97,7 +98,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
     return false;
   }
   render() {
-    const { label, placeholder, validation, model, name } = this.props;
+    const { label, placeholder, validation, model, name, tip, example } = this.props;
     const { valid, isMobile } = this.state;
     const attrs = {
       name,
@@ -106,7 +107,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
       onChange: this.handleValueChange,
       className: `${styles.input} ${valid ? '' : styles.invalid}`,
     };
-    if (model && name in model) attrs.value = model[name];
+    if (model && name in model && model[name]) attrs.value = model[name];
     let input;
     const type = this.props.type || 'text';
     if (type === 'IconRadio') {
@@ -165,11 +166,12 @@ export default class Field extends React.Component { // eslint-disable-line reac
       attrs.type = type;
       input = type === 'textarea' ? <textarea {...attrs} /> : <input {...attrs} />;
     }
-    let tip;
-    if (this.props.tip) {
-      tip = (<div className={styles.tip}>
+    let tooltip;
+    if (tip) {
+      tooltip = (<div className={styles.tip}>
         <strong>{label}</strong>
-        <p>{this.props.tip}</p>
+        <p>{tip}</p>
+        {example ? <p className={styles.example}>{example}</p> : null}
       </div>);
     }
     return (<div className={styles.field} data-valid={this.state.valid} data-hasfocus={this.state.hasFocus} onFocus={this.onFocusChange} onBlur={this.onFocusChange}>
@@ -178,7 +180,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
         {input}
         {this.renderValidation()}
       </div>
-      {tip}
+      {tooltip}
     </div>);
   }
 }

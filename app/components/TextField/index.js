@@ -12,11 +12,11 @@ export default class TextField extends React.Component { // eslint-disable-line 
     const { model, name, className, autoFocus, onChange } = this.props;
     const attrs = {
       name,
+      value: (model && name) ? model[name] : '',
       onChange,
       className,
       autoFocus
     };
-    if (model && name) attrs.value = model[name];
     return <textarea {...attrs} />;
   }
 }

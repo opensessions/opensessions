@@ -34,7 +34,6 @@
     transition: .3s all ease;
     background-color: #FFF;
     padding: .75em;
-    max-width: 16em;
     pointer-events: none;
     bottom: 0%;
     top: auto;
@@ -52,6 +51,9 @@
       font-size: 1.5em;
       top: -.5em;
       left: -.5em;
+    }
+    & .example {
+      font-weight: 300;
     }
   }
   & .inputWrap {
@@ -97,6 +99,7 @@
       top: 2em;
       left: 26em;
       bottom: auto;
+      max-width: 20em;
     }
     form[data-hasFocus='false'] &:hover {
       & .tip {
