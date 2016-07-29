@@ -16,6 +16,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
   static propTypes = {
     label: React.PropTypes.string,
     tip: React.PropTypes.string,
+    tipTitle: React.PropTypes.string,
     example: React.PropTypes.string,
     placeholder: React.PropTypes.string,
     model: React.PropTypes.object.isRequired,
@@ -98,7 +99,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
     return false;
   }
   render() {
-    const { label, placeholder, validation, model, name, tip, example } = this.props;
+    const { label, placeholder, validation, model, name, tip, tipTitle, example } = this.props;
     const { valid, isMobile } = this.state;
     const attrs = {
       name,
@@ -169,7 +170,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
     let tooltip;
     if (tip) {
       tooltip = (<div className={styles.tip}>
-        <strong>{label}</strong>
+        <strong>{tipTitle || label}</strong>
         <p>{tip}</p>
         {example ? <p className={styles.example}>{example}</p> : null}
       </div>);
