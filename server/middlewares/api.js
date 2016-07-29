@@ -54,6 +54,12 @@ module.exports = (app) => {
     return query;
   };
 
+  api.get('/keys', (req, res) => {
+    res.json({
+      GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_API_KEY
+    });
+  });
+
   api.get('/:model', resolveModel, (req, res) => {
     const { Model } = req;
     requireLogin(req, res, () => {
