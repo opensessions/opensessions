@@ -33,7 +33,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       fieldsets: [
         { required: ['title', 'OrganizerUuid', 'description'], props: { validity: false, title: 'Add details about your session', subtitle: 'You\'ll be able to edit these details later' } },
         { required: ['leader'], props: { validity: false, title: 'Add details about your session', subtitle: 'You\'ll be able to edit these details later' } },
-        { required: ['location'], props: { validity: false, title: 'Add details about your session', subtitle: 'You\'ll be able to edit these details later' } },
+        { required: ['location'], props: { validity: false, title: 'Where is your session happening?', subtitle: 'Select a location and let participants know about any meeting instructions' } },
         { props: { validity: 'none' } },
         { props: { validity: 'none' } },
         { props: { validity: 'none' } },

@@ -55,7 +55,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
     this.handleValueChange(value);
   }
   isValid(value) {
-    const { opts } = this.props.validation;
+    const opts = this.props.validation;
     let valid = true;
     if (opts) {
       if (opts.maxLength) {
