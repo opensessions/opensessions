@@ -23,6 +23,14 @@ export default class Form extends React.Component { // eslint-disable-line react
       hasFocus: false
     };
   }
+  componentDidMount() {
+    this.refocus();
+  }
+  componentDidUpdate(oldProps, oldState) {
+    if (oldState.activeTab !== this.state.activeTab) {
+      this.refocus();
+    }
+  }
   onFocus = () => {
     this.setState({ hasFocus: true });
   }
@@ -66,6 +74,11 @@ export default class Form extends React.Component { // eslint-disable-line react
   actionClick = (event) => {
     const delta = event.target.text === 'Next' ? 1 : -1;
     this.setState({ activeTab: this.state.activeTab + delta });
+  }
+  refocus = () => {
+    const firstShownField = Array.filter(this.refs.form.elements, (element) => element.tagName === 'FIELDSET')
+      .filter((fieldset) => fieldset.parentNode.className !== styles.hiddenTab)[0].childNodes[0];
+    firstShownField.getElementsByTagName('input')[0].focus();
   }
   submit = () => {
     if (this.timeout) clearTimeout(this.timeout);
@@ -119,7 +132,7 @@ export default class Form extends React.Component { // eslint-disable-line react
   }
   render() {
     const { pendingSteps } = this.props;
-    return (<form onChange={this.props.autosave ? this.formChange : undefined} onFocus={this.onFocus} onBlur={this.onBlur} className={styles.form} data-hasFocus={this.state.hasFocus}>
+    return (<form onChange={this.props.autosave ? this.formChange : undefined} onFocus={this.onFocus} onBlur={this.onBlur} className={styles.form} data-hasFocus={this.state.hasFocus} ref="form">
       <nav className={styles.nav}>
         {this.renderNav()}
         <div className={styles.pending} dangerouslySetInnerHTML={{ __html: pendingSteps ? `Complete <b>${pendingSteps} more</b> step${pendingSteps === 1 ? '' : 's'} to finish your listing` : 'Ready to publish!' }} />

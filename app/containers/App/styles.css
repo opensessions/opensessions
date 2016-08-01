@@ -2,26 +2,11 @@
 
 html {
   height: 100%;
-  font-size: 56.25%;
+  font-size: 62.5%;
   font-family: var(--bodyFont);
   line-height: 1.4;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-@media (min-width: 36rem) {
-  html {
-    font-size: 62.5%;
-  }
-  .root {
-    padding-top: 5em;
-  }
-}
-
-@media (min-width: 104rem) {
-  html {
-    font-size: 68.75%;
-  }
 }
 
 .root {
@@ -34,6 +19,7 @@ html {
   flex-direction: column;
   min-height: 100vh;
   justify-content: space-between;
+  padding-top: 5em;
   & a {
     color: inherit;
     cursor: pointer;
@@ -41,6 +27,21 @@ html {
     &:focus {
       text-decoration: underline;
     }
+  }
+}
+
+@media (max-width: 36rem) {
+  html {
+    font-size: 56.25%;
+  }
+  .root {
+    padding-top: 0;
+  }
+}
+
+@media (min-width: 104rem) {
+  html {
+    font-size: 68.75%;
   }
 }
 

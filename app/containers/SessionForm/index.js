@@ -131,7 +131,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
           </div>
         </div>
         <div className={styles.formBody}>
-          <Form autosave model={session} autosaveEvent={this.onAutosaveEvent} onPublish={this.onPublish} onChange={this.onChange} pendingSteps={this.state.pendingSteps}>
+          <Form autosave={session.state !== 'published'} model={session} autosaveEvent={this.onAutosaveEvent} onPublish={this.onPublish} onChange={this.onChange} pendingSteps={this.state.pendingSteps}>
             {this.renderDescriptionFieldset()}
             <Fieldset label="Additional info" {...this.state.fieldsets[1].props}>
               <Field label="Is there anything participants should bring?" tipTitle="What to bring" name="preparation" type="Optional" component={{ type: TextField, props: { maxLength: 500 } }} model={session} placeholder="Sensible running shoes that you don't mind ruining with sand." tip="Let participants know how to prepare for your session. Is there anything they will need to bring?" multiline />
