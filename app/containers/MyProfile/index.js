@@ -65,7 +65,7 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
   }
   render() {
     return (<div>
-      <Authenticated message="You must be logged on to view your profile">
+      <Authenticated message="You must be logged on to view your profile" button="Log in" lock={this.context.lock}>
         {this.renderOrganizers()}
       </Authenticated>
     </div>);

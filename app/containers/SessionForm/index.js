@@ -134,7 +134,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
           <Form autosave model={session} autosaveEvent={this.onAutosaveEvent} onPublish={this.onPublish} onChange={this.onChange} pendingSteps={this.state.pendingSteps}>
             {this.renderDescriptionFieldset()}
             <Fieldset label="Additional info" {...this.state.fieldsets[1].props}>
-              <Field label="Is there anything participants should bring?" tipTitle="What to bring" name="preparation" type="Optional" component={{ type: TextField, props: { maxLength: 50 } }} model={session} placeholder="Sensible running shoes that you don't mind ruining with sand." tip="Let participants know how to prepare for your session. Is there anything they will need to bring?" multiline />
+              <Field label="Is there anything participants should bring?" tipTitle="What to bring" name="preparation" type="Optional" component={{ type: TextField, props: { maxLength: 500 } }} model={session} placeholder="Sensible running shoes that you don't mind ruining with sand." tip="Let participants know how to prepare for your session. Is there anything they will need to bring?" multiline />
               <Field label="Who is the leader for this session?" tipTitle="Session leader" name="leader" model={session} type="text" tip="Enter the name of the person who will be leading the session. It's helpful for participants to know who's in charge when they arrive" example="E.g. John Smith" />
               <Field label="Will participants receive coaching?" type="BoolRadio" name="hasCoaching" model={session} options={coachOptions} />
             </Fieldset>

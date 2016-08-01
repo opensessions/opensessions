@@ -20,6 +20,7 @@ export default class Form extends React.Component { // eslint-disable-line react
       activeTab: 0,
       saveState: 'Unsaved',
       saveStateClass: styles.unsaved,
+      hasFocus: false
     };
   }
   onFocus = () => {
@@ -60,7 +61,6 @@ export default class Form extends React.Component { // eslint-disable-line react
   }
   tabClick = (event) => {
     const key = Array.prototype.indexOf.call(event.target.parentNode.childNodes, event.target);
-    if (this.state.activeTab === key) return;
     this.setState({ activeTab: key });
   }
   actionClick = (event) => {
@@ -76,9 +76,8 @@ export default class Form extends React.Component { // eslint-disable-line react
       .catch((error) => this.setState({ saveState: error, saveStateClass: styles.error }));
   }
   renderNav() {
-    const self = this;
     return this.getFieldsets().map((fieldset, key) => {
-      const className = self.state.activeTab === key ? styles.active : '';
+      const className = this.state.activeTab === key ? styles.active : '';
       let isComplete = <span className={styles.tickNone}>+</span>;
       if (fieldset.props.validity === true) {
         isComplete = <span className={styles.tick}>&#10003;</span>;
@@ -89,9 +88,8 @@ export default class Form extends React.Component { // eslint-disable-line react
     });
   }
   renderTab() {
-    const self = this;
     return this.getFieldsets().map((child, key) => {
-      const active = key === self.state.activeTab ? '' : styles.hiddenTab;
+      const active = key === this.state.activeTab ? '' : styles.hiddenTab;
       return <div key={key} className={active}>{child}</div>;
     });
   }
