@@ -8,14 +8,4 @@
     font-size: 1.5em;
     margin: .75em auto;
   }
-  & p {
-    margin: 1em auto;
-    & > a {
-      display: inline-block;
-      padding: 1em;
-      line-height: 1;
-      background: var(--actionColor);
-      color: #FFF;
-    }
-  }
 }

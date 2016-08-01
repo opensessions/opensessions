@@ -24,10 +24,10 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
   }
   componentDidMount() {
     if (this.context.user) {
-      this.fetchOrganizers();
+      this.fetchData();
     } else {
       setTimeout(() => {
-        this.fetchOrganizers();
+        this.fetchData();
       }, 1000);
     }
   }
@@ -35,7 +35,11 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
     const { value } = event.target;
     this.setState({ selectedOrganizer: value });
   }
-  fetchOrganizers = () => {
+  getOrganizer() {
+    const { organizers, selectedOrganizer } = this.state;
+    return organizers.filter((item) => item.uuid === selectedOrganizer)[0];
+  }
+  fetchData = () => {
     const { user } = this.context;
     this.setState({ status: 'Loading organizers...' });
     apiFetch('/api/organizer', {
@@ -44,23 +48,16 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
       const organizers = result.instances;
       const selectedOrganizer = organizers.length ? organizers[0].uuid : 0;
       apiFetch(`/api/session?owner=${user.user_id}&OrganizerUuid=null`).then((sessionResult) => {
-        let sessions;
-        let error;
-        if (sessionResult.error) {
-          error = sessionResult.error;
-        } else if (sessionResult.instances) {
-          sessions = sessionResult.instances;
-        }
-        this.setState({ selectedOrganizer, organizers, sessions, status: error });
+        const { instances, error } = sessionResult;
+        this.setState({ selectedOrganizer, organizers, sessions: instances, status: error });
       });
     });
   }
   renderOrganizers() {
-    const { sessions, organizers, selectedOrganizer, status } = this.state;
+    const { sessions, organizers, status } = this.state;
     if (organizers) {
       if (organizers.length) {
-        const organizer = organizers.filter((item) => item.uuid === selectedOrganizer)[0];
-        return <OrganizerView router={this.context.router} organizer={organizer} unassignedSessions={sessions} organizerList={organizers} onOrganizerChange={this.onOrganizerChange} />;
+        return <OrganizerView router={this.context.router} organizer={this.getOrganizer()} unassignedSessions={sessions} organizerList={organizers} onOrganizerChange={this.onOrganizerChange} />;
       }
       return (<SessionList sessions={sessions} />);
     }

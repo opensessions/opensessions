@@ -83,7 +83,9 @@ export default class App extends React.Component { // eslint-disable-line react/
     return (
       <div className={styles.root}>
         <Header lock={this.lock} />
-        {this.props.children}
+        <div className={styles.container}>
+          {this.props.children}
+        </div>
         <Footer />
       </div>
     );

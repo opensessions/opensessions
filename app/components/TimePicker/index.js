@@ -52,7 +52,7 @@ export default class TimePicker extends React.Component { // eslint-disable-line
     this.changeTime(hours, minutes);
   }
   minsEvent = (event) => {
-    const { type, keyCode } = event;
+    const { type, keyCode, target } = event;
     if (type === 'keydown') {
       const fns = { 38: 'minsInc', 40: 'minsDec' };
       if (keyCode in fns) {
@@ -66,7 +66,7 @@ export default class TimePicker extends React.Component { // eslint-disable-line
         this.minsInc();
       }
     } else if (type === 'change') {
-      this.setState({ minutes: parseInt(event.target.value, 10) });
+      this.changeTime(this.state.hours, parseInt(target.value.substr(-2), 10));
     }
   }
   meridianChange = (event) => {

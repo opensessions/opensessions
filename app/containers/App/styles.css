@@ -30,6 +30,10 @@ html {
   margin: auto;
   color: var(--defaultColor);
   background-color: var(--grey);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  justify-content: space-between;
   & a {
     color: inherit;
     cursor: pointer;
@@ -55,8 +59,6 @@ img {
   height: auto; /* Make sure images are scaled correctly. */
   max-width: 100%; /* Adhere to container width. */
 }
-
-/* Global layout classes */
 
 :global .clearfix::after {
   content: '';

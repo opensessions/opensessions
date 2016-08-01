@@ -1,3 +1,5 @@
+@import '../App/variables.css';
+
 .sessionList {
   & p.intro {
     text-align: center;
@@ -8,5 +10,16 @@
       list-style: none;
       margin: 1em auto;
     }
+  }
+  & > p {
+    margin: 1em auto;
+    text-align: center;
+  }
+  & .add {
+    display: inline-block;
+    padding: 1em;
+    line-height: 1;
+    background: var(--actionColor);
+    color: #FFF;
   }
 }

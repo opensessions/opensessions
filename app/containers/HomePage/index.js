@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router';
 
 import Authenticated from 'components/Authenticated';
 import SessionList from 'containers/SessionList';
@@ -21,7 +20,6 @@ export default class HomePage extends React.Component { // eslint-disable-line r
       <h1>Welcome to Open Sessions!</h1>
       <Authenticated message="Login to add a session!">
         {this.renderSessionList()}
-        <p><Link to="/session/add">+ Add a session</Link></p>
       </Authenticated>
     </div>);
   }

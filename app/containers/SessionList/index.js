@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { Link } from 'react-router';
 
 import { apiFetch } from '../../utils/api';
 
@@ -37,20 +38,15 @@ export default class SessionList extends React.Component { // eslint-disable-lin
       if (error) this.setState({ status: error });
     });
   }
-  renderSessions() {
+  render() {
     const { sessions, status } = this.state;
-    if (status === 'loading') return <LoadingMessage message="Loading sessions" ellipsis />;
-    if (!sessions) return <p className={styles.intro}>You haven't created any sessions yet, click the button below to create a session.</p>;
-    return (<div>
-      <p className={styles.intro}>{sessions.length ? 'These are the sessions you\'ve created so far:' : 'You haven\'t created any sessions yet!'}</p>
+    if (status === 'loading') return <div className={styles.sessionList}><LoadingMessage message="Loading sessions" ellipsis /></div>;
+    return (<div className={styles.sessionList}>
+      <p className={styles.intro}>{sessions.length ? 'These are the sessions you\'ve created so far:' : 'You haven\'t created any sessions yet! Click the button below to create a session.'}</p>
       <ol className={styles.list}>
         {sessions.map((session) => <li key={session.uuid}><SessionTileView session={session} /></li>)}
       </ol>
-    </div>);
-  }
-  render() {
-    return (<div className={styles.sessionList}>
-      {this.renderSessions()}
+      <p><Link to="/session/add" className={styles.add}>+ Add a session</Link></p>
     </div>);
   }
 }

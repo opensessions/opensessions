@@ -120,6 +120,7 @@
   font-weight: bold;
   transition: .1s ease all;
   opacity: 1;
+  max-width: 42em;
   &.unsaved {
     color: transparent;
   }
