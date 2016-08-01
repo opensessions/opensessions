@@ -74,6 +74,15 @@
   & .danger {
     color: var(--errorRed);
   }
+  & input[type='radio'] {
+    width: 1em;
+    height: 1em;
+    vertical-align: middle;
+    &:focus {
+      outline: .15em solid #00AEEF;
+      outline-offset: .1em;
+    }
+  }
 }
 
 .input {

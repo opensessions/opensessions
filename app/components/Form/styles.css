@@ -28,8 +28,8 @@
 }
 
 .nav {
-  flex-grow: 1;
-  padding: 4em .5em;
+  min-width: 12em;
+  padding: 3em .5em;
   & > a {
     padding: .5em 1em;
     cursor: pointer;

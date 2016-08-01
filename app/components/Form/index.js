@@ -1,6 +1,7 @@
 import React from 'react';
 
 import styles from './styles.css';
+import fieldStyles from '../Field/styles.css';
 
 import { apiFetch } from '../../utils/api';
 
@@ -55,11 +56,13 @@ export default class Form extends React.Component { // eslint-disable-line react
   saveModel(model, verb, verbed) {
     this.setState({ saveState: `${verb}...`, saveStateClass: styles.saving });
     return apiFetch(`/api/session/${model.uuid}`, { body: model }).then((result) => {
-      if (result.error) {
-        throw result.error;
+      const { instance, error } = result;
+      if (error) {
+        this.setState({ saveState: `Failed ${verb.toLowerCase()}: ${error}`, saveStateClass: styles.error });
+      } else {
+        if (this.props.autosaveEvent) this.props.autosaveEvent({ type: 'saved', state: instance.state });
+        this.setState({ saveState: `${verbed} ${model.state === 'published' ? 'and published' : 'as draft'}!`, saveStateClass: styles.saved });
       }
-      if (this.props.autosaveEvent) this.props.autosaveEvent({ type: 'saved', state: result.instance.state });
-      this.setState({ saveState: `${verbed} ${model.state === 'published' ? 'and published' : 'as draft'}!`, saveStateClass: styles.saved });
       return result;
     });
   }
@@ -76,9 +79,13 @@ export default class Form extends React.Component { // eslint-disable-line react
     this.setState({ activeTab: this.state.activeTab + delta });
   }
   refocus = () => {
-    const firstShownField = Array.filter(this.refs.form.elements, (element) => element.tagName === 'FIELDSET')
-      .filter((fieldset) => fieldset.parentNode.className !== styles.hiddenTab)[0].childNodes[0];
-    firstShownField.getElementsByTagName('input')[0].focus();
+    try {
+      const firstShownField = Array.filter(this.refs.form.elements, (element) => element.tagName === 'FIELDSET')
+        .filter((fieldset) => fieldset.parentNode.className !== styles.hiddenTab)[0].getElementsByClassName(fieldStyles.field)[0];
+      firstShownField.getElementsByTagName('input')[0].focus();
+    } catch (error) {
+      console.error('Couldn\'t refocus', error);
+    }
   }
   submit = () => {
     if (this.timeout) clearTimeout(this.timeout);

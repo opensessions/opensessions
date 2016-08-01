@@ -31,9 +31,9 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       session: props.session || {},
       autosaveState: 'none',
       fieldsets: [
-        { required: ['title', 'OrganizerUuid', 'description'], props: { validity: false } },
-        { required: ['leader'], props: { validity: false } },
-        { required: ['location'], props: { validity: false } },
+        { required: ['title', 'OrganizerUuid', 'description'], props: { validity: false, title: 'Add details about your session', subtitle: 'You\'ll be able to edit these details later' } },
+        { required: ['leader'], props: { validity: false, title: 'Add details about your session', subtitle: 'You\'ll be able to edit these details later' } },
+        { required: ['location'], props: { validity: false, title: 'Add details about your session', subtitle: 'You\'ll be able to edit these details later' } },
         { props: { validity: 'none' } },
         { props: { validity: 'none' } },
         { props: { validity: 'none' } },

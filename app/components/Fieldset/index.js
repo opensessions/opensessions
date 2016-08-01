@@ -6,11 +6,16 @@ export default class Fieldset extends React.Component { // eslint-disable-line r
   static propTypes = {
     children: React.PropTypes.node.isRequired,
     label: React.PropTypes.string,
+    title: React.PropTypes.string,
+    subtitle: React.PropTypes.string,
   }
   render() {
+    const { title, subtitle, children } = this.props;
     return (
       <fieldset className={styles.fieldset}>
-        {this.props.children}
+        {title ? <h1>{title}</h1> : null}
+        {subtitle ? <h2>{subtitle}</h2> : null}
+        {children}
       </fieldset>
     );
   }

@@ -1,6 +1,18 @@
 .fieldset {
   padding: 0 1em;
   min-width: auto;
+  & > h1,
+  & > h2 {
+    color: #555;
+    margin: .25em auto;
+  }
+  & > h1 {
+    font-weight: normal;
+    font-size: 1.25em;
+  }
+  & > h2 {
+    margin-bottom: 2em;
+  }
 }
 
 .hidden {

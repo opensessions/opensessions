@@ -38,15 +38,10 @@ export default class Field extends React.Component { // eslint-disable-line reac
     this.setState({ hasFocus: event.type === 'focus' });
   }
   handleValueChangeByName = (name, value) => {
-    if (this.props.validation) {
-      this.setState({ valid: this.isValid(value) });
-    }
-    if (this.props.onChange) {
-      this.props.onChange(value);
-    }
-    if (this.props.model) {
-      this.props.model.update(name, value);
-    }
+    const valid = this.isValid(value);
+    this.setState({ valid });
+    if (this.props.onChange) this.props.onChange(value);
+    this.props.model.update(name, value);
   }
   handleValueChange = (value) => {
     this.handleValueChangeByName(this.props.name, value);
@@ -60,16 +55,17 @@ export default class Field extends React.Component { // eslint-disable-line reac
     this.handleValueChange(value);
   }
   isValid(value) {
-    const opts = this.props.validation || '';
+    const { opts } = this.props.validation;
     let valid = true;
-    if (opts.maxLength) {
-      if (value.length > opts.maxLength) {
+    if (opts) {
+      if (opts.maxLength) {
+        if (value.length > opts.maxLength) {
+          valid = false;
+        }
+      } else if (value.length === 0) {
         valid = false;
       }
-    } else if (value.length === 0) {
-      valid = false;
     }
-    this.setState({ valid });
     return valid;
   }
   renderValidationMaxLength() {

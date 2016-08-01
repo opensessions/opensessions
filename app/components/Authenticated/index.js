@@ -15,10 +15,10 @@ export default class Authenticated extends React.Component { // eslint-disable-l
     lock: React.PropTypes.object,
   }
   renderOut() {
-    const message = (<div className={styles.noAuth}>{this.props.message}</div>);
-    return (<div>
-      {message}
-      {this.props.button ? <LoginButton lock={this.context.lock}>{this.props.button}</LoginButton> : null}
+    const { message, button } = this.props;
+    return (<div className={styles.noAuth}>
+      <p>{message}</p>
+      {button ? <p><LoginButton lock={this.context.lock}>{button}</LoginButton></p> : null}
     </div>);
   }
   render() {
