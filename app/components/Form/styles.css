@@ -29,9 +29,18 @@
 
 .nav {
   min-width: 12em;
-  padding: 3em .5em;
+  padding: 1em .5em;
+  & > h1,
   & > a {
-    padding: .5em 1em;
+    padding: 1rem 1.5rem;
+  }
+  & > h1 {
+    font-size: .75em;
+    color: #555;
+    text-transform: uppercase;
+    margin: 2em 0 .5em;
+  }
+  & > a {
     cursor: pointer;
     display: flex;
     justify-content: space-between;
@@ -147,7 +156,7 @@
     max-width: 13em;
   }
   .tabs {
-    padding: 2em 2%;
+    padding: 1.5em 2%;
   }
 }
 
@@ -159,7 +168,10 @@
     padding: .5em;
     display: flex;
     flex-wrap: wrap;
-    & a {
+    & > h1 {
+      flex-basis: 100%;
+    }
+    & > a {
       flex-grow: 1;
       text-align: center;
       justify-content: center;

@@ -10,6 +10,7 @@ export default class LoginButton extends React.Component { // eslint-disable-lin
     lock.show({
       icon: '/images/app-icon.png',
       socialBigButtons: true,
+      screen: 'signUp'
       // callbackURL: window.location.origin,
       // callbackOnLocationHash: true
     });

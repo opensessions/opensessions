@@ -6,6 +6,7 @@ export default class Fieldset extends React.Component { // eslint-disable-line r
   static propTypes = {
     children: React.PropTypes.node.isRequired,
     label: React.PropTypes.string,
+    heading: React.PropTypes.string,
     title: React.PropTypes.string,
     subtitle: React.PropTypes.string,
   }

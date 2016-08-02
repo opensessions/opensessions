@@ -71,7 +71,7 @@ export default class Form extends React.Component { // eslint-disable-line react
     if (this.props.onChange) this.props.onChange(this.props.model);
   }
   tabClick = (event) => {
-    const key = Array.prototype.indexOf.call(event.target.parentNode.childNodes, event.target);
+    const key = parseInt(event.target.dataset.key, 10);
     this.setState({ activeTab: key });
   }
   actionClick = (event) => {
@@ -82,7 +82,7 @@ export default class Form extends React.Component { // eslint-disable-line react
     try {
       const firstShownField = Array.filter(this.refs.form.elements, (element) => element.tagName === 'FIELDSET')
         .filter((fieldset) => fieldset.parentNode.className !== styles.hiddenTab)[0].getElementsByClassName(fieldStyles.field)[0];
-      firstShownField.getElementsByTagName('input')[0].focus();
+      firstShownField.querySelectorAll('input, textarea, select')[0].focus();
     } catch (error) {
       console.error('Couldn\'t refocus', error);
     }
@@ -97,14 +97,12 @@ export default class Form extends React.Component { // eslint-disable-line react
   }
   renderNav() {
     return this.getFieldsets().map((fieldset, key) => {
+      const { heading, validity, label } = fieldset.props;
       const className = this.state.activeTab === key ? styles.active : '';
       let isComplete = <span className={styles.tickNone}>+</span>;
-      if (fieldset.props.validity === true) {
-        isComplete = <span className={styles.tick}>&#10003;</span>;
-      } else if (fieldset.props.validity === 'none') {
-        isComplete = null;
-      }
-      return <a className={className} onClick={this.tabClick} key={key}>{fieldset.props.label} {isComplete}</a>;
+      if (validity === true) isComplete = <span className={styles.tick}>&#10003;</span>;
+      else if (validity === 'none') isComplete = null;
+      return [heading ? <h1>{heading}</h1> : null, <a className={className} onClick={this.tabClick} key={key} data-key={key}>{label} {isComplete}</a>];
     });
   }
   renderTab() {

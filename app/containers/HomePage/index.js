@@ -29,7 +29,7 @@ export default class HomePage extends React.Component { // eslint-disable-line r
   render() {
     return (<div className={styles.container}>
       <h1>Welcome to Open Sessions!</h1>
-      <Authenticated message="Login to add a session!" button="Login">
+      <Authenticated message="Let's get your sessions online." button="Login">
         {this.renderSessionList()}
       </Authenticated>
     </div>);
