@@ -47,6 +47,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
     this.handleValueChangeByName(this.props.name, value);
   }
   handleDateChange = (date) => {
+    date.minutes(date.minutes() + date.utcOffset());
     const value = date.toISOString().substr(0, 10);
     this.handleValueChange(value);
   }

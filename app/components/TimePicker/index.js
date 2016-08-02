@@ -17,6 +17,10 @@ export default class TimePicker extends React.Component { // eslint-disable-line
     const frags = time.split(':').map((frag) => parseInt(frag, 10));
     this.setState({ hours: frags[0], minutes: frags[1] });
   }
+  dispatchEvent() {
+    const changeEvent = new CustomEvent('input', { bubbles: true, detail: 'generated' });
+    this.refs.input.dispatchEvent(changeEvent);
+  }
   changeTime = (hours, minutes) => {
     this.setState({ hours, minutes });
     if (hours < 10) hours = `0${hours}`;
@@ -38,6 +42,7 @@ export default class TimePicker extends React.Component { // eslint-disable-line
       }
     }
     this.changeTime(hours, minutes);
+    this.dispatchEvent();
   }
   minsDec = () => {
     let { hours, minutes } = this.state;
@@ -50,6 +55,7 @@ export default class TimePicker extends React.Component { // eslint-disable-line
       }
     }
     this.changeTime(hours, minutes);
+    this.dispatchEvent();
   }
   minsEvent = (event) => {
     const { type, keyCode, target } = event;
@@ -88,6 +94,7 @@ export default class TimePicker extends React.Component { // eslint-disable-line
         <a onClick={this.minsInc}>+</a>
         <a onClick={this.minsDec}>-</a>
       </span>
+      <input ref="input" style={{ display: 'none' }} />
       <select value={meridian} onChange={this.meridianChange}>
         {['am', 'pm'].map((mid) => <option key={mid} value={mid}>{mid}</option>)}
       </select>

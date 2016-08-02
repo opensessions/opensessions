@@ -75,6 +75,7 @@
     }
     & .dateDetail,
     & .locationDetail {
+      display: flex;
       margin: .25em 0;
       & > img {
         height: var(--iconSizeBig);

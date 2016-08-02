@@ -116,8 +116,8 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       { text: 'Female only', value: 'female', icon: <GenderSvg only="female" /> }
     ];
     const coachOptions = [
-      { text: 'Uncoached' },
-      { text: 'Coached' }
+      { text: 'Yes, the session is coached' },
+      { text: 'No, the session is unlead' }
     ];
     return (<div className={styles.form}>
       <Authenticated message="You must login before you can add a session">

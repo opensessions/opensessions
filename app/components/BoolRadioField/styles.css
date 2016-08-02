@@ -1,6 +1,7 @@
 .boolRadio {
   & ol {
     display: flex;
+    flex-wrap: wrap;
     & > li {
       flex-grow: 1;
       list-style: none;

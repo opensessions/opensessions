@@ -76,7 +76,7 @@ module.exports = (DataTypes) => ({
         instanceMethods: {
           canPublish() {
             const session = this;
-            const requiredFields = ['title', 'description', 'leader', 'location', 'OrganizerUuid', 'startDate', 'startTime'];
+            const requiredFields = ['title', 'OrganizerUuid', 'description', 'leader', 'location', 'startDate', 'startTime'];
             const prettyNames = { OrganizerUuid: 'organizer', startDate: 'start date', startTime: 'start time' };
             const errors = [];
             requiredFields.forEach((field) => {
@@ -86,6 +86,9 @@ module.exports = (DataTypes) => ({
             });
             if (errors.length) throw new Error(`Missing fields: ${errors.join(', ')}`);
             return true;
+          },
+          setDeleted() {
+            return this.update({ state: 'deleted' });
           }
         },
         classMethods: {

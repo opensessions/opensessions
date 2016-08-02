@@ -104,7 +104,7 @@ module.exports = (app) => {
           throw new Error('Instance could not be retrieved');
         }
       }).catch((error) => {
-        res.json({ error: error.message });
+        res.json({ error: error.message, isLoggedIn: !!req.user });
       });
     });
   });
@@ -133,7 +133,7 @@ module.exports = (app) => {
     if (action === 'delete') {
       const query = Model.getQuery({ where: { uuid, owner: getUser(req) } }, database.models, req.user);
       Model.findOne(query)
-        .then((instance) => instance.destroy())
+        .then((instance) => (instance.setDeleted ? instance.setDeleted() : instance.destroy()))
         .then(() => res.json({ status: 'success' }))
         .catch((error) => res.json({ status: 'failure', error: error.message }));
     }
