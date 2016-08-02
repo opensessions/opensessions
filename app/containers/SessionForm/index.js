@@ -4,7 +4,6 @@ import Fieldset from 'components/Fieldset';
 import Form from 'components/Form';
 import Field from 'components/Field';
 import NumField from 'components/NumField';
-import TextField from 'components/TextField';
 import GenderSvg from 'components/GenderSvg';
 
 import { Link } from 'react-router';
@@ -116,8 +115,8 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       { text: 'Female only', value: 'female', icon: <GenderSvg only="female" /> }
     ];
     const coachOptions = [
-      { text: 'Yes, the session is coached' },
-      { text: 'No, the session is unlead' }
+      { text: 'No, the session is unlead' },
+      { text: 'Yes, the session is coached' }
     ];
     return (<div className={styles.form}>
       <Authenticated message="You must login before you can add a session">
@@ -134,7 +133,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
           <Form autosave={session.state !== 'published'} model={session} autosaveEvent={this.onAutosaveEvent} onPublish={this.onPublish} onChange={this.onChange} pendingSteps={this.state.pendingSteps}>
             {this.renderDescriptionFieldset()}
             <Fieldset label="Additional info" {...this.state.fieldsets[1].props}>
-              <Field label="Is there anything participants should bring?" tipTitle="What to bring" name="preparation" type="Optional" component={{ type: TextField, props: { maxLength: 500 } }} model={session} placeholder="Sensible running shoes that you don't mind ruining with sand." tip="Let participants know how to prepare for your session. Is there anything they will need to bring?" multiline />
+              <Field label="Is there anything participants should bring?" tipTitle="What to bring" name="preparation" type="textarea" validation={{ maxLength: 500 }} model={session} placeholder="Sensible running shoes that you don't mind ruining with sand" tip="Let participants know how to prepare for your session. Is there anything they will need to bring?" />
               <Field label="Who is the leader for this session?" tipTitle="Session leader" name="leader" model={session} type="text" tip="Enter the name of the person who will be leading the session. It's helpful for participants to know who's in charge when they arrive" example="E.g. John Smith" />
               <Field label="Will participants receive coaching?" type="BoolRadio" name="hasCoaching" model={session} options={coachOptions} />
             </Fieldset>
