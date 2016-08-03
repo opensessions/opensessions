@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 require('react-datepicker/dist/react-datepicker.css');
@@ -14,17 +14,18 @@ import styles from './styles.css';
 
 export default class Field extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
-    label: React.PropTypes.string,
-    tip: React.PropTypes.string,
-    tipTitle: React.PropTypes.string,
-    example: React.PropTypes.string,
-    placeholder: React.PropTypes.string,
-    model: React.PropTypes.object.isRequired,
-    name: React.PropTypes.string.isRequired,
-    onChange: React.PropTypes.func,
-    type: React.PropTypes.string,
-    validation: React.PropTypes.object,
-    options: React.PropTypes.array
+    label: PropTypes.string,
+    tip: PropTypes.string,
+    tipTitle: PropTypes.string,
+    example: PropTypes.string,
+    placeholder: PropTypes.string,
+    model: PropTypes.object.isRequired,
+    name: PropTypes.string.isRequired,
+    onChange: PropTypes.func,
+    type: PropTypes.string,
+    validation: PropTypes.object,
+    options: PropTypes.array,
+    props: PropTypes.object
   }
   constructor(props) {
     super(props);
@@ -151,6 +152,8 @@ export default class Field extends React.Component { // eslint-disable-line reac
       if (type === 'textarea') {
         if (validation && validation.maxLength > 100) {
           attrs.className = `${attrs.className} ${styles.longText}`;
+        } else if (this.props.props === 'XL') {
+          attrs.className = `${attrs.className} ${styles.xLongText}`;
         }
       } else if (type === 'number') {
         if (validation) {

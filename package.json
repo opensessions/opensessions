@@ -161,7 +161,7 @@
     "sequelize": "^3.23.3",
     "sequelize-cli": "^2.4.0",
     "transform-loader": "^0.2.3",
-    "webpack": "2.1.0-beta.15",
+    "webpack": "2.1.0-beta.20",
     "whatwg-fetch": "^1.0.0"
   },
   "devDependencies": {
@@ -195,7 +195,7 @@
     "expect": "^1.18.0",
     "expect-jsx": "^2.5.1",
     "exports-loader": "^0.6.3",
-    "extract-text-webpack-plugin": "^1.0.1",
+    "extract-text-webpack-plugin": "^2.0.0-beta.3",
     "file-loader": "^0.8.5",
     "html-loader": "^0.4.3",
     "html-webpack-plugin": "^2.16.0",
