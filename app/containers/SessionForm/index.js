@@ -36,7 +36,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
         { props: { validity: 'none' } },
         { props: { validity: 'none' } },
         { props: { validity: 'none' } },
-        { required: ['startDate', 'startTime'], props: { heading: 'Add schedule', validity: false } }
+        { required: ['startDate', 'startTime'], props: { heading: 'Scheduling', validity: false } }
       ]
     };
   }
@@ -101,9 +101,9 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     const session = this.getSession();
     const user = this.context.user || {};
     return (<Fieldset label="Description" ref="descriptionFieldset" {...this.state.fieldsets[0].props}>
-      <Field label="Session title" name="title" model={session} validation={{ maxLength: 50 }} tip="Enter a title for your session" example="E.g. Volleyball training" />
-      <Field label="Organizer name" name="OrganizerUuid" model={session} type="Relation" relation={{ url: '/api/organizer', query: { owner: user.user_id } }} tip="Enter the name of your club or organisation. If you don't represent a club or organisation, enter your own name" example="E.g. Richmond Volleyball" />
-      <Field label="Session description" name="description" model={session} type="textarea" tip="Let people know what's great about the session! Remember: the more detail you provide, the more likely people are to decide to attend." example="Tips: Who is this session for? What benefits will people get from it? What will the session be like? What will we do? Is any prior experience needed?" />
+      <Field label="Session Title" name="title" model={session} validation={{ maxLength: 50 }} tip="Enter a title for your session" example="E.g. Volleyball training" />
+      <Field label="Organiser Name" name="OrganizerUuid" model={session} type="Relation" relation={{ url: '/api/organizer', query: { owner: user.user_id } }} tip="Enter the name of your club or organisation. If you don't represent a club or organisation, enter your own name" example="E.g. Richmond Volleyball" />
+      <Field label="Session Description" name="description" model={session} type="textarea" tip="Let people know what's great about the session! Remember: the more detail you provide, the more likely people are to decide to attend." example="Tips: Who is this session for? What benefits will people get from it? What will the session be like? What will we do? Is any prior experience needed?" />
       <Field label="Sport or activity type" name="activityType" model={session} tip="Enter the type of activity or sport on offer for this session. If multiple activities are on offer at this session, please write 'Multiple Activities'" placeholder="E.g. Volleyball" example="E.g. Volleyball" />
     </Fieldset>);
   }
@@ -134,7 +134,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
             {this.renderDescriptionFieldset()}
             <Fieldset label="Additional info" {...this.state.fieldsets[1].props}>
               <Field label="Is there anything participants should bring?" tipTitle="What to bring" name="preparation" type="textarea" validation={{ maxLength: 500 }} model={session} placeholder="Sensible running shoes that you don't mind ruining with sand" tip="Let participants know how to prepare for your session. Is there anything they will need to bring?" />
-              <Field label="Who is the leader for this session?" tipTitle="Session leader" name="leader" model={session} type="text" tip="Enter the name of the person who will be leading the session. It's helpful for participants to know who's in charge when they arrive" example="E.g. John Smith" />
+              <Field label="Who is the leader for this session?" tipTitle="Session Leader" name="leader" model={session} type="text" tip="Enter the name of the person who will be leading the session. It's helpful for participants to know who's in charge when they arrive" example="E.g. John Smith" />
               <Field label="Will participants receive coaching?" type="BoolRadio" name="hasCoaching" model={session} options={coachOptions} />
             </Fieldset>
             <Fieldset label="Location" {...this.state.fieldsets[2].props}>
@@ -147,18 +147,18 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
               <Field label="Quantity" name="quantity" model={session} type="number" validation={{ min: 0 }} tip="How many spaces are available?" />
             </Fieldset>
             <Fieldset label="Restrictions" {...this.state.fieldsets[4].props}>
-              <Field label="Gender Restrictions" type="IconRadio" name="genderRestriction" model={session} options={genderOptions} />
+              <Field label="Gender restrictions" type="IconRadio" name="genderRestriction" model={session} options={genderOptions} />
               <Field label="Is there a minimum age?" name="minAgeRestriction" model={session} type="Optional" component={{ type: NumField, props: { validation: { min: 0 }, format: ': years old' } }} null="0" />
               <Field label="Is there a maximum age?" name="maxAgeRestriction" model={session} type="Optional" component={{ type: NumField, props: { validation: { min: 0 }, format: ': years old' } }} null="0" />
             </Fieldset>
             <Fieldset label="Contact info" {...this.state.fieldsets[5].props}>
-              <Field label="Phone" name="contactPhone" model={session} />
-              <Field label="Email" name="contactEmail" model={session} type="email" />
+              <Field label="Phone number" name="contactPhone" model={session} />
+              <Field label="Email address" name="contactEmail" model={session} type="email" />
             </Fieldset>
             {/* <Fieldset label="Photos">
               <Field label="Photo" name="photo" model={session} type="Image" />
             </Fieldset> */}
-            <Fieldset label="Schedule" {...this.state.fieldsets[6].props}>
+            <Fieldset label="Add a schedule" {...this.state.fieldsets[6].props}>
               <Field label="Date" name="startDate" type="date" model={session} />
               <Field label="Start time" name="startTime" type="time" model={session} />
               <Field label="End time" name="endTime" type="time" model={session} />

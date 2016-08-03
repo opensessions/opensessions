@@ -99,6 +99,9 @@
     &.longText {
       min-height: 10em;
     }
+    &.xLongText {
+      min-height: 18em;
+    }
   }
 }
 

@@ -85,11 +85,8 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
   }
   dropdownEvent = (event) => {
     const { type } = event;
-    if (type === 'mouseover') {
-      this.setState({ ignoreBlur: true });
-    } else if (type === 'mouseout') {
-      this.setState({ ignoreBlur: false });
-    }
+    if (type === 'mouseover') this.setState({ ignoreBlur: true });
+    else if (type === 'mouseout') this.setState({ ignoreBlur: false });
   }
   render() {
     const { value, options, className } = this.props;
@@ -102,7 +99,7 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
       onKeyDown: this.searchEvent
     };
     const selected = options.filter((option) => option.uuid === value)[0];
-    const valueDisplay = selected ? selected.name : 'None';
+    const valueDisplay = selected ? selected.name : '';
     let input = <input {...searchAttrs} ref="input" onFocus={this.searchEvent} onBlur={this.searchEvent} defaultValue={valueDisplay} />;
     let output = <input {...searchAttrs} className={`${className} ${styles.output}`} ref="output" value={valueDisplay} readOnly style={{ opacity: visible ? 0 : 1 }} />;
     let searchResults = null;

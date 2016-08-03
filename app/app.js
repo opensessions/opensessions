@@ -34,6 +34,11 @@ import { selectLocationState } from 'containers/App/selectors';
 const history = syncHistoryWithStore(browserHistory, store, {
   selectLocationState: selectLocationState(),
 });
+history.listen((location) => {
+  const { ga } = window;
+  ga('set', 'page', location.pathname);
+  ga('send', 'pageview');
+});
 
 // Set up the router, wrapping all Routes in the App component
 import App from 'containers/App';
