@@ -34,7 +34,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
         { required: ['leader'], props: { validity: false, title: 'Add details about your session', subtitle: 'You\'ll be able to edit these details later' } },
         { required: ['location'], props: { validity: false, title: 'Where is your session happening?', subtitle: 'Select a location and let participants know about any meeting instructions' } },
         { props: { validity: 'none' } },
-        { props: { validity: 'none' } },
+        { props: { validity: 'none', title: 'Who is your session for?', subtitle: 'Specify any gender or age restrictions that apply' } },
         { props: { validity: 'none' } },
         { required: ['startDate', 'startTime'], props: { heading: 'Scheduling', validity: false } }
       ]
