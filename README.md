@@ -23,11 +23,12 @@ Postgres is currently the only storage option configured to run directly with th
 
 Ensure that the system running your application has vars set that satisfy the above, set in `.env`.
 
-    DATABASE_USER=user
-    DATABASE_PASS=pass
-    DATABASE_NAME=db
-    DATABASE_HOST=host
     DATABASE_URL=postgres://user:pass@host:5432/db
+
+#### Configure Google Maps / Analytics
+
+    GOOGLE_MAPS_API_KEY={your key}
+    GOOGLE_ANALYTICS_TRACKINGID={your tracking ID}
 
 ### Running
 Run the server with `npm start`. After a few seconds, the server should be up and running and give you the access URLs for your app.
