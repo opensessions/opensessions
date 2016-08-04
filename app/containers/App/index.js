@@ -83,7 +83,7 @@ export default class App extends React.Component { // eslint-disable-line react/
   render() {
     const { profile } = this.state;
     const { INTERCOM_APPID } = window;
-    const user = profile && INTERCOM_APPID ? { user_id: profile.user_id, email: profile.email, name: profile.nickname } : null;
+    const user = profile && INTERCOM_APPID ? { appID: INTERCOM_APPID, user_id: profile.user_id, email: profile.email, name: profile.nickname } : null;
     return (
       <div className={styles.root}>
         <Header lock={this.lock} />
@@ -91,7 +91,7 @@ export default class App extends React.Component { // eslint-disable-line react/
           {this.props.children}
         </div>
         <Footer />
-        {user ? <Intercom appID={INTERCOM_APPID} user={user} /> : null}
+        {user ? <Intercom {...user} /> : null}
       </div>
     );
   }
