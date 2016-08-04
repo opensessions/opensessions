@@ -28,7 +28,7 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
   searchEvent = (event) => {
     const { type, target, nativeEvent } = event;
     const { input } = this.refs;
-    const { filteredOptions, highlightIndex } = this.state;
+    const { search, filteredOptions, highlightIndex } = this.state;
     const newState = {};
     if (type === 'change') {
       newState.search = target.value || '';
@@ -63,7 +63,8 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
       if (input) input.select();
     } else if (type === 'blur') {
       if (!this.state.ignoreBlur) {
-        this.setState({ visible: false, search: '' });
+        newState.visible = false;
+        newState.search = '';
       }
     }
     if (newState.highlightIndex) {
@@ -101,7 +102,7 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
     const selected = options.filter((option) => option.uuid === value)[0];
     const valueDisplay = selected ? selected.name : '';
     let input = <input {...searchAttrs} ref="input" onFocus={this.searchEvent} onBlur={this.searchEvent} defaultValue={valueDisplay} />;
-    let output = <input {...searchAttrs} className={`${className} ${styles.output}`} ref="output" value={valueDisplay} readOnly style={{ opacity: visible ? 0 : 1 }} />;
+    let output = <input {...searchAttrs} className={`${className} ${styles.output}`} ref="output" value={valueDisplay} readOnly style={{ opacity: visible ? 0 : 1 }} tabIndex="-1" />;
     let searchResults = null;
     if (visible) {
       let index = -1;

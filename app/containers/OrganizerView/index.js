@@ -98,7 +98,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
   }
   renderUnassignedSessions() {
     const sessions = this.props.unassignedSessions;
-    if (!sessions) return null;
+    if (!(sessions && sessions.length)) return null;
     const { showSessions } = this.state;
     const linkProps = { className: styles.toggle, onClick: this.toggleSessions };
     let text = 'Hide unassigned sessions';

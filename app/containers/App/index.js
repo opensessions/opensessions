@@ -12,6 +12,7 @@
 
 import React from 'react';
 import Auth0Lock from 'auth0-lock';
+import Intercom, { IntercomAPI } from 'react-intercom';
 
 import Header from 'components/Header';
 import Footer from 'components/Footer';
@@ -80,6 +81,9 @@ export default class App extends React.Component { // eslint-disable-line react/
     this.lock = new Auth0Lock('bSVd1LzdwXsKbjF7JXflIc1UuMacffUA', 'opensessions.eu.auth0.com');
   }
   render() {
+    const { profile } = this.state;
+    const { INTERCOM_APPID } = window;
+    const user = profile && INTERCOM_APPID ? { user_id: profile.user_id, email: profile.email, name: profile.nickname } : null;
     return (
       <div className={styles.root}>
         <Header lock={this.lock} />
@@ -87,6 +91,7 @@ export default class App extends React.Component { // eslint-disable-line react/
           {this.props.children}
         </div>
         <Footer />
+        {user ? <Intercom appID={INTERCOM_APPID} user={user} /> : null}
       </div>
     );
   }

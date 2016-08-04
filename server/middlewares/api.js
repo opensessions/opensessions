@@ -63,8 +63,12 @@ module.exports = (app) => {
   });
 
   api.get('/config.js', (req, res) => {
-    const { GOOGLE_MAPS_API_KEY, GOOGLE_ANALYTICS_TRACKINGID } = process.env;
+    const { GOOGLE_MAPS_API_KEY, GOOGLE_ANALYTICS_TRACKINGID, INTERCOM_APPID } = process.env;
     res.send(`
+      window.GOOGLE_MAPS_API_KEY = '${GOOGLE_MAPS_API_KEY}';
+      window.GOOGLE_ANALYTICS_TRACKINGID = '${GOOGLE_ANALYTICS_TRACKINGID}';
+      window.INTERCOM_APPID = '${INTERCOM_APPID}';
+
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
         m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -75,6 +79,10 @@ module.exports = (app) => {
       var maps = document.createElement('script');
       maps.src = "https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places";
       document.head.appendChild(maps);
+
+      /*(function(){var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',intercomSettings);}else{var d=document;var i=function(){i.c(arguments)};i.q=[];i.c=function(args){i.q.push(args)};w.Intercom=i;function l(){var s=d.createElement('script');s.type='text/javascript';s.async=true;
+      s.src='https://widget.intercom.io/widget/${INTERCOM_APPID}';
+      var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);}if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})();*/
     `);
   });
 

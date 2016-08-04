@@ -24,12 +24,14 @@ export default class SessionTileView extends React.Component { // eslint-disable
     const { user } = this.context;
     return user && session.owner === user.user_id;
   }
-  delete = (event) => {
+  delete = () => {
     const { session } = this.props;
     if (confirm('Are you sure you want to delete?', 'Delete', 'Cancel')) {
       apiFetch(`/api/session/${session.uuid}/delete`).then((response) => {
         if (response.status === 'success') {
-          window.location = window.location;
+          window.location.reload();
+        } else {
+          alert('Failed to delete session');
         }
       });
     }
