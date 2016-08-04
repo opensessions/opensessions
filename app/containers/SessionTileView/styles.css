@@ -51,7 +51,7 @@
             padding: .5em 1em;
             line-height: 1;
             &.delete {
-              color: #bf0000;
+              color: #BF0000;
             }
           }
         }

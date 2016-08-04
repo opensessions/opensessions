@@ -12,7 +12,7 @@
 
 import React from 'react';
 import Auth0Lock from 'auth0-lock';
-import Intercom, { IntercomAPI } from 'react-intercom';
+import Intercom from 'react-intercom';
 
 import Header from 'components/Header';
 import Footer from 'components/Footer';

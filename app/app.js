@@ -11,6 +11,7 @@ import 'file?name=[name].[ext]!./.htaccess';      // eslint-disable-line import/
 // Import all the third party stuff
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { IntercomAPI } from 'react-intercom';
 import { Provider } from 'react-redux';
 import { Router, applyRouterMiddleware, browserHistory } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
@@ -38,6 +39,7 @@ history.listen((location) => {
   const { ga } = window;
   ga('set', 'page', location.pathname);
   ga('send', 'pageview');
+  IntercomAPI('update');
 });
 
 // Set up the router, wrapping all Routes in the App component
