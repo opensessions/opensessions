@@ -1,7 +1,7 @@
 'use strict';
 const sequelize = require('sequelize');
 const dotenv = require('dotenv');
-const models = require('../models')(sequelize);
+const definitions = require('../models')(sequelize);
 const extend = require('extend');
 
 dotenv.config({ silent: true });
@@ -21,19 +21,17 @@ class PostgresStorage {
     return db.sync();
   }
   createModels(db) {
-    const defs = {};
-    const { tablePrototype } = models;
-    Object.keys(models.tables).forEach((name) => {
-      const fields = extend({}, tablePrototype, models.tables[name]);
+    const models = {};
+    const { tables, tablePrototype } = definitions;
+    Object.keys(tables).forEach((name) => {
+      const fields = extend({}, tablePrototype, tables[name]);
       const options = fields._options;
       delete fields._options;
-      defs[name] = db.define(name, fields, options);
+      models[name] = db.define(name, fields, options);
     });
-    models.associations.forEach((assoc) => {
-      const associationType = assoc.type;
-      const source = defs[assoc.source];
-      const target = defs[assoc.target];
-      source[associationType](target);
+    Object.keys(models).forEach((name) => {
+      const model = models[name];
+      if (model.makeAssociations) model.makeAssociations(models);
     });
     return db;
   }

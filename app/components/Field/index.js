@@ -97,7 +97,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
     return false;
   }
   render() {
-    const { label, placeholder, validation, model, name, tip, tipTitle, example } = this.props;
+    const { label, placeholder, validation, model, name, tip, tipTitle, example, props } = this.props;
     const { valid, isMobile } = this.state;
     const attrs = {
       name,
@@ -152,7 +152,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
       if (type === 'textarea') {
         if (validation && validation.maxLength > 100) {
           attrs.className = `${attrs.className} ${styles.longText}`;
-        } else if (this.props.props === 'XL') {
+        } else if (props && props.size === 'XL') {
           attrs.className = `${attrs.className} ${styles.xLongText}`;
         }
       } else if (type === 'number') {
