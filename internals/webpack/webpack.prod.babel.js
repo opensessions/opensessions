@@ -66,7 +66,7 @@ module.exports = require('./webpack.base.babel')({
 
     // Minify and optimize the index.html
     new HtmlWebpackPlugin({
-      template: 'app/index.ejs',
+      template: 'app/index.html',
       minify: {
         removeComments: true,
         collapseWhitespace: true,
@@ -78,12 +78,6 @@ module.exports = require('./webpack.base.babel')({
         minifyJS: true,
         minifyCSS: true,
         minifyURLs: true,
-      },
-      scripts: [
-        `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_MAPS_API_KEY}&libraries=places`
-      ],
-      googleAnalytics: {
-        trackingId: process.env.GOOGLE_ANALYTICS_TRACKINGID
       },
       inject: true,
     }),

@@ -60,6 +60,21 @@ module.exports = (app) => {
     });
   });
 
+  api.get('/config.js', (req, res) => {
+    res.send(`
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', '${process.env.GOOGLE_ANALYTICS_TRACKINGID}', 'auto');
+      ga('send', 'pageview');
+
+      var maps = document.createElement('script');
+      maps.src = "https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_MAPS_API_KEY}&libraries=places";
+      document.head.appendChild(maps);
+    `);
+  });
+
   api.get('/:model', resolveModel, (req, res) => {
     const { Model } = req;
     requireLogin(req, res, () => {
