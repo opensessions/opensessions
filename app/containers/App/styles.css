@@ -2,8 +2,8 @@
 
 html {
   height: 100%;
-  font-size: 62.5%;
-  font-family: var(--bodyFont);
+  font-size: 62.5% !important;
+  font-family: var(--bodyFont) !important;
   line-height: 1.4;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

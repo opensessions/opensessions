@@ -88,7 +88,7 @@ module.exports = (DataTypes) => ({
             return true;
           },
           setDeleted() {
-            return this.update({ state: 'deleted' });
+            return this.state === 'draft' ? this.destroy() : this.update({ state: 'deleted' });
           }
         },
         classMethods: {
