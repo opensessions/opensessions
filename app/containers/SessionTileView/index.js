@@ -4,6 +4,7 @@ import { Link } from 'react-router';
 import CalendarSvg from 'components/CalendarSvg';
 
 import { parseSchedule } from 'utils/postgres';
+import { apiFetch } from 'utils/api';
 
 import styles from './styles.css';
 
@@ -23,14 +24,27 @@ export default class SessionTileView extends React.Component { // eslint-disable
     const { user } = this.context;
     return user && session.owner === user.user_id;
   }
+  delete = (event) => {
+    const { session } = this.props;
+    if (confirm('Are you sure you want to delete?', 'Delete', 'Cancel')) {
+      apiFetch(`/api/session/${session.uuid}/delete`).then((response) => {
+        if (response.status === 'success') {
+          window.location = window.location;
+        }
+      });
+    }
+  }
   renderActions() {
     const { session } = this.props;
     const actions = [
-      { href: session.href, text: 'View' }
+      { key: session.href, item: <Link to={session.href}>View</Link> }
     ];
-    if (this.isOwner()) actions.push({ href: `${session.href}/edit`, text: 'Edit' });
+    if (this.isOwner()) {
+      actions.push({ key: 'edit', item: <Link to={`${session.href}/edit`}>Edit</Link> });
+      actions.push({ key: 'delete', item: <a onClick={this.delete} className={styles.delete}>Delete</a> });
+    }
     return (<ol className={styles.actions}>
-      {actions.map((action) => <li key={action.href}><Link to={action.href}>{action.text}</Link></li>)}
+      {actions.map((action) => <li key={action.key}>{action.item}</li>)}
     </ol>);
   }
   renderAddSchedule() {

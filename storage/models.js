@@ -96,6 +96,8 @@ module.exports = (DataTypes) => ({
             query.include = [models.Organizer];
             if (!user) {
               query.where.state = 'published';
+            } else {
+              query.where.state = { $not: 'deleted' };
             }
             return query;
           },

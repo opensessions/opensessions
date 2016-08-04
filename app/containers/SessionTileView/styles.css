@@ -50,6 +50,9 @@
             border: .1em solid;
             padding: .5em 1em;
             line-height: 1;
+            &.delete {
+              color: #bf0000;
+            }
           }
         }
       }
