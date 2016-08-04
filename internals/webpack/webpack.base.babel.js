@@ -85,11 +85,11 @@ module.exports = (options) => ({
   devtool: options.devtool,
   target: 'web', // Make web variables accessible to webpack, e.g. window
   stats: {
-            colors: true,
-            modules: true,
-            reasons: true,
-            errorDetails: true
-          },
+    colors: true,
+    modules: true,
+    reasons: true,
+    errorDetails: true
+  },
   progress: true,
   node: {
     fs: 'empty',
