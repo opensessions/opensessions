@@ -29,7 +29,7 @@ export default class SessionTileView extends React.Component { // eslint-disable
     if (confirm('Are you sure you want to delete?', 'Delete', 'Cancel')) {
       apiFetch(`/api/session/${session.uuid}/delete`).then((response) => {
         if (response.status === 'success') {
-          window.location.reload();
+          this.setState({ isDeleted: true });
         } else {
           alert('Failed to delete session');
         }
@@ -56,6 +56,7 @@ export default class SessionTileView extends React.Component { // eslint-disable
     </li>);
   }
   render() {
+    if (this.state && this.state.isDeleted) return null;
     const { session } = this.props;
     const date = parseSchedule(session);
     let { state } = session;

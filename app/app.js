@@ -39,7 +39,9 @@ history.listen((location) => {
   const { ga } = window;
   ga('set', 'page', location.pathname);
   ga('send', 'pageview');
-  IntercomAPI('update');
+  IntercomAPI('trackEvent', 'page-nav', {
+    'New location': location.pathname
+  });
 });
 
 // Set up the router, wrapping all Routes in the App component
