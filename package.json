@@ -118,7 +118,7 @@
     }
   },
   "dependencies": {
-    "auth0-lock": "^9.2.1",
+    "auth0-lock": "^10.0.2",
     "babel-polyfill": "^6.7.4",
     "body-parser": "^1.15.1",
     "chalk": "^1.1.3",
