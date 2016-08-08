@@ -5,6 +5,7 @@
   padding: .5em 0;
   box-shadow: 0 -1em 1em 1em rgba(0, 0, 0, .5);
   position: relative;
+  z-index: 1;
   & .pageMargin {
     margin: auto;
     max-width: var(--pagewidth);
@@ -64,10 +65,7 @@
 
 @media (min-width: 36rem) {
   .header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
+    position: relative;
     z-index: 1;
     & .pageMargin {
       & .logoLink {

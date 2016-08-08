@@ -87,10 +87,12 @@ export default class App extends React.Component { // eslint-disable-line react/
     return (
       <div className={styles.root}>
         <Header lock={this.lock} />
-        <div className={styles.container}>
-          {this.props.children}
+        <div className={styles.appBody}>
+          <div className={styles.container}>
+            {this.props.children}
+          </div>
+          <Footer />
         </div>
-        <Footer />
         {user ? <Intercom {...user} /> : null}
       </div>
     );

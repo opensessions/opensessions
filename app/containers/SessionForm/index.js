@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 import Fieldset from 'components/Fieldset';
 import Form from 'components/Form';
 import Field from 'components/Field';
 import NumField from 'components/NumField';
 import GenderSvg from 'components/GenderSvg';
+import Sticky from 'components/Sticky';
 
 import { Link } from 'react-router';
 import Authenticated from 'components/Authenticated';
@@ -15,14 +16,14 @@ import { apiFetch } from '../../utils/api';
 
 export default class SessionForm extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
-    history: React.PropTypes.object,
-    session: React.PropTypes.object,
-    sessionID: React.PropTypes.string,
-    location: React.PropTypes.object,
-    headerText: React.PropTypes.string
+    history: PropTypes.object,
+    session: PropTypes.object,
+    sessionID: PropTypes.string,
+    location: PropTypes.object,
+    headerText: PropTypes.string
   };
   static contextTypes = {
-    user: React.PropTypes.object,
+    user: PropTypes.object,
   }
   constructor(props) {
     super(props);
@@ -35,7 +36,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
         { required: ['location'], props: { validity: false, title: 'Where is your session happening?', subtitle: 'Select a location and let participants know about any meeting instructions' } },
         { props: { validity: 'none' } },
         { props: { validity: 'none', title: 'Who is your session for?', subtitle: 'Specify any gender or age restrictions that apply' } },
-        { props: { validity: 'none' } },
+        { props: { validity: 'none', title: 'Who can people talk to about this session?', subtitle: 'Help potential attendees by providing details of who they can contact' } },
         { required: ['startDate', 'startTime'], props: { heading: 'Scheduling', validity: false } }
       ]
     };
@@ -120,15 +121,17 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     ];
     return (<div className={styles.form}>
       <Authenticated message="You must login before you can add a session">
-        <div className={styles.titleBar}>
-          <div className={styles.titleInner}>
-            <div>
-              <h2>{this.props.headerText ? this.props.headerText : 'Add a session'}</h2>
-              <h3>{session.title || <i>Untitled</i>}</h3>
+        <Sticky>
+          <div className={styles.titleBar}>
+            <div className={styles.titleInner}>
+              <div>
+                <h2>{this.props.headerText ? this.props.headerText : 'Add a session'}</h2>
+                <h3>{session.title || <i>Untitled</i>}</h3>
+              </div>
+              <Link to={`/session/${session.uuid}`} className={`${styles.previewButton} ${this.state.autosaveState === 'pending' ? styles.disabled : ''}`}>{session.state === 'published' ? 'View' : 'Preview'}</Link>
             </div>
-            <Link to={`/session/${session.uuid}`} className={`${styles.previewButton} ${this.state.autosaveState === 'pending' ? styles.disabled : ''}`}>{session.state === 'published' ? 'View' : 'Preview'}</Link>
           </div>
-        </div>
+        </Sticky>
         <div className={styles.formBody}>
           <Form autosave={session.state !== 'published'} model={session} autosaveEvent={this.onAutosaveEvent} onPublish={this.onPublish} onChange={this.onChange} pendingSteps={this.state.pendingSteps}>
             {this.renderDescriptionFieldset()}
