@@ -63,11 +63,10 @@ module.exports = (app) => {
   });
 
   api.get('/config.js', (req, res) => {
-    const { GOOGLE_MAPS_API_KEY, GOOGLE_ANALYTICS_TRACKINGID, INTERCOM_APPID } = process.env;
+    const { GOOGLE_MAPS_API_KEY, GOOGLE_ANALYTICS_TRACKINGID } = process.env;
+    const windowKeys = ['GOOGLE_MAPS_API_KEY', 'GOOGLE_ANALYTICS_TRACKINGID', 'INTERCOM_APPID'];
     res.send(`
-      window.GOOGLE_MAPS_API_KEY = '${GOOGLE_MAPS_API_KEY}';
-      window.GOOGLE_ANALYTICS_TRACKINGID = '${GOOGLE_ANALYTICS_TRACKINGID}';
-      window.INTERCOM_APPID = '${INTERCOM_APPID}';
+      ${windowKeys.map((key) => `window["${key}"] = '${process.env[key]}'`).join(';\n')};
 
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

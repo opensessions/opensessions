@@ -23,7 +23,10 @@ module.exports = (DataTypes) => ({
         },
         classMethods: {
           getQuery(query, models, user) {
-            query.include = user ? [models.Session] : [{ model: models.Session, where: { state: { $in: ['published'] } } }];
+            query.include = [{
+              model: models.Session,
+              where: { state: { $in: user ? ['published', 'draft', 'unpublished'] : ['published'] } }
+            }];
             return query;
           },
           makeAssociations(models) {
@@ -94,11 +97,8 @@ module.exports = (DataTypes) => ({
         classMethods: {
           getQuery(query, models, user) {
             query.include = [models.Organizer];
-            if (!user) {
-              query.where.state = 'published';
-            } else {
-              query.where.state = { $not: 'deleted' };
-            }
+            if (!('where' in query)) query.where = {};
+            query.where.state = user ? { $not: 'deleted' } : 'published';
             return query;
           },
           makeAssociations(models) {

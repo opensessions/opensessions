@@ -58,15 +58,15 @@ export default class SessionTileView extends React.Component { // eslint-disable
   render() {
     if (this.state && this.state.isDeleted) return null;
     const { session } = this.props;
-    const date = parseSchedule(session);
     let { state } = session;
     const stateDisplayNames = { published: 'live', unpublished: 'draft' };
     if (state in stateDisplayNames) state = stateDisplayNames[state];
+    const date = parseSchedule(session);
     const schedules = [];
     if (date.date || date.time) {
       schedules.push(<li className={styles.schedule} key="schedule1">
         <CalendarSvg />
-        <span>{date.date} <span className={styles.time}>at {date.time}</span></span>
+        <span>{date.date} {date.time ? <span className={styles.time}>at {date.time}</span> : null}</span>
       </li>);
     }
     return (
