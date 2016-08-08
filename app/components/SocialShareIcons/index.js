@@ -8,7 +8,8 @@ export default class SocialShareIcons extends React.Component { // eslint-disabl
     title: React.PropTypes.string,
   }
   render() {
-    const { link, title } = this.props;
+    const link = encodeURIComponent(this.props.link);
+    const title = encodeURIComponent(this.props.title);
     const icons = [
       { url: `http://www.facebook.com/share.php?u=${link}&title=${title}`, img: '/images/facebook.png' },
       { url: `http://twitter.com/home?status=${title}+${link}`, img: '/images/twitter.png' },

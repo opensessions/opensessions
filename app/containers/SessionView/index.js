@@ -77,15 +77,20 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     const session = this.state.session || {};
     const actions = [];
     if (user && user.user_id === session.owner) {
-      actions.push(<Link to={`/session/${session.uuid}/edit`} key="edit">Edit</Link>);
+      actions.push(<Link to={`/session/${session.uuid}/edit`} className={styles.previewButton}>{session.state === 'published' ? 'Unpublish and edit' : 'Continue editing'}</Link>);
     }
     if (!actions.length) return null;
-    return (<div className={styles.actions}>
-      {actions}
+    return (<div className={styles.titleBar}>
+      <div className={styles.titleInner}>
+        <div>
+          <h2>{session.state === 'live' ? 'Published session' : 'Preview'}</h2>
+        </div>
+        {actions}
+      </div>
     </div>);
   }
   renderDetails() {
-    const session = this.state.session;
+    const { session } = this.state;
     let organizerButton = null;
     if (session.Organizer) {
       organizerButton = <div className={styles.contactButton}><Link to={session.Organizer.href}>Contact organizer</Link></div>;
@@ -120,7 +125,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     </div>);
   }
   renderDescription() {
-    const session = this.state.session;
+    const { session } = this.state;
     let meetingPoint = null;
     if (session.meetingPoint) {
       meetingPoint = (<div className={styles.infoSection}>
