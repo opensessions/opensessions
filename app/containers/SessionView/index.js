@@ -7,6 +7,7 @@ import Marker from 'react-google-maps/lib/Marker';
 
 import SocialShareIcons from 'components/SocialShareIcons';
 import LoadingMessage from 'components/LoadingMessage';
+import Sticky from 'components/Sticky';
 
 import { Link } from 'react-router';
 
@@ -80,14 +81,16 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       actions.push(<Link to={`/session/${session.uuid}/edit`} className={styles.previewButton}>{session.state === 'published' ? 'Unpublish and edit' : 'Continue editing'}</Link>);
     }
     if (!actions.length) return null;
-    return (<div className={styles.titleBar}>
-      <div className={styles.titleInner}>
-        <div>
-          <h2>{session.state === 'live' ? 'Published session' : 'Preview'}</h2>
+    return (<Sticky>
+      <div className={styles.titleBar}>
+        <div className={styles.titleInner}>
+          <div>
+            <h2>{session.state === 'published' ? 'Published session' : 'Preview'}</h2>
+          </div>
+          {actions}
         </div>
-        {actions}
       </div>
-    </div>);
+    </Sticky>);
   }
   renderDetails() {
     const { session } = this.state;
