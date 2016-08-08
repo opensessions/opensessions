@@ -138,7 +138,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
             <Fieldset label="Additional info" {...this.state.fieldsets[1].props}>
               <Field label="Is there anything participants should bring?" tipTitle="What to bring" name="preparation" type="textarea" validation={{ maxLength: 500 }} model={session} placeholder="Sensible running shoes that you don't mind ruining with sand" tip="Let participants know how to prepare for your session. Is there anything they will need to bring?" />
               <Field label="Who is the leader for this session?" tipTitle="Session Leader" name="leader" model={session} type="text" tip="Enter the name of the person who will be leading the session. It's helpful for participants to know who's in charge when they arrive" example="E.g. John Smith" />
-              <Field label="Will participants receive coaching?" type="BoolRadio" name="hasCoaching" model={session} options={coachOptions} />
+              <Field label="Will participants receive coaching?" type="BoolRadio" name="hasCoaching" model={session} options={coachOptions} props={{ options: coachOptions }} />
             </Fieldset>
             <Fieldset label="Location" {...this.state.fieldsets[2].props}>
               <Field label="Address" type="Location" name="location" dataName="locationData" model={session} tip="Type to search an address and select from the dropdown" />
@@ -150,11 +150,12 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
               <Field label="Quantity" name="quantity" model={session} type="number" validation={{ min: 0 }} tip="How many spaces are available?" />
             </Fieldset>
             <Fieldset label="Restrictions" {...this.state.fieldsets[4].props}>
-              <Field label="Gender restrictions" type="IconRadio" name="genderRestriction" model={session} options={genderOptions} />
+              <Field label="Gender restrictions" type="IconRadio" name="genderRestriction" model={session} props={{ options: genderOptions }} />
               <Field label="Is there a minimum age?" name="minAgeRestriction" model={session} type="Optional" component={{ type: NumField, props: { validation: { min: 0, max: session.maxAgeRestriction || 120 }, format: ': years old' } }} null="0" />
               <Field label="Is there a maximum age?" name="maxAgeRestriction" model={session} type="Optional" component={{ type: NumField, props: { validation: { min: session.minAgeRestriction || 0, max: 120 }, format: ': years old' } }} null="0" />
             </Fieldset>
             <Fieldset label="Contact info" {...this.state.fieldsets[5].props}>
+              <Field label="Full name" name="contactName" model={session} />
               <Field label="Phone number" name="contactPhone" model={session} />
               <Field label="Email address" name="contactEmail" model={session} type="email" />
             </Fieldset>

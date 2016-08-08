@@ -65,6 +65,7 @@ module.exports = (DataTypes) => ({
       },
       minAgeRestriction: DataTypes.INTEGER,
       maxAgeRestriction: DataTypes.INTEGER,
+      contactName: DataTypes.STRING(50),
       contactPhone: DataTypes.STRING,
       contactEmail: DataTypes.STRING,
       endTime: DataTypes.TIME,
@@ -122,17 +123,5 @@ module.exports = (DataTypes) => ({
         }
       }
     }
-  },
-  associations: [
-    {
-      source: 'Session',
-      type: 'belongsTo',
-      target: 'Organizer'
-    },
-    {
-      source: 'Organizer',
-      type: 'hasMany',
-      target: 'Session'
-    }
-  ]
+  }
 });

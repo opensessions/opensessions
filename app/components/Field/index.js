@@ -9,6 +9,7 @@ import RelationField from 'components/RelationField';
 import OptionalField from 'components/OptionalField';
 import LocationField from 'components/LocationField';
 import TimePicker from 'components/TimePicker';
+import SearchableSelect from 'components/SearchableSelect';
 
 import styles from './styles.css';
 
@@ -26,6 +27,11 @@ export default class Field extends React.Component { // eslint-disable-line reac
     validation: PropTypes.object,
     options: PropTypes.array,
     props: PropTypes.object
+  };
+  static componentMap = {
+    BoolRadio: BoolRadioField,
+    IconRadio: IconRadioField,
+    SearchableSelect
   }
   constructor(props) {
     super(props);
@@ -109,12 +115,9 @@ export default class Field extends React.Component { // eslint-disable-line reac
     if (model && name in model && model[name]) attrs.value = model[name];
     let input;
     const type = this.props.type || 'text';
-    if (type === 'IconRadio') {
-      input = <IconRadioField options={this.props.options} {...attrs} />;
-    } else if (type === 'BoolRadio') {
-      attrs.falseText = this.props.options[0].text;
-      attrs.trueText = this.props.options[1].text;
-      input = <BoolRadioField options={this.props.options} {...attrs} />;
+    if (type in Field.componentMap) {
+      const Component = Field.componentMap[this.props.type];
+      input = <Component {...props} {...attrs} />;
     } else if (type === 'Relation') {
       input = <RelationField {...this.props} {...attrs} />;
     } else if (type === 'Optional') {

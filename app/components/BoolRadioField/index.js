@@ -4,12 +4,9 @@ import styles from './styles.css';
 
 export default class BoolRadioField extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
-    name: React.PropTypes.string.isRequired,
     onChange: React.PropTypes.func,
     value: React.PropTypes.any,
     options: React.PropTypes.array,
-    trueText: React.PropTypes.string,
-    falseText: React.PropTypes.string,
   }
   constructor(props) {
     super(props);
@@ -32,21 +29,21 @@ export default class BoolRadioField extends React.Component { // eslint-disable-
     }
   }
   render() {
+    const { options } = this.props;
     const attrs = {
       onChange: this.handleChange,
-      name: this.props.name,
       type: 'radio'
     };
     const { value } = this.state;
-    const options = [{
+    const parsedOptions = [{
       value: 'true',
-      text: this.props.trueText
+      text: options[1].text
     }, {
       value: 'false',
-      text: this.props.falseText
+      text: options[0].text
     }];
     const radios = (<ol>
-      {options.map((option) => {
+      {parsedOptions.map((option) => {
         const checked = option.value === value;
         return (<li className={checked ? styles.selected : ''} key={option.value}>
           <label>

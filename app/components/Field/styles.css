@@ -30,6 +30,7 @@
   }
   & .tip {
     position: absolute;
+    z-index: 2;
     opacity: 0;
     transition: .3s all ease;
     background-color: #FFF;
