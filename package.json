@@ -140,7 +140,7 @@
     "node-uuid": "^1.4.7",
     "passport": "^0.3.2",
     "passport-auth0": "^0.5.2",
-    "pg": "^5.1.0",
+    "pg": "^6.1.0",
     "pg-hstore": "^2.3.2",
     "react": "^15.0.1",
     "react-css-modules": "^3.7.6",
