@@ -159,7 +159,7 @@
     "redux-saga": "^0.10.0",
     "reselect": "^2.5.1",
     "sanitize.css": "^3.3.0",
-    "sequelize": "^3.23.3",
+    "sequelize": "^3.24.0",
     "sequelize-cli": "^2.4.0",
     "transform-loader": "^0.2.3",
     "webpack": "2.1.0-beta.20",
