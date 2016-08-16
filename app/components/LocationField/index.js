@@ -23,7 +23,7 @@ export default class LocationField extends React.Component {
     this.state = { clean: true };
   }
   componentDidMount() {
-    const options = { types: ['geocode'] };
+    const options = { types: [] };
     const { input } = this.refs;
     const { maps } = window.google;
     const autocomplete = new maps.places.Autocomplete(input, options);

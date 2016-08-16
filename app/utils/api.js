@@ -1,4 +1,4 @@
-export function apiFetch(url, opts) {
+function apiFetch(url, opts) {
   if (typeof opts !== 'object') opts = {};
   const query = opts.query;
   const headers = opts.headers || {};
@@ -20,3 +20,17 @@ export function apiFetch(url, opts) {
   opts.headers = headers;
   return fetch(url, opts).then((response) => response.json());
 }
+
+const apiModel = {
+  get(model, uuid) {
+    return apiFetch(`/api/${model}/${uuid}`);
+  },
+  search(model, where) {
+    return apiFetch(`/api/${model}`, { where });
+  },
+  edit(model, uuid, body) {
+    return apiFetch(`/api/${model}/${uuid}`, { body });
+  }
+};
+
+export { apiFetch, apiModel };

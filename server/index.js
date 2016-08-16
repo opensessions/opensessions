@@ -42,7 +42,7 @@ const webpackConfig = isDev
   : require('../internals/webpack/webpack.prod.babel');
 app.use(frontend(webpackConfig));
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3850;
 
 app.listen(port, (err) => {
   if (err) {

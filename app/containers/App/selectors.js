@@ -15,6 +15,4 @@ const selectLocationState = () => {
   };
 };
 
-export {
-  selectLocationState,
-};
+export { selectLocationState }; // eslint-disable-line import/prefer-default-export

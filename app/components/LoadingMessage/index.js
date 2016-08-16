@@ -9,7 +9,7 @@ export default class LoadingMessage extends React.Component { // eslint-disable-
   }
   render() {
     return (<div className={styles.loadingMessage}>
-      {this.props.message}{this.props.ellipsis ? <span className={styles.ellipsis}></span> : null}
+      {this.props.message}{this.props.ellipsis ? <span className={styles.ellipsis} /> : null}
     </div>);
   }
 }

@@ -4,7 +4,9 @@ import SearchableSelect from 'components/SearchableSelect';
 
 import styles from './styles.css';
 
-import { apiFetch } from '../../utils/api';
+import api from '../../utils/api';
+console.log('api', api);
+const apiFetch = api.apiFetch;
 
 export default class RelationField extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
