@@ -28,6 +28,9 @@ const apiModel = {
   search(model, where) {
     return apiFetch(`/api/${model}`, { where });
   },
+  new(model, body) {
+    return apiFetch(`/api/${model}/create`, { body });
+  },
   edit(model, uuid, body) {
     return apiFetch(`/api/${model}/${uuid}`, { body });
   }

@@ -103,7 +103,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
     return false;
   }
   render() {
-    const { label, placeholder, validation, model, name, tip, tipTitle, example, props } = this.props;
+    const { label, placeholder, validation, model, name, tip, tipTitle, example, options, props } = this.props;
     const { valid, isMobile } = this.state;
     const attrs = {
       name,
@@ -114,20 +114,20 @@ export default class Field extends React.Component { // eslint-disable-line reac
     };
     if (model && name in model && model[name]) attrs.value = model[name];
     let input;
-    const type = this.props.type || 'text';
-    if (type in Field.componentMap) {
+    attrs.type = this.props.type || 'text';
+    if (attrs.type in Field.componentMap) {
       const Component = Field.componentMap[this.props.type];
       input = <Component {...props} {...attrs} />;
-    } else if (type === 'Relation') {
+    } else if (attrs.type === 'Relation') {
       input = <RelationField {...this.props} {...attrs} />;
-    } else if (type === 'Optional') {
+    } else if (attrs.type === 'Optional') {
       if (validation) attrs.validation = validation;
       input = <OptionalField {...this.props} {...attrs} />;
-    } else if (type === 'Location') {
+    } else if (attrs.type === 'Location') {
       delete attrs.onChange;
       attrs.onValueChangeByName = this.handleValueChangeByName;
       input = <LocationField {...this.props} {...attrs} />;
-    } else if (type === 'date') {
+    } else if (attrs.type === 'date') {
       if (isMobile) {
         attrs.type = 'date';
         if (attrs.value) attrs.value = (new Date(attrs.value)).toISOString().substr(0, 10);
@@ -142,9 +142,8 @@ export default class Field extends React.Component { // eslint-disable-line reac
         const dateAttrs = { selected: value, onChange: this.handleDateChange, minDate: now };
         input = <DatePicker {...dateAttrs} />;
       }
-    } else if (type === 'time') {
+    } else if (attrs.type === 'time') {
       if (isMobile) {
-        attrs.type = 'time';
         attrs.onChange = this.handleChange;
         input = <input {...attrs} />;
       } else {
@@ -152,13 +151,14 @@ export default class Field extends React.Component { // eslint-disable-line reac
       }
     } else {
       attrs.onChange = this.handleChange;
-      if (type === 'textarea') {
+      if (attrs.type === 'textarea') {
         if (validation && validation.maxLength > 100) {
           attrs.className = `${attrs.className} ${styles.longText}`;
         } else if (props && props.size === 'XL') {
           attrs.className = `${attrs.className} ${styles.xLongText}`;
         }
-      } else if (type === 'number') {
+        input = <textarea {...attrs} />;
+      } else if (attrs.type === 'number') {
         if (validation) {
           ['min', 'max'].forEach((prop) => {
             if (prop in validation) {
@@ -166,9 +166,12 @@ export default class Field extends React.Component { // eslint-disable-line reac
             }
           });
         }
+        input = <input {...attrs} />;
+      } else if (attrs.type === 'select') {
+        input = <select {...attrs}><option key="" />{options.map(option => <option key={option} value={option}>{option}</option>)}</select>;
+      } else {
+        input = <input {...attrs} />;
       }
-      attrs.type = type;
-      input = type === 'textarea' ? <textarea {...attrs} /> : <input {...attrs} />;
     }
     let tooltip;
     if (tip) {

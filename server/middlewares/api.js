@@ -20,7 +20,7 @@ module.exports = (app) => {
   const api = express();
   const storage = new Storage();
   const database = storage.getInstance();
-  const getUser = (req) => (req.user ? req.user.sub : null);
+  const getUser = req => (req.user ? req.user.sub : null);
 
   const rdpe = RDPE(app, database);
   api.use('/rdpe', rdpe);
@@ -104,10 +104,10 @@ module.exports = (app) => {
 
   api.all('/:model/create', requireLogin, resolveModel, (req, res) => {
     const { Model } = req;
-    const instance = req.body;
-    instance.owner = getUser(req);
-    Model.create(instance).then((savedInstance) => {
-      res.json({ instance: savedInstance });
+    const data = req.body;
+    data.owner = getUser(req);
+    Model.create(data).then((instance) => {
+      res.json({ instance });
     }).catch((error) => {
       res.json({ error: error.message });
     });

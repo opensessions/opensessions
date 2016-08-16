@@ -1,5 +1,15 @@
 @import '../../containers/App/variables.css';
 
+:global {
+  .react-datepicker__day--selected {
+    &,
+    &:hover {
+      background-color: var(--actionColor);
+      border-radius: 0;
+    }
+  }
+}
+
 .field {
   position: relative;
   padding: .5em 0;
