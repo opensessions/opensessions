@@ -8,14 +8,14 @@ export default class BoolRadioField extends React.Component { // eslint-disable-
     value: React.PropTypes.any,
     options: React.PropTypes.array,
   }
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: this.valueFromProps(props)
-    };
+  getValue() {
+    return this.valueFromProps(this.props);
   }
-  componentWillReceiveProps(nextProps) {
-    this.setState({ value: this.valueFromProps(nextProps) });
+  getOptions() {
+    return this.props.options ? this.props.options : [{ text: 'No' }, { text: 'Yes' }];
+  }
+  parseProps() {
+    return { value: this.getValue(), options: this.getOptions() };
   }
   valueFromProps(props) {
     return ('value' in props && props.value && props.value.toString) ? props.value.toString() : 'false';
@@ -29,12 +29,11 @@ export default class BoolRadioField extends React.Component { // eslint-disable-
     }
   }
   render() {
-    const { options } = this.props;
+    const { value, options } = this.parseProps();
     const attrs = {
       onChange: this.handleChange,
       type: 'radio'
     };
-    const { value } = this.state;
     const parsedOptions = [{
       value: 'true',
       text: options[1].text

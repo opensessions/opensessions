@@ -11,7 +11,7 @@ import Sticky from 'components/Sticky';
 
 import { Link } from 'react-router';
 
-import { apiFetch } from '../../utils/api';
+import { apiModel } from '../../utils/api';
 
 import styles from './styles.css';
 
@@ -49,7 +49,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     return `${session.title ? session.title : '(Untitled)'}`;
   }
   fetchData = () => {
-    apiFetch(`/api/session/${this.props.params.uuid}`).then((result) => {
+    apiModel.get('session', this.props.params.uuid).then((result) => {
       if (result.error) this.setState({ error: result.error });
       if (result.instance) this.setState({ session: result.instance });
     });
