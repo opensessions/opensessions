@@ -121,7 +121,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       { text: 'Yes, the session is coached' }
     ];
     return (<div>
-      <Field label="Is there anything participants should bring?" tipTitle="What to bring" name="preparation" type="textarea" validation={{ maxLength: 500 }} model={session} placeholder="Sensible running shoes that you don't mind ruining with sand" tip="Let participants know how to prepare for your session. Is there anything they will need to bring?" />
+      <Field label="Is there anything participants should bring?" tipTitle="What to bring" name="preparation" type="textarea" validation={{ maxLength: 500 }} model={session} tip="Let participants know how to prepare for your session. Is there anything they will need to bring?" />
       <Field label="Who is the leader for this session?" tipTitle="Session Leader" name="leader" model={session} type="text" tip="Enter the name of the person who will be leading the session. It's helpful for participants to know who's in charge when they arrive" example="E.g. John Smith" />
       <Field label="Will participants receive coaching?" type="BoolRadio" name="hasCoaching" model={session} options={coachOptions} props={{ options: coachOptions }} />
     </div>);
