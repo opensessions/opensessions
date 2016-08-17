@@ -217,6 +217,9 @@
   &.organizerInfo {
     text-align: right;
   }
+  &.disabilityInfo {
+    text-align: right;
+  }
   &.pricing {
     display: flex;
     flex-wrap: wrap;

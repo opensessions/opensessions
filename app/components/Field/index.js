@@ -8,6 +8,7 @@ import IconRadioField from 'components/IconRadioField';
 import RelationField from 'components/RelationField';
 import OptionalField from 'components/OptionalField';
 import LocationField from 'components/LocationField';
+import MultiField from 'components/MultiField';
 import TimePicker from 'components/TimePicker';
 import SearchableSelect from 'components/SearchableSelect';
 
@@ -31,7 +32,8 @@ export default class Field extends React.Component { // eslint-disable-line reac
   static componentMap = {
     BoolRadio: BoolRadioField,
     IconRadio: IconRadioField,
-    SearchableSelect
+    SearchableSelect,
+    MultiField
   }
   constructor(props) {
     super(props);
@@ -116,7 +118,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
     let input;
     attrs.type = this.props.type || 'text';
     if (attrs.type in Field.componentMap) {
-      const Component = Field.componentMap[this.props.type];
+      const Component = Field.componentMap[attrs.type];
       input = <Component {...props} {...attrs} />;
     } else if (attrs.type === 'Relation') {
       input = <RelationField {...this.props} {...attrs} />;
@@ -183,7 +185,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
     }
     return (<div className={styles.field} data-valid={this.state.valid} data-hasfocus={this.state.hasFocus} onFocus={this.onFocusChange} onBlur={this.onFocusChange}>
       <label className={styles.label}>{label}</label>
-      <div className={styles.inputWrap}>
+      <div className={attrs.type !== 'MultiField' ? styles.inputWrap : ''}>
         {input}
         {this.renderValidation()}
       </div>

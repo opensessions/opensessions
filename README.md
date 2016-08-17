@@ -30,7 +30,7 @@ Postgres is currently the only storage option configured to run directly with th
 #### Migrations
 When you need to alter the database, use the shell:
 
-    node_modules/.bin/sequelize migration:create --config storage/migrations/config.js
+    node_modules/.bin/sequelize migration:create --config storage/migrations.config.js
     git add storage/migrations/{ timestamp-migration-name }-migration.js
 
 ### Configure Google Maps / Analytics

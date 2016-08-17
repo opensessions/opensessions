@@ -96,7 +96,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     const { session } = this.state;
     let organizerButton = null;
     if (session.Organizer) {
-      organizerButton = <div className={styles.contactButton}><Link to={session.Organizer.href}>Contact organizer</Link></div>;
+      organizerButton = <div className={styles.contactButton}><Link to={session.Organizer.href}>View organiser</Link></div>;
     }
     let locationDetail = null;
     if (session.location) {
@@ -181,6 +181,13 @@ export default class SessionView extends React.Component { // eslint-disable-lin
             <p>{session.contactEmail ? (<a className={styles.organizerLink} href={`mailto:${session.contactEmail}`}><img src="/images/email.png" role="presentation" /> {session.contactEmail}</a>) : ''}</p>
           </div>
         </div>
+        <div className={styles.info}>
+          <h3>Disability Support</h3>
+          <div className={`${styles.floatingInfo} ${styles.disabilityInfo}`}>
+            {session.abilityRestriction.map(ability => <p>{ability} <img src="/images/tick.svg" role="presentation" /></p>)}
+          </div>
+        </div>
+
       </div>
     </div>);
   }

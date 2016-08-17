@@ -147,10 +147,12 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       { text: 'Male only', value: 'male', icon: <GenderSvg only="male" /> },
       { text: 'Female only', value: 'female', icon: <GenderSvg only="female" /> }
     ];
+    const disabilities = ['Learning disability', 'Mental health condition', 'Physical impairment', 'Visual impairment', 'Deaf', 'Please ask for more info'];
     return (<div>
       <Field label="Gender restrictions" type="IconRadio" name="genderRestriction" model={session} props={{ options: genderOptions }} />
       <Field label="Is there a minimum age?" name="minAgeRestriction" model={session} type="Optional" component={{ type: NumField, props: { validation: { min: 0, max: session.maxAgeRestriction || 120 }, format: ': years old' } }} null="0" />
       <Field label="Is there a maximum age?" name="maxAgeRestriction" model={session} type="Optional" component={{ type: NumField, props: { validation: { min: session.minAgeRestriction || 0, max: 120 }, format: ': years old' } }} null="0" />
+      <Field label="Are you able to offer support to people with disabilities?" name="abilityRestriction" model={session} type="MultiField" props={{ options: disabilities, value: session.abilityRestriction }} />
     </div>);
   }
   renderContactFieldset = () => {

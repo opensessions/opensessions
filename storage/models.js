@@ -65,6 +65,7 @@ module.exports = (DataTypes) => ({
       },
       minAgeRestriction: DataTypes.INTEGER,
       maxAgeRestriction: DataTypes.INTEGER,
+      abilityRestriction: DataTypes.JSON,
       contactName: DataTypes.STRING(50),
       contactPhone: DataTypes.STRING,
       contactEmail: DataTypes.STRING,

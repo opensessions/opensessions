@@ -64,9 +64,10 @@ export default class SessionTileView extends React.Component { // eslint-disable
     const date = parseSchedule(session);
     const schedules = [];
     if (date.date || date.time) {
-      schedules.push(<li className={styles.schedule} key="schedule1">
+      schedules.push(<li className={`${styles.schedule} ${date.hasOccurred ? styles.occurred : null}`} key="schedule1">
         <CalendarSvg />
         <span>{date.date} {date.time ? <span className={styles.time}>at {date.time}</span> : null}</span>
+        <span>{date.hasOccurred ? ' (Past)' : ''}</span>
       </li>);
     }
     return (

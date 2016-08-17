@@ -10,11 +10,10 @@ export function parseSchedule(instance) {
   if (startDate) {
     const date = new Date(startDate);
     data.date = moment(date).format('dddd D MMM');
+    data.hasOccurred = date.getTime() <= (new Date()).getTime();
   }
   if (startTime) {
-    const time = startTime ? startTime.split(':') : ['00', '00', '00'];
-    time.pop();
-    data.time = time.join(':');
+    data.time = startTime.split(':').slice(0, 2).join(':');
     if (endTime) {
       const dur = moment.duration(moment(pgTimeToDate(endTime)).diff(moment(pgTimeToDate(startTime))));
       const hours = (dur.asHours() + 24) % 24;
