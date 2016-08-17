@@ -49,6 +49,7 @@ module.exports = (DataTypes) => ({
       activityType: DataTypes.STRING,
       preparation: DataTypes.STRING(2048),
       leader: DataTypes.STRING,
+      image: DataTypes.STRING(512),
       hasCoaching: DataTypes.BOOLEAN,
       location: DataTypes.STRING,
       locationData: DataTypes.JSON,
@@ -76,7 +77,7 @@ module.exports = (DataTypes) => ({
         getterMethods: {
           href() {
             return `/${this.Model.name.toLowerCase()}/${this.uuid}`;
-          },
+          }
         },
         instanceMethods: {
           canPublish() {

@@ -1,8 +1,13 @@
 const express = require('express');
-const Storage = require('../../storage/interfaces/postgres.js');
 const jwt = require('express-jwt');
 const dotenv = require('dotenv');
+
+const Storage = require('../../storage/interfaces/postgres.js');
 const RDPE = require('./rdpe.js');
+const s3 = require('./s3.js');
+
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
 
 const capitalize = (string) => `${string[0].toUpperCase()}${string.substr(1)}`;
 
@@ -64,7 +69,7 @@ module.exports = (app) => {
 
   api.get('/config.js', (req, res) => {
     const { GOOGLE_MAPS_API_KEY, GOOGLE_ANALYTICS_TRACKINGID } = process.env;
-    const windowKeys = ['GOOGLE_MAPS_API_KEY', 'GOOGLE_ANALYTICS_TRACKINGID', 'INTERCOM_APPID'];
+    const windowKeys = ['GOOGLE_MAPS_API_KEY', 'GOOGLE_ANALYTICS_TRACKINGID', 'INTERCOM_APPID', 'AMS_S3_IMAGES_BASEURL'];
     res.send(`
       ${windowKeys.map((key) => `window["${key}"] = '${process.env[key]}'`).join(';\n')};
 
@@ -79,6 +84,32 @@ module.exports = (app) => {
       maps.src = "https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places";
       document.head.appendChild(maps);
     `);
+  });
+
+  api.post('/session-image/:uuid', upload.single('image'), (req, res) => {
+    const image = req.file;
+    const { uuid } = req.params;
+    const { Session } = database.models;
+    const aws = {
+      URL: process.env.AMS_S3_IMAGES_BASEURL,
+      path: 'uploads/',
+      accessKeyId: process.env.AMS_S3_IMAGES_ACCESSKEY,
+      secretAccessKey: process.env.AMS_S3_IMAGES_SECRETKEY
+    };
+    s3(aws, image.path, uuid).then(result => {
+      Session.findOne({ where: { uuid } }).then(instance => {
+        const { versions } = result;
+        instance.update({ image: `https://${aws.URL}/${versions[1].key}` }).then(final => {
+          res.json({ status: 'success', result, baseURL: aws.URL, instance: final });
+        }).catch(error => {
+          res.status(404).json({ error });
+        })
+      }).catch(error => {
+        res.status(404).json({ error });
+      })
+    }).catch(error => {
+      res.status(400).json({ error });
+    })
   });
 
   api.get('/:model', resolveModel, (req, res) => {

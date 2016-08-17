@@ -4,9 +4,11 @@ function apiFetch(url, opts) {
   const headers = opts.headers || {};
   headers.Authorization = `bearer ${localStorage.userToken}`;
   if (opts.body) {
-    headers['Content-Type'] = 'application/json';
     opts.method = 'POST';
-    opts.body = JSON.stringify(opts.body);
+    if (!(opts.body instanceof FormData)) {
+      headers['Content-Type'] = 'application/json';
+      opts.body = JSON.stringify(opts.body);
+    }
   }
   if (query) {
     url += '?';
@@ -18,7 +20,10 @@ function apiFetch(url, opts) {
   opts.credentials = 'same-origin';
   opts.crossDomain = true;
   opts.headers = headers;
-  return fetch(url, opts).then((response) => response.json());
+  return fetch(url, opts).then(response => {
+    if (!response.ok) throw Error(response.statusText);
+    else return response.json();
+  });
 }
 
 const apiModel = {
@@ -33,6 +38,9 @@ const apiModel = {
   },
   edit(model, uuid, body) {
     return apiFetch(`/api/${model}/${uuid}`, { body });
+  },
+  upload(url, body) {
+    return apiFetch(url, { body });
   }
 };
 

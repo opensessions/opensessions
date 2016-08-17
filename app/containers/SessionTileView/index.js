@@ -73,7 +73,7 @@ export default class SessionTileView extends React.Component { // eslint-disable
     return (
       <article className={styles.tile}>
         <div className={styles.imgCol}>
-          <img src="/images/placeholder.png" role="presentation" />
+          <img src={session.image ? session.image : '/images/placeholder.png'} role="presentation" />
         </div>
         <div className={styles.textCol}>
           <div className={styles.info}>

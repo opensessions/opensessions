@@ -6,7 +6,7 @@ export default class MultiField extends React.Component { // eslint-disable-line
   static propTypes = {
     value: React.PropTypes.array,
     onChange: React.PropTypes.func,
-    options: React.PropTypes.bool
+    options: React.PropTypes.array
   }
   handleChange = (event) => {
     const { value, checked } = event.target;

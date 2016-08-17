@@ -3,12 +3,13 @@ import DatePicker from 'react-datepicker';
 import moment from 'moment';
 require('react-datepicker/dist/react-datepicker.css');
 
-import BoolRadioField from 'components/BoolRadioField';
-import IconRadioField from 'components/IconRadioField';
+import BoolRadio from 'components/BoolRadioField';
+import IconRadio from 'components/IconRadioField';
 import RelationField from 'components/RelationField';
 import OptionalField from 'components/OptionalField';
 import LocationField from 'components/LocationField';
 import MultiField from 'components/MultiField';
+import ImageUpload from 'components/ImageUploadField';
 import TimePicker from 'components/TimePicker';
 import SearchableSelect from 'components/SearchableSelect';
 
@@ -30,10 +31,11 @@ export default class Field extends React.Component { // eslint-disable-line reac
     props: PropTypes.object
   };
   static componentMap = {
-    BoolRadio: BoolRadioField,
-    IconRadio: IconRadioField,
+    BoolRadio,
+    IconRadio,
     SearchableSelect,
-    MultiField
+    MultiField,
+    ImageUpload
   }
   constructor(props) {
     super(props);

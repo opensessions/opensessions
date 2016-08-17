@@ -123,7 +123,8 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     return (<div>
       <Field label="Is there anything participants should bring?" tipTitle="What to bring" name="preparation" type="textarea" validation={{ maxLength: 500 }} model={session} tip="Let participants know how to prepare for your session. Is there anything they will need to bring?" />
       <Field label="Who is the leader for this session?" tipTitle="Session Leader" name="leader" model={session} type="text" tip="Enter the name of the person who will be leading the session. It's helpful for participants to know who's in charge when they arrive" example="E.g. John Smith" />
-      <Field label="Will participants receive coaching?" type="BoolRadio" name="hasCoaching" model={session} options={coachOptions} props={{ options: coachOptions }} />
+      <Field label="Will participants receive coaching?" type="BoolRadio" name="hasCoaching" model={session} props={{ options: coachOptions }} />
+      <Field label="Image" type="ImageUpload" name="image" model={session} props={{ uploadURL: `/api/session-image/${session.uuid}`, value: session.imageURL, baseURL: `https://${window.AMS_S3_IMAGES_BASEURL}/` }} />
     </div>);
   }
   renderLocationFieldset = () => {
@@ -149,10 +150,10 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     ];
     const disabilities = ['Learning disability', 'Mental health condition', 'Physical impairment', 'Visual impairment', 'Deaf', 'Please ask for more info'];
     return (<div>
-      <Field label="Gender restrictions" type="IconRadio" name="genderRestriction" model={session} props={{ options: genderOptions }} />
-      <Field label="Is there a minimum age?" name="minAgeRestriction" model={session} type="Optional" component={{ type: NumField, props: { validation: { min: 0, max: session.maxAgeRestriction || 120 }, format: ': years old' } }} null="0" />
-      <Field label="Is there a maximum age?" name="maxAgeRestriction" model={session} type="Optional" component={{ type: NumField, props: { validation: { min: session.minAgeRestriction || 0, max: 120 }, format: ': years old' } }} null="0" />
-      <Field label="Are you able to offer support to people with disabilities?" name="abilityRestriction" model={session} type="MultiField" props={{ options: disabilities, value: session.abilityRestriction }} />
+      <Field label="Gender restrictions" type="IconRadio" name="genderRestriction" model={session} props={{ options: genderOptions }} tipTitle="Gender restrictions" tip="Select 'none' if there are no restrictions on gender" />
+      <Field label="Is there a minimum age?" name="minAgeRestriction" model={session} type="Optional" component={{ type: NumField, props: { validation: { min: 0, max: session.maxAgeRestriction || 120 }, format: ': years old' } }} null="0" tipTitle="Minimum age" tip="If there is a minimum age, select 'yes' then enter the age" />
+      <Field label="Is there a maximum age?" name="maxAgeRestriction" model={session} type="Optional" component={{ type: NumField, props: { validation: { min: session.minAgeRestriction || 0, max: 120 }, format: ': years old' } }} null="0" tipTitle="Maximum age" tip="If there is a maximum age, select 'yes' then enter the age" />
+      <Field label="Are you able to offer support to people with disabilities?" name="abilityRestriction" model={session} type="MultiField" props={{ options: disabilities, value: session.abilityRestriction }} tipTitle="Disability support" tip="Please tick all disabilities that you can cater for in your session. If you are not sure, do not tick any" />
     </div>);
   }
   renderContactFieldset = () => {

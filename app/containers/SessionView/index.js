@@ -39,6 +39,11 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     }
     return `£${price}`;
   }
+  getSessionImage() {
+    const { user } = this.context;
+    const { session } = this.state;
+    return user ? `${session.image}?${Date.now()}` : session.image;
+  }
   getState() {
     let { state } = this.state.session;
     if (state !== 'published') return <span className={styles.state}>({state})</span>;
@@ -113,7 +118,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     }
     return (<div className={styles.detailsSection}>
       <div className={styles.detailsImg}>
-        <img src="/images/placeholder.png" role="presentation" />
+        <img src={session.image ? this.getSessionImage() : '/images/placeholder.png'} role="presentation" />
       </div>
       <div className={styles.detailsText}>
         <h1>{this.getTitle()}{this.getState()}</h1>

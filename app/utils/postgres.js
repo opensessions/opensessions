@@ -7,10 +7,12 @@ export function pgTimeToDate(time) {
 export function parseSchedule(instance) {
   const { startDate, startTime, endTime } = instance;
   const data = {};
+  const now = new Date();
   if (startDate) {
     const date = new Date(startDate);
     data.date = moment(date).format('dddd D MMM');
-    data.hasOccurred = date.getTime() <= (new Date()).getTime();
+    if (date.getFullYear() !== now.getFullYear()) data.date = moment(date).format('dddd D MMM YYYY');
+    data.hasOccurred = date.getTime() <= now.getTime();
   }
   if (startTime) {
     data.time = startTime.split(':').slice(0, 2).join(':');

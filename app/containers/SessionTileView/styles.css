@@ -91,6 +91,7 @@
           box-shadow: 0 .1em .75em 0 rgba(0, 0, 0, .5);
           &.occurred {
             background: #999;
+            text-decoration: line-through;
           }
           & > svg {
             max-height: 1.6em;
