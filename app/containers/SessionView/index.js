@@ -184,10 +184,9 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         <div className={styles.info}>
           <h3>Disability Support</h3>
           <div className={`${styles.floatingInfo} ${styles.disabilityInfo}`}>
-            {session.abilityRestriction.map(ability => <p>{ability} <img src="/images/tick.svg" role="presentation" /></p>)}
+            {session.abilityRestriction ? session.abilityRestriction.map(ability => <p>{ability} <img src="/images/tick.svg" role="presentation" /></p>) : <p>No disabilities supported</p>}
           </div>
         </div>
-
       </div>
     </div>);
   }

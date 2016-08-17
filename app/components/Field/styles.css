@@ -12,7 +12,7 @@
 
 .field {
   position: relative;
-  padding: .5em 0;
+  padding: .75em 0;
   & .maxLength {
     font-size: .825em;
     text-align: right;
