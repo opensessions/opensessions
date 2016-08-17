@@ -20,7 +20,7 @@ export default class ImageUploadField extends React.Component { // eslint-disabl
     this.setState({ status: 'Uploading...' });
     apiModel.upload(this.props.uploadURL, formData).then(data => {
       this.setState({ status: '' });
-      const { result, instance } = data;
+      const { instance } = data;
       if (this.props.onChange) this.props.onChange(instance.image);
     }).catch(error => {
       this.setState({ status: '' });
@@ -28,7 +28,7 @@ export default class ImageUploadField extends React.Component { // eslint-disabl
     });
   }
   render() {
-    const { baseURL, value } = this.props;
+    const { value } = this.props;
     return (<div className={styles.imageField}>
       {value ? <img src={`${value}?${Date.now()}`} role="presentation" /> : <p>No image</p>}
       <input type="file" onChange={this.handleChange} />

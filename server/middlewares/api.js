@@ -103,13 +103,13 @@ module.exports = (app) => {
           res.json({ status: 'success', result, baseURL: aws.URL, instance: final });
         }).catch(error => {
           res.status(404).json({ error });
-        })
+        });
       }).catch(error => {
         res.status(404).json({ error });
-      })
+      });
     }).catch(error => {
       res.status(400).json({ error });
-    })
+    });
   });
 
   api.get('/:model', resolveModel, (req, res) => {
