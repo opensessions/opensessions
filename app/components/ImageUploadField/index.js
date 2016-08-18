@@ -29,7 +29,7 @@ export default class ImageUploadField extends React.Component { // eslint-disabl
   render() {
     const { value } = this.props;
     return (<div className={styles.imageField}>
-      {value ? <img src={`${value}?${Date.now()}`} role="presentation" /> : <p>No image</p>}
+      <img src={value ? `${value}?${Date.now()}` : '/images/placeholder.png'} role="presentation" />
       <input type="file" onChange={this.handleChange} />
       {this.state ? this.state.status : ''}
     </div>);
