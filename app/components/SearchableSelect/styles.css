@@ -14,6 +14,15 @@
       transition: none;
     }
   }
+  & .clear {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    line-height: 0;
+    padding: 0 .5em;
+    font-family: monospace;
+    font-size: 1.5em;
+  }
   & .searchResults {
     width: 100%;
     background: #FFF;

@@ -20,6 +20,9 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
     const changeEvent = new CustomEvent('input', { bubbles: true, detail: 'generated' });
     this.refs.input.dispatchEvent(changeEvent);
   }
+  resetValue = () => {
+    this.setValue(null);
+  }
   filterOptions = (search) => {
     let opts = this.props.options;
     if (search) opts = opts.filter((option) => option.name.match(new RegExp(search, 'i')));
@@ -28,9 +31,10 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
   searchEvent = (event) => {
     console.log('-> searchEvent :: ', event.type, event.target.value, this.state);
     const { type, target, nativeEvent } = event;
-    // const { input } = this.refs;
+    const { input } = this.refs;
     const { filteredOptions, highlightIndex } = this.state;
     const newState = {};
+    let action;
     if (type === 'focus') {
       newState.visible = true;
       newState.search = '';
@@ -52,30 +56,37 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
         event.preventDefault();
         event.stopPropagation();
       } else if (keyCode === 13) {
-        const selected = filteredOptions[highlightIndex];
-        const { key } = selected.props;
-        newState.search = '';
-        newState.visible = false;
-        // if (input) input.blur();
-        if (key === 'none') {
-          this.addItem();
-        } else {
-          this.setValue(key);
-        }
+        action = 'chooseSelected';
       }
     } else if (type === 'blur') {
       if (!this.state.ignoreBlur) {
         if (this.state.search) {
-          this.addItem();
+          action = 'chooseSelected';
         } else {
           newState.visible = false;
           newState.search = '';
         }
       }
     }
+    if (action === 'chooseSelected') {
+      const selected = filteredOptions[highlightIndex];
+      const { key } = selected.props;
+      newState.search = '';
+      newState.visible = false;
+      newState.ignoreBlur = true;
+      if (key === 'none') {
+        this.addItem();
+      } else {
+        this.setValue(key);
+      }
+    }
     if (newState.highlightIndex) {
       const maxIndex = (newState.filteredOptions || filteredOptions).length - 1;
       newState.highlightIndex = [0, newState.highlightIndex, maxIndex].sort()[1];
+    }
+    if (newState.search === '') {
+      input.value = '';
+      input.blur();
     }
     if (Object.keys(newState).length) this.setState(newState);
   }
@@ -124,9 +135,12 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
         })}
       </ol>);
     }
+    const clear = <a className={styles.clear} onClick={this.resetValue}>&times;</a>;
+    console.log("searchableSelect value ::", value);
     return (<div className={styles.searchableSelect}>
       {input}
       {output}
+      {clear}
       {searchResults}
     </div>);
   }

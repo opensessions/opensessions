@@ -6,7 +6,7 @@ import Authenticated from 'components/Authenticated';
 import LoadingMessage from 'components/LoadingMessage';
 import SessionList from 'containers/SessionList';
 
-import { apiFetch } from '../../utils/api';
+import { apiModel } from '../../utils/api';
 
 export default class MyProfile extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
@@ -42,12 +42,10 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
   fetchData = () => {
     const { user } = this.context;
     this.setState({ status: 'Loading organizers...' });
-    apiFetch('/api/organizer', {
-      query: { owner: user.user_id },
-    }).then((result) => {
+    return apiModel.search('organizer', { owner: user.user_id }).then(result => {
       const organizers = result.instances;
       const selectedOrganizer = organizers.length ? organizers[0].uuid : 0;
-      apiFetch(`/api/session?owner=${user.user_id}&OrganizerUuid=null`).then((sessionResult) => {
+      return apiModel.search('session', { owner: user.user_id, OrganizerUuid: 'null' }).then(sessionResult => {
         const { instances, error } = sessionResult;
         this.setState({ selectedOrganizer, organizers, sessions: instances, status: error });
       });

@@ -239,8 +239,8 @@
 .mapSection {
   & > .mapFrame {
     min-height: 24rem;
-    height: 100vh;
-    max-height: 72rem;
+    height: 72rem;
+    max-height: 65vh;
   }
   & .noLocation {
     text-align: center;

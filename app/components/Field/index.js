@@ -140,7 +140,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
       } else {
         const now = moment(Date.now());
         const value = attrs.value ? moment(attrs.value) : now;
-        const dateAttrs = { selected: value, onChange: this.handleDateChange, minDate: now };
+        const dateAttrs = { selected: value, onChange: this.handleDateChange, minDate: now, popoverTargetOffset: '0 12px', popoverTargetAttachment: 'top right' };
         input = <DatePicker {...dateAttrs} />;
       }
     } else if (attrs.type === 'time') {
