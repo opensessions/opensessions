@@ -59,14 +59,6 @@ module.exports = (app) => {
     return query;
   };
 
-  api.get('/keys', (req, res) => {
-    const { GOOGLE_MAPS_API_KEY, GOOGLE_ANALYTICS_TRACKINGID } = process.env;
-    res.json({
-      GOOGLE_MAPS_API_KEY,
-      GOOGLE_ANALYTICS_TRACKINGID
-    });
-  });
-
   api.get('/config.js', (req, res) => {
     const { GOOGLE_MAPS_API_KEY, GOOGLE_ANALYTICS_TRACKINGID } = process.env;
     const windowKeys = ['GOOGLE_MAPS_API_KEY', 'GOOGLE_ANALYTICS_TRACKINGID', 'INTERCOM_APPID', 'AMS_S3_IMAGES_BASEURL'];

@@ -44,7 +44,7 @@ module.exports = (app, database) => {
         const item = {
           state,
           kind: 'session',
-          id: `{${session.uuid}}`,
+          id: session.uuid,
           modified: session.updatedAt.toISOString(),
         };
         if (state === 'updated') {
