@@ -83,7 +83,7 @@ module.exports = (app) => {
         y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
         g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
         g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
-        g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[^;`]*`[^;`]*`[^;`]*`')){
+        g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[^;\`]*\`[^;\`]*\`[^;\`]*\`')){
         d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
         ';path=/;expires='+new Date(0);i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
       })(window,document,window['_fs_namespace'],'script','user');
