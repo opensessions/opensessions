@@ -5,6 +5,8 @@ import fieldStyles from '../Field/styles.css';
 
 import { apiModel } from '../../utils/api';
 
+import { trackPage } from '../../utils/analytics';
+
 export default class Form extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
     autosave: React.PropTypes.bool,
@@ -14,6 +16,7 @@ export default class Form extends React.Component { // eslint-disable-line react
     pendingSteps: React.PropTypes.any,
     onPublish: React.PropTypes.func,
     onChange: React.PropTypes.func,
+    fieldsets: React.PropTypes.array,
   }
   constructor(props) {
     super(props);
@@ -30,6 +33,8 @@ export default class Form extends React.Component { // eslint-disable-line react
   componentDidUpdate(oldProps, oldState) {
     if (oldState.activeTab !== this.state.activeTab) {
       this.refocus();
+      const fieldset = this.props.fieldsets[this.state.activeTab];
+      trackPage(`${location.href}#${fieldset.slug}`, `${location.pathname}#${fieldset.slug}`);
     }
   }
   onFocus = () => {
