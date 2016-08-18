@@ -36,12 +36,13 @@ const history = syncHistoryWithStore(browserHistory, store, {
   selectLocationState: selectLocationState(),
 });
 history.listen((location) => {
-  const { ga } = window;
+  const { ga, analytics } = window;
   ga('set', 'page', location.pathname);
   ga('send', 'pageview');
   IntercomAPI('trackEvent', 'page-nav', {
     'New location': location.pathname
   });
+  if (analytics) analytics.page(location.pathname);
 });
 
 // Set up the router, wrapping all Routes in the App component
