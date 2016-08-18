@@ -39,7 +39,6 @@ history.listen((location) => {
   const { ga, mouseflow } = window;
   ga('set', 'page', location.pathname);
   ga('send', 'pageview');
-  if (typeof mouseflow !== 'undefined') mouseflow.newPageView(location.pathname);
   IntercomAPI('trackEvent', 'page-nav', {
     'New location': location.pathname
   });

@@ -76,6 +76,7 @@ export default class App extends React.Component { // eslint-disable-line react/
       this.setState({ profile });
       const { __insp } = window;
       if (__insp) __insp.push(['identify', profile.email]);
+      if (FS) FS.identify(profile.email, { displayName: profile.nickname, email: profile.email });
       return true;
     });
   }
