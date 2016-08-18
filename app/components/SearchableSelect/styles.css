@@ -19,9 +19,15 @@
     top: 50%;
     right: 0;
     line-height: 0;
-    padding: 0 .5em;
+    padding: 1em 0.75em;
+    margin-top: -1em;
     font-family: monospace;
     font-size: 1.5em;
+    opacity: .5;
+    &:hover {
+      opacity: 1;
+      text-decoration: none;
+    }
   }
   & .searchResults {
     width: 100%;

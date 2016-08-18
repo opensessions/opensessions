@@ -72,6 +72,14 @@ module.exports = (app) => {
       ga('create', '${GOOGLE_ANALYTICS_TRACKINGID}', 'auto');
       ga('send', 'pageview');
 
+      var _mfq = _mfq || [];
+      (function() {
+        var mf = document.createElement("script");
+        mf.type = "text/javascript"; mf.async = true;
+        mf.src = "//cdn.mouseflow.com/projects/${process.env.MOUSEFLOW_PROJECT_ID}.js";
+        document.getElementsByTagName("head")[0].appendChild(mf);
+      })();
+
       var maps = document.createElement('script');
       maps.src = "https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places";
       document.head.appendChild(maps);

@@ -51,6 +51,7 @@ export default class LocationField extends React.Component {
     }
   }
   onPlaceChange = (place) => {
+    if (!place.geometry) throw alert('No map data for this location; please try a different address');
     this.latLngChange(place.geometry.location);
     this.props.onValueChangeByName(this.props.name, place.formatted_address);
     this.setState({ clean: true });
