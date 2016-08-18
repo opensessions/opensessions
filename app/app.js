@@ -36,9 +36,10 @@ const history = syncHistoryWithStore(browserHistory, store, {
   selectLocationState: selectLocationState(),
 });
 history.listen((location) => {
-  const { ga } = window;
+  const { ga, mouseflow } = window;
   ga('set', 'page', location.pathname);
   ga('send', 'pageview');
+  if (typeof mouseflow !== 'undefined') mouseflow.newPageView(location.pathname);
   IntercomAPI('trackEvent', 'page-nav', {
     'New location': location.pathname
   });
