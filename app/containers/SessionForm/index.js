@@ -124,7 +124,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       <Field label="Is there anything participants should bring?" tipTitle="What to bring" name="preparation" type="textarea" validation={{ maxLength: 500 }} model={session} tip="Let participants know how to prepare for your session. Is there anything they will need to bring?" />
       <Field label="Who is the leader for this session?" tipTitle="Session Leader" name="leader" model={session} type="text" tip="Enter the name of the person who will be leading the session. It's helpful for participants to know who's in charge when they arrive" example="E.g. John Smith" />
       <Field label="Will participants receive coaching?" type="BoolRadio" name="hasCoaching" model={session} props={{ options: coachOptions }} />
-      <Field label="Image" type="ImageUpload" name="image" model={session} props={{ uploadURL: `/api/session-image/${session.uuid}`, value: session.imageURL, baseURL: `https://${window.AMS_S3_IMAGES_BASEURL}/` }} />
+      <Field label="Image" type="ImageUpload" name="image" model={session} props={{ uploadURL: `/api/session-image/${session.uuid}`, value: session.imageURL }} />
     </div>);
   }
   renderLocationFieldset = () => {

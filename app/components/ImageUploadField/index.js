@@ -7,8 +7,7 @@ export default class ImageUploadField extends React.Component { // eslint-disabl
   static propTypes = {
     value: PropTypes.string,
     onChange: PropTypes.func,
-    uploadURL: PropTypes.string,
-    baseURL: PropTypes.string
+    uploadURL: PropTypes.string
   }
   handleChange = (event) => {
     event.stopPropagation();
