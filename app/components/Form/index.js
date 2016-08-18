@@ -5,7 +5,7 @@ import fieldStyles from '../Field/styles.css';
 
 import { apiModel } from '../../utils/api';
 
-import { trackPage } from '../../utils/analytics';
+import trackPage from '../../utils/analytics';
 
 export default class Form extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
