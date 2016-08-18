@@ -66,6 +66,7 @@
     & .dateDetail,
     & .locationDetail {
       display: flex;
+      align-items: center;
       margin: .25em 0;
       & > img {
         height: var(--iconSizeBig);

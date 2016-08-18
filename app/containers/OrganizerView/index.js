@@ -84,13 +84,9 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
   }
   renameEvents = (event) => {
     const { type, keyCode, target } = event;
-    if (type === 'keydown') {
-      if (keyCode === 13) {
-        this.setState({ actionState: 'renaming' });
-        this.renameOrganizer(target.value);
-      }
-    } else if (type === 'blur') {
-      this.setState({ actionState: 'none' });
+    if (keyCode === 13 || type === 'blur') {
+      this.setState({ actionState: 'renaming' });
+      this.renameOrganizer(target.value);
     }
   }
   renderUnassignedSessions() {
