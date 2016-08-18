@@ -79,6 +79,7 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
       } else {
         this.setValue(key);
       }
+      input.blur();
     }
     if (newState.highlightIndex) {
       const maxIndex = (newState.filteredOptions || filteredOptions).length - 1;
@@ -86,7 +87,6 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
     }
     if (newState.search === '') {
       input.value = '';
-      input.blur();
     }
     if (Object.keys(newState).length) this.setState(newState);
   }
@@ -136,7 +136,6 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
       </ol>);
     }
     const clear = <a className={styles.clear} onClick={this.resetValue}>&times;</a>;
-    console.log("searchableSelect value ::", value);
     return (<div className={styles.searchableSelect}>
       {input}
       {output}
