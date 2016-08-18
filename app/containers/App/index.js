@@ -76,10 +76,12 @@ export default class App extends React.Component { // eslint-disable-line react/
       this.setState({ profile });
 
       const { analytics } = window;
-      if (analytics) analytics.identify(profile.email, {
-        name: profile.nickname,
-        email: profile.email
-      });
+      if (analytics) {
+        analytics.identify(profile.email, {
+          name: profile.nickname,
+          email: profile.email
+        });
+      }
 
       return true;
     });
