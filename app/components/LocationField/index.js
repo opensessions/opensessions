@@ -90,6 +90,7 @@ export default class LocationField extends React.Component {
       defaultValue: model[name]
     };
     let map = null;
+    let mapHelp = null;
     const locationData = model[dataName] ? JSON.parse(model[dataName]) : null;
     if (locationData) {
       const marker = {
@@ -108,6 +109,9 @@ export default class LocationField extends React.Component {
         center: locationData,
         ref: 'component',
         onClick: this.onMapClick,
+        onMouseover: event => {
+          marker.setAnimation(window.google.maps.Animation.BOUNCE)
+        },
         options: { streetViewControl: false, scrollwheel: false, mapTypeControl: false }
       };
       map = (<GoogleMapLoader
@@ -116,10 +120,12 @@ export default class LocationField extends React.Component {
           <Marker {...marker} />
         </GoogleMap>}
       />);
+      mapHelp = <p className={styles.dragHelp}>Drag map pin to refine location</p>;
     }
     return (<div>
       <input {...attrs} />
       {map}
+      {mapHelp}
     </div>);
   }
 }

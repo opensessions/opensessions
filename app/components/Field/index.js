@@ -5,8 +5,8 @@ require('react-datepicker/dist/react-datepicker.css');
 
 import BoolRadio from 'components/BoolRadioField';
 import IconRadio from 'components/IconRadioField';
-import RelationField from 'components/RelationField';
-import OptionalField from 'components/OptionalField';
+import Relation from 'components/RelationField';
+import Optional from 'components/OptionalField';
 import LocationField from 'components/LocationField';
 import MultiField from 'components/MultiField';
 import ImageUpload from 'components/ImageUploadField';
@@ -35,7 +35,9 @@ export default class Field extends React.Component { // eslint-disable-line reac
     IconRadio,
     SearchableSelect,
     MultiField,
-    ImageUpload
+    ImageUpload,
+    Relation,
+    Optional
   }
   constructor(props) {
     super(props);
@@ -112,21 +114,16 @@ export default class Field extends React.Component { // eslint-disable-line reac
     const attrs = {
       name,
       placeholder,
-      value: '',
+      value: model && name in model && model[name] ? model[name] : '',
       onChange: this.handleValueChange,
       className: `${styles.input} ${valid ? '' : styles.invalid}`,
     };
-    if (model && name in model && model[name]) attrs.value = model[name];
     let input;
     attrs.type = this.props.type || 'text';
+    if (validation) attrs.validation = validation;
     if (attrs.type in Field.componentMap) {
       const Component = Field.componentMap[attrs.type];
       input = <Component {...props} {...attrs} />;
-    } else if (attrs.type === 'Relation') {
-      input = <RelationField {...this.props} {...attrs} />;
-    } else if (attrs.type === 'Optional') {
-      if (validation) attrs.validation = validation;
-      input = <OptionalField {...this.props} {...attrs} />;
     } else if (attrs.type === 'Location') {
       delete attrs.onChange;
       attrs.onValueChangeByName = this.handleValueChangeByName;

@@ -4,8 +4,7 @@ import styles from './styles.css';
 
 export default class NumField extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
-    name: React.PropTypes.string.isRequired,
-    model: React.PropTypes.object.isRequired,
+    value: React.PropTypes.string,
     onChange: React.PropTypes.func,
     validation: React.PropTypes.object,
     className: React.PropTypes.string,
@@ -20,12 +19,11 @@ export default class NumField extends React.Component { // eslint-disable-line r
     }
   }
   render() {
-    const { name, className, autoFocus, model, validation, format, step } = this.props;
+    const { value, className, autoFocus, validation, format, step } = this.props;
     const attrs = {
       className,
       type: 'number',
-      name,
-      value: model[name],
+      value: value,
       onChange: this.handleChange,
       autoFocus,
       step

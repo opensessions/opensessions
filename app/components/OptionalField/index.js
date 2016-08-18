@@ -4,9 +4,8 @@ import styles from './styles.css';
 
 export default class OptionalField extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
-    name: React.PropTypes.string.isRequired,
+    value: React.PropTypes.any,
     onChange: React.PropTypes.func,
-    model: React.PropTypes.object,
     no: React.PropTypes.any,
     yes: React.PropTypes.any,
     null: React.PropTypes.string,
@@ -18,8 +17,8 @@ export default class OptionalField extends React.Component { // eslint-disable-l
     this.state = { showInput: false, clean: true };
   }
   componentWillReceiveProps(nextProps) {
-    const { model, name } = nextProps;
-    if (this.state.clean && name in model && this.props.model[this.props.name] !== model[name]) this.setState({ showInput: !!model[name] });
+    const { value } = nextProps;
+    if (this.state.clean && this.props.value !== value) this.setState({ showInput: !!value });
   }
   handleChange = (event) => {
     const { target } = event;
@@ -32,17 +31,15 @@ export default class OptionalField extends React.Component { // eslint-disable-l
     if (this.props.onChange && !showInput) this.props.onChange(this.props.null || null);
   }
   render() {
-    const { name, model, component, multiline } = this.props;
+    const { value, component, multiline } = this.props;
     const { showInput } = this.state;
-    const attrs = {
+    const props = {
       className: styles.inputField,
-      name,
-      model,
+      value: value.toString(),
       onChange: this.handleChange
     };
-    const input = showInput ? <component.type {...attrs} {...component.props} autoFocus /> : null;
+    const input = showInput ? <component.type {...props} {...component.props} autoFocus /> : null;
     const radioAttrs = {
-      id: `${name}_optionalNumField`,
       type: 'radio',
       onChange: this.radioClick
     };

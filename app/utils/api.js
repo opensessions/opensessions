@@ -30,8 +30,8 @@ const apiModel = {
   get(model, uuid) {
     return apiFetch(`/api/${model}/${uuid}`);
   },
-  search(model, where) {
-    return apiFetch(`/api/${model}`, { where });
+  search(model, query) {
+    return apiFetch(`/api/${model}`, { query });
   },
   new(model, body) {
     return apiFetch(`/api/${model}/create`, { body });

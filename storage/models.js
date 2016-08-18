@@ -25,7 +25,8 @@ module.exports = (DataTypes) => ({
           getQuery(query, models, user) {
             query.include = [{
               model: models.Session,
-              where: { state: { $in: user ? ['published', 'draft', 'unpublished'] : ['published'] } }
+              where: { state: { $in: user ? ['published', 'draft', 'unpublished'] : ['published'] } },
+              required: false
             }];
             return query;
           },
@@ -102,6 +103,9 @@ module.exports = (DataTypes) => ({
             query.include = [models.Organizer];
             if (!('where' in query)) query.where = {};
             query.where.state = user ? { $not: 'deleted' } : 'published';
+            if ('owner' in query.where && query.where.owner !== user) {
+              throw Error('Must be logged in to search by owner');
+            }
             return query;
           },
           makeAssociations(models) {

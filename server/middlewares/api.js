@@ -91,10 +91,8 @@ module.exports = (app) => {
     s3(aws, image.path, uuid).then(result => {
       Session.findOne({ where: { uuid } }).then(instance => {
         const { versions } = result;
-        instance.update({ image: `https://${aws.URL}/${versions[1].key}` }).then(final => {
+        return instance.update({ image: `https://${aws.URL}/${versions[1].key}` }).then(final => {
           res.json({ status: 'success', result, baseURL: aws.URL, instance: final });
-        }).catch(error => {
-          res.status(404).json({ error });
         });
       }).catch(error => {
         res.status(404).json({ error });
@@ -107,16 +105,7 @@ module.exports = (app) => {
   api.get('/:model', resolveModel, (req, res) => {
     const { Model } = req;
     requireLogin(req, res, () => {
-      const query = Model.getQuery({ where: queryParse(req) }, database.models, req.user);
-      if (Model.name === 'Session') {
-        if ('owner' in query.where) {
-          if (query.where.owner !== getUser(req)) {
-            res.json({ error: 'Must be logged in to search by owner' });
-          }
-        } else {
-          query.where.state = 'published';
-        }
-      }
+      const query = Model.getQuery({ where: queryParse(req) }, database.models, getUser(req));
       Model.findAll(query).then((instances) => {
         res.json({ instances });
       }).catch((error) => {
@@ -140,7 +129,7 @@ module.exports = (app) => {
     const { Model } = req;
     const { uuid } = req.params;
     requireLogin(req, res, () => {
-      const query = Model.getQuery({ where: { uuid } }, database.models, req.user);
+      const query = Model.getQuery({ where: { uuid } }, database.models, getUser(req));
       Model.findOne(query).then((instance) => {
         if (instance) {
           res.json({ instance, schema: getSchema(Model) });
@@ -175,7 +164,7 @@ module.exports = (app) => {
     const { Model } = req;
     const { uuid, action } = req.params;
     if (action === 'delete') {
-      const query = Model.getQuery({ where: { uuid, owner: getUser(req) } }, database.models, req.user);
+      const query = Model.getQuery({ where: { uuid, owner: getUser(req) } }, database.models, getUser(req));
       Model.findOne(query)
         .then((instance) => (instance.setDeleted ? instance.setDeleted() : instance.destroy()))
         .then(() => res.json({ status: 'success' }))

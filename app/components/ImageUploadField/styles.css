@@ -1,4 +1,7 @@
 .imageField {
+  &.loading {
+    cursor: wait;
+  }
   & input[type=file] {
     display: block;
     margin: .5em 0;

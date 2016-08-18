@@ -1,16 +1,18 @@
 .mapView {
-  margin: 1em 0;
+  margin: 1em 0 0;
   border: 1px solid #C2C2C2;
   height: 16em;
   width: 24em;
-  &::after {
-    content: 'Drag map pin to refine location';
-    text-align: center;
-    display: block;
-    background: #FFF;
-  }
   & :global .gmnoprint {
     cursor: move;
     cursor: -webkit-grab;
   }
+}
+
+.dragHelp {
+  width: 24em;
+  padding: .25em;
+  text-align: center;
+  display: block;
+  background: #FFF;
 }

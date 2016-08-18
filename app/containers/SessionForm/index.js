@@ -109,7 +109,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     const user = this.context.user || {};
     return (<div>
       <Field label="Session Title" name="title" model={session} validation={{ maxLength: 50 }} tip="Enter a title for your session" example="E.g. Volleyball training" />
-      <Field label="Organiser Name" name="OrganizerUuid" model={session} type="Relation" relation={{ url: '/api/organizer', query: { owner: user.user_id } }} tip="Enter the name of your club or organisation. If you don't represent a club or organisation, enter your own name" example="E.g. Richmond Volleyball" />
+      <Field label="Organiser Name" name="OrganizerUuid" model={session} type="Relation" props={{ relation: { model: 'organizer', query: { owner: user.user_id } } }} tip="Enter the name of your club or organisation. If you don't represent a club or organisation, enter your own name" example="E.g. Richmond Volleyball" />
       <Field label="Session Description" name="description" model={session} type="textarea" tip="Let people know what's great about the session! Remember: the more detail you provide, the more likely people are to decide to attend." example="Tips: Who is this session for? What benefits will people get from it? What will the session be like? What will we do? Is any prior experience needed?" props={{ size: 'XL' }} />
       <Field label="Sport or activity type" name="activityType" model={session} tip="Enter the type of activity or sport on offer for this session. If multiple activities are on offer at this session, please write 'Multiple Activities'" placeholder="E.g. Volleyball" example="E.g. Volleyball" />
     </div>);
@@ -137,7 +137,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   renderPricingFieldset = () => {
     const session = this.getSession();
     return (<div>
-      <Field label="Price" name="price" model={session} type="Optional" component={{ type: NumField, props: { validation: { min: 0 }, format: '£ :', step: '0.25' } }} no="Free" yes="Paid" />
+      <Field label="Price" name="price" model={session} type="Optional" props={{ no: "Free", yes: "Paid", component: { type: NumField, props: { validation: { min: 0 }, format: '£ :', step: '0.25' } } }} />
       <Field label="Quantity" name="quantity" model={session} type="number" validation={{ min: 0 }} tip="How many spaces are available?" />
     </div>);
   }
@@ -151,8 +151,8 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     const disabilities = ['Learning disability', 'Mental health condition', 'Physical impairment', 'Visual impairment', 'Deaf', 'Please ask for more info'];
     return (<div>
       <Field label="Gender restrictions" type="IconRadio" name="genderRestriction" model={session} props={{ options: genderOptions }} tipTitle="Gender restrictions" tip="Select 'none' if there are no restrictions on gender" />
-      <Field label="Is there a minimum age?" name="minAgeRestriction" model={session} type="Optional" component={{ type: NumField, props: { validation: { min: 0, max: session.maxAgeRestriction || 120 }, format: ': years old' } }} null="0" tipTitle="Minimum age" tip="If there is a minimum age, select 'yes' then enter the age" />
-      <Field label="Is there a maximum age?" name="maxAgeRestriction" model={session} type="Optional" component={{ type: NumField, props: { validation: { min: session.minAgeRestriction || 0, max: 120 }, format: ': years old' } }} null="0" tipTitle="Maximum age" tip="If there is a maximum age, select 'yes' then enter the age" />
+      <Field label="Is there a minimum age?" name="minAgeRestriction" model={session} type="Optional" props={{ component: { type: NumField, props: { validation: { min: 0, max: session.maxAgeRestriction || 120 }, format: ': years old' } }, null: "0" }} tipTitle="Minimum age" tip="If there is a minimum age, select 'yes' then enter the age" />
+      <Field label="Is there a maximum age?" name="maxAgeRestriction" model={session} type="Optional" props={{ component: { type: NumField, props: { validation: { min: session.minAgeRestriction || 0, max: 120 }, format: ': years old' } }, null: "0" }} tipTitle="Maximum age" tip="If there is a maximum age, select 'yes' then enter the age" />
       <Field label="Are you able to offer support to people with disabilities?" name="abilityRestriction" model={session} type="MultiField" props={{ options: disabilities, value: session.abilityRestriction }} tipTitle="Disability support" tip="Please tick all disabilities that you can cater for in your session. If you are not sure, do not tick any" />
     </div>);
   }
