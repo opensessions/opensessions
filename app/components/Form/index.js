@@ -34,7 +34,7 @@ export default class Form extends React.Component { // eslint-disable-line react
     if (oldState.activeTab !== this.state.activeTab) {
       this.refocus();
       const fieldset = this.props.fieldsets[this.state.activeTab];
-      trackPage(`${location.href}#${fieldset.slug}`, `${location.pathname}#${fieldset.slug}`);
+      trackPage(`${document.location.href}#${fieldset.slug}`, `${document.location.pathname}#${fieldset.slug}`);
     }
   }
   onFocus = () => {
