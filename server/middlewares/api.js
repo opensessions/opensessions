@@ -72,13 +72,21 @@ module.exports = (app) => {
       ga('create', '${GOOGLE_ANALYTICS_TRACKINGID}', 'auto');
       ga('send', 'pageview');
 
-      var _mfq = _mfq || [];
-      (function() {
-        var mf = document.createElement("script");
-        mf.type = "text/javascript"; mf.async = true;
-        mf.src = "//cdn.mouseflow.com/projects/${process.env.MOUSEFLOW_PROJECT_ID}.js";
-        document.getElementsByTagName("head")[0].appendChild(mf);
-      })();
+      window['_fs_debug'] = false;
+      window['_fs_host'] = 'www.fullstory.com';
+      window['_fs_org'] = '${process.env.FULLSTORY_ORG}';
+      window['_fs_namespace'] = 'FS';
+      (function(m,n,e,t,l,o,g,y){
+        if (e in m && m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].'); return;}
+        g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+        o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+        y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+        g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+        g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+        g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[^;`]*`[^;`]*`[^;`]*`')){
+        d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+        ';path=/;expires='+new Date(0);i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+      })(window,document,window['_fs_namespace'],'script','user');
 
       window.__insp = window.__insp || [];
       __insp.push(['wid', ${process.env.INSPECTLET_WID}]);
@@ -86,7 +94,6 @@ module.exports = (app) => {
       function ldinsp(){if(typeof window.__inspld != "undefined") return; window.__inspld = 1; var insp = document.createElement('script'); insp.type = 'text/javascript'; insp.async = true; insp.id = "inspsync"; insp.src = ('https:' == document.location.protocol ? 'https' : 'http') + '://cdn.inspectlet.com/inspectlet.js'; var x = document.getElementsByTagName('script')[0]; x.parentNode.insertBefore(insp, x); };
       setTimeout(ldinsp, 500); document.readyState != "complete" ? (window.attachEvent ? window.attachEvent('onload', ldinsp) : window.addEventListener('load', ldinsp, false)) : ldinsp();
       })();
-
 
       var maps = document.createElement('script');
       maps.src = "https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places";
