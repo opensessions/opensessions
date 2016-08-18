@@ -83,10 +83,10 @@ module.exports = (app) => {
     const { uuid } = req.params;
     const { Session } = database.models;
     const aws = {
-      URL: process.env.AMS_S3_IMAGES_BASEURL,
+      URL: process.env.AWS_S3_IMAGES_BASEURL,
       path: 'uploads/',
-      accessKeyId: process.env.AMS_S3_IMAGES_ACCESSKEY,
-      secretAccessKey: process.env.AMS_S3_IMAGES_SECRETKEY
+      accessKeyId: process.env.AWS_S3_IMAGES_ACCESSKEY,
+      secretAccessKey: process.env.AWS_S3_IMAGES_SECRETKEY
     };
     s3(aws, image.path, uuid).then(result => {
       Session.findOne({ where: { uuid } }).then(instance => {
