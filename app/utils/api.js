@@ -39,6 +39,9 @@ const apiModel = {
   edit(model, uuid, body) {
     return apiFetch(`/api/${model}/${uuid}`, { body });
   },
+  delete(model, uuid) {
+    return apiFetch(`/api/${model}/${uuid}/delete`);
+  },
   upload(url, body) {
     return apiFetch(url, { body });
   }

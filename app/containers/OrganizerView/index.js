@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router';
 
-import { apiFetch } from '../../utils/api';
+import { apiModel } from '../../utils/api';
 
 import SessionTileView from '../SessionTileView';
 import LoadingMessage from 'components/LoadingMessage';
@@ -40,8 +40,10 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
   fetchData = () => {
     const { params } = this.props;
     if (params && params.uuid) {
-      apiFetch(`/api/organizer/${params.uuid}`).then((res) => {
-        this.setState(res.error ? { error: res.error } : { organizer: res.instance });
+      return apiModel.get('organizer', params.uuid).then(res => {
+        this.setState({ organizer: res.instance });
+      }).catch(err => {
+        this.setState({ error: res.error });
       });
     }
   }
@@ -56,9 +58,9 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
   renameOrganizer = (name) => {
     if (typeof name === 'string') {
       const { organizer } = this.state;
-      const options = { body: { name } };
-      if (options.body.name) {
-        apiFetch(`/api/organizer/${organizer.uuid}`, options).then((res) => {
+      const options = { name };
+      if (options.name) {
+        apiModel.edit('organizer', organizer.uuid, options).then((res) => {
           const { instance, error } = res;
           Object.keys(instance).forEach((field) => {
             organizer[field] = instance[field];
@@ -75,14 +77,11 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     }
   }
   deleteOrganizer = () => {
-    const self = this;
     const { organizer } = this.state;
-    apiFetch(`/api/organizer/${organizer.uuid}/delete`).then((res) => {
-      if (res.status === 'success') {
-        (self.props.router ? self.props.router : self.context.router).push('/');
-      } else {
-        this.setState({ error: 'failed to delete organizer' });
-      }
+    return apiModel.delete('organizer', organizer.uuid).then(res => {
+      if (res.status === 'success') ('router' in this.props ? this.props : this.context).router.push('/');
+    }).catch(err => {
+      this.setState({ error: 'failed to delete organizer' });
     });
   }
   renameEvents = (event) => {

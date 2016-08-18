@@ -4,7 +4,7 @@ import { Link } from 'react-router';
 import CalendarSvg from 'components/CalendarSvg';
 
 import { parseSchedule } from 'utils/postgres';
-import { apiFetch } from 'utils/api';
+import { apiModel } from 'utils/api';
 
 import styles from './styles.css';
 
@@ -27,7 +27,7 @@ export default class SessionTileView extends React.Component { // eslint-disable
   delete = () => {
     const { session } = this.props;
     if (confirm('Are you sure you want to delete?', 'Delete', 'Cancel')) {
-      apiFetch(`/api/session/${session.uuid}/delete`).then((response) => {
+      apiModel.delete('session', session.uuid).then(response => {
         if (response.status === 'success') {
           this.setState({ isDeleted: true });
         } else {

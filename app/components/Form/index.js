@@ -3,7 +3,7 @@ import React from 'react';
 import styles from './styles.css';
 import fieldStyles from '../Field/styles.css';
 
-import { apiFetch } from '../../utils/api';
+import { apiModel } from '../../utils/api';
 
 export default class Form extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
@@ -55,7 +55,7 @@ export default class Form extends React.Component { // eslint-disable-line react
   }
   saveModel(model, verb, verbed) {
     this.setState({ saveState: `${verb}...`, saveStateClass: styles.saving });
-    return apiFetch(`/api/session/${model.uuid}`, { body: model }).then((result) => {
+    return apiModel.edit('session', model.uuid, model).then((result) => {
       const { instance, error } = result;
       if (error) {
         this.setState({ saveState: `Failed ${verb.toLowerCase()}: ${error}`, saveStateClass: styles.error });
