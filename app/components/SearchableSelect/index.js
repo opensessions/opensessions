@@ -28,7 +28,7 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
   searchEvent = (event) => {
     console.log('-> searchEvent :: ', event.type, event.target.value, this.state);
     const { type, target, nativeEvent } = event;
-    const { input } = this.refs;
+    // const { input } = this.refs;
     const { filteredOptions, highlightIndex } = this.state;
     const newState = {};
     if (type === 'focus') {

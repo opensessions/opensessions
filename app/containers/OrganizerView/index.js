@@ -30,7 +30,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     };
   }
   componentDidMount() {
-    this.fetchData();
+    if (this.props.params) this.fetchData();
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.organizer) {
@@ -39,13 +39,11 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
   }
   fetchData = () => {
     const { params } = this.props;
-    if (params && params.uuid) {
-      return apiModel.get('organizer', params.uuid).then(res => {
-        this.setState({ organizer: res.instance });
-      }).catch(err => {
-        this.setState({ error: res.error });
-      });
-    }
+    return apiModel.get('organizer', params.uuid).then(res => {
+      this.setState({ organizer: res.instance });
+    }).catch(error => {
+      this.setState({ error });
+    });
   }
   isOwner() {
     const { user } = this.context;
@@ -80,7 +78,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     const { organizer } = this.state;
     return apiModel.delete('organizer', organizer.uuid).then(res => {
       if (res.status === 'success') ('router' in this.props ? this.props : this.context).router.push('/');
-    }).catch(err => {
+    }).catch(() => {
       this.setState({ error: 'failed to delete organizer' });
     });
   }

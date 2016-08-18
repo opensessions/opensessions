@@ -109,9 +109,6 @@ export default class LocationField extends React.Component {
         center: locationData,
         ref: 'component',
         onClick: this.onMapClick,
-        onMouseover: event => {
-          marker.setAnimation(window.google.maps.Animation.BOUNCE)
-        },
         options: { streetViewControl: false, scrollwheel: false, mapTypeControl: false }
       };
       map = (<GoogleMapLoader

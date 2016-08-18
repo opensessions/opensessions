@@ -23,21 +23,19 @@ export default class NumField extends React.Component { // eslint-disable-line r
     const attrs = {
       className,
       type: 'number',
-      value: value,
+      value,
       onChange: this.handleChange,
       autoFocus,
       step
     };
     if (validation) {
-      ['min', 'max'].forEach((rule) => {
-        if (rule in validation) attrs[rule] = validation[rule];
+      ['min', 'max'].filter(rule => rule in validation).forEach(rule => {
+        attrs[rule] = validation[rule];
       });
     }
     let prepend;
     let append;
-    if (format) {
-      [prepend, append] = format.split(':');
-    }
+    if (format) [prepend, append] = format.split(':');
     const numberInput = <input {...attrs} />;
     return (<div className={styles.numField}>
       <label>
