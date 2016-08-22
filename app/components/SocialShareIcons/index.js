@@ -16,7 +16,7 @@ export default class SocialShareIcons extends React.Component { // eslint-disabl
       { url: `mailto:?subject=${title}&body=${link}`, img: '/images/email.png' }
     ];
     return (<ol className={styles.socialIcons}>
-      {icons.map((icon) => <li key={icon.img}><a href={icon.url}><img src={icon.img} role="presentation" /></a></li>)}
+      {icons.map((icon) => <li key={icon.img}><a href={icon.url} target="blank"><img src={icon.img} role="presentation" /></a></li>)}
     </ol>);
   }
 }

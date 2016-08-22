@@ -8,10 +8,10 @@ module.exports = (aws, imagePath, desiredPath) => new Promise((resolve, reject) 
       acl: 'public-read',
       accessKeyId: aws.accessKeyId,
       secretAccessKey: aws.secretAccessKey,
+      maxRetries: 4,
+      maxRedirects: 4,
       httpOptions: {
-        timeout: 4000,
-        maxRetries: 4,
-        maxRedirects: 4
+        timeout: 4000
       }
     },
     versions: [{
