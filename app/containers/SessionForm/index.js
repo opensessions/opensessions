@@ -102,7 +102,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   }
   renderFieldsets() {
     let key = 0;
-    return this.state.fieldsets.filter(fieldset => fieldset.renderer).map(fieldset => <Fieldset key={++key} {...fieldset.props}>{fieldset.renderer()}</Fieldset>);
+    return this.state.fieldsets.map(fieldset => <Fieldset key={++key} {...fieldset.props}>{fieldset.renderer()}</Fieldset>);
   }
   renderDescriptionFieldset = () => {
     const session = this.getSession();

@@ -46,7 +46,15 @@ module.exports = (app, database) => {
         };
         if (state === 'updated') {
           item.data = session.toJSON();
-          if (item.data.locationData) item.data.locationData = JSON.parse(item.data.locationData);
+          let { locationData } = item.data;
+          if (locationData) {
+            if (typeof locationData === 'string') locationData = JSON.parse(locationData);
+            if ('placeID' in locationData) {
+              delete locationData.lat;
+              delete locationData.lng;
+            }
+            item.data.locationData = locationData;
+          }
           if (item.data.startDate) {
             const timeFx = ['setHours', 'setMinutes', 'setSeconds'];
             if (item.data.startTime) {

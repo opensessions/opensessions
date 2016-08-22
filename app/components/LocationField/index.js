@@ -52,7 +52,7 @@ export default class LocationField extends React.Component {
   }
   onPlaceChange = (place) => {
     if (!place.geometry) throw alert('No map data for this location; please try a different address');
-    this.latLngChange(place.geometry.location);
+    this.latLngChange(place.geometry.location, { placeID: place.place_id });
     this.props.onValueChangeByName(this.props.name, place.formatted_address);
     this.setState({ clean: true });
     this.dispatchChange();
@@ -64,13 +64,14 @@ export default class LocationField extends React.Component {
     const changeEvent = new CustomEvent('input', { bubbles: true, detail: 'generated' });
     this.refs.input.dispatchEvent(changeEvent);
   }
-  latLngChange = (latLng) => {
+  latLngChange = (latLng, extraData) => {
     const locationData = {
       lat: latLng.lat(),
       lng: latLng.lng(),
+      ...extraData
     };
     this.changeCenter(locationData);
-    this.props.onValueChangeByName(this.props.dataName, JSON.stringify(locationData));
+    this.props.onValueChangeByName(this.props.dataName, locationData);
   }
   changeCenter = (locationData) => {
     if (this.refs.component) {
@@ -92,8 +93,11 @@ export default class LocationField extends React.Component {
     };
     let map = null;
     let mapHelp = null;
-    const locationData = model[dataName] ? JSON.parse(model[dataName]) : null;
+    let locationData = model[dataName];
     if (locationData) {
+      if (typeof locationData === 'string') {
+        locationData = JSON.parse(locationData);
+      }
       const marker = {
         position: locationData,
         icon: { url: '/images/map-pin-active.svg' },

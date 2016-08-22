@@ -257,14 +257,10 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   }
   renderMap() {
     const session = this.state.session;
+    const { locationData } = session;
     let map = null;
-    if (!session.locationData) {
-      map = (<div className={styles.noLocation}>
-        <img src="/images/map-pin.svg" role="presentation" />
-        No location data
-      </div>);
-    } else {
-      const locData = JSON.parse(session.locationData);
+    if (locationData) {
+      const locData = typeof locationData === 'object' ? locationData : JSON.parse(locationData);
       const defaultCenter = { lat: locData.lat, lng: locData.lng };
       const onMapClick = () => true;
       const marker = {
@@ -286,6 +282,11 @@ export default class SessionView extends React.Component { // eslint-disable-lin
             <Marker {...marker} />
           </GoogleMap>}
         />
+      </div>);
+    } else {
+      map = (<div className={styles.noLocation}>
+        <img src="/images/map-pin.svg" role="presentation" />
+        No location data
       </div>);
     }
     return (<section className={styles.mapSection}>
