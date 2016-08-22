@@ -66,10 +66,7 @@ module.exports = (app, database) => {
         }
         return item;
       });
-      const next = {
-        from: 0,
-        after: ''
-      };
+      const next = {};
       if (sessions.length) {
         const lastSession = sessions[sessions.length - 1];
         next.from = lastSession.modified;
@@ -80,7 +77,7 @@ module.exports = (app, database) => {
       }
       res.json({
         items: sessions,
-        next: `/api/rdpe/sessions?from=${encodeURIComponent(next.from)}&after=${encodeURIComponent(next.after)}`,
+        next: `/api/rdpe/sessions?${['from', 'after'].map(key => key in next ? `${key}=${encodeURIComponent(next[key])}` : '').join('&')}`,
         license: 'https://creativecommons.org/licenses/by/4.0/'
       });
     }).catch((error) => {

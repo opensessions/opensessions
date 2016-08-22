@@ -80,7 +80,9 @@ export default class Form extends React.Component { // eslint-disable-line react
     this.setState({ activeTab: key });
   }
   actionClick = (event) => {
-    const delta = event.target.text === 'Next' ? 1 : -1;
+    const { type, target, keyCode } = event;
+    if (type === 'keypress' && keyCode !== 13) return;
+    const delta = target.text === 'Next' ? 1 : -1;
     this.setState({ activeTab: this.state.activeTab + delta });
   }
   refocus = () => {
@@ -120,11 +122,13 @@ export default class Form extends React.Component { // eslint-disable-line react
     const { inactive } = styles;
     const backAttr = {
       onClick: this.actionClick,
+      onKeypress: this.actionClick,
       className: styles.backButton,
       tabIndex: 0
     };
     const nextAttr = {
       onClick: this.actionClick,
+      onKeypress: this.actionClick,
       tabIndex: 0
     };
     let nextText = 'Next';
