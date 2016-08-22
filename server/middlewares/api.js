@@ -112,7 +112,7 @@ module.exports = (app) => {
       secretAccessKey: process.env.AWS_S3_IMAGES_SECRETKEY
     };
     s3(aws, image.path, uuid).then(result => {
-      Session.findOne({ where: { uuid } }).then(instance => {
+      return Session.findOne({ where: { uuid } }).then(instance => {
         const { versions } = result;
         return instance.update({ image: `https://${aws.URL}/${versions[1].key}` }).then(final => {
           res.json({ status: 'success', result, baseURL: aws.URL, instance: final });

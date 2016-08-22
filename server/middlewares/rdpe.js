@@ -13,9 +13,6 @@ module.exports = (app, database) => {
   rdpe.get('/sessions', (req, res) => {
     const fromTS = req.query.from || 0;
     let afterID = req.query.after;
-    if (afterID) {
-      afterID = afterID.substring(1, afterID.length - 1); // to convert `{uuid}` into `uuid`
-    }
     const where = {
       $or: [
         {
@@ -71,14 +68,15 @@ module.exports = (app, database) => {
       });
       let next = {
         from: 0,
-        after: 0
+        after: ''
       };
       if (sessions.length) {
         const lastSession = sessions[sessions.length - 1];
         next.from = lastSession.modified;
         next.after = lastSession.id;
       } else {
-        next = req.query;
+        if ('from' in req.query) next.from = req.query.from;
+        if ('after' in req.query) next.after = req.query.after;
       }
       res.json({
         items: sessions,
