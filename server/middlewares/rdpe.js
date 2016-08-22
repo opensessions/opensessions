@@ -75,7 +75,7 @@ module.exports = (app, database) => {
         if ('from' in req.query) next.from = req.query.from;
         if ('after' in req.query) next.after = req.query.after;
       }
-      const query = ['from', 'after'].map(key => key in next ? `${key}=${encodeURIComponent(next[key])}` : '').join('&');
+      const query = Object.keys(next).map(key => [key, encodeURIComponent(next[key])].join('=')).join('&');
       res.json({
         items: sessions,
         next: `/api/rdpe/sessions?${query}`,
