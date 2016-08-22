@@ -31,13 +31,13 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       session: props.session || {},
       autosaveState: 'none',
       fieldsets: [
-        { renderer: this.renderDescriptionFieldset, required: ['title', 'OrganizerUuid', 'description'], props: { label: 'Description', heading: 'Session Info', validity: false, title: 'Add details about your session', subtitle: 'You\'ll be able to edit these details later' } },
-        { renderer: this.renderAdditionalFieldset, required: ['leader'], props: { label: 'Additional info', validity: false, title: 'Add details about your session', subtitle: 'You\'ll be able to edit these details later' } },
-        { renderer: this.renderLocationFieldset, required: ['location'], props: { label: 'Location', validity: false, title: 'Where is your session happening?', subtitle: 'Select a location and let participants know about any meeting instructions' } },
-        { renderer: this.renderPricingFieldset, props: { label: 'Pricing', validity: 'none' } },
-        { renderer: this.renderRestrictionsFieldset, props: { label: 'Who it\'s for', validity: 'none', title: 'Who is your session for?', subtitle: 'Specify any restrictions that apply and disabilities catered for' } },
-        { renderer: this.renderContactFieldset, props: { label: 'Contact info', validity: 'none', title: 'Who can people talk to about this session?', subtitle: 'Help potential attendees by providing details of who they can contact' } },
-        { renderer: this.renderScheduleFieldset, required: ['startDate', 'startTime'], props: { label: 'Add a schedule', heading: 'Scheduling', validity: false } }
+        { renderer: this.renderDescriptionFieldset, slug: 'description', required: ['title', 'OrganizerUuid', 'description'], props: { label: 'Description', heading: 'Session Info', validity: false, title: 'Add details about your session', subtitle: 'You\'ll be able to edit these details later' } },
+        { renderer: this.renderAdditionalFieldset, slug: 'additional', required: ['leader'], props: { label: 'Additional info', validity: false, title: 'Add details about your session', subtitle: 'You\'ll be able to edit these details later' } },
+        { renderer: this.renderLocationFieldset, slug: 'location', required: ['location'], props: { label: 'Location', validity: false, title: 'Where is your session happening?', subtitle: 'Select a location and let participants know about any meeting instructions' } },
+        { renderer: this.renderPricingFieldset, slug: 'pricing', props: { label: 'Pricing', validity: 'none' } },
+        { renderer: this.renderRestrictionsFieldset, slug: 'restrictions', props: { label: 'Who it\'s for', validity: 'none', title: 'Who is your session for?', subtitle: 'Specify any restrictions that apply and disabilities catered for' } },
+        { renderer: this.renderContactFieldset, slug: 'contact', props: { label: 'Contact info', validity: 'none', title: 'Who can people talk to about this session?', subtitle: 'Help potential attendees by providing details of who they can contact' } },
+        { renderer: this.renderScheduleFieldset, slug: 'schedule', required: ['startDate', 'startTime'], props: { label: 'Add a schedule', heading: 'Scheduling', validity: false } }
       ]
     };
   }
@@ -202,7 +202,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
           </div>
         </Sticky>
         <div className={styles.formBody}>
-          <Form autosave model={session} autosaveEvent={this.onAutosaveEvent} onPublish={this.onPublish} onChange={this.onChange} pendingSteps={this.state.pendingSteps}>
+          <Form autosave fieldsets={this.state.fieldsets} model={session} autosaveEvent={this.onAutosaveEvent} onPublish={this.onPublish} onChange={this.onChange} pendingSteps={this.state.pendingSteps}>
             {this.renderFieldsets()}
           </Form>
         </div>

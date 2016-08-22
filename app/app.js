@@ -11,12 +11,12 @@ import 'file?name=[name].[ext]!./.htaccess';      // eslint-disable-line import/
 // Import all the third party stuff
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { IntercomAPI } from 'react-intercom';
 import { Provider } from 'react-redux';
 import { Router, applyRouterMiddleware, browserHistory } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
 import useScroll from 'react-router-scroll';
 import configureStore from './store';
+import trackPage from './utils/analytics';
 
 // Import the CSS reset, which HtmlWebpackPlugin transfers to the build folder
 import 'sanitize.css/lib/sanitize.css';
@@ -36,12 +36,7 @@ const history = syncHistoryWithStore(browserHistory, store, {
   selectLocationState: selectLocationState(),
 });
 history.listen((location) => {
-  const { ga } = window;
-  ga('set', 'page', location.pathname);
-  ga('send', 'pageview');
-  IntercomAPI('trackEvent', 'page-nav', {
-    'New location': location.pathname
-  });
+  trackPage(location.href, location.pathname);
 });
 
 // Set up the router, wrapping all Routes in the App component
