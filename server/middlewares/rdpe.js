@@ -75,12 +75,13 @@ module.exports = (app, database) => {
         if ('from' in req.query) next.from = req.query.from;
         if ('after' in req.query) next.after = req.query.after;
       }
+      const query = ['from', 'after'].map(key => key in next ? `${key}=${encodeURIComponent(next[key])}` : '').join('&');
       res.json({
         items: sessions,
-        next: `/api/rdpe/sessions?${['from', 'after'].map(key => key in next ? `${key}=${encodeURIComponent(next[key])}` : '').join('&')}`,
+        next: `/api/rdpe/sessions?${query}`,
         license: 'https://creativecommons.org/licenses/by/4.0/'
       });
-    }).catch((error) => {
+    }).catch(error => {
       res.json({ error });
     });
   });
