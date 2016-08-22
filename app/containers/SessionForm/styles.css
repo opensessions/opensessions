@@ -49,16 +49,27 @@
       opacity: .5;
     }
   }
-  .previewButton {
-    font-family: Belgrano, serif;
-    background-color: #1A90CD;
-    color: #FFF;
-    padding: .5em 1.5em;
-    line-height: 1;
+  .actions {
     margin-right: 1%;
-    &.disabled {
-      background-color: #AAA;
-      pointer-events: none;
+    & a {
+      font-family: Belgrano, serif;
+      color: #FFF;
+      padding: .5em 1.5em;
+      line-height: 1;
+      margin-left: 1em;
+      &.previewButton {
+        background-color: #1A90CD;
+        &.disabled {
+          background-color: #AAA;
+          pointer-events: none;
+        }
+      }
+      &.actionUnpublish {
+        background-color: var(--draftColor);
+      }
+      &.actionPublish {
+        background-color: var(--liveColor);
+      }
     }
   }
 }

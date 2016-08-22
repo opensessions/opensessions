@@ -74,6 +74,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     let { session } = this.state;
     if (!session) session = {};
     session.update = this.updateSession;
+    session.publish = this.publishSession;
     return session;
   }
   fetchData = () => {
@@ -95,6 +96,20 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     const session = this.getSession();
     session[name] = value;
     this.setState({ session });
+  }
+  changeSessionState = (state) => {
+    const session = this.getSession();
+    session.state = state;
+    return apiModel.edit('session', session.uuid, session).then(result => {
+      this.setState({ session: result.instance });
+      return result;
+    });
+  }
+  publishSession = () => {
+    return this.changeSessionState('published');
+  }
+  unpublishSession = () => {
+    return this.changeSessionState('unpublished');
   }
   addEmail = (email) => {
     this.setState({ customEmails: [{ uuid: email, name: email }] });
@@ -186,6 +201,20 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       <Field label="End time" name="endTime" type="time" model={session} />
     </div>);
   }
+  renderActions = () => {
+    const { session, autosaveState } = this.state;
+    const isPublished = session.state === 'published';
+    const actions = [];
+    if (session.state) {
+      actions.push(<Link to={`/session/${session.uuid}`} className={`${styles.previewButton} ${autosaveState === 'pending' ? styles.disabled : ''}`}>{isPublished ? 'View' : 'Preview'}</Link>);
+      if (isPublished) {
+        actions.push(<a onClick={this.unpublishSession} className={styles.actionUnpublish}>Unpublish</a>);
+      } else {
+        actions.push(<a onClick={this.publishSession} className={styles.actionPublish}>Publish</a>);
+      }
+    }
+    return <div className={styles.actions}>{actions}</div>;
+  }
   render() {
     const session = this.getSession();
     return (<div className={styles.form}>
@@ -197,7 +226,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
                 <h2>{this.props.headerText ? this.props.headerText : 'Add a session'}</h2>
                 <h3>{session.title || <i>Untitled</i>}</h3>
               </div>
-              <Link to={`/session/${session.uuid}`} className={`${styles.previewButton} ${this.state.autosaveState === 'pending' ? styles.disabled : ''}`}>{session.state === 'published' ? 'View' : 'Preview'}</Link>
+              {this.renderActions()}
             </div>
           </div>
         </Sticky>

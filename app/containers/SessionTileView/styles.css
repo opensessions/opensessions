@@ -63,7 +63,7 @@
         padding: .5em 1em;
         line-height: 1;
         text-transform: capitalize;
-        color: #E68229;
+        color: var(--draftColor);
         &.live {
           color: #FFF;
           background: var(--liveColor);

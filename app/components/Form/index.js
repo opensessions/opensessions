@@ -60,7 +60,7 @@ export default class Form extends React.Component { // eslint-disable-line react
   }
   saveModel(model, verb, verbed) {
     this.setState({ saveState: `${verb}...`, saveStateClass: styles.saving });
-    return apiModel.edit('session', model.uuid, model).then((result) => {
+    return apiModel.edit('session', model.uuid, model).then(result => {
       const { instance, error } = result;
       if (error) {
         this.setState({ saveState: `Failed ${verb.toLowerCase()}: ${error}`, saveStateClass: styles.error });
@@ -94,13 +94,16 @@ export default class Form extends React.Component { // eslint-disable-line react
       console.error('Couldn\'t refocus', error);
     }
   }
-  submit = () => {
+  publish = () => {
     if (this.timeout) clearTimeout(this.timeout);
     const { model, onPublish } = this.props;
-    model.state = 'published';
-    this.saveModel(model, 'Publishing', 'Published')
-      .then((result) => (onPublish ? onPublish(result.instance) : null))
-      .catch((error) => this.setState({ saveState: error, saveStateClass: styles.error }));
+    this.setState({ saveState: `Publishing...`, saveStateClass: styles.saving });
+    model.publish()
+      .then(result => {
+        this.setState({ saveState: `Publishing...`, saveStateClass: styles.saving });
+        return onPublish ? onPublish(result.instance) : null;
+      })
+      .catch(error => this.setState({ saveState: error, saveStateClass: styles.error }));
   }
   renderNav() {
     return this.getFieldsets().map((fieldset, key) => {
@@ -136,7 +139,7 @@ export default class Form extends React.Component { // eslint-disable-line react
       backAttr.className = `${styles.backButton} ${inactive}`;
       backAttr.onClick = undefined;
     } else if (this.state.activeTab + 1 === this.props.children.length) {
-      nextAttr.onClick = this.submit;
+      nextAttr.onClick = this.publish;
       nextText = 'Publish';
     }
     return (<div className={styles.actionButtons}>
