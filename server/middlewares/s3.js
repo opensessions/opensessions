@@ -3,11 +3,14 @@ const Upload = require('s3-uploader');
 module.exports = (aws, imagePath, desiredPath) => new Promise((resolve, reject) => {
   const client = new Upload(aws.URL, {
     aws: {
-      region: 'us-west-2',
+      region: 'eu-west-1',
       path: aws.path,
       acl: 'public-read',
       accessKeyId: aws.accessKeyId,
-      secretAccessKey: aws.secretAccessKey
+      secretAccessKey: aws.secretAccessKey,
+      httpOptions: {
+        timeout: 10000
+      }
     },
     versions: [{
       maxHeight: 1040,
@@ -31,6 +34,7 @@ module.exports = (aws, imagePath, desiredPath) => new Promise((resolve, reject) 
   });
   client.upload(imagePath, { path: desiredPath }, (err, versions, meta) => {
     if (err) {
+      console.log('aws error', err, versions, meta);
       reject(err);
     } else {
       resolve({ versions, meta });
