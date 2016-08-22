@@ -12,7 +12,7 @@ module.exports = (app, database) => {
 
   rdpe.get('/sessions', (req, res) => {
     const fromTS = req.query.from || 0;
-    let afterID = req.query.after;
+    const afterID = req.query.after;
     const where = {
       $or: [
         {
@@ -66,7 +66,7 @@ module.exports = (app, database) => {
         }
         return item;
       });
-      let next = {
+      const next = {
         from: 0,
         after: ''
       };

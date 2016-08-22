@@ -85,18 +85,12 @@ module.exports = (app) => {
       accessKeyId: process.env.AWS_S3_IMAGES_ACCESSKEY,
       secretAccessKey: process.env.AWS_S3_IMAGES_SECRETKEY
     };
-    s3(aws, image.path, uuid).then(result => {
-      return Session.findOne({ where: { uuid } }).then(instance => {
-        const { versions } = result;
-        return instance.update({ image: `https://${aws.URL}/${versions[1].key}` }).then(final => {
-          res.json({ status: 'success', result, baseURL: aws.URL, instance: final });
-        });
-      }).catch(error => {
-        res.status(404).json({ error });
-      });
-    }).catch(error => {
-      res.status(400).json({ error });
-    });
+    s3(aws, image.path, uuid)
+      .then(result => Session.findOne({ where: { uuid } })
+        .then(instance => instance.update({ image: `https://${aws.URL}/${result.versions[1].key}` })
+          .then(final => res.json({ status: 'success', result, baseURL: aws.URL, instance: final })))
+        .catch(error => res.status(404).json({ error })))
+      .catch(error => res.status(400).json({ error }));
   });
 
   api.get('/:model', resolveModel, (req, res) => {
