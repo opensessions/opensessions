@@ -148,7 +148,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   renderLocationFieldset = () => {
     const session = this.getSession();
     return (<div>
-      <Field label="Address" type="Location" name="location" dataName="locationData" model={session} tip="Type to search an address and select from the dropdown" />
+      <Field label="Address" type="Location" name="location" model={session} props={{ model: session, dataName: 'locationData' }} tip="Type to search an address and select from the dropdown" />
       <Field label="Meeting Instructions" name="meetingPoint" model={session} type="textarea" validation={{ maxLength: 50 }} tip="What should participants do when they arrive at the venue or location? Try to be as specific as possible." example="E.g. Meet in the main reception area" />
     </div>);
   }
@@ -198,6 +198,15 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   }
   renderScheduleFieldset = () => {
     const session = this.getSession();
+    return (<div>
+      <Field type="JSONList" name="schedule" model={session} fullSize props={{
+        components: [
+          { label: 'Date', name: 'startDate', type: 'date' },
+          { label: 'Start time', name: 'startTime', type: 'time' },
+          { label: 'End time', name: 'endTime', type: 'time' }
+        ]
+      }}/>
+    </div>);
     return (<div>
       <Field label="Date" name="startDate" type="date" model={session} />
       <Field label="Start time" name="startTime" type="time" model={session} />

@@ -71,6 +71,7 @@ module.exports = (DataTypes) => ({
       contactName: DataTypes.STRING(50),
       contactPhone: DataTypes.STRING,
       contactEmail: DataTypes.STRING,
+      schedule: DataTypes.JSON,
       endTime: DataTypes.TIME,
       startDate: DataTypes.DATE,
       startTime: DataTypes.TIME,

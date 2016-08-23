@@ -10,7 +10,6 @@ export default class LocationField extends React.Component {
   static propTypes = {
     onFocus: React.PropTypes.func,
     onBlur: React.PropTypes.func,
-    onChange: React.PropTypes.func,
     onValueChangeByName: React.PropTypes.func,
     defaultLocation: React.PropTypes.object,
     className: React.PropTypes.string,
@@ -92,9 +91,7 @@ export default class LocationField extends React.Component {
     let mapHelp = null;
     let locationData = model[dataName];
     if (locationData) {
-      if (typeof locationData === 'string') {
-        locationData = JSON.parse(locationData);
-      }
+      if (typeof locationData === 'string') locationData = JSON.parse(locationData);
       const marker = {
         position: locationData,
         icon: { url: '/images/map-pin-active.svg' },

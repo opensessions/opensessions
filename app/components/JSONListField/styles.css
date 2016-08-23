@@ -1,0 +1,36 @@
+@import '../../containers/App/variables.css';
+
+:global .react-datepicker__input-container {
+  > input {
+    width: 9em;
+  }
+}
+
+.list {
+  list-style: none;
+  display: table;
+  & > li {
+    display: table-row-group;
+    & .row {
+      display: table-row;
+      list-style: none;
+      align-items: center;
+      & > li {
+        display: table-cell;
+        &:last-child {
+          width: 12em;
+          & > a {
+            text-align: center;
+          }
+        }
+      }
+    }
+  }
+}
+
+a.addButton {
+  display: block;
+  background-color: var(--actionColor);
+  color: #FFF;
+  padding: .5em;
+}

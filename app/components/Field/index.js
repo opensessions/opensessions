@@ -7,11 +7,12 @@ import BoolRadio from 'components/BoolRadioField';
 import IconRadio from 'components/IconRadioField';
 import Relation from 'components/RelationField';
 import Optional from 'components/OptionalField';
-import LocationField from 'components/LocationField';
+import Location from 'components/LocationField';
 import MultiField from 'components/MultiField';
 import ImageUpload from 'components/ImageUploadField';
 import TimePicker from 'components/TimePicker';
 import SearchableSelect from 'components/SearchableSelect';
+import JSONList from 'components/JSONListField';
 
 import styles from './styles.css';
 
@@ -22,6 +23,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
     tipTitle: PropTypes.string,
     example: PropTypes.string,
     placeholder: PropTypes.string,
+    fullSize: PropTypes.bool,
     model: PropTypes.object.isRequired,
     name: PropTypes.string.isRequired,
     onChange: PropTypes.func,
@@ -33,11 +35,13 @@ export default class Field extends React.Component { // eslint-disable-line reac
   static componentMap = {
     BoolRadio,
     IconRadio,
+    Location,
     SearchableSelect,
     MultiField,
     ImageUpload,
     Relation,
-    Optional
+    Optional,
+    JSONList
   }
   constructor(props) {
     super(props);
@@ -111,13 +115,14 @@ export default class Field extends React.Component { // eslint-disable-line reac
     return false;
   }
   render() {
-    const { label, placeholder, validation, model, name, tip, tipTitle, example, options, props } = this.props;
+    const { label, placeholder, validation, fullSize, model, name, tip, tipTitle, example, options, props } = this.props;
     const { valid, isMobile } = this.state;
     const attrs = {
       name,
       placeholder,
-      value: model && name in model && model[name] ? model[name] : '',
+      value: name in model && model[name] ? model[name] : '',
       onChange: this.handleValueChange,
+      onValueChangeByName: this.handleValueChangeByName,
       className: `${styles.input} ${valid ? '' : styles.invalid}`,
     };
     let input;
@@ -126,15 +131,11 @@ export default class Field extends React.Component { // eslint-disable-line reac
     if (attrs.type in Field.componentMap) {
       const Component = Field.componentMap[attrs.type];
       input = <Component {...props} {...attrs} />;
-    } else if (attrs.type === 'Location') {
-      delete attrs.onChange;
-      attrs.onValueChangeByName = this.handleValueChangeByName;
-      input = <LocationField {...this.props} {...attrs} />;
     } else if (attrs.type === 'date') {
       if (isMobile) {
         attrs.type = 'date';
         if (attrs.value) attrs.value = (new Date(attrs.value)).toISOString().substr(0, 10);
-        attrs.onChange = (event) => {
+        attrs.onChange = event => {
           const { value } = event.target;
           this.handleDateChange(new Date(value));
         };
@@ -184,7 +185,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
     }
     return (<div className={styles.field} data-valid={this.state.valid} data-hasfocus={this.state.hasFocus} onFocus={this.onFocusChange} onBlur={this.onFocusChange}>
       <label className={styles.label}>{label}</label>
-      <div className={attrs.type !== 'MultiField' ? styles.inputWrap : ''}>
+      <div className={(attrs.type === 'MultiField' || fullSize) ? '' : styles.inputWrap}>
         {input}
         {this.renderValidation()}
       </div>

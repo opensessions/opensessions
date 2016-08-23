@@ -29,3 +29,9 @@
     }
   }
 }
+
+.iconInfo {
+  font-size: .8em;
+  color: grey;
+  margin: .5em 0 0;
+}
