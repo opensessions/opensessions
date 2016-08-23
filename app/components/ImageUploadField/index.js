@@ -23,7 +23,9 @@ export default class ImageUploadField extends React.Component { // eslint-disabl
         const { instance } = data;
         if (this.props.onChange) this.props.onChange(instance.image);
       }).catch(error => {
-        this.setState({ status: '' });
+        let status = 'Failed to upload image';
+        if (error.status === 413) status = 'Failed to upload image (file too large)'
+        this.setState({ status });
         console.error(error);
       });
     }

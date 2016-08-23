@@ -73,7 +73,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       <img src="/images/calendar.svg" role="presentation" />
       <span className={styles.detailText}>
         {data.date}
-        <span className={styles.timespan}>at {data.time}</span>
+        {data.time ? <span className={styles.timespan}>at {data.time}</span> : null}
         {duration}
       </span>
     </div>);

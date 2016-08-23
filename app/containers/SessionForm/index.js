@@ -81,12 +81,12 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     const { session, sessionID, location, history } = this.props;
     const uuid = session ? session.uuid : (sessionID || null);
     if (uuid) {
-      apiModel.get('session', uuid).then((res) => {
+      apiModel.get('session', uuid).then(res => {
         this.onChange(res.instance);
         this.setState({ session: res.instance });
       });
     } else {
-      apiModel.new('session', location.query).then((res) => {
+      apiModel.new('session', location.query).then(res => {
         history.push(`${res.instance.href}/edit`);
       });
     }
@@ -99,10 +99,17 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   }
   changeSessionState = (state) => {
     const session = this.getSession();
+    const oldState = session.state;
     session.state = state;
-    return apiModel.edit('session', session.uuid, session).then(result => {
-      this.setState({ session: result.instance });
-      return result;
+    return new Promise((resolve, reject) => {
+      apiModel.edit('session', session.uuid, session).then(res => {
+        this.setState({ session: res.instance });
+        resolve(res);
+      }).catch(res => {
+        session.state = oldState;
+        alert(res.error);
+        reject(res.error);
+      });
     });
   }
   publishSession = () => {

@@ -42,7 +42,7 @@ export default class SessionTileView extends React.Component { // eslint-disable
       { key: session.href, item: <Link to={session.href}>View</Link> }
     ];
     if (this.isOwner()) {
-      actions.push({ key: 'edit', item: <Link to={`${session.href}/edit`}>Edit</Link> });
+      if (session.state !== 'published') actions.push({ key: 'edit', item: <Link to={`${session.href}/edit`}>Edit</Link> });
       actions.push({ key: 'delete', item: <a onClick={this.delete} className={styles.delete}>Delete</a> });
     }
     return (<ol className={styles.actions}>
@@ -59,7 +59,7 @@ export default class SessionTileView extends React.Component { // eslint-disable
     if (this.state && this.state.isDeleted) return null;
     const { session } = this.props;
     let { state } = session;
-    const stateDisplayNames = { published: 'live', unpublished: 'draft' };
+    const stateDisplayNames = { unpublished: 'draft' };
     if (state in stateDisplayNames) state = stateDisplayNames[state];
     const date = parseSchedule(session);
     const schedules = [];
@@ -82,7 +82,7 @@ export default class SessionTileView extends React.Component { // eslint-disable
           </div>
           <div className={styles.actions}>
             {this.renderActions()}
-            <div className={`${styles.state} ${state === 'live' ? styles.live : ''}`}>{state}</div>
+            <div className={`${styles.state} ${state === 'published' ? styles.live : ''}`}>{state}</div>
           </div>
         </div>
         <div className={styles.schedules}>

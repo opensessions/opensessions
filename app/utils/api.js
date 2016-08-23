@@ -1,28 +1,35 @@
 function apiFetch(url, opts) {
-  if (typeof opts !== 'object') opts = {};
-  const query = opts.query;
-  const headers = opts.headers || {};
-  headers.Authorization = `bearer ${localStorage.userToken}`;
-  if (opts.body) {
-    opts.method = 'POST';
-    if (!(opts.body instanceof FormData)) {
-      headers['Content-Type'] = 'application/json';
-      opts.body = JSON.stringify(opts.body);
+  return new Promise((resolve, reject) => {
+    if (typeof opts !== 'object') opts = {};
+    const query = opts.query;
+    const headers = opts.headers || {};
+    headers.Authorization = `bearer ${localStorage.userToken}`;
+    if (opts.body) {
+      opts.method = 'POST';
+      if (!(opts.body instanceof FormData)) {
+        headers['Content-Type'] = 'application/json';
+        opts.body = JSON.stringify(opts.body);
+      }
     }
-  }
-  if (query) {
-    url += '?';
-    url += Object.keys(query)
-     .map((key) => [encodeURIComponent(key), encodeURIComponent(query[key])].join('='))
-     .join('&')
-     .replace(/%20/g, '+');
-  }
-  opts.credentials = 'same-origin';
-  opts.crossDomain = true;
-  opts.headers = headers;
-  return fetch(url, opts).then(response => {
-    if (!response.ok) throw Error(response.statusText);
-    else return response.json();
+    if (query) {
+      url += '?';
+      url += Object.keys(query)
+       .map((key) => [encodeURIComponent(key), encodeURIComponent(query[key])].join('='))
+       .join('&')
+       .replace(/%20/g, '+');
+    }
+    opts.credentials = 'same-origin';
+    opts.crossDomain = true;
+    opts.headers = headers;
+    fetch(url, opts).then(response => {
+      response.json().then(json => {
+        if (response.ok) {
+          resolve(json);
+        } else {
+          reject(json);
+        }
+      });
+    });
   });
 }
 

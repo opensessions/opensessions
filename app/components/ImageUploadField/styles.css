@@ -1,6 +1,12 @@
 .imageField {
   &.loading {
     cursor: wait;
+    & img {
+      filter: blur(.1em) saturate(0);
+    }
+  }
+  & img {
+    transition: all ease 1s;
   }
   & input[type=file] {
     display: block;

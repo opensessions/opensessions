@@ -51,10 +51,11 @@ export default class Field extends React.Component { // eslint-disable-line reac
     this.setState({ hasFocus: event.type === 'focus' });
   }
   handleValueChangeByName = (name, value) => {
+    const { model, onChange } = this.props;
     const valid = this.isValid(value);
     this.setState({ valid });
-    if (this.props.onChange) this.props.onChange(value);
-    this.props.model.update(name, value);
+    if (onChange) onChange(value);
+    model.update(name, value);
   }
   handleValueChange = (value) => {
     this.handleValueChangeByName(this.props.name, value);
@@ -63,6 +64,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
     date.minutes(date.minutes() + date.utcOffset());
     const value = date.toISOString().substr(0, 10);
     this.handleValueChange(value);
+    console.log('handleDateChange');
   }
   handleChange = (event) => {
     const { value } = event.target;
@@ -140,7 +142,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
       } else {
         const now = moment(Date.now());
         const value = attrs.value ? moment(attrs.value) : now;
-        const dateAttrs = { selected: value, onChange: this.handleDateChange, minDate: now, popoverTargetOffset: '0 12px', popoverTargetAttachment: 'top right' };
+        const dateAttrs = { selected: value, dateFormat: 'DD/MM/YYYY', onChange: this.handleDateChange, minDate: now, popoverTargetOffset: '0 12px', popoverTargetAttachment: 'top right' };
         input = <DatePicker {...dateAttrs} />;
       }
     } else if (attrs.type === 'time') {
@@ -161,10 +163,8 @@ export default class Field extends React.Component { // eslint-disable-line reac
         input = <textarea {...attrs} />;
       } else if (attrs.type === 'number') {
         if (validation) {
-          ['min', 'max'].forEach((prop) => {
-            if (prop in validation) {
-              attrs[prop] = validation[prop];
-            }
+          ['min', 'max'].filter(prop => prop in validation).forEach(prop => {
+            attrs[prop] = validation[prop];
           });
         }
         input = <input {...attrs} />;

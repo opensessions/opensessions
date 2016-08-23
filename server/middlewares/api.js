@@ -41,7 +41,7 @@ module.exports = (app) => {
       req.Model = database.models[modelName];
       next();
     } else {
-      res.json({ error: `Model '${modelName}' does not exist` });
+      res.status(404).json({ error: `Model '${modelName}' does not exist` });
     }
   };
 
@@ -99,8 +99,8 @@ module.exports = (app) => {
       const query = Model.getQuery({ where: queryParse(req) }, database.models, getUser(req));
       Model.findAll(query).then((instances) => {
         res.json({ instances });
-      }).catch((error) => {
-        res.json({ error: error.message });
+      }).catch(error => {
+        res.status(404).json({ error: error.message });
       });
     });
   });
@@ -111,8 +111,8 @@ module.exports = (app) => {
     data.owner = getUser(req);
     Model.create(data).then((instance) => {
       res.json({ instance });
-    }).catch((error) => {
-      res.json({ error: error.message });
+    }).catch(error => {
+      res.status(404).json({ error: error.message });
     });
   });
 
@@ -127,8 +127,8 @@ module.exports = (app) => {
         } else {
           throw new Error('Instance could not be retrieved');
         }
-      }).catch((error) => {
-        res.json({ error: error.message, isLoggedIn: !!req.user });
+      }).catch(error => {
+        res.status(404).json({ error: error.message, isLoggedIn: !!req.user });
       });
     });
   });
@@ -146,8 +146,8 @@ module.exports = (app) => {
       return instance.update(req.body, { fields, returning: true }).then((savedInstance) => {
         res.json({ instance: savedInstance });
       });
-    }).catch((error) => {
-      res.json({ error: error.message });
+    }).catch(error => {
+      res.status(404).json({ error: error.message });
     });
   });
 
@@ -159,7 +159,7 @@ module.exports = (app) => {
       Model.findOne(query)
         .then((instance) => (instance.setDeleted ? instance.setDeleted() : instance.destroy()))
         .then(() => res.json({ status: 'success' }))
-        .catch((error) => res.json({ status: 'failure', error: error.message }));
+        .catch(error => res.status(404).json({ status: 'failure', error: error.message }));
     }
   });
 

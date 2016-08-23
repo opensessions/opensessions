@@ -98,12 +98,12 @@ export default class Form extends React.Component { // eslint-disable-line react
     if (this.timeout) clearTimeout(this.timeout);
     const { model, onPublish } = this.props;
     this.setState({ saveState: `Publishing...`, saveStateClass: styles.saving });
-    model.publish()
-      .then(result => {
-        this.setState({ saveState: `Publishing...`, saveStateClass: styles.saving });
-        return onPublish ? onPublish(result.instance) : null;
-      })
-      .catch(error => this.setState({ saveState: error, saveStateClass: styles.error }));
+    return model.publish().then(result => {
+      this.setState({ saveState: `Published!`, saveStateClass: styles.saved });
+      return onPublish ? onPublish(result.instance) : null;
+    }).catch(error => {
+      this.setState({ saveState: error, saveStateClass: styles.error });
+    });
   }
   renderNav() {
     return this.getFieldsets().map((fieldset, key) => {
@@ -125,13 +125,13 @@ export default class Form extends React.Component { // eslint-disable-line react
     const { inactive } = styles;
     const backAttr = {
       onClick: this.actionClick,
-      onKeypress: this.actionClick,
+      onKeyPress: this.actionClick,
       className: styles.backButton,
       tabIndex: 0
     };
     const nextAttr = {
       onClick: this.actionClick,
-      onKeypress: this.actionClick,
+      onKeyPress: this.actionClick,
       tabIndex: 0
     };
     let nextText = 'Next';

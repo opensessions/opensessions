@@ -57,9 +57,6 @@ export default class LocationField extends React.Component {
     this.setState({ clean: true });
     this.dispatchChange();
   }
-  onMapClick = (event) => {
-    this.onPlaceChange({ formatted_address: this.props.model[this.props.name], geometry: { location: event.latLng } });
-  }
   dispatchChange = () => {
     const changeEvent = new CustomEvent('input', { bubbles: true, detail: 'generated' });
     this.refs.input.dispatchEvent(changeEvent);
@@ -103,7 +100,7 @@ export default class LocationField extends React.Component {
         icon: { url: '/images/map-pin-active.svg' },
         defaultAnimation: 2,
         draggable: true,
-        onDragend: (drag) => {
+        onDragend: drag => {
           this.latLngChange(drag.latLng);
           this.dispatchChange();
         }
@@ -113,7 +110,6 @@ export default class LocationField extends React.Component {
         defaultCenter: locationData,
         center: locationData,
         ref: 'component',
-        onClick: this.onMapClick,
         options: { streetViewControl: false, scrollwheel: false, mapTypeControl: false }
       };
       map = (<GoogleMapLoader
