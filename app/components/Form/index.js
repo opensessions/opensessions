@@ -32,7 +32,10 @@ export default class Form extends React.Component { // eslint-disable-line react
     this.refocus();
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.status !== this.props.status) this.setState({ saveState: nextProps.status, saveStateClass: styles.error });
+    if (nextProps.status !== this.props.status) {
+      if (nextProps.status) this.setState({ saveState: nextProps.status, saveStateClass: styles.error });
+      else this.setState({ saveState: 'Saving...', saveStateClass: styles.saving });
+    }
   }
   componentDidUpdate(oldProps, oldState) {
     if (oldState.activeTab !== this.state.activeTab) {
