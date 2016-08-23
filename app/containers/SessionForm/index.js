@@ -95,7 +95,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   updateSession = (name, value) => {
     const session = this.getSession();
     session[name] = value;
-    this.setState({ session });
+    this.setState({ status: '', session });
   }
   changeSessionState = (state) => {
     const session = this.getSession();
@@ -107,17 +107,13 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
         resolve(res);
       }).catch(res => {
         session.state = oldState;
-        alert(res.error);
+        this.setState({ status: res.error });
         reject(res.error);
       });
     });
   }
-  publishSession = () => {
-    return this.changeSessionState('published');
-  }
-  unpublishSession = () => {
-    return this.changeSessionState('unpublished');
-  }
+  publishSession = () => this.changeSessionState('published')
+  unpublishSession = () => this.changeSessionState('unpublished')
   addEmail = (email) => {
     this.setState({ customEmails: [{ uuid: email, name: email }] });
     this.updateSession('contactEmail', email);
@@ -160,7 +156,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     const session = this.getSession();
     return (<div>
       <Field label="Price" name="price" model={session} type="Optional" props={{ no: 'Free', yes: 'Paid', component: { type: NumField, props: { validation: { min: 0 }, format: '£ :', step: '0.25' } } }} />
-      <Field label="Quantity" name="quantity" model={session} type="number" validation={{ min: 0 }} tip="How many spaces are available?" />
+      <Field label="Spaces available" name="quantity" model={session} type="number" validation={{ min: 0 }} tip="How many spaces are available?" />
     </div>);
   }
   renderRestrictionsFieldset = () => {
@@ -211,14 +207,13 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   renderActions = () => {
     const { session, autosaveState } = this.state;
     const isPublished = session.state === 'published';
+    const isSaving = autosaveState === 'pending';
     const actions = [];
     if (session.state) {
-      actions.push(<Link to={`/session/${session.uuid}`} className={`${styles.previewButton} ${autosaveState === 'pending' ? styles.disabled : ''}`}>{isPublished ? 'View' : 'Preview'}</Link>);
-      if (isPublished) {
-        actions.push(<a onClick={this.unpublishSession} className={styles.actionUnpublish}>Unpublish</a>);
-      } else {
-        actions.push(<a onClick={this.publishSession} className={styles.actionPublish}>Publish</a>);
-      }
+      let text = isPublished ? 'View' : 'Preview';
+      if (isSaving) text = 'Saving...';
+      actions.push(<Link to={`/session/${session.uuid}`} className={`${styles.previewButton} ${isSaving ? styles.disabled : ''}`}>{text}</Link>);
+      actions.push(<a onClick={isPublished ? this.unpublishSession : this.publishSession} className={styles[`action${isPublished ? 'Unpublish' : 'Publish'}`]}>{isPublished ? 'Unpublish' : 'Publish'}</a>);
     }
     return <div className={styles.actions}>{actions}</div>;
   }
@@ -238,7 +233,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
           </div>
         </Sticky>
         <div className={styles.formBody}>
-          <Form autosave fieldsets={this.state.fieldsets} model={session} autosaveEvent={this.onAutosaveEvent} onPublish={this.onPublish} onChange={this.onChange} pendingSteps={this.state.pendingSteps}>
+          <Form autosave fieldsets={this.state.fieldsets} model={session} autosaveEvent={this.onAutosaveEvent} onPublish={this.onPublish} onChange={this.onChange} pendingSteps={this.state.pendingSteps} status={this.state.status}>
             {this.renderFieldsets()}
           </Form>
         </div>

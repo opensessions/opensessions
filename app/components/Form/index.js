@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 import styles from './styles.css';
 import fieldStyles from '../Field/styles.css';
@@ -9,14 +9,15 @@ import trackPage from '../../utils/analytics';
 
 export default class Form extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
-    autosave: React.PropTypes.bool,
-    autosaveEvent: React.PropTypes.func,
-    children: React.PropTypes.node.isRequired,
-    model: React.PropTypes.object,
-    pendingSteps: React.PropTypes.any,
-    onPublish: React.PropTypes.func,
-    onChange: React.PropTypes.func,
-    fieldsets: React.PropTypes.array,
+    autosave: PropTypes.bool,
+    autosaveEvent: PropTypes.func,
+    children: PropTypes.node.isRequired,
+    model: PropTypes.object,
+    pendingSteps: PropTypes.any,
+    onPublish: PropTypes.func,
+    onChange: PropTypes.func,
+    fieldsets: PropTypes.array,
+    status: PropTypes.string
   }
   constructor(props) {
     super(props);
@@ -29,6 +30,9 @@ export default class Form extends React.Component { // eslint-disable-line react
   }
   componentDidMount() {
     this.refocus();
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.status !== this.props.status) this.setState({ saveState: nextProps.status, saveStateClass: styles.error });
   }
   componentDidUpdate(oldProps, oldState) {
     if (oldState.activeTab !== this.state.activeTab) {
@@ -97,9 +101,9 @@ export default class Form extends React.Component { // eslint-disable-line react
   publish = () => {
     if (this.timeout) clearTimeout(this.timeout);
     const { model, onPublish } = this.props;
-    this.setState({ saveState: `Publishing...`, saveStateClass: styles.saving });
+    this.setState({ saveState: 'Publishing...', saveStateClass: styles.saving });
     return model.publish().then(result => {
-      this.setState({ saveState: `Published!`, saveStateClass: styles.saved });
+      this.setState({ saveState: 'Published!', saveStateClass: styles.saved });
       return onPublish ? onPublish(result.instance) : null;
     }).catch(error => {
       this.setState({ saveState: error, saveStateClass: styles.error });

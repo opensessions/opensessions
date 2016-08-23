@@ -24,7 +24,7 @@ export default class ImageUploadField extends React.Component { // eslint-disabl
         if (this.props.onChange) this.props.onChange(instance.image);
       }).catch(error => {
         let status = 'Failed to upload image';
-        if (error.status === 413) status = 'Failed to upload image (file too large)'
+        if (error.status === 413) status = 'Failed to upload image (file too large)';
         this.setState({ status });
         console.error(error);
       });
@@ -33,9 +33,9 @@ export default class ImageUploadField extends React.Component { // eslint-disabl
   render() {
     const { value } = this.props;
     return (<div className={`${styles.imageField} ${this.state && this.state.status === 'Uploading...' ? styles.loading : ''}`}>
-      <img src={value ? `${value}?${Date.now()}` : '/images/placeholder.png'} role="presentation" />
-      <input type="file" onChange={this.handleChange} />
-      {this.state ? this.state.status : ''}
+      <img src={value ? `${value}?${Date.now()}` : '/images/placeholder.png'} role="presentation" className={styles.preview} />
+      <label className={styles.choose}><img src="/images/camera.png" role="presentation" /> <span className={styles.text}>Add photo</span> <input type="file" onChange={this.handleChange} /></label>
+      <span className={styles.status}>{this.state ? this.state.status : ''}</span>
     </div>);
   }
 }

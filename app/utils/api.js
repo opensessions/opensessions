@@ -34,20 +34,23 @@ function apiFetch(url, opts) {
 }
 
 const apiModel = {
-  get(model, uuid) {
-    return apiFetch(`/api/${model}/${uuid}`);
-  },
   search(model, query) {
     return apiFetch(`/api/${model}`, { query });
   },
   new(model, body) {
     return apiFetch(`/api/${model}/create`, { body });
   },
+  get(model, uuid) {
+    return apiFetch(`/api/${model}/${uuid}`);
+  },
   edit(model, uuid, body) {
     return apiFetch(`/api/${model}/${uuid}`, { body });
   },
   delete(model, uuid) {
     return apiFetch(`/api/${model}/${uuid}/delete`);
+  },
+  action(model, uuid, action) {
+    return apiFetch(`/api/${model}/${uuid}/${action}`);
   },
   upload(url, body) {
     return apiFetch(url, { body });

@@ -36,17 +36,30 @@ export default class SessionTileView extends React.Component { // eslint-disable
       });
     }
   }
+  duplicate = () => {
+    const { session } = this.props;
+    apiModel.action('session', session.uuid, 'duplicate').then(response => {
+      if (response.status === 'success') {
+        alert('Duplicated session: ', response.instance.href);
+        window.location = response.instance.href;
+      } else {
+        alert('Failed to duplicate session');
+      }
+    });
+  }
   renderActions() {
     const { session } = this.props;
-    const actions = [
-      { key: session.href, item: <Link to={session.href}>View</Link> }
-    ];
+    const isPublished = session.state === 'published';
+    const actions = [];
     if (this.isOwner()) {
-      if (session.state !== 'published') actions.push({ key: 'edit', item: <Link to={`${session.href}/edit`}>Edit</Link> });
+      if (!isPublished) actions.push({ key: 'edit', item: <Link to={`${session.href}/edit`}>Edit</Link> });
+      actions.push({ key: 'copy', item: <a onClick={this.duplicate}>Duplicate</a> });
       actions.push({ key: 'delete', item: <a onClick={this.delete} className={styles.delete}>Delete</a> });
+    } else {
+      actions.push({ key: session.href, item: <Link to={session.href}>View</Link> });
     }
     return (<ol className={styles.actions}>
-      {actions.map((action) => <li key={action.key}>{action.item}</li>)}
+      {actions.map(action => <li key={action.key}>{action.item}</li>)}
     </ol>);
   }
   renderAddSchedule() {

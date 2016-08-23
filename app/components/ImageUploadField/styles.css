@@ -1,15 +1,37 @@
 .imageField {
   &.loading {
     cursor: wait;
-    & img {
+    & img.preview {
       filter: blur(.1em) saturate(0);
     }
   }
-  & img {
+  & .status {
+    display: inline-block;
+    padding: .5em;
+  }
+  & .choose {
+    display: inline-block;
+    border: 2px solid #BBB;
+    margin: .5em 0;
+    padding: .25em .5em;
+    cursor: pointer;
+    &:hover,
+    &:focus {
+      background: #FFF;
+      color: #444;
+    }
+    & .text {
+      padding: .25em 1em;
+    }
+    & img {
+      max-width: 2.5em;
+    }
+  }
+  & img.preview {
     transition: all ease 1s;
   }
   & input[type=file] {
-    display: block;
-    margin: .5em 0;
+    visibility: hidden;
+    position: absolute;
   }
 }

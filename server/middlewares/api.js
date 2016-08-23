@@ -48,12 +48,8 @@ module.exports = (app) => {
   const queryParse = (req) => {
     const query = req.query || {};
     if (query) {
-      Object.keys(query).forEach((key) => {
-        if (key[0] === key[0].toUpperCase()) {
-          if (query[key] === 'null') {
-            query[key] = null;
-          }
-        }
+      Object.keys(query).filter(key => key[0] === key[0].toUpperCase() && query[key] === 'null').forEach(key => {
+        query[key] = null;
       });
     }
     return query;
@@ -154,12 +150,26 @@ module.exports = (app) => {
   api.get('/:model/:uuid/:action', requireLogin, resolveModel, (req, res) => {
     const { Model } = req;
     const { uuid, action } = req.params;
+    const query = Model.getQuery({ where: { uuid, owner: getUser(req) } }, database.models, getUser(req));
     if (action === 'delete') {
-      const query = Model.getQuery({ where: { uuid, owner: getUser(req) } }, database.models, getUser(req));
       Model.findOne(query)
-        .then((instance) => (instance.setDeleted ? instance.setDeleted() : instance.destroy()))
+        .then(instance => (instance.setDeleted ? instance.setDeleted() : instance.destroy()))
         .then(() => res.json({ status: 'success' }))
         .catch(error => res.status(404).json({ status: 'failure', error: error.message }));
+    } else if (action === 'duplicate') {
+      Model.findOne(query)
+        .then(base => {
+          const data = base.dataValues;
+          delete data.uuid;
+          data.title = `${data.title} (duplicated)`;
+          Model.create(data).then(instance => {
+            res.json({ status: 'success', instance });
+          }).catch(err => {
+            res.status(404).json({ status: 'failure', error: err.message });
+          });
+        });
+    } else {
+      res.status(400).json({ status: 'failure', error: `Unrecognized action '${action}'` });
     }
   });
 
