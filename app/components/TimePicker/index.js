@@ -9,17 +9,13 @@ export default class TimePicker extends React.Component { // eslint-disable-line
   }
   constructor() {
     super();
-    this.state = { hours: 0, minutes: 0 };
+    this.state = { hours: 0, minutes: 0, incVal: 1 };
   }
   componentWillReceiveProps(nextProps) {
     const time = nextProps.value;
     if (!time) return;
     const frags = time.split(':').map((frag) => parseInt(frag, 10));
     this.setState({ hours: frags[0], minutes: frags[1] });
-  }
-  dispatchEvent() {
-    const changeEvent = new CustomEvent('input', { bubbles: true, detail: 'generated' });
-    this.refs.input.dispatchEvent(changeEvent);
   }
   changeTime = (hours, minutes) => {
     this.setState({ hours, minutes });
@@ -32,8 +28,8 @@ export default class TimePicker extends React.Component { // eslint-disable-line
     this.changeTime(parseInt(event.target.value, 10), this.state.minutes);
   }
   minsInc = () => {
-    let { hours, minutes } = this.state;
-    minutes += 1;
+    let { hours, minutes, incVal } = this.state;
+    minutes += incVal;
     if (minutes > 59) {
       hours += 1;
       minutes -= 60;
@@ -42,11 +38,10 @@ export default class TimePicker extends React.Component { // eslint-disable-line
       }
     }
     this.changeTime(hours, minutes);
-    this.dispatchEvent();
   }
   minsDec = () => {
-    let { hours, minutes } = this.state;
-    minutes -= 1;
+    let { hours, minutes, incVal } = this.state;
+    minutes -= incVal;
     if (minutes < 0) {
       hours -= 1;
       minutes += 60;
@@ -55,14 +50,29 @@ export default class TimePicker extends React.Component { // eslint-disable-line
       }
     }
     this.changeTime(hours, minutes);
-    this.dispatchEvent();
   }
   minsEvent = (event) => {
     const { type, keyCode, target } = event;
+    const fns = { 38: 'minsInc', 40: 'minsDec' };
+    const positions = { 37: 0, 39: 1 };
+    if (keyCode && (keyCode in positions || keyCode in fns)) {
+      event.preventDefault();
+    }
     if (type === 'keydown') {
-      const fns = { 38: 'minsInc', 40: 'minsDec' };
+    } else if (type === 'keyup') {
       if (keyCode in fns) {
         this[fns[keyCode]]();
+      } else if (keyCode in positions) {
+        const start = positions[keyCode];
+        target.select();
+        target.selectionStart = start;
+        target.selectionEnd = start + 1;
+        this.setState({ incVal: start === 0 ? 10 : 1 });
+        event.preventDefault();
+      } else {
+        target.select();
+        target.selectionStart = 1;
+        target.selectionEnd = 2;
       }
     } else if (type === 'wheel') {
       event.preventDefault();
@@ -73,6 +83,10 @@ export default class TimePicker extends React.Component { // eslint-disable-line
       }
     } else if (type === 'change') {
       this.changeTime(this.state.hours, parseInt(target.value.substr(-2), 10));
+    } else if (type === 'focus') {
+      target.select();
+      target.selectionEnd = 1;
+      this.setState({ incVal: 10 });
     }
   }
   meridianChange = (event) => {
@@ -89,12 +103,11 @@ export default class TimePicker extends React.Component { // eslint-disable-line
       <select value={hours} onChange={this.hourChange}>
         {[12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((hour) => <option key={hour} value={(hour % 12) + (meridian === 'am' ? 0 : 12)}>{hour}</option>)}
       </select>
-      <input type="text" value={`${minutes < 10 ? '0' : ''}${minutes}`} onChange={this.minsEvent} onKeyDown={this.minsEvent} onWheel={this.minsEvent} />
-      <span className={styles.rocker}>
+      <input type="text" value={`${minutes < 10 ? '0' : ''}${minutes}`} onChange={this.minsEvent} onKeyDown={this.minsEvent} onKeyUp={this.minsEvent} onWheel={this.minsEvent} onFocus={this.minsEvent} />
+      {/* <span className={styles.rocker}>
         <a onClick={this.minsInc}>+</a>
         <a onClick={this.minsDec}>-</a>
-      </span>
-      <input ref="input" style={{ display: 'none' }} />
+      </span> */}
       <select value={meridian} onChange={this.meridianChange}>
         {['am', 'pm'].map((mid) => <option key={mid} value={mid}>{mid}</option>)}
       </select>

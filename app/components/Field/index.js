@@ -1,18 +1,7 @@
 import React, { PropTypes } from 'react';
-import DatePicker from 'react-datepicker';
-import moment from 'moment';
-require('react-datepicker/dist/react-datepicker.css');
 
-import BoolRadio from 'components/BoolRadioField';
-import IconRadio from 'components/IconRadioField';
-import Relation from 'components/RelationField';
-import Optional from 'components/OptionalField';
-import Location from 'components/LocationField';
-import MultiField from 'components/MultiField';
-import ImageUpload from 'components/ImageUploadField';
-import TimePicker from 'components/TimePicker';
-import SearchableSelect from 'components/SearchableSelect';
-import JSONList from 'components/JSONListField';
+import DateField from 'components/DateField';
+import TimeField from 'components/TimeField';
 
 import styles from './styles.css';
 
@@ -24,135 +13,41 @@ export default class Field extends React.Component { // eslint-disable-line reac
     example: PropTypes.string,
     placeholder: PropTypes.string,
     fullSize: PropTypes.bool,
-    model: PropTypes.object.isRequired,
-    name: PropTypes.string.isRequired,
+    value: PropTypes.func,
     onChange: PropTypes.func,
     type: PropTypes.string,
     validation: PropTypes.object,
-    options: PropTypes.array,
-    props: PropTypes.object
+    props: PropTypes.object,
+    element: PropTypes.node
   };
-  static componentMap = {
-    BoolRadio,
-    IconRadio,
-    Location,
-    SearchableSelect,
-    MultiField,
-    ImageUpload,
-    Relation,
-    Optional,
-    JSONList
-  }
   constructor(props) {
     super(props);
     this.state = {
       valid: true,
-      hasFocus: false,
-      isMobile: navigator.userAgent.match(/(android|iphone)/i) !== null
+      hasFocus: false
     };
   }
   onFocusChange = (event) => {
     this.setState({ hasFocus: event.type === 'focus' });
   }
-  handleValueChangeByName = (name, value) => {
-    const { model, onChange } = this.props;
-    const valid = this.isValid(value);
-    this.setState({ valid });
-    if (onChange) onChange(value);
-    model.update(name, value);
-  }
-  handleValueChange = (value) => {
-    this.handleValueChangeByName(this.props.name, value);
-  }
-  handleDateChange = (date) => {
-    date.minutes(date.minutes() + date.utcOffset());
-    const value = date.toISOString().substr(0, 10);
-    this.handleValueChange(value);
-    console.log('handleDateChange');
-  }
-  handleChange = (event) => {
-    const { value } = event.target;
-    this.handleValueChange(value);
-  }
-  isValid(value) {
-    const opts = this.props.validation;
-    let valid = true;
-    if (opts) {
-      if (opts.maxLength) {
-        if (value.length > opts.maxLength) {
-          valid = false;
-        }
-      } else if (value.length === 0) {
-        valid = false;
-      }
-    }
-    return valid;
-  }
-  renderValidationMaxLength() {
-    const maxLength = this.props.validation.maxLength;
-    const text = this.props.model[this.props.name] || '';
-    let num = maxLength - text.length;
-    let urgency = styles.valid;
-    let characterState = 'remaining';
-    if (num / maxLength < .1) {
-      urgency = styles.danger;
-    } else if (num / maxLength < .2) {
-      urgency = styles.warn;
-    }
-    if (num < 0) {
-      num = 0 - num;
-      characterState = 'too many';
-    }
-    const characters = num === 1 ? 'character' : 'characters';
-    return <div className={styles.maxLength}><span className={urgency}>{num}</span> {characters} {characterState}</div>;
-  }
-  renderValidation() {
-    const opts = this.props.validation;
-    if (!opts) return false;
-    if (opts.maxLength) {
-      return this.renderValidationMaxLength();
-    }
-    return false;
-  }
   render() {
-    const { label, placeholder, validation, fullSize, model, name, tip, tipTitle, example, options, props } = this.props;
-    const { valid, isMobile } = this.state;
+    const { label, placeholder, validation, fullSize, tip, tipTitle, value, example, props, element } = this.props;
     const attrs = {
-      name,
       placeholder,
-      value: name in model && model[name] ? model[name] : '',
+      value,
       onChange: this.handleValueChange,
       onValueChangeByName: this.handleValueChangeByName,
-      className: `${styles.input} ${valid ? '' : styles.invalid}`,
+      className: styles.input,
     };
     let input;
     attrs.type = this.props.type || 'text';
     if (validation) attrs.validation = validation;
-    if (attrs.type in Field.componentMap) {
-      const Component = Field.componentMap[attrs.type];
-      input = <Component {...props} {...attrs} />;
+    if (element) {
+      input = element;
     } else if (attrs.type === 'date') {
-      if (isMobile) {
-        attrs.type = 'date';
-        if (attrs.value) attrs.value = (new Date(attrs.value)).toISOString().substr(0, 10);
-        attrs.onChange = event => {
-          const { value } = event.target;
-          this.handleDateChange(new Date(value));
-        };
-        input = <input {...attrs} />;
-      } else {
-        const now = moment(Date.now());
-        const value = attrs.value ? moment(attrs.value) : now;
-        const dateAttrs = { selected: value, dateFormat: 'DD/MM/YYYY', onChange: this.handleDateChange, minDate: now, popoverTargetOffset: '0 12px', popoverTargetAttachment: 'top right' };
-        input = <DatePicker {...dateAttrs} />;
-      }
+      input = <DateField {...this.props} />;
     } else if (attrs.type === 'time') {
-      if (isMobile) {
-        attrs.onChange = this.handleChange;
-        input = <input {...attrs} />;
-      } else {
-        input = <TimePicker {...attrs} />;
-      }
+      input = <TimeField {...this.props} />;
     } else {
       attrs.onChange = this.handleChange;
       if (attrs.type === 'textarea') {
@@ -169,8 +64,6 @@ export default class Field extends React.Component { // eslint-disable-line reac
           });
         }
         input = <input {...attrs} />;
-      } else if (attrs.type === 'select') {
-        input = <select {...attrs}><option key="" />{options.map(option => <option key={option} value={option}>{option}</option>)}</select>;
       } else {
         input = <input {...attrs} />;
       }
@@ -187,7 +80,6 @@ export default class Field extends React.Component { // eslint-disable-line reac
       <label className={styles.label}>{label}</label>
       <div className={(attrs.type === 'MultiField' || fullSize) ? '' : styles.inputWrap}>
         {input}
-        {this.renderValidation()}
       </div>
       {tooltip}
     </div>);

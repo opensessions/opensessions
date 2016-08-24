@@ -1,7 +1,7 @@
 @import '../../containers/App/variables.css';
 
 :global .react-datepicker__input-container {
-  > input {
+  > input[type=text] {
     width: 9em;
   }
 }
@@ -17,6 +17,7 @@
       align-items: center;
       & > li {
         display: table-cell;
+        padding: .2em .1em;
         &:last-child {
           width: 12em;
           & > a {

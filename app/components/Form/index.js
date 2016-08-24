@@ -2,15 +2,12 @@ import React, { PropTypes } from 'react';
 
 import styles from './styles.css';
 import fieldStyles from '../Field/styles.css';
-
-import { apiModel } from '../../utils/api';
+import appStyles from 'containers/App/styles.css';
 
 import trackPage from '../../utils/analytics';
 
 export default class Form extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
-    autosave: PropTypes.bool,
-    autosaveEvent: PropTypes.func,
     children: PropTypes.node.isRequired,
     model: PropTypes.object,
     pendingSteps: PropTypes.any,
@@ -24,7 +21,6 @@ export default class Form extends React.Component { // eslint-disable-line react
     this.state = {
       activeTab: 0,
       saveState: 'Unsaved',
-      saveStateClass: styles.unsaved,
       hasFocus: false
     };
   }
@@ -53,35 +49,6 @@ export default class Form extends React.Component { // eslint-disable-line react
   getFieldsets() {
     return this.props.children instanceof Array ? this.props.children : [this.props.children];
   }
-  autosave = (ms) => {
-    if (this.timeout) clearTimeout(this.timeout);
-    if (this.props.autosaveEvent) this.props.autosaveEvent({ type: 'pending' });
-    this.timeout = setTimeout(() => {
-      const { model } = this.props;
-      if (model.state !== 'unpublished') {
-        model.state = 'draft';
-      }
-      this.saveModel(model, 'Saving', 'Saved');
-    }, ms);
-    this.setState({ saveState: 'Saving...', saveStateClass: styles.saving });
-  }
-  saveModel(model, verb, verbed) {
-    this.setState({ saveState: `${verb}...`, saveStateClass: styles.saving });
-    return apiModel.edit('session', model.uuid, model).then(result => {
-      const { instance, error } = result;
-      if (error) {
-        this.setState({ saveState: `Failed ${verb.toLowerCase()}: ${error}`, saveStateClass: styles.error });
-      } else {
-        if (this.props.autosaveEvent) this.props.autosaveEvent({ type: 'saved', state: instance.state });
-        this.setState({ saveState: `${verbed} ${model.state === 'published' ? 'and published' : 'as draft'}!`, saveStateClass: styles.saved });
-      }
-      return result;
-    });
-  }
-  formChange = () => {
-    this.autosave(2000);
-    if (this.props.onChange) this.props.onChange(this.props.model);
-  }
   tabClick = (event) => {
     const key = parseInt(event.target.dataset.key, 10);
     this.setState({ activeTab: key });
@@ -97,6 +64,7 @@ export default class Form extends React.Component { // eslint-disable-line react
       const firstShownField = Array.filter(this.refs.form.elements, (element) => element.tagName === 'FIELDSET')
         .filter((fieldset) => fieldset.parentNode.className !== styles.hiddenTab)[0].getElementsByClassName(fieldStyles.field)[0];
       firstShownField.querySelectorAll('input, textarea, select')[0].focus();
+      document.getElementsByClassName(appStyles.appBody)[0].scrollTop = 0;
     } catch (error) {
       console.error('Couldn\'t refocus', error);
     }
@@ -156,13 +124,13 @@ export default class Form extends React.Component { // eslint-disable-line react
   }
   render() {
     const { pendingSteps } = this.props;
-    return (<form onChange={this.props.autosave ? this.formChange : undefined} onFocus={this.onFocus} onBlur={this.onBlur} className={styles.form} data-hasFocus={this.state.hasFocus} ref="form">
+    return (<form onFocus={this.onFocus} onBlur={this.onBlur} className={styles.form} data-hasFocus={this.state.hasFocus} ref="form">
       <nav className={styles.nav}>
         {this.renderNav()}
         <div className={styles.pending} dangerouslySetInnerHTML={{ __html: pendingSteps ? `Complete <b>${pendingSteps} more</b> step${pendingSteps === 1 ? '' : 's'} to finish your listing` : 'Ready to publish!' }} />
       </nav>
       <div className={styles.tabs}>
-        <div className={`${styles.saveState} ${this.state.saveStateClass}`}>{this.state.saveState}</div>
+        <div className={`${styles.saveState} ${styles[this.props.saveState || 'unsaved']}`}>{this.state.saveState}</div>
         {this.renderTab()}
         <nav className={styles.formNav}>
           {this.renderActionButtons()}

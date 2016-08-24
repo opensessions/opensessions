@@ -8,12 +8,12 @@ import { apiModel } from '../../utils/api';
 
 export default class RelationField extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
-    onFocus: React.PropTypes.func,
-    onBlur: React.PropTypes.func,
-    className: React.PropTypes.string,
     value: React.PropTypes.string,
     onChange: React.PropTypes.func,
     relation: React.PropTypes.object,
+    onFocus: React.PropTypes.func,
+    onBlur: React.PropTypes.func,
+    className: React.PropTypes.string,
   }
   componentDidMount() {
     this.fetchRelation();
@@ -45,8 +45,9 @@ export default class RelationField extends React.Component { // eslint-disable-l
     if (this.props.onChange) this.props.onChange(value === 'none' ? null : value);
   }
   fetchRelation(value) {
-    return apiModel.search(this.props.relation.model, this.props.relation.query).then((result) => {
-      if (value) this.props.onChange(value);
+    const { relation, onChange } = this.props;
+    return apiModel.search(relation.model, relation.query).then((result) => {
+      if (value) onChange(value);
       this.setState({ options: result.instances });
     });
   }

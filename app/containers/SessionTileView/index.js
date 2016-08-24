@@ -68,43 +68,46 @@ export default class SessionTileView extends React.Component { // eslint-disable
       <Link to={`${this.props.session.href}/edit`}><b>+</b> Add a schedule</Link>
     </li>);
   }
+  renderSchedule(occurrence, key) {
+    const date = parseSchedule(occurrence);
+    return (<li className={`${styles.schedule} ${date.hasOccurred ? styles.occurred : null}`} key={key}>
+      <CalendarSvg />
+      <span>{date.date} {date.time ? <span className={styles.time}>at {date.time}</span> : null}</span>
+      <span>{date.hasOccurred ? ' (Past)' : ''}</span>
+    </li>);
+  }
   render() {
     if (this.state && this.state.isDeleted) return null;
     const { session } = this.props;
     let { state } = session;
-    const stateDisplayNames = { unpublished: 'draft' };
-    if (state in stateDisplayNames) state = stateDisplayNames[state];
-    const date = parseSchedule(session);
-    const schedules = [];
-    if (date.date || date.time) {
-      schedules.push(<li className={`${styles.schedule} ${date.hasOccurred ? styles.occurred : null}`} key="schedule1">
-        <CalendarSvg />
-        <span>{date.date} {date.time ? <span className={styles.time}>at {date.time}</span> : null}</span>
-        <span>{date.hasOccurred ? ' (Past)' : ''}</span>
-      </li>);
+    if (state === 'unpublished') state = 'draft';
+    let schedules = [];
+    if (session.schedule) {
+      schedules = session.schedule.map(this.renderSchedule);
     }
-    return (
-      <article className={styles.tile}>
-        <div className={styles.imgCol}>
-          <img src={session.image ? session.image : '/images/placeholder.png'} role="presentation" />
+    if (session.startDate || session.startTime) {
+      schedules.push(this.renderSchedule(session, 'raw'));
+    }
+    return (<article className={styles.tile}>
+      <div className={styles.imgCol}>
+        <img src={session.image ? session.image : '/images/placeholder.png'} role="presentation" />
+      </div>
+      <div className={styles.textCol}>
+        <div className={styles.info}>
+          <h1><Link to={session.href}>{this.getTitle()}</Link></h1>
+          <div className={styles.location}>{session.location}</div>
         </div>
-        <div className={styles.textCol}>
-          <div className={styles.info}>
-            <h1><Link to={session.href}>{this.getTitle()}</Link></h1>
-            <div className={styles.location}>{session.location}</div>
-          </div>
-          <div className={styles.actions}>
-            {this.renderActions()}
-            <div className={`${styles.state} ${state === 'published' ? styles.live : ''}`}>{state}</div>
-          </div>
+        <div className={styles.actions}>
+          {this.renderActions()}
+          <div className={`${styles.state} ${state === 'published' ? styles.live : ''}`}>{state}</div>
         </div>
-        <div className={styles.schedules}>
-          <div>{schedules.length} SCHEDULED</div>
-          <ol>
-            {schedules.length ? schedules : this.renderAddSchedule()}
-          </ol>
-        </div>
-      </article>
-    );
+      </div>
+      <div className={styles.schedules}>
+        <div>{schedules.length} SCHEDULED</div>
+        <ol>
+          {schedules.length ? schedules : this.renderAddSchedule()}
+        </ol>
+      </div>
+    </article>);
   }
 }

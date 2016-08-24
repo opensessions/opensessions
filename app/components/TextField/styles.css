@@ -1,0 +1,40 @@
+@import '../../containers/App/variables.css';
+
+.maxLength {
+  font-size: .825em;
+  text-align: right;
+  opacity: 0;
+  transition: .1s all ease;
+  [data-hasfocus="true"] & {
+    opacity: 1;
+  }
+}
+
+.valid,
+.warn,
+.danger {
+  font-weight: bold;
+}
+
+.valid {
+  color: var(--validGreen);
+}
+
+.warn {
+  color: var(--warnYellow);
+}
+
+.danger {
+  color: var(--errorRed);
+}
+
+textarea {
+  min-height: 6em;
+  line-height: 1.4;
+  &.longText {
+    min-height: 10em;
+  }
+  &.xLongText {
+    min-height: 16em;
+  }
+}

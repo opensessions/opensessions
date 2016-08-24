@@ -15,6 +15,7 @@
     transition: .2s ease;
     transition-property: background, opacity;
     outline: .05em solid transparent;
+    width: 36rem;
     &:focus {
       outline-width: .15em;
       outline-color: #00AEEF;
@@ -71,10 +72,10 @@
     }
   }
   & .pending {
-    font-size: .75em;
-    padding: 2em .25em 1em;
+    font-size: .85em;
+    padding: 2rem .25rem 1rem;
     border-top: 1px solid;
-    margin: 3em 1em 0;
+    margin: 4rem 1.5rem 0;
     flex-basis: 100%;
     color: #555;
   }

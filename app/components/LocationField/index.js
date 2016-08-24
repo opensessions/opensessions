@@ -8,14 +8,14 @@ import styles from './styles.css';
 
 export default class LocationField extends React.Component {
   static propTypes = {
+    value: React.PropTypes.string,
+    dataValue: React.PropTypes.string,
+    onChange: React.PropTypes.func,
+    onDataChange: React.PropTypes.func,
     onFocus: React.PropTypes.func,
     onBlur: React.PropTypes.func,
-    onValueChangeByName: React.PropTypes.func,
     defaultLocation: React.PropTypes.object,
     className: React.PropTypes.string,
-    model: React.PropTypes.object,
-    name: React.PropTypes.string.isRequired,
-    dataName: React.PropTypes.string,
   }
   constructor(props) {
     super(props);
@@ -52,13 +52,8 @@ export default class LocationField extends React.Component {
   onPlaceChange = (place) => {
     if (!place.geometry) throw alert('No map data for this location; please try a different address');
     this.latLngChange(place.geometry.location, { placeID: place.place_id });
-    this.props.onValueChangeByName(this.props.name, place.formatted_address);
+    this.props.onChange(place.formatted_address);
     this.setState({ clean: true });
-    this.dispatchChange();
-  }
-  dispatchChange = () => {
-    const changeEvent = new CustomEvent('input', { bubbles: true, detail: 'generated' });
-    this.refs.input.dispatchEvent(changeEvent);
   }
   latLngChange = (latLng, extraData) => {
     const locationData = {
@@ -67,7 +62,7 @@ export default class LocationField extends React.Component {
       ...extraData
     };
     this.changeCenter(locationData);
-    this.props.onValueChangeByName(this.props.dataName, locationData);
+    this.props.onDataChange(locationData);
   }
   changeCenter = (locationData) => {
     if (this.refs.component) {
@@ -75,7 +70,7 @@ export default class LocationField extends React.Component {
     }
   }
   render() {
-    const { model, name, dataName, className } = this.props;
+    const { value, dataValue, className } = this.props;
     const attrs = {
       type: 'text',
       name,
@@ -84,12 +79,12 @@ export default class LocationField extends React.Component {
       onFocus: this.onFocus,
       onBlur: this.onBlur,
       onChange: this.onChange,
-      placeholder: model[name],
-      defaultValue: model[name]
+      placeholder: value,
+      defaultValue: value
     };
     let map = null;
     let mapHelp = null;
-    let locationData = model[dataName];
+    let locationData = dataValue;
     if (locationData) {
       if (typeof locationData === 'string') locationData = JSON.parse(locationData);
       const marker = {
@@ -99,7 +94,6 @@ export default class LocationField extends React.Component {
         draggable: true,
         onDragend: drag => {
           this.latLngChange(drag.latLng);
-          this.dispatchChange();
         }
       };
       const mapProps = {

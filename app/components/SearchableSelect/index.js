@@ -4,10 +4,10 @@ import styles from './styles.css';
 
 export default class SearchableSelect extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
+    value: React.PropTypes.any,
     onChange: React.PropTypes.func,
     addItem: React.PropTypes.func,
     className: React.PropTypes.string,
-    value: React.PropTypes.any,
     options: React.PropTypes.array
   }
   constructor() {

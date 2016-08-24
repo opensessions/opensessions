@@ -13,12 +13,6 @@
 .field {
   position: relative;
   padding: .75em 0;
-  & .maxLength {
-    font-size: .825em;
-    text-align: right;
-    opacity: 0;
-    transition: .1s all ease;
-  }
   form[data-hasFocus='false'] &:hover {
     & .tip {
       opacity: 1;
@@ -29,9 +23,6 @@
     & .tip {
       opacity: 1;
       bottom: 100%;
-    }
-    & .maxLength {
-      opacity: 1;
     }
   }
   & .label {
@@ -71,20 +62,6 @@
     width: var(--fieldWidth);
     max-width: 100%;
   }
-  & .valid,
-  & .warn,
-  & .danger {
-    font-weight: bold;
-  }
-  & .valid {
-    color: var(--validGreen);
-  }
-  & .warn {
-    color: var(--warnYellow);
-  }
-  & .danger {
-    color: var(--errorRed);
-  }
   & input[type='radio'] {
     width: 1em;
     height: 1em;
@@ -103,16 +80,6 @@
     outline-width: .15em;
     outline-color: #00AEEF;
     background-color: #FFF;
-  }
-  textarea& {
-    min-height: 6em;
-    line-height: 1.4;
-    &.longText {
-      min-height: 10em;
-    }
-    &.xLongText {
-      min-height: 16em;
-    }
   }
 }
 

@@ -3,9 +3,22 @@ import React, { PropTypes } from 'react';
 import Fieldset from 'components/Fieldset';
 import Form from 'components/Form';
 import Field from 'components/Field';
-import NumField from 'components/NumField';
 import GenderSvg from 'components/GenderSvg';
 import Sticky from 'components/Sticky';
+
+import TextField from 'components/TextField';
+import DateField from 'components/DateField';
+import TimeField from 'components/TimeField';
+import BoolRadio from 'components/BoolRadioField';
+import IconRadio from 'components/IconRadioField';
+import Location from 'components/LocationField';
+import SearchableSelect from 'components/SearchableSelect';
+import MultiField from 'components/MultiField';
+import ImageUpload from 'components/ImageUploadField';
+import Relation from 'components/RelationField';
+import Optional from 'components/OptionalField';
+import JSONList from 'components/JSONListField';
+import NumField from 'components/NumField';
 
 import { Link } from 'react-router';
 import Authenticated from 'components/Authenticated';
@@ -96,6 +109,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     const session = this.getSession();
     session[name] = value;
     this.setState({ status: '', session });
+    this.autosave(2000);
   }
   changeSessionState = (state) => {
     const session = this.getSession();
@@ -118,6 +132,37 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     this.setState({ customEmails: [{ uuid: email, name: email }] });
     this.updateSession('contactEmail', email);
   }
+  getAttr = name => {
+    const session = this.getSession();
+    return {
+      value: session[name],
+      onChange: value => {
+        this.updateSession(name, value);
+      }
+    };
+  }
+  autosave = (ms) => {
+    if (this.timeout) clearTimeout(this.timeout);
+    if (this.onAutosaveEvent) this.onAutosaveEvent({ type: 'pending' });
+    this.setState({ status: 'Saving...', saveState: 'saving' });
+    this.timeout = setTimeout(() => {
+      const session = this.getSession();
+      if (session.state !== 'unpublished') {
+        session.state = 'draft';
+      }
+      this.setState({ status: 'Saving...', saveState: 'saving' });
+      return apiModel.edit('session', session.uuid, session).then(result => {
+        const { instance, error } = result;
+        if (error) {
+          this.setState({ status: `Failed saving: ${error}`, saveState: 'error' });
+        } else {
+          if (this.onAutosaveEvent) this.onAutosaveEvent({ type: 'saved', state: instance.state });
+          this.setState({ status: `Saved ${session.state === 'published' ? 'and published' : 'as draft'}!`, saveState: 'saved' });
+        }
+        return result;
+      });
+    }, ms);
+  }
   renderFieldsets() {
     let key = 0;
     return this.state.fieldsets.map(fieldset => <Fieldset key={++key} {...fieldset.props}>{fieldset.renderer()}</Fieldset>);
@@ -126,10 +171,18 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     const session = this.getSession();
     const user = this.context.user || {};
     return (<div>
-      <Field label="Session Title" name="title" model={session} validation={{ maxLength: 50 }} tip="Enter a title for your session" example="E.g. Volleyball training" />
-      <Field label="Organiser Name" name="OrganizerUuid" model={session} type="Relation" props={{ relation: { model: 'organizer', query: { owner: user.user_id } } }} tip="Enter the name of your club or organisation. If you don't represent a club or organisation, enter your own name" example="E.g. Richmond Volleyball" />
-      <Field label="Session Description" name="description" model={session} type="textarea" tip="Let people know what's great about the session! Remember: the more detail you provide, the more likely people are to decide to attend." example="Tips: Who is this session for? What benefits will people get from it? What will the session be like? What will we do? Is any prior experience needed?" props={{ size: 'XL' }} />
-      <Field label="Sport or activity type" name="activityType" model={session} tip="Enter the type of activity or sport on offer for this session. If multiple activities are on offer at this session, please write 'Multiple Activities'" placeholder="E.g. Volleyball" example="E.g. Volleyball" />
+      <Field label="Session Title" tip="Enter a title for your session" example="E.g. Volleyball training" element={
+        <TextField validation={{ maxLength: 50 }} {...this.getAttr('title')} />
+      } />
+      <Field label="Organiser Name" name="OrganizerUuid" tip="Enter the name of your club or organisation. If you don't represent a club or organisation, enter your own name" example="E.g. Richmond Volleyball" element={
+        <Relation value={session.OrganizerUuid} onChange={value => session.update('OrganizerUuid', value)} relation={{ model: 'organizer', query: { owner: user.user_id } }} />
+      } />
+      <Field label="Session Description" tip="Let people know what's great about the session! Remember: the more detail you provide, the more likely people are to decide to attend." example="Tips: Who is this session for? What benefits will people get from it? What will the session be like? What will we do? Is any prior experience needed?" element={
+        <TextField multi size="XL" {...this.getAttr('description')} />
+      } />
+      <Field label="Sport or activity type" tip="Enter the type of activity or sport on offer for this session. If multiple activities are on offer at this session, please write 'Multiple Activities'" placeholder="E.g. Volleyball" example="E.g. Volleyball" element={
+        <TextField {...this.getAttr('activityType')} />
+      } />
     </div>);
   }
   renderAdditionalFieldset = () => {
@@ -139,24 +192,40 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       { text: 'Yes, the session is coached' }
     ];
     return (<div>
-      <Field label="Is there anything participants should bring?" tipTitle="What to bring" name="preparation" type="textarea" validation={{ maxLength: 500 }} model={session} tip="Let participants know how to prepare for your session. Is there anything they will need to bring?" />
-      <Field label="Who is the leader for this session?" tipTitle="Session Leader" name="leader" model={session} type="text" tip="Enter the name of the person who will be leading the session. It's helpful for participants to know who's in charge when they arrive" example="E.g. John Smith" />
-      <Field label="Will participants receive coaching?" type="BoolRadio" name="hasCoaching" model={session} props={{ options: coachOptions }} />
-      <Field label="Image" type="ImageUpload" name="image" model={session} props={{ uploadURL: `/api/session-image/${session.uuid}`, value: session.imageURL }} />
+      <Field label="Is there anything participants should bring?" tipTitle="What to bring" tip="Let participants know how to prepare for your session. Is there anything they will need to bring?" element={
+        <TextField multi validation={{ maxLength: 500 }} {...this.getAttr('preparation')} />
+      } />
+      <Field label="Who is the leader for this session?" tipTitle="Session Leader" tip="Enter the name of the person who will be leading the session. It's helpful for participants to know who's in charge when they arrive" example="E.g. John Smith" element={
+        <TextField {...this.getAttr('leader')} />
+      } />
+      <Field label="Will participants receive coaching?" element={
+        <BoolRadio options={coachOptions} {...this.getAttr('hasCoaching')} />
+      } />
+      <Field label="Image" element={
+        <ImageUpload {...this.getAttr('image')} uploadURL={`/api/session-image/${session.uuid}`} value={session.imageURL} />
+      } />
     </div>);
   }
   renderLocationFieldset = () => {
     const session = this.getSession();
     return (<div>
-      <Field label="Address" type="Location" name="location" model={session} props={{ model: session, dataName: 'locationData' }} tip="Type to search an address and select from the dropdown" />
-      <Field label="Meeting Instructions" name="meetingPoint" model={session} type="textarea" validation={{ maxLength: 50 }} tip="What should participants do when they arrive at the venue or location? Try to be as specific as possible." example="E.g. Meet in the main reception area" />
+      <Field label="Address" tip="Type to search an address and select from the dropdown" element={
+        <Location {...this.getAttr('location')} dataValue={session.locationData} onDataChange={value => session.update('locationData', value)} />
+      } />
+      <Field label="Meeting Instructions" tip="What should participants do when they arrive at the venue or location? Try to be as specific as possible." example="E.g. Meet in the main reception area" element={
+        <TextField multi validation={{ maxLength: 50 }} {...this.getAttr('meetingPoint')} />
+      } />
     </div>);
   }
   renderPricingFieldset = () => {
     const session = this.getSession();
     return (<div>
-      <Field label="Price" name="price" model={session} type="Optional" props={{ no: 'Free', yes: 'Paid', component: { type: NumField, props: { validation: { min: 0 }, format: '£ :', step: '0.25' } } }} />
-      <Field label="Spaces available" name="quantity" model={session} type="number" validation={{ min: 0 }} tip="How many spaces are available?" />
+      <Field label="Price" element={
+        <Optional {...this.getAttr('price')} no="Free" yes="Paid" component={{ type: NumField, props: { validation: { min: 0 }, format: '£ :', step: '0.25' } }} />
+      } />
+      <Field label="Spaces available" tip="How many spaces are available?" element={
+        <NumField {...this.getAttr('quantity')} validation={{ min: 0 }} />
+      } />
     </div>);
   }
   renderRestrictionsFieldset = () => {
@@ -168,10 +237,18 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     ];
     const disabilities = ['Learning disability', 'Mental health condition', 'Physical impairment', 'Visual impairment', 'Deaf', 'Please ask for more info'];
     return (<div>
-      <Field label="Gender restrictions" type="IconRadio" name="genderRestriction" model={session} props={{ options: genderOptions }} tipTitle="Gender restrictions" tip="Select 'none' if there are no restrictions on gender" />
-      <Field label="Is there a minimum age?" name="minAgeRestriction" model={session} type="Optional" props={{ component: { type: NumField, props: { validation: { min: 0, max: session.maxAgeRestriction || 120 }, format: ': years old' } }, null: '0' }} tipTitle="Minimum age" tip="If there is a minimum age, select 'yes' then enter the age" />
-      <Field label="Is there a maximum age?" name="maxAgeRestriction" model={session} type="Optional" props={{ component: { type: NumField, props: { validation: { min: session.minAgeRestriction || 0, max: 120 }, format: ': years old' } }, null: '0' }} tipTitle="Maximum age" tip="If there is a maximum age, select 'yes' then enter the age" />
-      <Field label="Are you able to offer support to people with disabilities?" name="abilityRestriction" model={session} type="MultiField" props={{ options: disabilities, value: session.abilityRestriction }} tipTitle="Disability support" tip="Please tick all disabilities that you can cater for in your session. If you are not sure, do not tick any" />
+      <Field label="Gender restrictions" tipTitle="Gender restrictions" tip="Select 'none' if there are no restrictions on gender" element={
+        <IconRadio options={genderOptions} {...this.getAttr('genderRestriction')} />
+      } />
+      <Field label="Is there a minimum age?" tipTitle="Minimum age" tip="If there is a minimum age, select 'yes' then enter the age" element={
+        <Optional {...this.getAttr('minAgeRestriction')} component={{ type: NumField, props: { validation: { min: 0, max: session.maxAgeRestriction || 120 }, format: ': years old' } }} null="0" />
+      }/>
+      <Field label="Is there a maximum age?" tipTitle="Maximum age" tip="If there is a maximum age, select 'yes' then enter the age" element={
+        <Optional {...this.getAttr('maxAgeRestriction')} component={{ type: NumField, props: { validation: { min: session.minAgeRestriction || 0, max: 120 }, format: ': years old' } }} null="0" />
+      } />
+      <Field label="Are you able to offer support to people with disabilities?" tipTitle="Disability support" tip="Please tick all disabilities that you can cater for in your session. If you are not sure, do not tick any" fullSize element={
+        <MultiField options={disabilities} value={session.abilityRestriction} onChange={value => session.update('abilityRestriction', value)} />
+      } />
     </div>);
   }
   renderContactFieldset = () => {
@@ -191,26 +268,23 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     }
     const emailProps = { options: emailOptions, addItem: this.addEmail };
     return (<div>
-      <Field label="Full name" name="contactName" model={session} />
-      <Field label="Phone number" name="contactPhone" model={session} />
-      <Field label="Email address" name="contactEmail" model={session} type="SearchableSelect" props={emailProps} />
+      <Field label="Full name" element={<TextField {...this.getAttr('contactName')} />} />
+      <Field label="Phone number" element={<TextField {...this.getAttr('contactPhone')} />} />
+      <Field label="Email address" element={
+        <SearchableSelect {...this.getAttr('contactEmail')} {...emailProps} />
+      } />
     </div>);
   }
   renderScheduleFieldset = () => {
     const session = this.getSession();
     return (<div>
-      <Field type="JSONList" name="schedule" model={session} fullSize props={{
-        components: [
-          { label: 'Date', name: 'startDate', type: 'date' },
-          { label: 'Start time', name: 'startTime', type: 'time' },
-          { label: 'End time', name: 'endTime', type: 'time' }
-        ]
-      }}/>
-    </div>);
-    return (<div>
-      <Field label="Date" name="startDate" type="date" model={session} />
-      <Field label="Start time" name="startTime" type="time" model={session} />
-      <Field label="End time" name="endTime" type="time" model={session} />
+      <Field fullSize element={
+        <JSONList {...this.getAttr('schedule')} addText="Add schedule" components={[
+          { label: 'Date', Component: DateField, props: { name: 'startDate' } },
+          { label: 'Start time', Component: TimeField, props: { name: 'startTime' } },
+          { label: 'End time', Component: TimeField, props: { name: 'endTime' } }
+        ]} />
+      } />
     </div>);
   }
   renderActions = () => {
@@ -221,8 +295,8 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     if (session.state) {
       let text = isPublished ? 'View' : 'Preview';
       if (isSaving) text = 'Saving...';
-      actions.push(<Link to={`/session/${session.uuid}`} className={`${styles.previewButton} ${isSaving ? styles.disabled : ''}`}>{text}</Link>);
-      actions.push(<a onClick={isPublished ? this.unpublishSession : this.publishSession} className={styles[`action${isPublished ? 'Unpublish' : 'Publish'}`]}>{isPublished ? 'Unpublish' : 'Publish'}</a>);
+      actions.push(<Link key="view" to={`/session/${session.uuid}`} className={`${styles.previewButton} ${isSaving ? styles.disabled : ''}`}>{text}</Link>);
+      actions.push(<a key="publish" onClick={isPublished ? this.unpublishSession : this.publishSession} className={styles[`action${isPublished ? 'Unpublish' : 'Publish'}`]}>{isPublished ? 'Unpublish' : 'Publish'}</a>);
     }
     return <div className={styles.actions}>{actions}</div>;
   }
@@ -242,7 +316,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
           </div>
         </Sticky>
         <div className={styles.formBody}>
-          <Form autosave fieldsets={this.state.fieldsets} model={session} autosaveEvent={this.onAutosaveEvent} onPublish={this.onPublish} onChange={this.onChange} pendingSteps={this.state.pendingSteps} status={this.state.status}>
+          <Form fieldsets={this.state.fieldsets} model={session} onPublish={this.onPublish} onChange={this.onChange} pendingSteps={this.state.pendingSteps} status={this.state.status} saveState={this.state.saveState}>
             {this.renderFieldsets()}
           </Form>
         </div>

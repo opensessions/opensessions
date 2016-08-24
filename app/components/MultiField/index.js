@@ -22,7 +22,7 @@ export default class MultiField extends React.Component { // eslint-disable-line
     const { value, options } = this.props;
     return (<div className={styles.multiField}>
       {options.map(option => (<label className={styles.option}>
-        <input type="checkbox" onChange={this.handleChange} value={option} checked={value.indexOf(option) + 1} /> {option}
+        <input type="checkbox" onChange={this.handleChange} value={option} checked={value ? (value.indexOf(option) + 1) : false} /> {option}
       </label>))}
     </div>);
   }

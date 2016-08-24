@@ -35,7 +35,7 @@ export default class OptionalField extends React.Component { // eslint-disable-l
     const { showInput } = this.state;
     const props = {
       className: styles.inputField,
-      value: value.toString(),
+      value: value ? value.toString() : '',
       onChange: this.handleChange
     };
     const input = showInput ? <component.type {...props} {...component.props} autoFocus /> : null;

@@ -83,7 +83,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     const session = this.state.session || {};
     const actions = [];
     if (user && user.user_id === session.owner) {
-      actions.push(<Link to={`/session/${session.uuid}/edit`} className={styles.previewButton}>{session.state === 'published' ? 'Unpublish and edit' : 'Continue editing'}</Link>);
+      actions.push(<Link key="edit" to={`/session/${session.uuid}/edit`} className={styles.previewButton}>{session.state === 'published' ? 'Unpublish and edit' : 'Continue editing'}</Link>);
     }
     if (!actions.length) return null;
     return (<Sticky>
