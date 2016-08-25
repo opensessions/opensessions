@@ -49,15 +49,19 @@ export default class Form extends React.Component { // eslint-disable-line react
   getFieldsets() {
     return this.props.children instanceof Array ? this.props.children : [this.props.children];
   }
-  tabClick = (event) => {
+  tabClick = event => {
     const key = parseInt(event.target.dataset.key, 10);
     this.setState({ activeTab: key });
   }
-  actionClick = (event) => {
+  actionClick = event => {
     const { type, target, keyCode } = event;
-    if (type === 'keypress' && keyCode !== 13) return;
+    if (type === 'keyup' && keyCode !== 13) return;
     const delta = target.text === 'Next' ? 1 : -1;
-    this.setState({ activeTab: this.state.activeTab + delta });
+    if (target.text === 'Publish') {
+      this.props.onPublish();
+    } else {
+      this.setState({ activeTab: this.state.activeTab + delta });
+    }
   }
   refocus = () => {
     try {
@@ -89,13 +93,13 @@ export default class Form extends React.Component { // eslint-disable-line react
     const { inactive } = styles;
     const backAttr = {
       onClick: this.actionClick,
-      onKeyPress: this.actionClick,
+      onKeyUp: this.actionClick,
       className: styles.backButton,
       tabIndex: 0
     };
     const nextAttr = {
       onClick: this.actionClick,
-      onKeyPress: this.actionClick,
+      onKeyUp: this.actionClick,
       tabIndex: 0
     };
     let nextText = 'Next';
@@ -103,7 +107,6 @@ export default class Form extends React.Component { // eslint-disable-line react
       backAttr.className = `${styles.backButton} ${inactive}`;
       backAttr.onClick = undefined;
     } else if (this.state.activeTab + 1 === this.props.children.length) {
-      nextAttr.onClick = this.props.onPublish;
       nextText = 'Publish';
     }
     return (<div className={styles.actionButtons}>

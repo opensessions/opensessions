@@ -11,10 +11,16 @@ export default class TimePicker extends React.Component { // eslint-disable-line
     super();
     this.state = { hours: 0, minutes: 0, incVal: 1 };
   }
+  componentWillMount() {
+    const time = this.props.value;
+    if (time) this.valueToState(time);
+  }
   componentWillReceiveProps(nextProps) {
     const time = nextProps.value;
-    if (!time) return;
-    const frags = time.split(':').map((frag) => parseInt(frag, 10));
+    if (time) this.valueToState(time);
+  }
+  valueToState(time) {
+    const frags = time.split(':').map(frag => parseInt(frag, 10));
     this.setState({ hours: frags[0], minutes: frags[1] });
   }
   changeTime = (hours, minutes) => {
@@ -106,7 +112,7 @@ export default class TimePicker extends React.Component { // eslint-disable-line
       </select>
       <input type="text" value={`${minutes < 10 ? '0' : ''}${minutes}`} onChange={this.minsEvent} onKeyUp={this.minsEvent} onWheel={this.minsEvent} onFocus={this.minsEvent} />
       <select value={meridian} onChange={this.meridianChange}>
-        {['am', 'pm'].map((mid) => <option key={mid} value={mid}>{mid}</option>)}
+        {['am', 'pm'].map(mid => <option key={mid} value={mid}>{mid}</option>)}
       </select>
     </div>);
   }

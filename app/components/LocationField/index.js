@@ -9,7 +9,7 @@ import styles from './styles.css';
 export default class LocationField extends React.Component {
   static propTypes = {
     value: React.PropTypes.string,
-    dataValue: React.PropTypes.string,
+    dataValue: React.PropTypes.object,
     onChange: React.PropTypes.func,
     onDataChange: React.PropTypes.func,
     onFocus: React.PropTypes.func,
