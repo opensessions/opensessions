@@ -80,7 +80,7 @@
     font-size: .85em;
     padding: 2rem .25rem 1rem;
     border-top: 1px solid;
-    margin: 4rem 1.5rem 0;
+    margin: .5rem 1rem;
     flex-basis: 100%;
     color: #555;
   }
@@ -164,6 +164,12 @@
       margin: 2em 0 .5em;
       padding: 1rem 1.5rem;
       text-align: left;
+    }
+    & .pending {
+      font-size: .85em;
+      padding: 2rem .25rem 1rem;
+      border-top: 1px solid;
+      margin: 4rem 1.5rem 0;
     }
   }
   .tabs {
