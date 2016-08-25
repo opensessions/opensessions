@@ -50,7 +50,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
         { renderer: this.renderPricingFieldset, slug: 'pricing', props: { label: 'Pricing', validity: 'none' } },
         { renderer: this.renderRestrictionsFieldset, slug: 'restrictions', props: { label: 'Who it\'s for', validity: 'none', title: 'Who is your session for?', subtitle: 'Specify any restrictions that apply and disabilities catered for' } },
         { renderer: this.renderContactFieldset, slug: 'contact', props: { label: 'Contact info', validity: 'none', title: 'Who can people talk to about this session?', subtitle: 'Help potential attendees by providing details of who they can contact' } },
-        { renderer: this.renderScheduleFieldset, slug: 'schedule', required: ['startDate', 'startTime'], props: { label: 'Add a schedule', heading: 'Scheduling', validity: false } }
+        { renderer: this.renderScheduleFieldset, slug: 'schedule', required: ['schedule'], props: { label: 'Add a schedule', heading: 'Scheduling', validity: false } }
       ]
     };
   }
@@ -59,15 +59,14 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   }
   onChange = (session) => {
     const { fieldsets } = this.state;
+    const invalidValues = [undefined, 'null', '""', '[]'];
     let pendingSteps = 0;
     fieldsets.forEach((fieldset, key) => {
       let validity = 'none';
       if (fieldset.required) {
         validity = true;
-        fieldset.required.forEach((field) => {
-          if ([null, ''].indexOf(session[field]) !== -1) {
-            validity = false;
-          }
+        fieldset.required.forEach(field => {
+          if (invalidValues.filter(value => value === JSON.stringify(session[field])).length !== 0) validity = false;
         });
         if (!validity) pendingSteps += 1;
       }

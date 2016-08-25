@@ -61,6 +61,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   }
   renderDate() {
     const { session } = this.state;
+    if (!(session.schedule && session.schedule[0])) return null;
     const data = parseSchedule(session.schedule[0]);
     if (!(data.date || data.time)) {
       return null;
