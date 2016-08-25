@@ -1,6 +1,6 @@
 @import '../../containers/App/variables.css';
 
-.timePicker {
+div.timePicker {
   display: flex;
   width: 10em;
   & input[type=text],

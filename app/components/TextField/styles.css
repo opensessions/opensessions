@@ -5,7 +5,7 @@
   text-align: right;
   opacity: 0;
   transition: .1s all ease;
-  [data-hasfocus='true'] & {
+  div[data-hasfocus='true'] & {
     opacity: 1;
   }
 }

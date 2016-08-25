@@ -1,22 +1,20 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 import styles from './styles.css';
 
 export default class NumField extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
-    value: React.PropTypes.string,
-    onChange: React.PropTypes.func,
-    validation: React.PropTypes.object,
-    className: React.PropTypes.string,
-    autoFocus: React.PropTypes.bool,
-    format: React.PropTypes.string,
-    step: React.PropTypes.string
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    onChange: PropTypes.func,
+    validation: PropTypes.object,
+    className: PropTypes.string,
+    autoFocus: PropTypes.bool,
+    format: PropTypes.string,
+    step: PropTypes.string
   }
   handleChange = (event) => {
     const { value } = event.target;
-    if (this.props.onChange) {
-      this.props.onChange(value);
-    }
+    if (this.props.onChange) this.props.onChange(value);
   }
   render() {
     const { value, className, autoFocus, validation, format, step } = this.props;

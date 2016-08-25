@@ -1,9 +1,14 @@
 @import '../../containers/App/variables.css';
 
-:global .react-datepicker__input-container {
+:global div.react-datepicker__input-container {
   > input[type=text] {
     width: 9em;
   }
+}
+
+.listBox {
+  overflow-x: auto;
+  max-width: 100%;
 }
 
 .list {

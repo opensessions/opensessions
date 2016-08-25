@@ -15,12 +15,18 @@
     transition: .2s ease;
     transition-property: background, opacity;
     outline: .05em solid transparent;
-    width: 36rem;
     &:focus {
       outline-width: .15em;
       outline-color: #00AEEF;
       background-color: #FFF;
     }
+  }
+  & input[type=text],
+  & input[type=email],
+  & input[type=number],
+  & select,
+  & textarea {
+    width: 36rem;
   }
   & input[type=number] {
     padding: 0 0 0 .4em;
@@ -31,17 +37,16 @@
 .nav {
   min-width: 12em;
   padding: 1em .5em;
-  & > h1,
-  & > a {
-    padding: 1rem 1.5rem;
-  }
   & > h1 {
+    margin: .5em 0;
+    padding: 0 1rem;
     font-size: .75em;
+    text-align: center;
     color: #555;
     text-transform: uppercase;
-    margin: 2em 0 .5em;
   }
   & > a {
+    padding: 1rem 1.5rem;
     cursor: pointer;
     display: flex;
     justify-content: space-between;
@@ -155,6 +160,11 @@
   .nav {
     font-size: 1.25em;
     max-width: 13em;
+    > h1 {
+      margin: 2em 0 .5em;
+      padding: 1rem 1.5rem;
+      text-align: left;
+    }
   }
   .tabs {
     padding: 1.5em 2%;

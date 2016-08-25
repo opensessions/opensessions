@@ -17,23 +17,20 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
   setValue = (value) => {
     this.props.onChange(value);
     this.setState({ visible: false, search: '', ignoreBlur: false });
-    const changeEvent = new CustomEvent('input', { bubbles: true, detail: 'generated' });
-    this.refs.input.dispatchEvent(changeEvent);
   }
   resetValue = () => {
     this.setValue(null);
   }
-  filterOptions = (search) => {
-    let opts = this.props.options;
-    if (search) opts = opts.filter((option) => option.name.match(new RegExp(search, 'i')));
-    return opts.map((option) => ({ text: option.name, props: { key: option.uuid, onMouseOver: this.itemHover, onClick: this.itemClick } }));
+  filterOptions = search => {
+    let { options } = this.props;
+    if (search) options = options.filter(option => option.name.match(new RegExp(search, 'i')));
+    return options.map(option => ({ text: option.name, props: { key: option.uuid, onMouseOver: this.itemHover, onClick: this.itemClick } }));
   }
-  searchEvent = (event) => {
-    console.log('-> searchEvent :: ', event.type, event.target.value, this.state);
-    const { type, target, nativeEvent } = event;
+  searchEvent = event => {
+    const { type, target } = event;
     const { input } = this.refs;
     const { filteredOptions, highlightIndex } = this.state;
-    const newState = {};
+    let newState = {};
     let action;
     if (type === 'focus') {
       newState.visible = true;
@@ -44,10 +41,6 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
       newState.search = target.value || '';
       newState.filteredOptions = this.filterOptions(newState.search);
       newState.highlightIndex = highlightIndex;
-      if (nativeEvent.detail !== 'generated') {
-        event.preventDefault();
-        event.stopPropagation();
-      }
     } else if (type === 'keydown') {
       const { keyCode } = event;
       const deltas = { 38: -1, 40: 1 };
@@ -69,7 +62,8 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
       }
     }
     if (action === 'chooseSelected') {
-      const selected = filteredOptions[highlightIndex];
+      let selected = filteredOptions[highlightIndex];
+      if (!selected) selected = { props: { key: 'none' } };
       const { key } = selected.props;
       newState.search = '';
       newState.visible = false;
@@ -79,6 +73,8 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
       } else {
         this.setValue(key);
       }
+      this.setState(newState);
+      newState = {};
       input.blur();
     }
     if (newState.highlightIndex) {
@@ -125,7 +121,7 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
     let searchResults = null;
     if (visible) {
       let index = -1;
-      if (!filteredOptions.length) {
+      if (!filteredOptions.length && search) {
         filteredOptions.unshift({ props: { key: 'none', onClick: this.addItem }, text: `+ Add "${search}"` });
       }
       searchResults = (<ol className={styles.searchResults} onMouseOver={this.dropdownEvent} onMouseOut={this.dropdownEvent}>

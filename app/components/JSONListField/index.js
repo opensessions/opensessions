@@ -43,7 +43,7 @@ export default class JSONListField extends React.Component { // eslint-disable-l
     const { components } = this.props;
     return (<li key="labels">
       <ol className={styles.row}>
-        {components.map(field => <li>{field.label}</li>)}
+        {components.map(field => <li key={field.label}>{field.label}</li>)}
         <li />
       </ol>
     </li>);
@@ -72,9 +72,9 @@ export default class JSONListField extends React.Component { // eslint-disable-l
             },
             value: row[name]
           };
-          return <li><field.Component {...field.props} {...attrs} /></li>;
+          return <li key={field.label}><field.Component {...field.props} {...attrs} /></li>;
         })}
-        <li>{button}</li>
+        <li key="action">{button}</li>
       </ol>
     </li>);
   }
@@ -82,10 +82,12 @@ export default class JSONListField extends React.Component { // eslint-disable-l
     const { value } = this.props;
     let { empty } = this.state;
     if (!empty) empty = {};
-    return (<ol className={styles.list}>
-      {this.renderLabels()}
-      {value ? null : this.renderRow('-1', empty, this.renderAddButton())}
-      {value ? value.map((row, key) => this.renderRow(key, row, key === 0 ? this.renderAddButton() : this.renderDeleteButton(key))) : null}
-    </ol>);
+    return (<div className={styles.listBox}>
+      <ol className={styles.list}>
+        {this.renderLabels()}
+        {value ? null : this.renderRow('-1', empty, this.renderAddButton())}
+        {value ? value.map((row, key) => this.renderRow(key, row, key === 0 ? this.renderAddButton() : this.renderDeleteButton(key))) : null}
+      </ol>
+    </div>);
   }
 }
