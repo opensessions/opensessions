@@ -84,15 +84,13 @@ module.exports = (DataTypes) => ({
         instanceMethods: {
           canPublish() {
             const session = this;
-            const requiredFields = ['title', 'OrganizerUuid', 'description', 'leader', 'location', 'startDate', 'startTime'];
+            const requiredFields = ['title', 'OrganizerUuid', 'description', 'leader', 'location'];
             const prettyNames = { OrganizerUuid: 'organizer', startDate: 'start date', startTime: 'start time' };
             const errors = [];
-            requiredFields.forEach((field) => {
-              if (!session[field]) {
-                errors.push(field in prettyNames ? prettyNames[field] : field);
-              }
-            });
-            if (errors.length) throw new Error(`Missing fields: ${errors.join(', ')}`);
+            const missingFields = requiredFields.filter(field => !session[field]).map(field => (field in prettyNames ? prettyNames[field] : field));
+            if (missingFields.length) errors.push(`missing fields: ${missingFields.join(', ')}`);
+            if (!(session.schedule && session.schedule.length >= 1)) errors.push('you must add a schedule');
+            if (errors.length) throw new Error(`Can't publish yet: ${errors.join('; ')}`);
             return true;
           },
           setDeleted() {
@@ -105,7 +103,7 @@ module.exports = (DataTypes) => ({
             if (!('where' in query)) query.where = {};
             query.where.state = user ? { $not: 'deleted' } : 'published';
             if ('owner' in query.where && query.where.owner !== user) {
-              throw Error('Must be logged in to search by owner');
+              return Error('Must be logged in to search by owner');
             }
             return query;
           },

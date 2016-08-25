@@ -80,7 +80,7 @@ export default class Form extends React.Component { // eslint-disable-line react
       let isComplete = <span className={styles.tickNone}>+</span>;
       if (validity === true) isComplete = <span className={styles.tick}><img role="presentation" src="/images/tick.svg" /></span>;
       else if (validity === 'none') isComplete = null;
-      return [heading ? <h1>{heading}</h1> : null, <a className={className} onClick={this.tabClick} key={key} data-key={key}>{label} {isComplete}</a>];
+      return [heading ? <h1 key={heading}>{heading}</h1> : null, <a className={className} onClick={this.tabClick} key={key} data-key={key}>{label} {isComplete}</a>];
     });
   }
   renderTab() {

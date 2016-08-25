@@ -93,6 +93,10 @@ module.exports = (app) => {
     const { Model } = req;
     requireLogin(req, res, () => {
       const query = Model.getQuery({ where: queryParse(req) }, database.models, getUser(req));
+      if (query instanceof Error) {
+        res.status(400).json({ status: 'failure', error: query.message });
+        return;
+      }
       Model.findAll(query).then((instances) => {
         res.json({ instances });
       }).catch(error => {
@@ -117,6 +121,10 @@ module.exports = (app) => {
     const { uuid } = req.params;
     requireLogin(req, res, () => {
       const query = Model.getQuery({ where: { uuid } }, database.models, getUser(req));
+      if (query instanceof Error) {
+        res.status(400).json({ status: 'failure', error: query.message });
+        return;
+      }
       Model.findOne(query).then((instance) => {
         if (instance) {
           res.json({ instance, schema: getSchema(Model) });
@@ -151,6 +159,10 @@ module.exports = (app) => {
     const { Model } = req;
     const { uuid, action } = req.params;
     const query = Model.getQuery({ where: { uuid, owner: getUser(req) } }, database.models, getUser(req));
+    if (query instanceof Error) {
+      res.status(400).json({ status: 'failure', error: query.message });
+      return;
+    }
     if (action === 'delete') {
       Model.findOne(query)
         .then(instance => (instance.setDeleted ? instance.setDeleted() : instance.destroy()))

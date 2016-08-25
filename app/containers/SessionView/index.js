@@ -18,7 +18,7 @@ import styles from './styles.css';
 export default class SessionView extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
     user: React.PropTypes.object,
-  }
+  };
   static propTypes = {
     params: React.PropTypes.object,
   }
@@ -61,7 +61,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   }
   renderDate() {
     const { session } = this.state;
-    const data = parseSchedule(session);
+    const data = parseSchedule(session.schedule[0]);
     if (!(data.date || data.time)) {
       return null;
     }

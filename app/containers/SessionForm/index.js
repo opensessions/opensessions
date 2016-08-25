@@ -29,7 +29,6 @@ import { apiModel } from '../../utils/api';
 
 export default class SessionForm extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
-    history: PropTypes.object,
     session: PropTypes.object,
     sessionID: PropTypes.string,
     location: PropTypes.object,
@@ -37,6 +36,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   };
   static contextTypes = {
     user: PropTypes.object,
+    router: PropTypes.object,
   }
   constructor(props) {
     super(props);
@@ -75,11 +75,6 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     });
     this.setState({ fieldsets, pendingSteps });
   }
-  onPublish = (session) => {
-    if (session && session.state === 'published') {
-      this.props.history.push(this.state.session.href);
-    }
-  }
   onAutosaveEvent = (event) => {
     this.setState({ autosaveState: event.type });
   }
@@ -98,7 +93,8 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     };
   }
   fetchData = () => {
-    const { session, sessionID, location, history } = this.props;
+    const { session, sessionID, location } = this.props;
+    const { router } = this.context;
     const uuid = session ? session.uuid : (sessionID || null);
     if (uuid) {
       apiModel.get('session', uuid).then(res => {
@@ -107,7 +103,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       });
     } else {
       apiModel.new('session', location.query).then(res => {
-        history.push(`${res.instance.href}/edit`);
+        router.push(`${res.instance.href}/edit`);
       });
     }
   }
@@ -128,12 +124,12 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
         resolve(res);
       }).catch(res => {
         session.state = oldState;
-        this.setState({ status: res.error });
+        this.setState({ status: res.error, saveState: 'error' });
         reject(res.error);
       });
     });
   }
-  publishSession = () => this.changeSessionState('published')
+  publishSession = () => this.changeSessionState('published').then(() => this.context.router.push(this.state.session.href))
   unpublishSession = () => this.changeSessionState('unpublished')
   addEmail = (email) => {
     this.setState({ customEmails: [{ uuid: email, name: email }] });

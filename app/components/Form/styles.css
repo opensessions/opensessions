@@ -143,7 +143,7 @@
   &.saved {
     color: #51A743;
     opacity: 0;
-    transition: .1s ease color, 1.5s ease opacity;
+    transition: .1s ease color, 3s ease opacity;
   }
   &.error {
     color: #B32A2A;

@@ -1,10 +1,19 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 import SessionForm from 'containers/SessionForm';
 
 export default class SessionEdit extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
-    params: React.PropTypes.object,
+    params: PropTypes.object,
+  };
+  static contextTypes = {
+    router: PropTypes.object
+  };
+  static childContextTypes = {
+    router: PropTypes.object
+  }
+  getChildContext() {
+    return { router: this.context.router };
   }
   render() {
     return (

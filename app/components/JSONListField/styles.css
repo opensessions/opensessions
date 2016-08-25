@@ -35,3 +35,7 @@ a.addButton {
   color: #FFF;
   padding: .5em;
 }
+
+.delButton {
+  cursor: pointer;
+}
