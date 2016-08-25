@@ -90,6 +90,13 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     session.publish = this.publishSession;
     return session;
   }
+  getAttr = name => {
+    const session = this.getSession();
+    return {
+      value: session[name],
+      onChange: value => this.updateSession(name, value)
+    };
+  }
   fetchData = () => {
     const { session, sessionID, location, history } = this.props;
     const uuid = session ? session.uuid : (sessionID || null);
@@ -104,10 +111,10 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       });
     }
   }
-  _locationInput = null
   updateSession = (name, value) => {
     const session = this.getSession();
     session[name] = value;
+    this.onChange(session);
     this.setState({ status: '', session });
     this.autosave(2000);
   }
@@ -131,15 +138,6 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   addEmail = (email) => {
     this.setState({ customEmails: [{ uuid: email, name: email }] });
     this.updateSession('contactEmail', email);
-  }
-  getAttr = name => {
-    const session = this.getSession();
-    return {
-      value: session[name],
-      onChange: value => {
-        this.updateSession(name, value);
-      }
-    };
   }
   autosave = (ms) => {
     if (this.timeout) clearTimeout(this.timeout);
@@ -171,18 +169,18 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     const session = this.getSession();
     const user = this.context.user || {};
     return (<div>
-      <Field label="Session Title" tip="Enter a title for your session" example="E.g. Volleyball training" element={
+      <Field label="Session Title" tip="Enter a title for your session" example="E.g. Volleyball training">
         <TextField validation={{ maxLength: 50 }} {...this.getAttr('title')} />
-      } />
-      <Field label="Organiser Name" name="OrganizerUuid" tip="Enter the name of your club or organisation. If you don't represent a club or organisation, enter your own name" example="E.g. Richmond Volleyball" element={
+      </Field>
+      <Field label="Organiser Name" name="OrganizerUuid" tip="Enter the name of your club or organisation. If you don't represent a club or organisation, enter your own name" example="E.g. Richmond Volleyball">
         <Relation value={session.OrganizerUuid} onChange={value => session.update('OrganizerUuid', value)} relation={{ model: 'organizer', query: { owner: user.user_id } }} />
-      } />
-      <Field label="Session Description" tip="Let people know what's great about the session! Remember: the more detail you provide, the more likely people are to decide to attend." example="Tips: Who is this session for? What benefits will people get from it? What will the session be like? What will we do? Is any prior experience needed?" element={
+      </Field>
+      <Field label="Session Description" tip="Let people know what's great about the session! Remember: the more detail you provide, the more likely people are to decide to attend." example="Tips: Who is this session for? What benefits will people get from it? What will the session be like? What will we do? Is any prior experience needed?">
         <TextField multi size="XL" {...this.getAttr('description')} />
-      } />
-      <Field label="Sport or activity type" tip="Enter the type of activity or sport on offer for this session. If multiple activities are on offer at this session, please write 'Multiple Activities'" placeholder="E.g. Volleyball" example="E.g. Volleyball" element={
+      </Field>
+      <Field label="Sport or activity type" tip="Enter the type of activity or sport on offer for this session. If multiple activities are on offer at this session, please write 'Multiple Activities'" placeholder="E.g. Volleyball" example="E.g. Volleyball">
         <TextField {...this.getAttr('activityType')} />
-      } />
+      </Field>
     </div>);
   }
   renderAdditionalFieldset = () => {
@@ -192,42 +190,39 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       { text: 'Yes, the session is coached' }
     ];
     return (<div>
-      <Field label="Is there anything participants should bring?" tipTitle="What to bring" tip="Let participants know how to prepare for your session. Is there anything they will need to bring?" element={
+      <Field label="Is there anything participants should bring?" tipTitle="What to bring" tip="Let participants know how to prepare for your session. Is there anything they will need to bring?">
         <TextField multi validation={{ maxLength: 500 }} {...this.getAttr('preparation')} />
-      } />
-      <Field label="Who is the leader for this session?" tipTitle="Session Leader" tip="Enter the name of the person who will be leading the session. It's helpful for participants to know who's in charge when they arrive" example="E.g. John Smith" element={
+      </Field>
+      <Field label="Who is the leader for this session?" tipTitle="Session Leader" tip="Enter the name of the person who will be leading the session. It's helpful for participants to know who's in charge when they arrive" example="E.g. John Smith">
         <TextField {...this.getAttr('leader')} />
-      } />
-      <Field label="Will participants receive coaching?" element={
+      </Field>
+      <Field label="Will participants receive coaching?">
         <BoolRadio options={coachOptions} {...this.getAttr('hasCoaching')} />
-      } />
-      <Field label="Image" element={
+      </Field>
+      <Field label="Image">
         <ImageUpload {...this.getAttr('image')} uploadURL={`/api/session-image/${session.uuid}`} value={session.imageURL} />
-      } />
+      </Field>
     </div>);
   }
   renderLocationFieldset = () => {
     const session = this.getSession();
     return (<div>
-      <Field label="Address" tip="Type to search an address and select from the dropdown" element={
+      <Field label="Address" tip="Type to search an address and select from the dropdown">
         <Location {...this.getAttr('location')} dataValue={session.locationData} onDataChange={value => session.update('locationData', value)} />
-      } />
-      <Field label="Meeting Instructions" tip="What should participants do when they arrive at the venue or location? Try to be as specific as possible." example="E.g. Meet in the main reception area" element={
+      </Field>
+      <Field label="Meeting Instructions" tip="What should participants do when they arrive at the venue or location? Try to be as specific as possible." example="E.g. Meet in the main reception area">
         <TextField multi validation={{ maxLength: 50 }} {...this.getAttr('meetingPoint')} />
-      } />
+      </Field>
     </div>);
   }
-  renderPricingFieldset = () => {
-    const session = this.getSession();
-    return (<div>
-      <Field label="Price" element={
-        <Optional {...this.getAttr('price')} no="Free" yes="Paid" component={{ type: NumField, props: { validation: { min: 0 }, format: '£ :', step: '0.25' } }} />
-      } />
-      <Field label="Spaces available" tip="How many spaces are available?" element={
-        <NumField {...this.getAttr('quantity')} validation={{ min: 0 }} />
-      } />
-    </div>);
-  }
+  renderPricingFieldset = () => (<div>
+    <Field label="Price">
+      <Optional {...this.getAttr('price')} no="Free" yes="Paid" component={{ type: NumField, props: { validation: { min: 0 }, format: '£ :', step: '0.25' } }} />
+    </Field>
+    <Field label="Spaces available" tip="How many spaces are available?">
+      <NumField {...this.getAttr('quantity')} validation={{ min: 0 }} />
+    </Field>
+  </div>)
   renderRestrictionsFieldset = () => {
     const session = this.getSession();
     const genderOptions = [
@@ -237,18 +232,18 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     ];
     const disabilities = ['Learning disability', 'Mental health condition', 'Physical impairment', 'Visual impairment', 'Deaf', 'Please ask for more info'];
     return (<div>
-      <Field label="Gender restrictions" tipTitle="Gender restrictions" tip="Select 'none' if there are no restrictions on gender" element={
+      <Field label="Gender restrictions" tipTitle="Gender restrictions" tip="Select 'none' if there are no restrictions on gender">
         <IconRadio options={genderOptions} {...this.getAttr('genderRestriction')} />
-      } />
-      <Field label="Is there a minimum age?" tipTitle="Minimum age" tip="If there is a minimum age, select 'yes' then enter the age" element={
+      </Field>
+      <Field label="Is there a minimum age?" tipTitle="Minimum age" tip="If there is a minimum age, select 'yes' then enter the age">
         <Optional {...this.getAttr('minAgeRestriction')} component={{ type: NumField, props: { validation: { min: 0, max: session.maxAgeRestriction || 120 }, format: ': years old' } }} null="0" />
-      }/>
-      <Field label="Is there a maximum age?" tipTitle="Maximum age" tip="If there is a maximum age, select 'yes' then enter the age" element={
+      </Field>
+      <Field label="Is there a maximum age?" tipTitle="Maximum age" tip="If there is a maximum age, select 'yes' then enter the age">
         <Optional {...this.getAttr('maxAgeRestriction')} component={{ type: NumField, props: { validation: { min: session.minAgeRestriction || 0, max: 120 }, format: ': years old' } }} null="0" />
-      } />
-      <Field label="Are you able to offer support to people with disabilities?" tipTitle="Disability support" tip="Please tick all disabilities that you can cater for in your session. If you are not sure, do not tick any" fullSize element={
+      </Field>
+      <Field label="Are you able to offer support to people with disabilities?" tipTitle="Disability support" tip="Please tick all disabilities that you can cater for in your session. If you are not sure, do not tick any" fullSize>
         <MultiField options={disabilities} value={session.abilityRestriction} onChange={value => session.update('abilityRestriction', value)} />
-      } />
+      </Field>
     </div>);
   }
   renderContactFieldset = () => {
@@ -270,23 +265,24 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     return (<div>
       <Field label="Full name" element={<TextField {...this.getAttr('contactName')} />} />
       <Field label="Phone number" element={<TextField {...this.getAttr('contactPhone')} />} />
-      <Field label="Email address" element={
+      <Field label="Email address">
         <SearchableSelect {...this.getAttr('contactEmail')} {...emailProps} />
-      } />
+      </Field>
     </div>);
   }
-  renderScheduleFieldset = () => {
-    const session = this.getSession();
-    return (<div>
-      <Field fullSize element={
-        <JSONList {...this.getAttr('schedule')} addText="Add schedule" components={[
+  renderScheduleFieldset = () => (<div>
+    <Field fullSize>
+      <JSONList
+        {...this.getAttr('schedule')}
+        addText="Add schedule"
+        components={[
           { label: 'Date', Component: DateField, props: { name: 'startDate' } },
           { label: 'Start time', Component: TimeField, props: { name: 'startTime' } },
           { label: 'End time', Component: TimeField, props: { name: 'endTime' } }
-        ]} />
-      } />
-    </div>);
-  }
+        ]}
+      />
+    </Field>
+  </div>)
   renderActions = () => {
     const { session, autosaveState } = this.state;
     const isPublished = session.state === 'published';
@@ -316,7 +312,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
           </div>
         </Sticky>
         <div className={styles.formBody}>
-          <Form fieldsets={this.state.fieldsets} model={session} onPublish={this.onPublish} onChange={this.onChange} pendingSteps={this.state.pendingSteps} status={this.state.status} saveState={this.state.saveState}>
+          <Form fieldsets={this.state.fieldsets} model={session} onPublish={this.publishSession} pendingSteps={this.state.pendingSteps} status={this.state.status} saveState={this.state.saveState}>
             {this.renderFieldsets()}
           </Form>
         </div>

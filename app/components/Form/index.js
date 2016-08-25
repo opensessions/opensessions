@@ -12,9 +12,9 @@ export default class Form extends React.Component { // eslint-disable-line react
     model: PropTypes.object,
     pendingSteps: PropTypes.any,
     onPublish: PropTypes.func,
-    onChange: PropTypes.func,
     fieldsets: PropTypes.array,
-    status: PropTypes.string
+    status: PropTypes.string,
+    saveState: PropTypes.string
   }
   constructor(props) {
     super(props);
@@ -69,17 +69,6 @@ export default class Form extends React.Component { // eslint-disable-line react
       console.error('Couldn\'t refocus', error);
     }
   }
-  publish = () => {
-    if (this.timeout) clearTimeout(this.timeout);
-    const { model, onPublish } = this.props;
-    this.setState({ saveState: 'Publishing...', saveStateClass: styles.saving });
-    return model.publish().then(result => {
-      this.setState({ saveState: 'Published!', saveStateClass: styles.saved });
-      return onPublish ? onPublish(result.instance) : null;
-    }).catch(error => {
-      this.setState({ saveState: error, saveStateClass: styles.error });
-    });
-  }
   renderNav() {
     return this.getFieldsets().map((fieldset, key) => {
       const { heading, validity, label } = fieldset.props;
@@ -114,7 +103,7 @@ export default class Form extends React.Component { // eslint-disable-line react
       backAttr.className = `${styles.backButton} ${inactive}`;
       backAttr.onClick = undefined;
     } else if (this.state.activeTab + 1 === this.props.children.length) {
-      nextAttr.onClick = this.publish;
+      nextAttr.onClick = this.props.onPublish;
       nextText = 'Publish';
     }
     return (<div className={styles.actionButtons}>

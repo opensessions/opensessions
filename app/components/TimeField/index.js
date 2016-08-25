@@ -6,7 +6,7 @@ export default class TimeField extends React.Component { // eslint-disable-line 
   static propTypes = {
     value: PropTypes.any,
     onChange: PropTypes.func
-  };
+  }
   constructor() {
     super();
     this.state = {
@@ -15,20 +15,17 @@ export default class TimeField extends React.Component { // eslint-disable-line 
   }
   handleChange = event => {
     const { value } = event.target;
-    this.onChange(value);
-  }
-  onChange = value => {
     this.props.onChange(value);
   }
   render() {
-    const { value } = this.props;
+    const { value, onChange } = this.props;
     const { isMobile } = this.state;
     const attrs = { value };
     let input;
     if (isMobile) {
       input = <input {...attrs} type="time" onChange={this.handleChange} />;
     } else {
-      input = <TimePicker {...attrs} onChange={this.onChange} />;
+      input = <TimePicker {...attrs} onChange={onChange} />;
     }
     return input;
   }

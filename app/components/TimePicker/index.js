@@ -28,7 +28,8 @@ export default class TimePicker extends React.Component { // eslint-disable-line
     this.changeTime(parseInt(event.target.value, 10), this.state.minutes);
   }
   minsInc = () => {
-    let { hours, minutes, incVal } = this.state;
+    const { incVal } = this.state;
+    let { hours, minutes } = this.state;
     minutes += incVal;
     if (minutes > 59) {
       hours += 1;
@@ -40,7 +41,8 @@ export default class TimePicker extends React.Component { // eslint-disable-line
     this.changeTime(hours, minutes);
   }
   minsDec = () => {
-    let { hours, minutes, incVal } = this.state;
+    const { incVal } = this.state;
+    let { hours, minutes } = this.state;
     minutes -= incVal;
     if (minutes < 0) {
       hours -= 1;
@@ -58,8 +60,7 @@ export default class TimePicker extends React.Component { // eslint-disable-line
     if (keyCode && (keyCode in positions || keyCode in fns)) {
       event.preventDefault();
     }
-    if (type === 'keydown') {
-    } else if (type === 'keyup') {
+    if (type === 'keyup') {
       if (keyCode in fns) {
         this[fns[keyCode]]();
       } else if (keyCode in positions) {
@@ -103,11 +104,7 @@ export default class TimePicker extends React.Component { // eslint-disable-line
       <select value={hours} onChange={this.hourChange}>
         {[12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((hour) => <option key={hour} value={(hour % 12) + (meridian === 'am' ? 0 : 12)}>{hour}</option>)}
       </select>
-      <input type="text" value={`${minutes < 10 ? '0' : ''}${minutes}`} onChange={this.minsEvent} onKeyDown={this.minsEvent} onKeyUp={this.minsEvent} onWheel={this.minsEvent} onFocus={this.minsEvent} />
-      {/* <span className={styles.rocker}>
-        <a onClick={this.minsInc}>+</a>
-        <a onClick={this.minsDec}>-</a>
-      </span> */}
+      <input type="text" value={`${minutes < 10 ? '0' : ''}${minutes}`} onChange={this.minsEvent} onKeyUp={this.minsEvent} onWheel={this.minsEvent} onFocus={this.minsEvent} />
       <select value={meridian} onChange={this.meridianChange}>
         {['am', 'pm'].map((mid) => <option key={mid} value={mid}>{mid}</option>)}
       </select>

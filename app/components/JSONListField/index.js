@@ -24,7 +24,10 @@ export default class JSONListField extends React.Component { // eslint-disable-l
     value.push(newRow);
     this.props.onChange(value);
   }
-  deleteRow = deleteKey => {
+  deleteRow = event => {
+    let { target } = event;
+    if (!target.dataset) target = target.parentNode;
+    const deleteKey = target.dataset.key;
     let { value } = this.props;
     if (!value) value = [];
     value = value.filter((row, key) => key !== deleteKey);
@@ -34,7 +37,7 @@ export default class JSONListField extends React.Component { // eslint-disable-l
     return <a onClick={this.addEmpty} className={styles.addButton}>+ {this.props.addText}</a>;
   }
   renderDeleteButton(key) {
-    return <a onClick={this.deleteRow.bind(this, key)}><img src="/images/garbage.svg" role="presentation" /></a>;
+    return <a onClick={this.deleteRow} key={key}><img src="/images/garbage.svg" role="presentation" /></a>;
   }
   renderLabels() {
     const { components } = this.props;

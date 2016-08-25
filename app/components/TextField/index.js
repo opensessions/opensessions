@@ -44,9 +44,9 @@ export default class TextField extends React.Component { // eslint-disable-line 
     return <div className={styles.maxLength}><span className={urgency}>{num}</span> {characters} {characterState}</div>;
   }
   render() {
-    const { value, className, multi, size, validation, autoFocus, onChange } = this.props;
+    const { value, className, multi, size, validation, autoFocus } = this.props;
     const attrs = {
-      value: value ? value : '',
+      value: value || '',
       onChange: this.handleChange,
       className,
       autoFocus
