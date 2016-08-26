@@ -87,7 +87,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       actions.push(<Link key="edit" to={`/session/${session.uuid}/edit`} className={styles.previewButton}>{session.state === 'published' ? 'Unpublish and edit' : 'Continue editing'}</Link>);
     }
     if (!actions.length) return null;
-    return (<Sticky>
+    return (<Sticky zIndex={3}>
       <div className={styles.titleBar}>
         <div className={styles.titleInner}>
           <div>
@@ -107,7 +107,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     let locationDetail = null;
     if (session.location) {
       const locationPieces = session.location.split(',');
-      let location = session.location;
+      let { location } = session;
       if (locationPieces.length > 1) {
         const firstLine = locationPieces.shift();
         location = <span className={styles.detailText}>{firstLine}<br />{locationPieces.join(',')}</span>;
@@ -260,6 +260,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     const session = this.state.session;
     const { locationData } = session;
     let map = null;
+    let address = null;
     if (locationData) {
       const locData = typeof locationData === 'object' ? locationData : JSON.parse(locationData);
       const defaultCenter = { lat: locData.lat, lng: locData.lng };
@@ -284,6 +285,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
           </GoogleMap>}
         />
       </div>);
+      address = <div className={styles.address}>{session.location.split(',').map(line => <p key={line}>{line}</p>)}</div>;
     } else {
       map = (<div className={styles.noLocation}>
         <img src="/images/map-pin.svg" role="presentation" />
@@ -291,6 +293,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       </div>);
     }
     return (<section className={styles.mapSection}>
+      {address}
       {map}
     </section>);
   }

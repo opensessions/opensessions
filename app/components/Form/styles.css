@@ -27,6 +27,7 @@
   & select,
   & textarea {
     width: 36rem;
+    max-width: 100%;
   }
   & input[type=number] {
     padding: 0 0 0 .4em;

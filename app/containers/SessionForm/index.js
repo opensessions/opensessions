@@ -74,9 +74,6 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     });
     this.setState({ fieldsets, pendingSteps });
   }
-  onAutosaveEvent = (event) => {
-    this.setState({ autosaveState: event.type });
-  }
   getSession() {
     let { session } = this.state;
     if (!session) session = {};
@@ -136,8 +133,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   }
   autosave = (ms) => {
     if (this.timeout) clearTimeout(this.timeout);
-    if (this.onAutosaveEvent) this.onAutosaveEvent({ type: 'pending' });
-    this.setState({ status: 'Saving...', saveState: 'saving' });
+    this.setState({ autosaveState: 'pending', status: 'Saving...', saveState: 'saving' });
     this.timeout = setTimeout(() => {
       const session = this.getSession();
       if (session.state !== 'unpublished') {
@@ -147,12 +143,13 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       return apiModel.edit('session', session.uuid, session).then(result => {
         const { instance, error } = result;
         if (error) {
-          this.setState({ status: `Failed saving: ${error}`, saveState: 'error' });
+          throw new Error(error);
         } else {
-          if (this.onAutosaveEvent) this.onAutosaveEvent({ type: 'saved', state: instance.state });
-          this.setState({ status: `Saved ${session.state === 'published' ? 'and published' : 'as draft'}!`, saveState: 'saved' });
+          this.setState({ autosaveState: 'saved', session: instance, status: `Saved ${session.state === 'published' ? 'and published' : 'as draft'}!`, saveState: 'saved' });
         }
         return result;
+      }).catch(result => {
+        this.setState({ status: `Failed saving: ${result.error}`, autosaveState: 'saved', saveState: 'error' });
       });
     }, ms);
   }
@@ -237,7 +234,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
         <Optional {...this.getAttr('maxAgeRestriction')} component={{ type: NumField, props: { validation: { min: session.minAgeRestriction || 0, max: 120 }, format: ': years old' } }} null="0" />
       </Field>
       <Field label="Are you able to offer support to people with disabilities?" tipTitle="Disability support" tip="Please tick all disabilities that you can cater for in your session. If you are not sure, do not tick any" fullSize>
-        <MultiField options={disabilities} value={session.abilityRestriction} onChange={value => session.update('abilityRestriction', value)} />
+        <MultiField options={disabilities} {...this.getAttr('abilityRestriction')} />
       </Field>
     </div>);
   }
@@ -258,11 +255,9 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     }
     const emailProps = { options: emailOptions, addItem: this.addEmail };
     return (<div>
-      <Field label="Full name" element={<TextField {...this.getAttr('contactName')} />} />
-      <Field label="Phone number" element={<TextField {...this.getAttr('contactPhone')} />} />
-      <Field label="Email address">
-        <SearchableSelect {...this.getAttr('contactEmail')} {...emailProps} />
-      </Field>
+      <Field label="Full name"><TextField {...this.getAttr('contactName')} /></Field>
+      <Field label="Phone number"><TextField {...this.getAttr('contactPhone')} /></Field>
+      <Field label="Email address"><SearchableSelect {...this.getAttr('contactEmail')} {...emailProps} /></Field>
     </div>);
   }
   renderScheduleFieldset = () => (<div>

@@ -151,6 +151,9 @@
   text-align: left;
   background-color: #FFF;
   padding: 2em;
+  box-shadow: 0 .25em .25em rgba(0, 0, 0, .2);
+  position: relative;
+  z-index: 2;
   & h2 {
     font-family: Belgrano, serif;
     font-size: 1.6em;
@@ -238,10 +241,26 @@
 }
 
 .mapSection {
+  position: relative;
+  & > .address {
+    position: absolute;
+    font-size: 1.1em;
+    background-color: #FFF;
+    color: #888;
+    z-index: 1;
+    right: 10%;
+    width: 30rem;
+    max-width: 65%;
+    padding: 2rem;
+    text-align: left;
+    & > p:first-child {
+      font-weight: bold;
+    }
+  }
   & > .mapFrame {
     min-height: 24rem;
-    height: 72rem;
-    max-height: 65vh;
+    height: 64rem;
+    max-height: 60vh;
   }
   & .noLocation {
     text-align: center;
