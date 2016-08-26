@@ -47,7 +47,7 @@
     text-transform: uppercase;
   }
   & > a {
-    padding: 1rem 1.5rem;
+    padding: .75rem;
     cursor: pointer;
     display: flex;
     justify-content: space-between;
@@ -79,9 +79,8 @@
   }
   & .pending {
     font-size: .85em;
-    padding: 2rem .25rem 1rem;
-    border-top: 1px solid;
-    margin: .5rem 1rem;
+    padding: 1rem .25rem;
+    margin: .25rem 1rem;
     flex-basis: 100%;
     color: #555;
   }
@@ -166,10 +165,14 @@
       text-align: left;
     }
     & .pending {
+      border-top: 1px solid;
       font-size: .85em;
       padding: 2rem .25rem 1rem;
       border-top: 1px solid;
       margin: 4rem 1.5rem 0;
+    }
+    & > a {
+      padding: 1rem 1.5rem;
     }
   }
   .tabs {
@@ -192,6 +195,9 @@
       flex-grow: 1;
       text-align: center;
       justify-content: center;
+    }
+    & > .pending {
+      text-align: right;
     }
   }
 }

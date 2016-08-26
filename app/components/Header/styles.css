@@ -33,7 +33,6 @@
     & .nav {
       flex-grow: 4;
       text-align: right;
-      font-size: 1.1em;
       flex-wrap: wrap-reverse;
       display: flex;
       align-items: stretch;
@@ -54,8 +53,8 @@
         font-weight: bold;
       }
       & .userIcon {
-        max-width: 5rem;
-        max-height: 5rem;
+        max-width: 4rem;
+        max-height: 4rem;
         margin: -.25em 0 -.25em .5em;
         border-radius: 50%;
       }
@@ -78,8 +77,13 @@
       }
       & .nav {
         padding: 0 1% 0 0;
+        font-size: 1.1em;
         & a {
           line-height: 3.5;
+        }
+        & .userIcon {
+          max-width: 5rem;
+          max-height: 5rem;
         }
       }
     }

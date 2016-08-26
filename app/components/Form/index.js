@@ -51,12 +51,13 @@ export default class Form extends React.Component { // eslint-disable-line react
   onBlur = () => {
     this.setState({ hasFocus: false });
   }
+  getSlugs = () => {
+    const slugs = this.props.fieldsets.map(fieldset => fieldset.slug);
+    const { activeTab } = this.state;
+    return { '-1': slugs.find((slug, key) => slugs[key + 1] === activeTab), 0: activeTab, 1: slugs.find((slug, key) => slugs[key - 1] === activeTab) };
+  }
   getFieldsets() {
     return this.props.children instanceof Array ? this.props.children : [this.props.children];
-  }
-  tabClick = event => {
-    const key = parseInt(event.target.dataset.key, 10);
-    this.setState({ activeTab: key });
   }
   actionClick = event => {
     const { type, target, keyCode } = event;
@@ -65,7 +66,8 @@ export default class Form extends React.Component { // eslint-disable-line react
     if (target.text === 'Publish') {
       this.props.onPublish();
     } else {
-      this.setState({ activeTab: this.state.activeTab + delta });
+      const slugs = this.getSlugs();
+      this.setState({ activeTab: slugs[delta] });
     }
   }
   refocus = () => {
@@ -115,10 +117,11 @@ export default class Form extends React.Component { // eslint-disable-line react
       tabIndex: 0
     };
     let nextText = 'Next';
-    if (this.state.activeTab === 0) {
+    const slugs = this.getSlugs();
+    if (!slugs[-1]) {
       backAttr.className = `${styles.backButton} ${inactive}`;
       backAttr.onClick = undefined;
-    } else if (this.state.activeTab + 1 === this.props.children.length) {
+    } else if (!slugs[1]) {
       nextText = 'Publish';
     }
     return (<div className={styles.actionButtons}>

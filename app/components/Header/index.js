@@ -9,7 +9,7 @@ export default class Header extends React.Component { // eslint-disable-line rea
   static contextTypes = {
     user: React.PropTypes.object,
     lock: React.PropTypes.object,
-  }
+  };
   static propTypes = {
     lock: React.PropTypes.object,
   }
@@ -23,19 +23,17 @@ export default class Header extends React.Component { // eslint-disable-line rea
   }
   render() {
     const addSession = <span><span className={styles.plus}>+</span> Add a session</span>;
-    return (
-      <header className={styles.header}>
-        <div className={styles.pageMargin}>
-          <Link to="/" className={styles.logoLink}>
-            <img src="/images/open-sessions.svg" alt="Open Sessions" />
-            <img src="/images/beta.svg" alt="beta" className={styles.beta} />
-          </Link>
-          <nav className={styles.nav}>
-            {this.context.user ? <Link to="/session/add" activeClassName="active">{addSession}</Link> : <LoginButton lock={this.props.lock}>{addSession}</LoginButton>}
-            {this.renderLoginButton()}
-          </nav>
-        </div>
-      </header>
-    );
+    return (<header className={styles.header}>
+      <div className={styles.pageMargin}>
+        <Link to="/" className={styles.logoLink}>
+          <img src="/images/open-sessions.svg" alt="Open Sessions" />
+          <img src="/images/beta.svg" alt="beta" className={styles.beta} />
+        </Link>
+        <nav className={styles.nav}>
+          {this.context.user ? <Link to="/session/add" activeClassName="active">{addSession}</Link> : <LoginButton lock={this.props.lock}>{addSession}</LoginButton>}
+          {this.renderLoginButton()}
+        </nav>
+      </div>
+    </header>);
   }
 }

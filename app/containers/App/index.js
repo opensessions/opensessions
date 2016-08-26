@@ -44,7 +44,7 @@ export default class App extends React.Component { // eslint-disable-line react/
     user: PropTypes.object,
     lock: PropTypes.object,
     router: PropTypes.object,
-    setMeta: PropTypes.string
+    setMeta: PropTypes.func
   }
   constructor() {
     super();

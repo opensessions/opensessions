@@ -1,0 +1,86 @@
+@import '../../containers/App/variables.css';
+
+.titleBar {
+  text-align: left;
+  background-color: #182750;
+  color: #FFF;
+  padding: .5em;
+  font-size: 1em;
+  box-shadow: inset 0 .25em .5em rgba(0, 0, 0, .5);
+  h1,
+  h2,
+  h3 {
+    display: inline-block;
+    padding: .25em .75rem;
+    font-weight: normal;
+    line-height: 1;
+  }
+  h2 {
+    font-size: 1.2em;
+  }
+  h3 {
+    font-size: 1em;
+    > i {
+      opacity: .5;
+    }
+  }
+  .actions {
+    margin-right: 1%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    & a {
+      font-family: Belgrano, serif;
+      color: #FFF;
+      padding: .5em 1.5em;
+      line-height: 1;
+      margin: .1em 0 .1em 1em;
+      &.previewButton {
+        background-color: #1A90CD;
+        &.disabled {
+          background-color: #AAA;
+          pointer-events: none;
+          cursor: wait;
+        }
+      }
+      &.actionUnpublish {
+        background-color: var(--draftColor);
+      }
+      &.actionPublish {
+        background-color: var(--liveColor);
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 36rem) {
+  .titleBar {
+    padding: .75em;
+    font-size: 1.25em;
+    h1,
+    h2,
+    h3 {
+      padding: .5em .75em;
+    }
+    h2 {
+      font-size: 1.2em;
+    }
+    h3 {
+      font-size: 1em;
+    }
+    & .actions {
+      margin-right: 1%;
+      & a {
+        padding: .5em 1.5em;
+        margin-left: 1em;
+      }
+    }
+    & .titleInner {
+      max-width: var(--pagewidth);
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+}

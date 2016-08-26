@@ -7,13 +7,14 @@ import Marker from 'react-google-maps/lib/Marker';
 
 import SocialShareIcons from 'components/SocialShareIcons';
 import LoadingMessage from 'components/LoadingMessage';
-import Sticky from 'components/Sticky';
+import PublishHeader from 'components/PublishHeader';
 
 import { Link } from 'react-router';
 
 import { apiModel } from '../../utils/api';
 
 import styles from './styles.css';
+import publishStyles from '../../components/PublishHeader/styles.css';
 
 export default class SessionView extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
@@ -55,6 +56,19 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     const { session } = this.state;
     return `${session.title ? session.title : '(Untitled)'}`;
   }
+  getActions() {
+    const user = this.context ? this.context.user : false;
+    const { location } = this.props;
+    const { session } = this.state;
+    const actions = [];
+    if (user && session && user.user_id === session.owner) {
+      let editURL = `/session/${session.uuid}/edit`;
+      if (location && location.query && location.query.tab) editURL = [editURL, location.query.tab].join('/');
+      actions.push(<Link key="edit" to={editURL} className={publishStyles.previewButton}>{session.state === 'published' ? 'Unpublish and edit' : 'Continue editing'}</Link>);
+    }
+    if (!actions.length) return null;
+    return actions;
+  }
   fetchData = () => {
     apiModel.get('session', this.props.params.uuid).then(result => {
       const { error, instance } = result;
@@ -87,28 +101,6 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         {duration}
       </span>
     </div>);
-  }
-  renderActions() {
-    const user = this.context ? this.context.user : false;
-    const { location } = this.props;
-    const { session } = this.state;
-    const actions = [];
-    if (user && session && user.user_id === session.owner) {
-      let editURL = `/session/${session.uuid}/edit`;
-      if (location && location.query && location.query.tab) editURL = [editURL, location.query.tab].join('/');
-      actions.push(<Link key="edit" to={editURL} className={styles.previewButton}>{session.state === 'published' ? 'Unpublish and edit' : 'Continue editing'}</Link>);
-    }
-    if (!actions.length) return null;
-    return (<Sticky zIndex={3}>
-      <div className={styles.titleBar}>
-        <div className={styles.titleInner}>
-          <div>
-            <h2>{session && session.state === 'published' ? 'Published session' : 'Preview'}</h2>
-          </div>
-          {actions}
-        </div>
-      </div>
-    </Sticky>);
   }
   renderDetails() {
     const { session } = this.state;
@@ -325,7 +317,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     if (error) return (<div {...topAttrs}><LoadingMessage message={error} /></div>);
     if (!session) return (<div {...topAttrs}><LoadingMessage message="Loading session" ellipsis /></div>);
     return (<div {...topAttrs}>
-      {this.renderActions()}
+      <PublishHeader h2={session && session.state === 'published' ? 'Published session' : 'Preview'} actions={this.getActions()} />
       {this.renderDetails()}
       {this.renderShare()}
       {this.renderDescription()}

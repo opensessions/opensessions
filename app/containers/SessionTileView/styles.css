@@ -38,6 +38,7 @@
       font-size: 1.1em;
       flex-wrap: wrap;
       align-items: flex-end;
+      margin: .25em 0;
       & ol.actions {
         display: inline-block;
         & > li {

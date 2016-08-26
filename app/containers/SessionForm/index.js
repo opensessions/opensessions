@@ -4,7 +4,7 @@ import Fieldset from 'components/Fieldset';
 import Form from 'components/Form';
 import Field from 'components/Field';
 import GenderSvg from 'components/GenderSvg';
-import Sticky from 'components/Sticky';
+import PublishHeader from 'components/PublishHeader';
 
 import TextField from 'components/TextField';
 import DateField from 'components/DateField';
@@ -24,6 +24,7 @@ import { Link } from 'react-router';
 import Authenticated from 'components/Authenticated';
 
 import styles from './styles.css';
+import publishStyles from '../../components/PublishHeader/styles.css';
 
 import { apiModel } from '../../utils/api';
 
@@ -87,6 +88,21 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       value: session[name],
       onChange: value => this.updateSession(name, value)
     };
+  }
+  getActions = () => {
+    const { session, autosaveState } = this.state;
+    const { params } = this.props;
+    const isPublished = session.state === 'published';
+    const isSaving = autosaveState === 'pending';
+    const actions = [];
+    if (session.state) {
+      let text = isPublished ? 'View' : 'Preview';
+      if (isSaving) text = 'Saving...';
+      const viewURL = `/session/${session.uuid}${params.tab ? `?tab=${params.tab}` : ''}`;
+      actions.push(<Link key="view" to={viewURL} className={`${publishStyles.previewButton} ${isSaving ? publishStyles.disabled : ''}`}>{text}</Link>);
+      actions.push(<a key="publish" onClick={isPublished ? this.unpublishSession : this.publishSession} className={publishStyles[`action${isPublished ? 'Unpublish' : 'Publish'}`]}>{isPublished ? 'Unpublish' : 'Publish'}</a>);
+    }
+    return actions;
   }
   fetchData = () => {
     const { session, params, location } = this.props;
@@ -280,36 +296,11 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       />
     </Field>
   </div>)
-  renderActions = () => {
-    const { session, autosaveState } = this.state;
-    const { params } = this.props;
-    const isPublished = session.state === 'published';
-    const isSaving = autosaveState === 'pending';
-    const actions = [];
-    if (session.state) {
-      let text = isPublished ? 'View' : 'Preview';
-      if (isSaving) text = 'Saving...';
-      const viewURL = `/session/${session.uuid}${params.tab ? `?tab=${params.tab}` : ''}`;
-      actions.push(<Link key="view" to={viewURL} className={`${styles.previewButton} ${isSaving ? styles.disabled : ''}`}>{text}</Link>);
-      actions.push(<a key="publish" onClick={isPublished ? this.unpublishSession : this.publishSession} className={styles[`action${isPublished ? 'Unpublish' : 'Publish'}`]}>{isPublished ? 'Unpublish' : 'Publish'}</a>);
-    }
-    return <div className={styles.actions}>{actions}</div>;
-  }
   render() {
     const session = this.getSession();
     return (<div className={styles.form}>
       <Authenticated message="You must login before you can add a session">
-        <Sticky>
-          <div className={styles.titleBar}>
-            <div className={styles.titleInner}>
-              <div>
-                <h2>{this.props.headerText ? this.props.headerText : 'Add a session'}</h2>
-                <h3>{session.title || <i>Untitled</i>}</h3>
-              </div>
-              {this.renderActions()}
-            </div>
-          </div>
-        </Sticky>
+        <PublishHeader h2={this.props.headerText ? this.props.headerText : 'Add a session'} h3={session.title || <i>Untitled</i>} actions={this.getActions()} />
         <div className={styles.formBody}>
           <Form fieldsets={this.state.fieldsets} onPublish={this.publishSession} pendingSteps={this.state.pendingSteps} status={this.state.status} saveState={this.state.saveState} tab={this.props.params.tab}>
             {this.renderFieldsets()}

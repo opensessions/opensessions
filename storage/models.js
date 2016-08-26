@@ -88,7 +88,7 @@ module.exports = (DataTypes) => ({
             const prettyNames = { OrganizerUuid: 'organizer', startDate: 'start date', startTime: 'start time' };
             const errors = [];
             const missingFields = requiredFields.filter(field => !session[field]).map(field => (field in prettyNames ? prettyNames[field] : field));
-            if (missingFields.length) errors.push(`missing fields: ${missingFields.join(', ')}`);
+            if (missingFields.length) errors.push(`missing fields (${missingFields.join(', ')})`);
             if (!(session.schedule && session.schedule.length >= 1)) errors.push('you must add a schedule');
             if (errors.length) throw new Error(`Can't publish yet: ${errors.join('; ')}`);
             return true;
