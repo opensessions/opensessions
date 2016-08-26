@@ -16,7 +16,7 @@ export default class PublishHeader extends React.Component { // eslint-disable-l
   }
   render() {
     const { h2, h3 } = this.props;
-    return (<Sticky>
+    return (<Sticky zIndex={3}>
       <div className={styles.titleBar}>
         <div className={styles.titleInner}>
           <div>

@@ -16,10 +16,6 @@ html {
   margin: auto;
   color: var(--defaultColor);
   background-color: var(--grey);
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  justify-content: space-between;
   & a {
     color: inherit;
     cursor: pointer;
@@ -49,6 +45,15 @@ html {
 @media (min-width: 104rem) {
   html {
     font-size: 68.75%;
+  }
+}
+
+@media (min-height: 32rem) {
+  .root {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
 }
 

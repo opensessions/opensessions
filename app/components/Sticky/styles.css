@@ -1,0 +1,17 @@
+.sticky {
+  position: relative;
+  & .fixed {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 36rem) {
+  .sticky {
+    & .fixed {
+      display: block;
+      position: fixed;
+      left: 0;
+      right: 0;
+    }
+  }
+}
