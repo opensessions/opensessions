@@ -270,6 +270,13 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       <JSONList
         {...this.getAttr('schedule')}
         addText="Add schedule"
+        onAddEmpty={newRow => {
+          if (newRow.startDate) {
+            const date = new Date(newRow.startDate);
+            date.setDate(date.getDate() + 7);
+            newRow.startDate = date.toISOString().substr(0, 10);
+          }
+        }}
         components={[
           { label: 'Date', Component: DateField, props: { name: 'startDate' } },
           { label: 'Start time', Component: TimeField, props: { name: 'startTime' } },

@@ -90,7 +90,7 @@ module.exports = require('./webpack.base.babel')({
     new OfflinePlugin({
       // No need to cache .htaccess. See http://mxs.is/googmp,
       // this is applied before any match in `caches` section
-      excludes: ['.htaccess'],
+      excludes: ['index.html', '.htaccess'],
 
       caches: {
         main: [':rest:'],

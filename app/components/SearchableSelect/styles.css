@@ -12,6 +12,7 @@
       left: 0;
       pointer-events: none;
       transition: none;
+      color: #777;
     }
   }
   & .clear {

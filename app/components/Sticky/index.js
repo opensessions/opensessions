@@ -5,7 +5,7 @@ export default class Sticky extends React.Component { // eslint-disable-line rea
     children: PropTypes.any
   };
   getOffset() {
-    if (!this.refs.sticky) return 15;
+    if (!this.refs.sticky) return 4;
     const getWidth = (element) => parseInt(getComputedStyle(element).width, 10);
     return getWidth(document.body) - getWidth(this.refs.sticky);
   }

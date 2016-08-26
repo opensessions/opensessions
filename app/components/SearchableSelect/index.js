@@ -123,7 +123,7 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
     if (visible) {
       let index = -1;
       if (!filteredOptions.length && search) {
-        filteredOptions.unshift({ props: { key: 'none', onClick: this.addItem }, text: `+ Add "${search}"` });
+        // filteredOptions.unshift({ props: { key: 'none', onClick: this.addItem }, text: `+ Add "${search}"` });
       }
       searchResults = (<ol className={styles.searchResults} onMouseOver={this.dropdownEvent} onMouseOut={this.dropdownEvent}>
         {filteredOptions.map(opt => <li data-key={opt.props.key} data-index={++index} {...opt.props} className={index === highlightIndex ? styles.highlight : null} dangerouslySetInnerHTML={{ __html: opt.text.replace(new RegExp(`(${search})`, 'ig'), '<b>$1</b>') }} />)}
@@ -133,7 +133,7 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
     return (<div className={styles.searchableSelect}>
       {input}
       {output}
-      {clear}
+      {value ? clear : null}
       {searchResults}
     </div>);
   }

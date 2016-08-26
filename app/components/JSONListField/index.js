@@ -2,34 +2,43 @@ import React, { PropTypes } from 'react';
 
 import styles from './styles.css';
 
+const duplicateObject = original => {
+  const duplicate = {};
+  Object.keys(original).forEach(key => {
+    duplicate[key] = original[key];
+  });
+  return duplicate;
+};
+
 export default class JSONListField extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
     components: PropTypes.array,
     value: PropTypes.array,
     onChange: PropTypes.func,
+    onAddEmpty: PropTypes.func,
     addText: PropTypes.string
   }
   constructor() {
     super();
     this.state = { empty: {} };
   }
+  getValue() {
+    return this.props.value || [];
+  }
   addEmpty = () => {
-    let { value } = this.props;
+    const { onChange, onAddEmpty } = this.props;
     const { empty } = this.state;
-    if (!value) value = [];
-    const newRow = {};
-    Object.keys(empty).forEach(key => {
-      newRow[key] = empty[key];
-    });
+    const value = this.getValue();
+    const newRow = duplicateObject(value.length ? value.slice(-1)[0] : empty);
+    if (onAddEmpty) onAddEmpty(newRow);
     value.push(newRow);
-    this.props.onChange(value);
+    onChange(value);
   }
   deleteRow = event => {
     let { target } = event;
     if (!target.dataset.key) target = target.parentNode;
     const deleteKey = parseInt(target.dataset.key, 10);
-    let { value } = this.props;
-    if (!value) value = [];
+    let value = this.getValue();
     value = value.filter((row, key) => key !== deleteKey);
     this.props.onChange(value);
   }
