@@ -7,6 +7,7 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
     value: React.PropTypes.any,
     onChange: React.PropTypes.func,
     addItem: React.PropTypes.func,
+    deleteItem: React.PropTypes.func,
     className: React.PropTypes.string,
     options: React.PropTypes.array
   }
@@ -106,7 +107,7 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
   }
   render() {
     const { value, options, className } = this.props;
-    const { visible, search, filteredOptions } = this.state;
+    const { visible, search, filteredOptions, highlightIndex } = this.state;
     const searchAttrs = {
       type: 'text',
       placeholder: 'Search...',
@@ -114,10 +115,10 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
       onChange: this.searchEvent,
       onKeyDown: this.searchEvent
     };
-    const selected = options.filter((option) => option.uuid === value)[0];
+    const selected = options.find(option => option.uuid === value);
     const valueDisplay = selected ? selected.name : '';
     let input = <input {...searchAttrs} ref="input" onFocus={this.searchEvent} onBlur={this.searchEvent} defaultValue={valueDisplay} />;
-    let output = <input {...searchAttrs} className={`${className} ${styles.output}`} ref="output" value={valueDisplay} style={{ opacity: visible ? 0 : 1 }} tabIndex="-1" />;
+    let output = <input {...searchAttrs} className={[className, styles.output].join(' ')} ref="output" value={valueDisplay} style={{ opacity: visible ? 0 : 1 }} tabIndex="-1" />;
     let searchResults = null;
     if (visible) {
       let index = -1;
@@ -125,10 +126,7 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
         filteredOptions.unshift({ props: { key: 'none', onClick: this.addItem }, text: `+ Add "${search}"` });
       }
       searchResults = (<ol className={styles.searchResults} onMouseOver={this.dropdownEvent} onMouseOut={this.dropdownEvent}>
-        {filteredOptions.map((opt) => {
-          index += 1;
-          return <li data-key={opt.props.key} data-index={index} {...opt.props} className={index === this.state.highlightIndex ? styles.highlight : null} dangerouslySetInnerHTML={{ __html: opt.text.replace(new RegExp(`(${search})`, 'ig'), '<b>$1</b>') }} />;
-        })}
+        {filteredOptions.map(opt => <li data-key={opt.props.key} data-index={++index} {...opt.props} className={index === highlightIndex ? styles.highlight : null} dangerouslySetInnerHTML={{ __html: opt.text.replace(new RegExp(`(${search})`, 'ig'), '<b>$1</b>') }} />)}
       </ol>);
     }
     const clear = <a className={styles.clear} onClick={this.resetValue}>&times;</a>;

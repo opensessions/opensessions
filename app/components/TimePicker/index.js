@@ -9,7 +9,7 @@ export default class TimePicker extends React.Component { // eslint-disable-line
   }
   constructor() {
     super();
-    this.state = { hours: 0, minutes: 0, incVal: 1 };
+    this.state = { hours: null, minutes: null, incVal: 1 };
   }
   componentWillMount() {
     const time = this.props.value;
@@ -59,7 +59,7 @@ export default class TimePicker extends React.Component { // eslint-disable-line
     }
     this.changeTime(hours, minutes);
   }
-  minsEvent = (event) => {
+  minsEvent = event => {
     const { type, keyCode, target } = event;
     const fns = { 38: 'minsInc', 40: 'minsDec' };
     const positions = { 37: 0, 39: 1 };
@@ -107,10 +107,10 @@ export default class TimePicker extends React.Component { // eslint-disable-line
     const { hours, minutes } = this.state;
     const meridian = hours >= 12 ? 'pm' : 'am';
     return (<div className={styles.timePicker}>
-      <select value={hours} onChange={this.hourChange}>
-        {[12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((hour) => <option key={hour} value={(hour % 12) + (meridian === 'am' ? 0 : 12)}>{hour}</option>)}
+      <select value={hours !== null ? hours : ''} onChange={this.hourChange}>
+        {['', 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map(hour => <option key={hour} value={(hour % 12) + (meridian === 'am' ? 0 : 12)}>{hour}</option>)}
       </select>
-      <input type="text" value={`${minutes < 10 ? '0' : ''}${minutes}`} onChange={this.minsEvent} onKeyUp={this.minsEvent} onWheel={this.minsEvent} onFocus={this.minsEvent} />
+      <input type="text" value={minutes !== null ? `${minutes < 10 ? '0' : ''}${minutes}` : ''} onChange={this.minsEvent} onKeyUp={this.minsEvent} onWheel={this.minsEvent} onFocus={this.minsEvent} />
       <select value={meridian} onChange={this.meridianChange}>
         {['am', 'pm'].map(mid => <option key={mid} value={mid}>{mid}</option>)}
       </select>

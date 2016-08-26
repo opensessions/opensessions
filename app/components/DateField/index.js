@@ -37,7 +37,7 @@ export default class DateField extends React.Component { // eslint-disable-line 
       input = <input {...attrs} />;
     } else {
       const now = moment(Date.now());
-      const selected = value ? moment(value) : now;
+      const selected = value ? moment(value) : null;
       const dateAttrs = { selected, dateFormat: 'DD/MM/YYYY', onChange: this.handleDateChange, minDate: now };
       const floatRight = position === 'right' ? { popoverTargetOffset: '0 12px', popoverTargetAttachment: 'top right' } : {};
       input = <DatePicker {...dateAttrs} {...floatRight} />;

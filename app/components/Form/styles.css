@@ -90,6 +90,14 @@
   flex-grow: 6;
   background-color: #E6E6E6;
   max-width: 100%;
+  & > .activeTab {
+    
+  }
+  & .hiddenTab {
+    visibility: hidden;
+    height: 0;
+    overflow: hidden;
+  }
 }
 
 .formNav {
@@ -122,12 +130,6 @@
       text-decoration: none;
     }
   }
-}
-
-.hiddenTab {
-  visibility: hidden;
-  height: 0;
-  overflow: hidden;
 }
 
 .saveState {

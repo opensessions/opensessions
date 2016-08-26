@@ -67,8 +67,8 @@ export default class Form extends React.Component { // eslint-disable-line react
     try {
       const firstShownField = Array.filter(this.refs.form.elements, (element) => element.tagName === 'FIELDSET')
         .filter((fieldset) => fieldset.parentNode.className !== styles.hiddenTab)[0].getElementsByClassName(fieldStyles.field)[0];
-      firstShownField.querySelectorAll('input, textarea, select')[0].focus();
       document.getElementsByClassName(appStyles.appBody)[0].scrollTop = 0;
+      firstShownField.querySelectorAll('input, textarea, select')[0].focus();
     } catch (error) {
       console.error('Couldn\'t refocus', error);
     }
@@ -84,10 +84,7 @@ export default class Form extends React.Component { // eslint-disable-line react
     });
   }
   renderTab() {
-    return this.getFieldsets().map((child, key) => {
-      const active = key === this.state.activeTab ? '' : styles.hiddenTab;
-      return <div key={key} className={active}>{child}</div>;
-    });
+    return this.getFieldsets().map((child, key) => <div key={key} className={styles[key === this.state.activeTab ? 'activeTab' : 'hiddenTab']}>{child}</div>);
   }
   renderActionButtons() {
     const { inactive } = styles;
