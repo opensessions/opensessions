@@ -11,7 +11,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
     fullSize: PropTypes.bool,
     element: PropTypes.node,
     children: PropTypes.node
-  };
+  }
   constructor(props) {
     super(props);
     this.state = {
@@ -19,7 +19,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
       hasFocus: false
     };
   }
-  onFocusChange = (event) => {
+  onFocusChange = event => {
     this.setState({ hasFocus: event.type === 'focus' });
   }
   render() {

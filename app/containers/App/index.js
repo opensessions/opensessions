@@ -10,9 +10,10 @@
  * the linting exception.
  */
 
-import React from 'react';
+import React, { PropTypes } from 'react';
 import Auth0Lock from 'auth0-lock';
 import Intercom from 'react-intercom';
+import Helmet from 'react-helmet';
 
 import Header from 'components/Header';
 import Footer from 'components/Footer';
@@ -34,16 +35,17 @@ const cookieConsent = () => {
 
 export default class App extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
-    children: React.PropTypes.node,
+    children: PropTypes.node,
   };
   static contextTypes = {
-    router: React.PropTypes.object,
+    router: PropTypes.object,
   };
   static childContextTypes = {
-    user: React.PropTypes.object,
-    lock: React.PropTypes.object,
-    router: React.PropTypes.object,
-  };
+    user: PropTypes.object,
+    lock: PropTypes.object,
+    router: PropTypes.object,
+    setMeta: PropTypes.string
+  }
   constructor() {
     super();
     this.state = {
@@ -55,6 +57,7 @@ export default class App extends React.Component { // eslint-disable-line react/
       user: this.state.profile,
       lock: this.lock, // both user and lock are stored in context as they both need to be accessible from multiple components across the app
       router: this.context.router,
+      setMeta: this.setMeta
     };
   }
   componentWillMount() {
@@ -63,6 +66,9 @@ export default class App extends React.Component { // eslint-disable-line react/
   }
   componentDidMount() {
     cookieConsent();
+  }
+  setMeta = meta => {
+    this.setState({ meta });
   }
   setupProfile() {
     this.lock.getProfile(getUserToken(this.lock), (err, profile) => {
@@ -90,11 +96,12 @@ export default class App extends React.Component { // eslint-disable-line react/
     this.lock = new Auth0Lock('bSVd1LzdwXsKbjF7JXflIc1UuMacffUA', 'opensessions.eu.auth0.com');
   }
   render() {
-    const { profile } = this.state;
+    const { meta, profile } = this.state;
     const { INTERCOM_APPID } = window;
     const user = profile && INTERCOM_APPID ? { appID: INTERCOM_APPID, user_id: profile.user_id, email: profile.email, name: profile.nickname } : null;
     return (
       <div className={styles.root}>
+        <Helmet meta={meta} />
         <Header lock={this.lock} />
         <div className={styles.appBody}>
           <div className={styles.container}>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { parseSchedule } from 'utils/postgres';
 
 import GoogleMapLoader from 'react-google-maps/lib/GoogleMapLoader';
@@ -17,10 +17,11 @@ import styles from './styles.css';
 
 export default class SessionView extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
-    user: React.PropTypes.object,
+    user: PropTypes.object,
+    setMeta: PropTypes.func
   };
   static propTypes = {
-    params: React.PropTypes.object,
+    params: PropTypes.object,
   }
   constructor() {
     super();
@@ -54,9 +55,16 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     return `${session.title ? session.title : '(Untitled)'}`;
   }
   fetchData = () => {
-    apiModel.get('session', this.props.params.uuid).then((result) => {
-      if (result.error) this.setState({ error: result.error });
-      if (result.instance) this.setState({ session: result.instance });
+    apiModel.get('session', this.props.params.uuid).then(result => {
+      const { error, instance } = result;
+      if (error) throw error;
+      this.setState({ session: instance });
+      if (this.context.setMeta) {
+        const { image } = instance;
+        if (image) this.context.setMeta([{ property: 'og:image', content: image }]);
+      }
+    }).catch(error => {
+      this.setState({ error });
     });
   }
   renderDate() {

@@ -14,8 +14,10 @@ export default class TextField extends React.Component { // eslint-disable-line 
   }
   handleChange = event => {
     const { target } = event;
-    const { onChange } = this.props;
-    onChange(target.value);
+    const { onChange, validation } = this.props;
+    let { value } = target;
+    if (validation && validation.maxLength) value = value.substr(0, validation.maxLength);
+    onChange(value);
   }
   renderValidation() {
     const opts = this.props.validation;
