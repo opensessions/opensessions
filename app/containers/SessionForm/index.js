@@ -30,7 +30,7 @@ import { apiModel } from '../../utils/api';
 export default class SessionForm extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
     session: PropTypes.object,
-    sessionID: PropTypes.string,
+    params: PropTypes.object,
     location: PropTypes.object,
     headerText: PropTypes.string
   };
@@ -89,9 +89,9 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     };
   }
   fetchData = () => {
-    const { session, sessionID, location } = this.props;
+    const { session, params, location } = this.props;
     const { router } = this.context;
-    const uuid = session ? session.uuid : (sessionID || null);
+    const uuid = session ? session.uuid : (params.uuid || null);
     if (uuid) {
       apiModel.get('session', uuid).then(res => {
         this.onChange(res.instance);
@@ -203,7 +203,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
         <Location {...this.getAttr('location')} dataValue={session.locationData} onDataChange={value => session.update('locationData', value)} />
       </Field>
       <Field label="Meeting Instructions" tip="What should participants do when they arrive at the venue or location? Try to be as specific as possible." example="E.g. Meet in the main reception area">
-        <TextField multi validation={{ maxLength: 50 }} {...this.getAttr('meetingPoint')} />
+        <TextField multi validation={{ maxLength: 500 }} {...this.getAttr('meetingPoint')} />
       </Field>
     </div>);
   }
@@ -282,13 +282,15 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   </div>)
   renderActions = () => {
     const { session, autosaveState } = this.state;
+    const { params } = this.props;
     const isPublished = session.state === 'published';
     const isSaving = autosaveState === 'pending';
     const actions = [];
     if (session.state) {
       let text = isPublished ? 'View' : 'Preview';
       if (isSaving) text = 'Saving...';
-      actions.push(<Link key="view" to={`/session/${session.uuid}`} className={`${styles.previewButton} ${isSaving ? styles.disabled : ''}`}>{text}</Link>);
+      const viewURL = `/session/${session.uuid}${params.tab ? `?tab=${params.tab}` : ''}`;
+      actions.push(<Link key="view" to={viewURL} className={`${styles.previewButton} ${isSaving ? styles.disabled : ''}`}>{text}</Link>);
       actions.push(<a key="publish" onClick={isPublished ? this.unpublishSession : this.publishSession} className={styles[`action${isPublished ? 'Unpublish' : 'Publish'}`]}>{isPublished ? 'Unpublish' : 'Publish'}</a>);
     }
     return <div className={styles.actions}>{actions}</div>;
@@ -309,7 +311,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
           </div>
         </Sticky>
         <div className={styles.formBody}>
-          <Form fieldsets={this.state.fieldsets} model={session} onPublish={this.publishSession} pendingSteps={this.state.pendingSteps} status={this.state.status} saveState={this.state.saveState}>
+          <Form fieldsets={this.state.fieldsets} onPublish={this.publishSession} pendingSteps={this.state.pendingSteps} status={this.state.status} saveState={this.state.saveState} tab={this.props.params.tab}>
             {this.renderFieldsets()}
           </Form>
         </div>

@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { Link } from 'react-router';
 
 import styles from './styles.css';
 import fieldStyles from '../Field/styles.css';
@@ -9,7 +10,7 @@ import trackPage from '../../utils/analytics';
 export default class Form extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
     children: PropTypes.node.isRequired,
-    model: PropTypes.object,
+    tab: PropTypes.any,
     pendingSteps: PropTypes.any,
     onPublish: PropTypes.func,
     fieldsets: PropTypes.array,
@@ -19,7 +20,7 @@ export default class Form extends React.Component { // eslint-disable-line react
   constructor(props) {
     super(props);
     this.state = {
-      activeTab: 0,
+      activeTab: props.tab || props.fieldsets[0].slug,
       saveState: 'Unsaved',
       hasFocus: false
     };
@@ -32,12 +33,16 @@ export default class Form extends React.Component { // eslint-disable-line react
       if (nextProps.status) this.setState({ saveState: nextProps.status, saveStateClass: styles.error });
       else this.setState({ saveState: 'Saving...', saveStateClass: styles.saving });
     }
+    if (nextProps.tab) {
+      this.setState({ activeTab: nextProps.tab });
+    } else if (nextProps.fieldsets) {
+      this.setState({ activeTab: nextProps.fieldsets[0].slug });
+    }
   }
   componentDidUpdate(oldProps, oldState) {
     if (oldState.activeTab !== this.state.activeTab) {
       this.refocus();
-      const fieldset = this.props.fieldsets[this.state.activeTab];
-      trackPage(`${document.location.href}#${fieldset.slug}`, `${document.location.pathname}#${fieldset.slug}`);
+      trackPage(document.location.href, document.location.pathname);
     }
   }
   onFocus = () => {
@@ -65,8 +70,8 @@ export default class Form extends React.Component { // eslint-disable-line react
   }
   refocus = () => {
     try {
-      const firstShownField = Array.filter(this.refs.form.elements, (element) => element.tagName === 'FIELDSET')
-        .filter((fieldset) => fieldset.parentNode.className !== styles.hiddenTab)[0].getElementsByClassName(fieldStyles.field)[0];
+      const firstShownField = Array.filter(this.refs.form.elements, element => element.tagName === 'FIELDSET')
+        .filter(fieldset => fieldset.parentNode.className !== styles.hiddenTab)[0].getElementsByClassName(fieldStyles.field)[0];
       document.getElementsByClassName(appStyles.appBody)[0].scrollTop = 0;
       firstShownField.querySelectorAll('input, textarea, select')[0].focus();
     } catch (error) {
@@ -74,17 +79,27 @@ export default class Form extends React.Component { // eslint-disable-line react
     }
   }
   renderNav() {
+    const { fieldsets } = this.props;
+    const { activeTab } = this.state;
     return this.getFieldsets().map((fieldset, key) => {
       const { heading, validity, label } = fieldset.props;
-      const className = this.state.activeTab === key ? styles.active : '';
+      const propFieldset = fieldsets[key];
+      const { slug } = propFieldset;
+      const className = activeTab === slug ? styles.active : '';
       let isComplete = <span className={styles.tickNone}>+</span>;
       if (validity === true) isComplete = <span className={styles.tick}><img role="presentation" src="/images/tick.svg" /></span>;
       else if (validity === 'none') isComplete = null;
-      return [heading ? <h1 key={heading}>{heading}</h1> : null, <a className={className} onClick={this.tabClick} key={key} data-key={key}>{label} {isComplete}</a>];
+      return [heading ? <h1 key={heading}>{heading}</h1> : null, <Link className={className} to={`${window.location.pathname.substr(0, 50)}/${slug}`} key={key}>{label} {isComplete}</Link>];
     });
   }
   renderTab() {
-    return this.getFieldsets().map((child, key) => <div key={key} className={styles[key === this.state.activeTab ? 'activeTab' : 'hiddenTab']}>{child}</div>);
+    const { fieldsets } = this.props;
+    const { activeTab } = this.state;
+    return this.getFieldsets().map((child, key) => {
+      const propFieldset = fieldsets[key];
+      const { slug } = propFieldset;
+      return <div key={key} className={styles[slug === activeTab ? 'activeTab' : 'hiddenTab']}>{child}</div>;
+    });
   }
   renderActionButtons() {
     const { inactive } = styles;

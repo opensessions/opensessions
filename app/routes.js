@@ -4,18 +4,17 @@
 // about the code splitting business
 // import { getHooks } from 'utils/hooks';
 
-const errorLoading = (err) => {
+const errorLoading = err => {
   console.error('Dynamic page loading failed', err); // eslint-disable-line no-console
 };
 
-const loadModule = (cb) => (componentModule) => {
+const loadModule = cb => componentModule => {
   cb(null, componentModule.default);
 };
 
 export default function createRoutes() {
   // Create reusable async injectors using getHooks factory
   // const { injectReducer, injectSagas } = getHooks(store);
-
   return [
     {
       path: '/',
@@ -67,6 +66,14 @@ export default function createRoutes() {
       },
     }, {
       path: '/session/:uuid/edit',
+      name: 'Edit session',
+      getComponent(nextState, cb) {
+        System.import('containers/SessionEdit')
+          .then(loadModule(cb))
+          .catch(errorLoading);
+      },
+    }, {
+      path: '/session/:uuid/edit/:tab',
       name: 'Edit session',
       getComponent(nextState, cb) {
         System.import('containers/SessionEdit')

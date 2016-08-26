@@ -1,7 +1,7 @@
 @import '../../containers/App/variables.css';
 
 :global {
-  .react-datepicker__day--selected {
+  div.react-datepicker__day--selected {
     &,
     &:hover {
       background-color: var(--actionColor);
