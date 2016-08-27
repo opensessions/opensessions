@@ -9,7 +9,7 @@ export default class ImageUploadField extends React.Component { // eslint-disabl
     onChange: PropTypes.func,
     uploadURL: PropTypes.string
   }
-  handleChange = (event) => {
+  handleChange = event => {
     event.stopPropagation();
     event.preventDefault();
     const { files } = event.target;

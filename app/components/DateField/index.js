@@ -3,6 +3,8 @@ import DatePicker from 'react-datepicker';
 import moment from 'moment';
 require('react-datepicker/dist/react-datepicker.css');
 
+const dateToISO = date => date.toISOString().substr(0, 10);
+
 export default class DateField extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
     value: PropTypes.any,
@@ -17,12 +19,12 @@ export default class DateField extends React.Component { // eslint-disable-line 
   }
   handleDateChange = date => {
     date.minutes(date.minutes() + date.utcOffset());
-    const value = date.toISOString().substr(0, 10);
+    const value = dateToISO(date);
     this.props.onChange(value);
   }
   handleChange = event => {
     const { value } = event.target;
-    this.handleDateChange(new Date(value));
+    this.props.onChange(value);
   }
   render() {
     const { value, position } = this.props;
@@ -30,9 +32,10 @@ export default class DateField extends React.Component { // eslint-disable-line 
     let input;
     if (isMobile) {
       const attrs = {
-        value: value ? (new Date(value)).toISOString().substr(0, 10) : null,
+        value: value ? dateToISO(new Date(value)) : null,
         type: 'date',
-        onChange: this.handleChange
+        onChange: this.handleChange,
+        min: dateToISO(new Date())
       };
       input = <input {...attrs} />;
     } else {

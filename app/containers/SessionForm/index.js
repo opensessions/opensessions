@@ -208,7 +208,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
         <BoolRadio options={coachOptions} {...this.getAttr('hasCoaching')} />
       </Field>
       <Field label="Image">
-        <ImageUpload {...this.getAttr('image')} uploadURL={`/api/session-image/${session.uuid}`} value={session.imageURL} />
+        <ImageUpload {...this.getAttr('image')} uploadURL={`/api/session/${session.uuid}/image`} />
       </Field>
     </div>);
   }

@@ -71,24 +71,6 @@ module.exports = (app) => {
     `);
   });
 
-  api.post('/session-image/:uuid', upload.single('image'), (req, res) => {
-    const image = req.file;
-    const { uuid } = req.params;
-    const { Session } = database.models;
-    const aws = {
-      URL: process.env.AWS_S3_IMAGES_BASEURL,
-      path: 'uploads/',
-      accessKeyId: process.env.AWS_S3_IMAGES_ACCESSKEY,
-      secretAccessKey: process.env.AWS_S3_IMAGES_SECRETKEY
-    };
-    s3(aws, image.path, uuid)
-      .then(result => Session.findOne({ where: { uuid } })
-        .then(instance => instance.update({ image: `https://${aws.URL}/${result.versions[1].key}` })
-          .then(final => res.json({ status: 'success', result, baseURL: aws.URL, instance: final })))
-        .catch(error => res.status(404).json({ error })))
-      .catch(error => res.status(400).json({ error }));
-  });
-
   api.get('/:model', resolveModel, (req, res) => {
     const { Model } = req;
     requireLogin(req, res, () => {
@@ -153,6 +135,27 @@ module.exports = (app) => {
     }).catch(error => {
       res.status(404).json({ error: error.message });
     });
+  });
+
+  api.post('/:model/:uuid/:field', resolveModel, upload.single('image'), (req, res) => {
+    const { Model } = req;
+    const image = req.file;
+    const { uuid, field } = req.params;
+    const aws = {
+      URL: process.env.AWS_S3_IMAGES_BASEURL,
+      path: 'uploads/',
+      accessKeyId: process.env.AWS_S3_IMAGES_ACCESSKEY,
+      secretAccessKey: process.env.AWS_S3_IMAGES_SECRETKEY
+    };
+    s3(aws, image.path, uuid)
+      .then(result => Model.findOne({ where: { uuid } })
+        .then(instance => {
+          const data = {};
+          data[field] = `https://${aws.URL}/${result.versions[1].key}`;
+          return instance.update(data)
+            .then(final => res.json({ status: 'success', result, baseURL: aws.URL, instance: final }));
+        }).catch(error => res.status(404).json({ error })))
+      .catch(error => res.status(400).json({ error }));
   });
 
   api.get('/:model/:uuid/:action', requireLogin, resolveModel, (req, res) => {

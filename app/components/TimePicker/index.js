@@ -30,35 +30,26 @@ export default class TimePicker extends React.Component { // eslint-disable-line
     const time = [hours, minutes, '00'].join(':');
     if (this.props.onChange) this.props.onChange(time);
   }
-  hourChange = (event) => {
+  hourChange = event => {
     this.changeTime(parseInt(event.target.value, 10), this.state.minutes);
   }
-  minsInc = () => {
+  minsChange = isIncrease => {
     const { incVal } = this.state;
     let { hours, minutes } = this.state;
-    minutes += incVal;
+    minutes += incVal * (isIncrease ? 1 : -1);
     if (minutes > 59) {
       hours += 1;
       minutes -= 60;
-      if (hours > 23) {
-        hours -= 24;
-      }
     }
-    this.changeTime(hours, minutes);
-  }
-  minsDec = () => {
-    const { incVal } = this.state;
-    let { hours, minutes } = this.state;
-    minutes -= incVal;
     if (minutes < 0) {
       hours -= 1;
       minutes += 60;
-      if (hours < 0) {
-        hours += 24;
-      }
     }
+    hours = (hours + 24) % 24;
     this.changeTime(hours, minutes);
   }
+  minsInc = () => this.minsChange(true)
+  minsDec = () => this.minsChange(false)
   minsEvent = event => {
     const { type, keyCode, target } = event;
     const fns = { 38: 'minsInc', 40: 'minsDec' };
