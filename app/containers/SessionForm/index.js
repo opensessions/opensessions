@@ -225,7 +225,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   }
   renderPricingFieldset = () => (<div>
     <Field label="Price">
-      <Optional {...this.getAttr('price')} no="Free" yes="Paid" component={{ type: NumField, props: { validation: { min: 0 }, format: '£ :', step: '0.25' } }} />
+      <Optional {...this.getAttr('price')} no="Free" yes="Paid" null="0" component={{ type: NumField, props: { validation: { min: 0 }, format: '£ :', step: '0.25' } }} />
     </Field>
     <Field label="Spaces available" tip="How many spaces are available?">
       <NumField {...this.getAttr('quantity')} validation={{ min: 0 }} />

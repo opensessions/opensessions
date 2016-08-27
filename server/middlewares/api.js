@@ -45,7 +45,7 @@ module.exports = (app) => {
     }
   };
 
-  const queryParse = (req) => {
+  const queryParse = req => {
     const query = req.query || {};
     if (query) {
       Object.keys(query).filter(key => key[0] === key[0].toUpperCase() && query[key] === 'null').forEach(key => {
@@ -121,15 +121,13 @@ module.exports = (app) => {
 
   api.post('/:model/:uuid', requireLogin, resolveModel, (req, res) => {
     const { Model } = req;
-    Model.findOne({ where: { uuid: req.params.uuid } }).then((instance) => {
+    Model.findOne({ where: { uuid: req.params.uuid } }).then(instance => {
       if (instance.owner !== getUser(req)) throw new Error(`Must be owner to modify ${Model.name}`);
       const fields = Object.keys(req.body);
-      fields.filter((key) => key.slice(-4) === 'Uuid').forEach((key) => {
-        if (req.body[key] === null) {
-          instance[`set${key.substr(0, key.length - 4)}`](null);
-        }
+      fields.filter(key => key.slice(-4) === 'Uuid').filter(key => req.body[key] === null).forEach(key => {
+        instance[`set${key.replace(/Uuid$/, '')}`](null);
       });
-      return instance.update(req.body, { fields, returning: true }).then((savedInstance) => {
+      return instance.update(req.body, { fields, returning: true }).then(savedInstance => {
         res.json({ instance: savedInstance });
       });
     }).catch(error => {
