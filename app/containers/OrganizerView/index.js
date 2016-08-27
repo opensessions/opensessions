@@ -17,7 +17,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     unassignedSessions: React.PropTypes.array,
     organizerList: React.PropTypes.array,
     onOrganizerChange: React.PropTypes.func,
-  }
+  };
   static contextTypes = {
     user: React.PropTypes.object,
     router: React.PropTypes.object,
@@ -53,21 +53,17 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
   toggleSessions = () => {
     this.setState({ showSessions: !this.state.showSessions });
   }
-  renameOrganizer = (name) => {
+  renameOrganizer = name => {
     if (typeof name === 'string') {
       const { organizer } = this.state;
       const options = { name };
       if (options.name) {
-        apiModel.edit('organizer', organizer.uuid, options).then((res) => {
+        apiModel.edit('organizer', organizer.uuid, options).then(res => {
           const { instance, error } = res;
-          Object.keys(instance).forEach((field) => {
-            organizer[field] = instance[field];
-          });
-          if (!error) {
-            this.setState({ organizer, actionState: 'none' });
-          } else {
-            this.setState({ actionState: 'none', error: 'failed to rename organizer' });
-          }
+          if (error) throw new Error('failed to rename organiser');
+          this.setState({ organizer: instance, actionState: 'none' });
+        }).catch(error => {
+          this.setState({ actionState: 'none', error: error.message });
         });
       }
     } else {
@@ -79,10 +75,10 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     return apiModel.delete('organizer', organizer.uuid).then(res => {
       if (res.status === 'success') ('router' in this.props ? this.props : this.context).router.push('/');
     }).catch(() => {
-      this.setState({ error: 'failed to delete organizer' });
+      this.setState({ error: 'failed to delete organiser' });
     });
   }
-  renameEvents = (event) => {
+  renameEvents = event => {
     const { type, keyCode, target } = event;
     if (keyCode === 13 || type === 'blur') {
       this.setState({ actionState: 'renaming' });
@@ -90,15 +86,15 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     }
   }
   renderUnassignedSessions() {
-    const sessions = this.props.unassignedSessions;
-    if (!(sessions && sessions.length)) return null;
+    const { unassignedSessions } = this.props;
+    if (!(unassignedSessions && unassignedSessions.length)) return null;
     const { showSessions } = this.state;
     const linkProps = { className: styles.toggle, onClick: this.toggleSessions };
     let text = 'Hide unassigned sessions';
-    if (!showSessions) text = `${sessions.length} session${sessions.length === 1 ? ' is' : 's are'} currently unassigned to an organizer`;
+    if (!showSessions) text = `${unassignedSessions.length} session${unassignedSessions.length === 1 ? ' is' : 's are'} currently unassigned to an organizer`;
     return (<div className={styles.unassigned}>
       <p><a {...linkProps}>{text}</a></p>
-      {showSessions ? <SessionList sessions={sessions} /> : null}
+      {showSessions ? <SessionList sessions={unassignedSessions} /> : null}
     </div>);
   }
   renderOrganizerSelect() {
@@ -139,7 +135,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     return (<div>
       <div className={styles.bannerImage} style={{ background: `url(${imageUrl}) no-repeat`, backgroundSize: 'cover' }}>
         <div className={styles.container}>
-          <a className={styles.upload}>Update photo (coming soon)</a>
+          {this.isOwner() ? <a className={styles.upload}>Update photo (coming soon)</a> : null}
         </div>
       </div>
       <div className={styles.name}>

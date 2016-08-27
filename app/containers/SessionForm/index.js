@@ -124,7 +124,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     session[name] = value;
     this.onChange(session);
     this.setState({ status: '', session });
-    this.autosave(2000);
+    this.autosave(1600);
   }
   changeSessionState = (state) => {
     const session = this.getSession();

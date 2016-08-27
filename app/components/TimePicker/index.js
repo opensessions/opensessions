@@ -99,12 +99,13 @@ export default class TimePicker extends React.Component { // eslint-disable-line
     const meridian = hours >= 12 ? 'pm' : 'am';
     return (<div className={styles.timePicker}>
       <select value={hours !== null ? hours : ''} onChange={this.hourChange}>
-        {['', 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map(hour => <option key={hour} value={(hour % 12) + (meridian === 'am' ? 0 : 12)}>{hour}</option>)}
+        <option key="null" value="" />
+        {[12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map(hour => <option key={hour} value={(hour % 12) + (meridian === 'am' ? 0 : 12)}>{hour}</option>)}
       </select>
       <input type="text" value={minutes !== null ? `${minutes < 10 ? '0' : ''}${minutes}` : ''} onChange={this.minsEvent} onKeyUp={this.minsEvent} onWheel={this.minsEvent} onFocus={this.minsEvent} />
-      <select value={meridian} onChange={this.meridianChange}>
+      {hours !== null ? <select value={meridian} onChange={this.meridianChange}>
         {['am', 'pm'].map(mid => <option key={mid} value={mid}>{mid}</option>)}
-      </select>
+      </select> : null}
     </div>);
   }
 }
