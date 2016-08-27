@@ -5,8 +5,6 @@ import styles from './styles.css';
 import fieldStyles from '../Field/styles.css';
 import appStyles from 'containers/App/styles.css';
 
-import trackPage from '../../utils/analytics';
-
 export default class Form extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
     children: PropTypes.node.isRequired,
@@ -42,7 +40,6 @@ export default class Form extends React.Component { // eslint-disable-line react
   componentDidUpdate(oldProps, oldState) {
     if (oldState.activeTab !== this.state.activeTab) {
       this.refocus();
-      trackPage(document.location.href, document.location.pathname);
     }
   }
   onFocus = () => {
