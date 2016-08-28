@@ -51,8 +51,17 @@
             border: .1em solid;
             padding: .5em 1em;
             line-height: 1;
+            text-decoration: none;
+            &:hover {
+              background-color: var(--actionColor);
+              color: #FFF;
+            }
             &.delete {
               color: #BF0000;
+              &:hover {
+                background-color: #BF0000;
+                color: #FFF;
+              }
             }
           }
         }

@@ -138,10 +138,10 @@ module.exports = (app) => {
   api.post('/:model/:uuid/:field', resolveModel, upload.single('image'), (req, res) => {
     const { Model } = req;
     const image = req.file;
-    const { uuid, field } = req.params;
+    const { model, uuid, field } = req.params;
     const aws = {
       URL: process.env.AWS_S3_IMAGES_BASEURL,
-      path: 'uploads/',
+      path: `uploads/${model}/${field}/`,
       accessKeyId: process.env.AWS_S3_IMAGES_ACCESSKEY,
       secretAccessKey: process.env.AWS_S3_IMAGES_SECRETKEY
     };

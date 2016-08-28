@@ -71,8 +71,15 @@ export default class Form extends React.Component { // eslint-disable-line react
     try {
       const firstShownField = Array.filter(this.refs.form.elements, element => element.tagName === 'FIELDSET')
         .filter(fieldset => fieldset.parentNode.className !== styles.hiddenTab)[0].getElementsByClassName(fieldStyles.field)[0];
-      document.getElementsByClassName(appStyles.appBody)[0].scrollTop = 0;
-      firstShownField.querySelectorAll('input, textarea, select')[0].focus();
+      const appBody = document.getElementsByClassName(appStyles.appBody)[0];
+      const originalScrollTop = appBody.scrollTop;
+      const interval = setInterval(() => {
+        appBody.scrollTop -= 16 * (((((appBody.scrollTop / originalScrollTop) - .5) * 2) ** 3) + 1);
+        if (appBody.scrollTop === 0) {
+          firstShownField.querySelectorAll('input, textarea, select')[0].focus();
+          clearInterval(interval);
+        }
+      }, 16);
     } catch (error) {
       console.error('Couldn\'t refocus', error);
     }

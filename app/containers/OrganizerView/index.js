@@ -6,6 +6,7 @@ import { apiModel } from '../../utils/api';
 import SessionTileView from '../SessionTileView';
 import LoadingMessage from 'components/LoadingMessage';
 import SessionList from 'containers/SessionList';
+import ImageUpload from 'components/ImageUploadField';
 
 import styles from './styles.css';
 
@@ -44,6 +45,11 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     }).catch(error => {
       this.setState({ error });
     });
+  }
+  photoChange(image) {
+    const { organizer } = this.state;
+    organizer.image = image;
+    this.setState({ organizer });
   }
   isOwner() {
     const { user } = this.context;
@@ -130,12 +136,16 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     if (this.state.actionState && this.state.actionState === 'rename') return <input defaultValue={organizer.name} onKeyDown={this.renameEvents} onBlur={this.renameEvents} autoFocus />;
     return (<span><Link to={organizer.href}>{organizer.name}</Link> {this.isOwner() ? <a onClick={this.renameOrganizer} className={styles.rename}>(rename)</a> : null}</span>);
   }
+  renderUploadPhoto() {
+    const { organizer } = this.state;
+    return <ImageUpload value={organizer.image} onChange={this.photoChange} preview={false} addText="Update photo" upload={{ URL: `/api/organizer/${organizer.uuid}/image`, name: 'image' }} />;
+  }
   renderOrganizer(organizer) {
-    const imageUrl = '/images/organizer-bg-default.png';
+    const imageUrl = organizer.image || '/images/organizer-bg-default.png';
     return (<div>
       <div className={styles.bannerImage} style={{ background: `url(${imageUrl}) no-repeat`, backgroundSize: 'cover' }}>
         <div className={styles.container}>
-          {this.isOwner() ? <a className={styles.upload}>Update photo (coming soon)</a> : null}
+          {this.isOwner() ? this.renderUploadPhoto() : null}
         </div>
       </div>
       <div className={styles.name}>

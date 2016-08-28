@@ -15,6 +15,7 @@ module.exports = (DataTypes) => ({
           notEmpty: true
         }
       },
+      image: DataTypes.STRING(512),
       _options: {
         getterMethods: {
           href() {
