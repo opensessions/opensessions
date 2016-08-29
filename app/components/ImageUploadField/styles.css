@@ -12,6 +12,7 @@
   & .choose {
     display: inline-block;
     border: 2px solid #BBB;
+    background-color: rgba(230, 230, 230, .75);
     margin: .5em 0;
     padding: .25em .5em;
     cursor: pointer;
@@ -33,5 +34,6 @@
   & input[type=file] {
     visibility: hidden;
     position: absolute;
+    width: 0;
   }
 }

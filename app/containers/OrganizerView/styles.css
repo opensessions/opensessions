@@ -94,6 +94,8 @@
 
 .bannerImage {
   height: 16em;
+  background-size: cover;
+  background-repeat: no-repeat;
   & > .container {
     height: 100%;
     display: flex;

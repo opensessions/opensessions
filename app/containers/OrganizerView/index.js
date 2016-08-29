@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 
 import { apiModel } from '../../utils/api';
@@ -12,16 +12,16 @@ import styles from './styles.css';
 
 export default class OrganizerView extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
-    router: React.PropTypes.object,
-    organizer: React.PropTypes.object,
-    params: React.PropTypes.object,
-    unassignedSessions: React.PropTypes.array,
-    organizerList: React.PropTypes.array,
-    onOrganizerChange: React.PropTypes.func,
+    router: PropTypes.object,
+    organizer: PropTypes.object,
+    params: PropTypes.object,
+    unassignedSessions: PropTypes.array,
+    organizerList: PropTypes.array,
+    onOrganizerChange: PropTypes.func,
   };
   static contextTypes = {
-    user: React.PropTypes.object,
-    router: React.PropTypes.object,
+    user: PropTypes.object,
+    router: PropTypes.object,
   }
   constructor(props) {
     super(props);
@@ -46,7 +46,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
       this.setState({ error });
     });
   }
-  photoChange(image) {
+  photoChange = image => {
     const { organizer } = this.state;
     organizer.image = image;
     this.setState({ organizer });
@@ -143,7 +143,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
   renderOrganizer(organizer) {
     const imageUrl = organizer.image || '/images/organizer-bg-default.png';
     return (<div>
-      <div className={styles.bannerImage} style={{ background: `url(${imageUrl}) no-repeat`, backgroundSize: 'cover' }}>
+      <div className={styles.bannerImage} style={{ backgroundImage: `url(${imageUrl})` }}>
         <div className={styles.container}>
           {this.isOwner() ? this.renderUploadPhoto() : null}
         </div>
