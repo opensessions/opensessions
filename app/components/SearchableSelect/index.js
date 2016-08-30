@@ -44,9 +44,10 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
       newState.highlightIndex = highlightIndex;
     } else if (type === 'keydown') {
       const { keyCode } = event;
-      const deltas = { 38: -1, 40: 1 };
+      const deltas = { 38: -1, 40: 1, 33: -3, 34: 3, 35: Infinity, 36: -Infinity };
       if (keyCode in deltas) {
         newState.highlightIndex = highlightIndex + deltas[keyCode];
+        this.refs.searchResults.scrollTop = Math.max(0, 32 * (newState.highlightIndex - 3));
         event.preventDefault();
         event.stopPropagation();
       } else if (keyCode === 13) {
@@ -80,7 +81,8 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
     }
     if (newState.highlightIndex) {
       const maxIndex = (newState.filteredOptions || filteredOptions).length - 1;
-      newState.highlightIndex = [0, newState.highlightIndex, maxIndex].sort()[1];
+      console.log([0, newState.highlightIndex, maxIndex].sort((a, b) => a - b));
+      newState.highlightIndex = [0, newState.highlightIndex, maxIndex].sort((a, b) => a - b)[1];
     }
     if (newState.search === '') {
       input.value = '';
@@ -122,10 +124,7 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
     let searchResults = null;
     if (visible) {
       let index = -1;
-      if (!filteredOptions.length && search) {
-        // filteredOptions.unshift({ props: { key: 'none', onClick: this.addItem }, text: `+ Add "${search}"` });
-      }
-      searchResults = (<ol className={styles.searchResults} onMouseOver={this.dropdownEvent} onMouseOut={this.dropdownEvent}>
+      searchResults = (<ol className={styles.searchResults} onMouseOver={this.dropdownEvent} onMouseOut={this.dropdownEvent} ref="searchResults">
         {filteredOptions.map(opt => <li data-key={opt.props.key} data-index={++index} {...opt.props} className={index === highlightIndex ? styles.highlight : null} dangerouslySetInnerHTML={{ __html: opt.text.replace(new RegExp(`(${search})`, 'ig'), '<b>$1</b>') }} />)}
       </ol>);
     }

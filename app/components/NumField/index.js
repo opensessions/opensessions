@@ -12,7 +12,7 @@ export default class NumField extends React.Component { // eslint-disable-line r
     format: PropTypes.string,
     step: PropTypes.string
   }
-  handleChange = (event) => {
+  handleChange = event => {
     const { value } = event.target;
     if (this.props.onChange) this.props.onChange(value);
   }

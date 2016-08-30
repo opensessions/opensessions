@@ -1,3 +1,4 @@
+/* eslint arrow-body-style:0 */
 'use strict';
 const uuid = require('node-uuid');
 

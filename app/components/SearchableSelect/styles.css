@@ -37,11 +37,12 @@
     z-index: 1;
     margin-top: .1em;
     box-shadow: 0 .2em .2em rgba(0, 0, 0, .3);
-    max-height: 32rem;
+    max-height: 22.5rem;
     overflow-y: auto;
     & > li {
-      padding: .25em;
+      padding: .5em;
       list-style: none;
+      line-height: 1;
       & > b {
         pointer-events: none;
       }
