@@ -25,10 +25,10 @@ export default class TimePicker extends React.Component { // eslint-disable-line
   }
   changeTime = (hours, minutes) => {
     this.setState({ hours, minutes });
-    if (hours < 10) hours = `0${hours}`;
-    if (minutes < 10) minutes = `0${minutes}`;
+    hours = `0${hours || 0}`.slice(-2);
+    minutes = `0${minutes || 0}`.slice(-2);
     const time = [hours, minutes, '00'].join(':');
-    if (this.props.onChange) this.props.onChange(time);
+    this.props.onChange(time);
   }
   hourChange = event => {
     this.changeTime(parseInt(event.target.value, 10), this.state.minutes);
@@ -102,7 +102,7 @@ export default class TimePicker extends React.Component { // eslint-disable-line
         <option key="null" value="" />
         {[12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map(hour => <option key={hour} value={(hour % 12) + (meridian === 'am' ? 0 : 12)}>{hour}</option>)}
       </select>
-      <input type="text" value={minutes !== null ? `${minutes < 10 ? '0' : ''}${minutes}` : ''} onChange={this.minsEvent} onKeyUp={this.minsEvent} onWheel={this.minsEvent} onFocus={this.minsEvent} />
+      <input type="text" value={minutes === null ? '' : `${('0' + minutes).slice(-2)}`} onChange={this.minsEvent} onKeyUp={this.minsEvent} onWheel={this.minsEvent} onFocus={this.minsEvent} />
       {hours !== null ? <select value={meridian} onChange={this.meridianChange}>
         {['am', 'pm'].map(mid => <option key={mid} value={mid}>{mid}</option>)}
       </select> : null}

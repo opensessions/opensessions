@@ -87,6 +87,8 @@ export default class Form extends React.Component { // eslint-disable-line react
   renderNav() {
     const { fieldsets } = this.props;
     const { activeTab } = this.state;
+    let baseURL = window.location.pathname;
+    baseURL = baseURL.match(/^.*edit/) ? baseURL.match(/^.*edit/)[0] : baseURL;
     return this.getFieldsets().map((fieldset, key) => {
       const { heading, validity, label } = fieldset.props;
       const propFieldset = fieldsets[key];
@@ -95,7 +97,7 @@ export default class Form extends React.Component { // eslint-disable-line react
       let isComplete = <span className={styles.tickNone}>+</span>;
       if (validity === true) isComplete = <span className={styles.tick}><img role="presentation" src="/images/tick.svg" /></span>;
       else if (validity === 'none') isComplete = null;
-      return [heading ? <h1 key={heading}>{heading}</h1> : null, <Link className={className} to={`${window.location.pathname.match(/^.*edit/)[0]}/${slug}`} key={key}>{label} {isComplete}</Link>];
+      return [heading ? <h1 key={heading}>{heading}</h1> : null, <Link className={className} to={`${baseURL}/${slug}`} key={key}>{label} {isComplete}</Link>];
     });
   }
   renderTab() {

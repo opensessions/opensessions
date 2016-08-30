@@ -13,7 +13,7 @@ module.exports = (DataTypes) => ({
       _options: {
         classMethods: {
           getQuery(query) {
-            query.where = {  };
+            // query.where = { };
             return query;
           },
           makeAssociations(models) {
