@@ -3,8 +3,7 @@ const uuid = require('node-uuid');
 
 module.exports = {
   up: (migration, Sequelize) => migration
-    .addColumn('Sessions', 'ActivityUuid', { type: Sequelize.UUID, allowNull: true, references: { model: 'Activities', key: 'uuid' } })
-    .then(() => migration.createTable('Activities', {
+    .createTable('Activities', {
       uuid: {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV1,
@@ -12,6 +11,7 @@ module.exports = {
       },
       name: Sequelize.STRING,
     }))
+    .then(() => migration.addColumn('Sessions', 'ActivityUuid', { type: Sequelize.UUID, allowNull: true, references: { model: 'Activities', key: 'uuid' } }))
     .then(() => {
       // source: https://en.wikipedia.org/w/index.php?title=Template:International_Sports_Federations&oldid=733950934
       // naive parsing: $('#wpTextbox1').html().split("\n").map(line => line.match(/\(.*\)/g)).filter(a => a).map(matches => matches[0]).map(sport => sport.replace(/[\(\)]/g, '')).map(name => name.split(' ').map(word => `${word.charAt(0).toUpperCase()}${word.slice(1)}`).join(' '))
