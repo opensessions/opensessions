@@ -5,7 +5,7 @@
   }
 }
 
-@media screen and (min-width: 36rem) {
+@media (min-width: 36rem) and (min-height: 36rem) {
   .sticky {
     & .fixed {
       display: block;

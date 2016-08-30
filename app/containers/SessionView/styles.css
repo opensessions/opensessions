@@ -281,7 +281,7 @@ a.organizerLink {
   }
 }
 
-@media screen and (min-width: 36rem) {
+@media (min-width: 36rem) {
   .detailsSection {
     margin: 2em auto;
   }
