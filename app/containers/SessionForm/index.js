@@ -174,20 +174,19 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     return this.state.fieldsets.map(fieldset => <Fieldset key={++key} {...fieldset.props}>{fieldset.renderer()}</Fieldset>);
   }
   renderDescriptionFieldset = () => {
-    const session = this.getSession();
     const user = this.context.user || {};
     return (<div>
       <Field label="Session Title" tip="Enter a title for your session" example="E.g. Volleyball training">
         <TextField validation={{ maxLength: 50 }} {...this.getAttr('title')} />
       </Field>
       <Field label="Organiser Name" name="OrganizerUuid" tip="Enter the name of your club or organisation. If you don't represent a club or organisation, enter your own name" example="E.g. Richmond Volleyball">
-        <Relation value={session.OrganizerUuid} onChange={value => session.update('OrganizerUuid', value)} relation={{ model: 'organizer', query: { owner: user.user_id } }} />
+        <Relation {...this.getAttr('OrganizerUuid')} relation={{ model: 'organizer', query: { owner: user.user_id } }} />
       </Field>
       <Field label="Session Description" tip="Let people know what's great about the session! Remember: the more detail you provide, the more likely people are to decide to attend." example="Tips: Who is this session for? What benefits will people get from it? What will the session be like? What will we do? Is any prior experience needed?">
         <TextField multi size="XL" {...this.getAttr('description')} />
       </Field>
       <Field label="Sport or activity type" tip="Enter the type of activity or sport on offer for this session. If multiple activities are on offer at this session, please write 'Multiple Activities'" placeholder="E.g. Volleyball" example="E.g. Volleyball">
-        <TextField {...this.getAttr('activityType')} />
+        <Relation {...this.getAttr('ActivityUuid')} relation={{ model: 'activity', query: { } }} />
       </Field>
     </div>);
   }

@@ -96,6 +96,7 @@
   height: 16em;
   background-size: cover;
   background-repeat: no-repeat;
+  background-position: 50% 50%;
   & > .container {
     height: 100%;
     display: flex;

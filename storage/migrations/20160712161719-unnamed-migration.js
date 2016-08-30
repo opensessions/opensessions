@@ -60,8 +60,8 @@ module.exports = {
     done();
   },
   down: (migration, DataTypes, done) => {
-    migration.deleteTable('Session');
-    migration.deleteTable('Organizer');
+    migration.dropTable('Session');
+    migration.dropTable('Organizer');
     done();
   }
 };

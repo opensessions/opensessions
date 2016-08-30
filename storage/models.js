@@ -7,6 +7,20 @@ module.exports = (DataTypes) => ({
     }
   },
   tables: {
+    Activity: {
+      owner: DataTypes.STRING,
+      name: DataTypes.STRING,
+      _options: {
+        classMethods: {
+          getQuery(query) {
+            return query;
+          },
+          makeAssociations(models) {
+            models.Activity.hasMany(models.Session);
+          }
+        }
+      }
+    },
     Organizer: {
       owner: DataTypes.STRING,
       name: {
@@ -41,8 +55,8 @@ module.exports = (DataTypes) => ({
       state: {
         type: DataTypes.STRING,
         defaultValue: 'draft',
-        validation: {
-          isIn: ['draft', 'published', 'unpublished', 'deleted']
+        validate: {
+          isIn: [['draft', 'published', 'unpublished', 'deleted']]
         }
       },
       owner: DataTypes.STRING,
@@ -57,13 +71,16 @@ module.exports = (DataTypes) => ({
       locationData: DataTypes.JSON,
       meetingPoint: DataTypes.STRING,
       attendanceType: DataTypes.STRING,
-      price: DataTypes.FLOAT(2),
+      price: {
+        type: DataTypes.FLOAT(2),
+        validate: { min: 0 }
+      },
       quantity: DataTypes.INTEGER,
       genderRestriction: {
         type: DataTypes.STRING(16),
         defaultValue: 'mixed',
-        validation: {
-          isIn: ['mixed', 'male', 'female']
+        validate: {
+          isIn: [['mixed', 'male', 'female']]
         }
       },
       minAgeRestriction: DataTypes.INTEGER,
@@ -110,6 +127,7 @@ module.exports = (DataTypes) => ({
           },
           makeAssociations(models) {
             models.Session.belongsTo(models.Organizer);
+            models.Session.belongsTo(models.Activity);
           }
         },
         hooks: {

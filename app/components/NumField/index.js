@@ -21,7 +21,7 @@ export default class NumField extends React.Component { // eslint-disable-line r
     const attrs = {
       className,
       type: 'number',
-      value,
+      value: value || 0,
       onChange: this.handleChange,
       autoFocus,
       step
