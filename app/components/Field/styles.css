@@ -23,9 +23,6 @@
     & .tip {
       opacity: 1;
       bottom: 100%;
-      & > p {
-        font-size: .9em;
-      }
     }
   }
   & .label {
@@ -36,15 +33,14 @@
     position: absolute;
     z-index: 0;
     opacity: 0;
-    transition: .3s all ease;
+    transition: .4s all ease;
     background-color: #FFF;
     padding: .75em;
     pointer-events: none;
-    bottom: 0%;
+    bottom: 90%;
     top: auto;
     &::before {
       content: 'i';
-      transition: .3s all ease;
       position: absolute;
       border-radius: 1em;
       background-color: #00AEEF;
@@ -57,6 +53,9 @@
       font-size: 1.5em;
       top: -.5em;
       left: -.5em;
+    }
+    & > p {
+      font-size: .9em;
     }
     & .example {
       font-weight: 300;
@@ -91,21 +90,22 @@
   .field {
     & .tip {
       top: 2em;
-      left: 26em;
+      left: 22em;
       bottom: auto;
       max-width: 20em;
-    }
-    form[data-hasFocus='false'] &:hover {
-      & .tip {
-        opacity: 1;
-        bottom: auto;
+      transform: scale(.85);
+      transition-duration: .3s;
+      & > p {
+        font-size: 1em;
       }
     }
+    form[data-hasFocus='false'] &:hover,
     &[data-hasfocus='true'] {
       & .tip {
         opacity: 1;
         bottom: auto;
-        font-size: 1em;
+        left: 26em;
+        transform: scale(1);
       }
     }
   }
