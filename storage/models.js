@@ -13,6 +13,7 @@ module.exports = (DataTypes) => ({
       _options: {
         classMethods: {
           getQuery(query) {
+            query.where = {  };
             return query;
           },
           makeAssociations(models) {
@@ -117,7 +118,7 @@ module.exports = (DataTypes) => ({
         },
         classMethods: {
           getQuery(query, models, user) {
-            query.include = [models.Organizer];
+            query.include = [models.Organizer, models.Activity];
             if (!('where' in query)) query.where = {};
             query.where.state = user ? { $not: 'deleted' } : 'published';
             if ('owner' in query.where && query.where.owner !== user) {
