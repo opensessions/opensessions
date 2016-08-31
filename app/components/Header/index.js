@@ -5,8 +5,6 @@ import LoginButton from 'components/LoginButton';
 
 import styles from './styles.css';
 
-const getNotifications = state => state.notifications;
-
 export default class Header extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
     user: PropTypes.object,

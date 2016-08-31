@@ -27,7 +27,7 @@ export function parseSchedule(instance) {
 
 export function calendarLinks(schedule, title, description, location) {
   const { startDate, startTime, endTime } = schedule;
-  const dates = [startTime, endTime].map(time => [startDate, startTime].join('T').replace(/-|:|\.\d\d\d/g, ''));
+  const dates = [startTime, endTime].map(time => [startDate, time].join('T').replace(/-|:|\.\d\d\d/g, ''));
   return {
     googleCalendar: `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates.join('/')}&details=${description}&location=${location}&sprop=&sprop=name:`
   };

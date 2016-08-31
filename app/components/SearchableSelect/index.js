@@ -25,7 +25,7 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
     this.setValue(null);
   }
   filterOptions = search => {
-    let { options, maxOptions } = this.props;
+    let { options, maxOptions } = this.props; // eslint-disable-line prefer-const
     if (search) options = options.filter(option => option.name.match(new RegExp(`^${search}`, 'i'))).concat(options.filter(option => option.name.match(new RegExp(`^.+(${search})`, 'i'))));
     if (maxOptions) options = options.slice(0, maxOptions);
     return options.map(option => ({ text: option.name, props: { key: option.uuid, onMouseOver: this.itemHover, onClick: this.itemClick } }));

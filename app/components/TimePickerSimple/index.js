@@ -47,13 +47,13 @@ export default class TimePickerSimple extends React.Component { // eslint-disabl
       <select value={hours !== null ? hours : ''} onChange={this.hourChange}>
         <option key="null" value="" />
         {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23].map(hour => {
-          let offset = Math.ceil((hour - 12) / 12);
+          const offset = Math.ceil((hour - 12) / 12);
           return <option key={hour} value={hour}>{hour - (offset * 12)} {hour >= 12 ? 'pm' : 'am'}</option>;
         })}
       </select>
       <select value={minutes === null ? '' : minutes} onChange={this.minsEvent}>
         <option key="null" value="" />
-        {Array.apply(null, Array(60 / step)).map((v, k) => k * step).map(mins => <option key={mins} value={mins}>{`0${mins}`.slice(-2)}</option>)}
+        {Array(...Array(60 / step)).map((v, k) => k * step).map(mins => <option key={mins} value={mins}>{`0${mins}`.slice(-2)}</option>)}
       </select>
     </div>);
   }

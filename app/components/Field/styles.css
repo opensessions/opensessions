@@ -95,7 +95,6 @@
     & .tip {
       z-index: 0;
       top: 2em;
-      // left: 22em;
       right: 8em;
       bottom: auto;
       max-width: 20em;
@@ -111,7 +110,6 @@
       & .tip {
         opacity: 1;
         bottom: auto;
-        // left: 26em;
         right: 0;
         transform: scale(1);
       }

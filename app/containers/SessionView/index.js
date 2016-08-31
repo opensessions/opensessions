@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { parseSchedule, calendarLinks } from 'utils/calendar';
+import { parseSchedule } from 'utils/calendar';
 
 import GoogleMapLoader from 'react-google-maps/lib/GoogleMapLoader';
 import GoogleMap from 'react-google-maps/lib/GoogleMap';
