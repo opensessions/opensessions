@@ -88,12 +88,18 @@
 
 @media (min-width: 36rem) {
   .field {
+    max-width: 48em;
+    & .inputWrap {
+      max-width: 54%;
+    }
     & .tip {
       z-index: 0;
       top: 2em;
-      left: 22em;
+      // left: 22em;
+      right: 8em;
       bottom: auto;
       max-width: 20em;
+      max-width: 42%;
       transform: scale(.85);
       transition-duration: .3s;
       & > p {
@@ -105,7 +111,8 @@
       & .tip {
         opacity: 1;
         bottom: auto;
-        left: 26em;
+        // left: 26em;
+        right: 0;
         transform: scale(1);
       }
     }

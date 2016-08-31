@@ -16,7 +16,8 @@ export default class JSONListField extends React.Component { // eslint-disable-l
     value: PropTypes.array,
     onChange: PropTypes.func,
     onAddEmpty: PropTypes.func,
-    addText: PropTypes.string
+    addText: PropTypes.string,
+    maxLength: PropTypes.number
   }
   constructor() {
     super();
@@ -89,7 +90,7 @@ export default class JSONListField extends React.Component { // eslint-disable-l
     </li>);
   }
   render() {
-    const { value } = this.props;
+    const { value, maxLength } = this.props;
     let { empty } = this.state;
     if (!empty) empty = {};
     return (<div className={styles.listBox}>
@@ -97,8 +98,8 @@ export default class JSONListField extends React.Component { // eslint-disable-l
         {this.renderLabels()}
         {value && value.length ? null : this.renderRow('-1', empty, null)}
         {value ? value.map((row, key) => this.renderRow(key, row, this.renderDeleteButton(key))) : null}
-        <li>{this.renderAddButton()}</li>
       </ol>
+      {!value || (!maxLength || value.length < maxLength) ? this.renderAddButton() : <p className={styles.maxReached}>Open Sessions is still in 'beta' mode. You have reached the maximum number of sessions that can be scheduled</p>}
     </div>);
   }
 }

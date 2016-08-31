@@ -5,8 +5,7 @@ import styles from './styles.css';
 export default class TimePicker extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
     value: PropTypes.string,
-    onChange: PropTypes.func,
-    steps: PropTypes.num
+    onChange: PropTypes.func
   }
   constructor() {
     super();

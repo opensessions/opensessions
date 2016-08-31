@@ -51,7 +51,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
         { renderer: this.renderPricingFieldset, slug: 'pricing', props: { label: 'Pricing', validity: 'none' } },
         { renderer: this.renderRestrictionsFieldset, slug: 'restrictions', props: { label: 'Who it\'s for', validity: 'none', title: 'Who is your session for?', subtitle: 'Specify any restrictions that apply and disabilities catered for' } },
         { renderer: this.renderContactFieldset, slug: 'contact', props: { label: 'Contact info', validity: 'none', title: 'Who can people talk to about this session?', subtitle: 'Help potential attendees by providing details of who they can contact' } },
-        { renderer: this.renderScheduleFieldset, slug: 'schedule', required: ['schedule'], props: { label: 'Add a schedule', heading: 'Scheduling', validity: false } }
+        { renderer: this.renderScheduleFieldset, slug: 'schedule', required: ['schedule'], props: { label: 'Add a schedule', heading: 'Scheduling', validity: false, title: 'Add a schedule for your sessions', subtitle: 'You can add multiple dates for sessions which occur regularly' } }
       ]
     };
   }
@@ -279,7 +279,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     <Field fullSize>
       <JSONList
         {...this.getAttr('schedule')}
-        addText="Add schedule"
+        addText="Add another date"
         onAddEmpty={newRow => {
           if (newRow.startDate) {
             const date = new Date(newRow.startDate);
@@ -287,6 +287,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
             newRow.startDate = date.toISOString().substr(0, 10);
           }
         }}
+        maxLength={10}
         components={[
           { label: 'Date', Component: DateField, props: { name: 'startDate' } },
           { label: 'Start time', Component: TimeField, props: { name: 'startTime' } },

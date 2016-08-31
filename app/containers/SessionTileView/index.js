@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 
 import CalendarSvg from 'components/CalendarSvg';
 
-import { parseSchedule } from 'utils/postgres';
+import { parseSchedule } from 'utils/calendar';
 import { apiModel } from 'utils/api';
 
 import styles from './styles.css';

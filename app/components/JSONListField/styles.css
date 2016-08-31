@@ -35,12 +35,19 @@
 }
 
 a.addButton {
-  display: block;
+  display: inline-block;
   background-color: var(--actionColor);
   color: #FFF;
-  padding: .5em;
+  margin: .5em 0;
+  padding: .5em 1em;
 }
 
 .delButton {
   cursor: pointer;
+}
+
+.maxReached {
+  color: #777;
+  margin: 1em 0;
+  max-width: 32em;
 }

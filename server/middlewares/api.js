@@ -135,7 +135,7 @@ module.exports = (app) => {
     });
   });
 
-  api.post('/:model/:uuid/:field', resolveModel, upload.single('image'), (req, res) => {
+  api.post('/:model/:uuid/:field', requireLogin, resolveModel, upload.single('image'), (req, res) => {
     const { Model } = req;
     const image = req.file;
     const { model, uuid, field } = req.params;
@@ -149,7 +149,7 @@ module.exports = (app) => {
       .then(result => Model.findOne({ where: { uuid } })
         .then(instance => {
           const data = {};
-          data[field] = `https://${aws.URL}/${result.versions[1].key}`;
+          data[field] = `https://${aws.URL}/${result.versions[model === 'organizer' ? 0 : 1].key}`;
           return instance.update(data)
             .then(final => res.json({ status: 'success', result, baseURL: aws.URL, instance: final }));
         }).catch(error => res.status(404).json({ error })))

@@ -6,7 +6,7 @@ export default class TimePickerSimple extends React.Component { // eslint-disabl
   static propTypes = {
     value: PropTypes.string,
     onChange: PropTypes.func,
-    step: PropTypes.num
+    step: PropTypes.number
   }
   constructor() {
     super();
