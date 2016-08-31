@@ -6,10 +6,12 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
   static propTypes = {
     value: PropTypes.any,
     onChange: PropTypes.func,
+    options: PropTypes.array,
     addItem: PropTypes.func,
     deleteItem: PropTypes.func,
     className: PropTypes.string,
-    options: PropTypes.array
+    lazyLoad: PropTypes.bool,
+    maxOptions: PropTypes.number
   }
   constructor() {
     super();
@@ -23,8 +25,9 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
     this.setValue(null);
   }
   filterOptions = search => {
-    let { options } = this.props;
-    if (search) options = options.filter(option => option.name.match(new RegExp(search, 'i')));
+    let { options, maxOptions } = this.props;
+    if (search) options = options.filter(option => option.name.match(new RegExp(`^${search}`, 'i'))).concat(options.filter(option => option.name.match(new RegExp(`^.+(${search})`, 'i'))));
+    if (maxOptions) options = options.slice(0, maxOptions);
     return options.map(option => ({ text: option.name, props: { key: option.uuid, onMouseOver: this.itemHover, onClick: this.itemClick } }));
   }
   searchEvent = event => {
@@ -89,10 +92,10 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
     }
     if (Object.keys(newState).length) this.setState(newState);
   }
-  itemHover = (event) => {
+  itemHover = event => {
     this.setState({ highlightIndex: parseInt(event.target.dataset.index, 10) });
   }
-  itemClick = (event) => {
+  itemClick = event => {
     const value = event.target.dataset.key;
     this.setValue(value);
   }
@@ -102,17 +105,16 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
     this.props.addItem(search);
     this.setState({ visible: false, search: '' });
   }
-  dropdownEvent = (event) => {
+  dropdownEvent = event => {
     const { type } = event;
     if (type === 'mouseover') this.setState({ ignoreBlur: true });
     else if (type === 'mouseout') this.setState({ ignoreBlur: false });
   }
   render() {
-    const { value, options, className } = this.props;
+    const { value, options, className, lazyLoad } = this.props;
     const { visible, search, filteredOptions, highlightIndex } = this.state;
     const searchAttrs = {
       type: 'text',
-      placeholder: 'Search...',
       className,
       onChange: this.searchEvent,
       onKeyDown: this.searchEvent
@@ -122,7 +124,7 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
     let input = <input {...searchAttrs} ref="input" onFocus={this.searchEvent} onBlur={this.searchEvent} defaultValue={valueDisplay} />;
     let output = <input {...searchAttrs} className={[className, styles.output].join(' ')} ref="output" value={valueDisplay} style={{ opacity: visible ? 0 : 1 }} tabIndex="-1" />;
     let searchResults = null;
-    if (visible) {
+    if (visible && (lazyLoad ? search : true)) {
       let index = -1;
       searchResults = (<ol className={styles.searchResults} onMouseOver={this.dropdownEvent} onMouseOut={this.dropdownEvent} ref="searchResults">
         {filteredOptions.map(opt => <li data-key={opt.props.key} data-index={++index} {...opt.props} className={index === highlightIndex ? styles.highlight : null} dangerouslySetInnerHTML={{ __html: opt.text.replace(new RegExp(`(${search})`, 'ig'), '<b>$1</b>') }} />)}

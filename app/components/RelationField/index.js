@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 import SearchableSelect from 'components/SearchableSelect';
 
@@ -8,12 +8,11 @@ import { apiModel } from '../../utils/api';
 
 export default class RelationField extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
-    value: React.PropTypes.string,
-    onChange: React.PropTypes.func,
-    relation: React.PropTypes.object,
-    onFocus: React.PropTypes.func,
-    onBlur: React.PropTypes.func,
-    className: React.PropTypes.string,
+    value: PropTypes.string,
+    onChange: PropTypes.func,
+    relation: PropTypes.object,
+    className: PropTypes.string,
+    props: PropTypes.object,
   }
   componentDidMount() {
     this.fetchRelation();
@@ -53,10 +52,11 @@ export default class RelationField extends React.Component { // eslint-disable-l
   }
   render() {
     const state = this.state || {};
+    const { value, className, props } = this.props;
     const options = 'options' in state ? state.options : [];
-    const searchableAttrs = { options, value: this.props.value, onFocus: this.props.onFocus, onBlur: this.props.onBlur };
+    const searchableAttrs = { options, value, className };
     return (<div className={styles.relationWrap}>
-      <SearchableSelect {...searchableAttrs} onChange={this.handleValueChange} className={this.props.className} addItem={this.newRelation} />
+      <SearchableSelect {...searchableAttrs} {...props} onChange={this.handleValueChange} addItem={this.newRelation} />
     </div>);
   }
 }
