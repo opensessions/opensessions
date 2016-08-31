@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-import TimePicker from 'components/TimePicker';
+import TimePickerSimple from 'components/TimePickerSimple';
 
 export default class TimeField extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
@@ -25,7 +25,7 @@ export default class TimeField extends React.Component { // eslint-disable-line 
     if (isMobile) {
       input = <input {...attrs} type="time" onChange={this.handleChange} />;
     } else {
-      input = <TimePicker {...attrs} onChange={onChange} />;
+      input = <TimePickerSimple {...attrs} onChange={onChange} step={15} />;
     }
     return input;
   }

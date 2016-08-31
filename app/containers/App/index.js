@@ -96,13 +96,13 @@ export default class App extends React.Component { // eslint-disable-line react/
     this.lock = new Auth0Lock('bSVd1LzdwXsKbjF7JXflIc1UuMacffUA', 'opensessions.eu.auth0.com');
   }
   render() {
-    const { meta, profile } = this.state;
+    const { meta, profile, notifications } = this.state;
     const { INTERCOM_APPID } = window;
     const user = profile && INTERCOM_APPID ? { appID: INTERCOM_APPID, user_id: profile.user_id, email: profile.email, name: profile.nickname } : null;
     return (
       <div className={styles.root}>
         <Helmet meta={meta} />
-        <Header lock={this.lock} />
+        <Header lock={this.lock} notifications={notifications} />
         <div className={styles.appBody}>
           <div className={styles.container}>
             {this.props.children}

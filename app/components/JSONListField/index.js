@@ -33,6 +33,7 @@ export default class JSONListField extends React.Component { // eslint-disable-l
     if (onAddEmpty) onAddEmpty(newRow);
     value.push(newRow);
     onChange(value);
+    this.setState({ empty: {} });
   }
   deleteRow = event => {
     let { target } = event;
@@ -94,8 +95,9 @@ export default class JSONListField extends React.Component { // eslint-disable-l
     return (<div className={styles.listBox}>
       <ol className={styles.list}>
         {this.renderLabels()}
-        {value ? null : this.renderRow('-1', empty, this.renderAddButton())}
-        {value ? value.map((row, key) => this.renderRow(key, row, key === 0 ? this.renderAddButton() : this.renderDeleteButton(key))) : null}
+        {value && value.length ? null : this.renderRow('-1', empty, null)}
+        {value ? value.map((row, key) => this.renderRow(key, row, this.renderDeleteButton(key))) : null}
+        <li>{this.renderAddButton()}</li>
       </ol>
     </div>);
   }

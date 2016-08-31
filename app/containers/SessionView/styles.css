@@ -114,7 +114,7 @@
   text-align: right;
   margin: 1em 0;
   padding: .25em;
-  font-size: 1.5em;
+  font-size: 1.4em;
 }
 
 .descriptionSection {
@@ -304,6 +304,9 @@ a.organizerLink {
         padding: 1em .5em;
       }
     }
+  }
+  .shareSection {
+    font-size: 1.5em;
   }
   .mainCol {
     padding: .5em;

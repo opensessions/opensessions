@@ -1,0 +1,17 @@
+@import '../../containers/App/variables.css';
+
+div.timePicker {
+  display: flex;
+  width: 8em;
+  & select {
+    width: 4em;
+    text-align: center;
+    text-align-last: center;
+    &:first-child {
+      border-right: 0;
+    }
+    &:last-child {
+      width: 3em;
+    }
+  }
+}

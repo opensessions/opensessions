@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 import styles from './styles.css';
 
 export default class TimePicker extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
-    value: React.PropTypes.string,
-    onChange: React.PropTypes.func,
+    value: PropTypes.string,
+    onChange: PropTypes.func,
+    steps: PropTypes.num
   }
   constructor() {
     super();

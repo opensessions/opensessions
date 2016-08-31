@@ -1,21 +1,21 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 import styles from './styles.css';
 
 export default class SearchableSelect extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
-    value: React.PropTypes.any,
-    onChange: React.PropTypes.func,
-    addItem: React.PropTypes.func,
-    deleteItem: React.PropTypes.func,
-    className: React.PropTypes.string,
-    options: React.PropTypes.array
+    value: PropTypes.any,
+    onChange: PropTypes.func,
+    addItem: PropTypes.func,
+    deleteItem: PropTypes.func,
+    className: PropTypes.string,
+    options: PropTypes.array
   }
   constructor() {
     super();
     this.state = { search: '', filteredOptions: [], highlightIndex: 0, visible: false, ignoreBlur: false };
   }
-  setValue = (value) => {
+  setValue = value => {
     this.props.onChange(value);
     this.setState({ visible: false, search: '', ignoreBlur: false });
   }

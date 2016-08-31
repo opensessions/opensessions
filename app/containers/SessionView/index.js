@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { parseSchedule } from 'utils/postgres';
+import { parseSchedule, calendarLinks } from 'utils/calendar';
 
 import GoogleMapLoader from 'react-google-maps/lib/GoogleMapLoader';
 import GoogleMap from 'react-google-maps/lib/GoogleMap';
@@ -84,8 +84,9 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   }
   renderDate() {
     const { session } = this.state;
-    if (!(session.schedule && session.schedule[0])) return null;
-    const data = parseSchedule(session.schedule[0]);
+    const { schedule } = session;
+    if (!(schedule && schedule[0])) return null;
+    const data = parseSchedule(schedule[0]);
     if (!(data.date || data.time)) {
       return null;
     }
@@ -177,12 +178,12 @@ export default class SessionView extends React.Component { // eslint-disable-lin
             </span>
           </div>
         </div>
-        <div className={styles.info}>
+        {session.leader ? (<div className={styles.info}>
           <h3>Session Leader</h3>
           <div className={styles.floatingInfo}>
-            {session.leader ? session.leader : 'No leader'}
+            {session.leader}
           </div>
-        </div>
+        </div>) : null}
         <div className={styles.info}>
           <h3>Organiser</h3>
           <div className={`${styles.floatingInfo} ${styles.organizerInfo}`}>

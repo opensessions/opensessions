@@ -1,12 +1,13 @@
 .socialIcons {
   display: inline-block;
-  padding: 0 .5em;
+  padding-left: .5em;
   & > li {
     list-style: none;
     display: inline-block;
-    padding: .5em;
     & a {
+      padding: .4em;
       display: block;
+      line-height: 1;
     }
   }
 }

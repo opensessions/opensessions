@@ -31,7 +31,7 @@
   }
   & .tip {
     position: absolute;
-    z-index: 0;
+    z-index: 3;
     opacity: 0;
     transition: .4s all ease;
     background-color: #FFF;
@@ -89,6 +89,7 @@
 @media (min-width: 36rem) {
   .field {
     & .tip {
+      z-index: 0;
       top: 2em;
       left: 22em;
       bottom: auto;
