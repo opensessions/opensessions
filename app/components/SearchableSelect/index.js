@@ -54,7 +54,7 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
         event.preventDefault();
         event.stopPropagation();
       } else if (keyCode === 13) {
-        action = 'chooseSelected';
+        input.blur();
       }
     } else if (type === 'blur') {
       if (!this.state.ignoreBlur) {
@@ -102,8 +102,9 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
   addItem = () => {
     const { search } = this.state;
     if (!search) return;
-    this.props.addItem(search);
-    this.setState({ visible: false, search: '' });
+    this.props.addItem(search).then(() => {
+      this.setState({ visible: false, search: '', ignoreBlur: false });
+    });
   }
   dropdownEvent = event => {
     const { type } = event;
@@ -130,11 +131,11 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
         {filteredOptions.map(opt => <li data-key={opt.props.key} data-index={++index} {...opt.props} className={index === highlightIndex ? styles.highlight : null} dangerouslySetInnerHTML={{ __html: opt.text.replace(new RegExp(`(${search})`, 'ig'), '<b>$1</b>') }} />)}
       </ol>);
     }
-    const clear = <a className={styles.clear} onClick={this.resetValue}>&times;</a>;
+    const action = <a className={[styles.action, search && !filteredOptions.length ? styles.add : styles.clear, value || search ? null : styles.hide].join(' ')} onClick={this.resetValue} />;
     return (<div className={styles.searchableSelect}>
       {input}
       {output}
-      {value ? clear : null}
+      {action}
       {searchResults}
     </div>);
   }

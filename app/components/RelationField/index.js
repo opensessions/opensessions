@@ -30,16 +30,10 @@ export default class RelationField extends React.Component { // eslint-disable-l
       this.newRelation(value);
     }
   }
-  onAdd = (event) => {
-    event.preventDefault();
-    this.setState({ relationState: 'typeNew' });
-  }
-  newRelation = (name) => {
-    apiModel.new(this.props.relation.model, { name }).then((result) => {
-      this.setState({ relationState: 'none' });
-      this.fetchRelation(result.instance.uuid);
-    });
-  }
+  newRelation = name => apiModel.new(this.props.relation.model, { name }).then(result => {
+    this.setState({ relationState: 'none' });
+    this.fetchRelation(result.instance.uuid);
+  })
   handleValueChange = (value) => {
     if (this.props.onChange) this.props.onChange(value === 'none' ? null : value);
   }

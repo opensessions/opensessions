@@ -15,19 +15,40 @@
       color: #777;
     }
   }
-  & .clear {
+  & a.action {
+    transition: .2s all ease;
     position: absolute;
     top: 50%;
     right: 0;
     line-height: 0;
-    padding: 1em .75em;
+    padding: 1em 1.25rem;
     margin-top: -1em;
     font-family: monospace;
     font-size: 1.5em;
     opacity: .5;
-    &:hover {
+    &.clear {
+      &:hover {
+        opacity: 1;
+        text-decoration: none;
+      }
+      &::before {
+        content: '\0000D7';
+      }
+    }
+    &.add {
       opacity: 1;
-      text-decoration: none;
+      color: var(--actionColor);
+      font-size: 1.75em;
+      transform: rotate(45deg);
+      padding-right: 1.05rem;
+      padding-top: .92em;
+      font-weight: bold;
+      &::before {
+        content: '\0000D7';
+      }
+    }
+    &.hide {
+      opacity: 0;
     }
   }
   & .searchResults {
