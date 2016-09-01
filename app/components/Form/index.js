@@ -53,6 +53,10 @@ export default class Form extends React.Component { // eslint-disable-line react
     const { activeTab } = this.state;
     return { '-1': slugs.find((slug, key) => slugs[key + 1] === activeTab), 0: activeTab, 1: slugs.find((slug, key) => slugs[key - 1] === activeTab) };
   }
+  getSlugURL = slug => {
+    let { pathname } = window.location;
+    return [pathname.match(/^.*edit/) ? pathname.match(/^.*edit/)[0] : pathname, slug].join('/');
+  }
   getFieldsets() {
     return this.props.children instanceof Array ? this.props.children : [this.props.children];
   }
@@ -87,8 +91,6 @@ export default class Form extends React.Component { // eslint-disable-line react
   renderNav() {
     const { fieldsets } = this.props;
     const { activeTab } = this.state;
-    let baseURL = window.location.pathname;
-    baseURL = baseURL.match(/^.*edit/) ? baseURL.match(/^.*edit/)[0] : baseURL;
     return this.getFieldsets().map((fieldset, key) => {
       const { heading, validity, label } = fieldset.props;
       const propFieldset = fieldsets[key];
@@ -97,7 +99,7 @@ export default class Form extends React.Component { // eslint-disable-line react
       let isComplete = <span className={styles.tickNone}>+</span>;
       if (validity === true) isComplete = <span className={styles.tick}><img role="presentation" src="/images/tick.svg" /></span>;
       else if (validity === 'none') isComplete = null;
-      return [heading ? <h1 key={heading}>{heading}</h1> : null, <Link className={className} to={`${baseURL}/${slug}`} key={key}>{label} {isComplete}</Link>];
+      return [heading ? <h1 key={heading}>{heading}</h1> : null, <Link className={className} to={this.getSlugURL(slug)} key={key}>{label} {isComplete}</Link>];
     });
   }
   renderTab() {
@@ -111,28 +113,23 @@ export default class Form extends React.Component { // eslint-disable-line react
   }
   renderActionButtons() {
     const { inactive } = styles;
+    const attr = {
+      onClick: this.actionClick,
+      onKeyUp: this.actionClick,
+      tabIndex: 0
+    };
     const backAttr = {
-      onClick: this.actionClick,
-      onKeyUp: this.actionClick,
-      className: styles.backButton,
-      tabIndex: 0
+      className: [styles.backButton, inactive].join(' '),
+      to: '/nowhere'
     };
-    const nextAttr = {
-      onClick: this.actionClick,
-      onKeyUp: this.actionClick,
-      tabIndex: 0
-    };
-    let nextText = 'Next';
     const slugs = this.getSlugs();
-    if (!slugs[-1]) {
-      backAttr.className = `${styles.backButton} ${inactive}`;
-      backAttr.onClick = undefined;
-    } else if (!slugs[1]) {
-      nextText = 'Publish';
+    if (slugs[-1]) {
+      backAttr.className = styles.backButton;
+      backAttr.to = this.getSlugURL(slugs[-1]);
     }
     return (<div className={styles.actionButtons}>
-      <a {...backAttr}>Back</a>
-      <a {...nextAttr}>{nextText}</a>
+      <Link {...attr} {...backAttr}>Back</Link>
+      {slugs[1] ? <Link to={this.getSlugURL(slugs[1])}>Next</Link> : <a {...attr}>Publish</a>}
     </div>);
   }
   render() {

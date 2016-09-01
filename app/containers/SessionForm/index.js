@@ -58,6 +58,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   }
   componentDidMount() {
     this.fetchData();
+    console.log('componentDidMount');
   }
   onChange = (session) => {
     const { fieldsets } = this.state;
