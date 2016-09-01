@@ -76,7 +76,7 @@ export default class Form extends React.Component { // eslint-disable-line react
       const interval = setInterval(() => {
         appBody.scrollTop -= 16 * (((((appBody.scrollTop / originalScrollTop) - .5) * 2) ** 3) + 1);
         if (appBody.scrollTop === 0) {
-          firstShownField.querySelectorAll('input, textarea, select')[0].focus();
+          firstShownField.querySelectorAll('[tabIndex], input, textarea, select')[0].focus();
           clearInterval(interval);
         }
       }, 16);

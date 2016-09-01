@@ -1,37 +1,40 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 import styles from './styles.css';
 
 export default class IconRadioField extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
-    onChange: React.PropTypes.func,
-    value: React.PropTypes.string,
-    options: React.PropTypes.array,
+    onChange: PropTypes.func,
+    value: PropTypes.string,
+    options: PropTypes.array,
   }
-  handleChange = (event) => {
+  handleChange = event => {
     const { value } = event.target;
     this.props.onChange(value);
   }
+  tabKey = event => {
+    const { keyCode } = event;
+    if (keyCode === 13) {
+      event.target.click();
+    }
+  }
   render() {
-    const { value } = this.props;
-    const attrs = {
-      onChange: this.handleChange,
-    };
-    const radios = (<ol>
-      {this.props.options.map((option) => {
-        const selected = option.value === value;
-        const icon = option.icon ? option.icon : <img src={selected ? option.selectedSrc : option.src} role="presentation" />;
-        return (<li className={selected ? styles.selected : ''} key={option.value}>
-          <label>
-            {icon}
-            {option.text}
-            <input type="radio" value={option.value} selected={selected} {...attrs} />
-          </label>
-        </li>);
-      })}
-    </ol>);
+    const { value, options } = this.props;
+    const attrs = { type: 'radio', onChange: this.handleChange };
     return (<div className={styles.iconRadio}>
-      {radios}
+      <ol>
+        {options.map(option => {
+          const selected = option.value === value;
+          const icon = option.icon ? option.icon : <img src={selected ? option.selectedSrc : option.src} role="presentation" />;
+          return (<li className={selected ? styles.selected : ''} key={option.value}>
+            <label tabIndex="0" onKeyUp={this.tabKey}>
+              {icon}
+              {option.text}
+              <input {...attrs} value={option.value} selected={selected} />
+            </label>
+          </li>);
+        })}
+      </ol>
     </div>);
   }
 }

@@ -156,7 +156,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
         session.state = 'draft';
       }
       this.setState({ status: 'Saving...', saveState: 'saving' });
-      return apiModel.edit('session', session.uuid, session).then(result => {
+      apiModel.edit('session', session.uuid, session).then(result => {
         const { instance, error } = result;
         if (error) {
           throw new Error(error);
@@ -270,9 +270,9 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     }
     const emailProps = { options: emailOptions, addItem: this.addEmail };
     return (<div>
-      <Field label="Full name"><TextField {...this.getAttr('contactName')} /></Field>
-      <Field label="Phone number"><TextField {...this.getAttr('contactPhone')} /></Field>
-      <Field label="Email address"><SearchableSelect {...this.getAttr('contactEmail')} {...emailProps} /></Field>
+      <Field label="Full name" tip="Who's the best person for attendees to contact if they have questions about this session?"><TextField {...this.getAttr('contactName')} /></Field>
+      <Field label="Email address" tip="What is their email address?"><SearchableSelect {...this.getAttr('contactEmail')} {...emailProps} /></Field>
+      <Field label="Phone number" tip="What is their phone number (optional)?"><TextField {...this.getAttr('contactPhone')} /></Field>
     </div>);
   }
   renderScheduleFieldset = () => (<div>
