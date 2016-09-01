@@ -28,6 +28,8 @@ function apiFetch(url, opts) {
         } else {
           reject(json);
         }
+      }).catch(error => {
+        reject({ status: response.status, error });
       });
     });
   });

@@ -38,14 +38,15 @@ export default class SessionTileView extends React.Component { // eslint-disable
   }
   duplicate = () => {
     const { session } = this.props;
-    apiModel.action('session', session.uuid, 'duplicate').then(response => {
-      if (response.status === 'success') {
-        alert('Duplicated session: ', response.instance.href);
-        window.location = response.instance.href;
-      } else {
-        alert('Failed to duplicate session');
-      }
-    });
+    if (confirm('Are you sure you want to duplicate this session?')) {
+      apiModel.action('session', session.uuid, 'duplicate').then(response => {
+        if (response.status === 'success') {
+          window.location = response.instance.href;
+        } else {
+          alert('Failed to duplicate session');
+        }
+      });
+    }
   }
   renderActions() {
     const { session } = this.props;
@@ -53,6 +54,7 @@ export default class SessionTileView extends React.Component { // eslint-disable
     const actions = [];
     if (this.isOwner()) {
       if (!isPublished) actions.push({ key: 'edit', item: <Link to={`${session.href}/edit`}>Edit</Link> });
+      else actions.push({ key: 'view', item: <Link to={session.href}>View</Link> });
       actions.push({ key: 'copy', item: <a onClick={this.duplicate}>Duplicate</a> });
       actions.push({ key: 'delete', item: <a onClick={this.delete} className={styles.delete}>Delete</a> });
     } else {

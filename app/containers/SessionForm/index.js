@@ -180,7 +180,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
         <TextField validation={{ maxLength: 50 }} {...this.getAttr('title')} />
       </Field>
       <Field label="Organiser Name" name="OrganizerUuid" tip="Enter the name of your club or organisation. If you don't represent a club or organisation, enter your own name" example="E.g. Richmond Volleyball">
-        <Relation {...this.getAttr('OrganizerUuid')} relation={{ model: 'organizer', query: { owner: user.user_id } }} />
+        <Relation {...this.getAttr('OrganizerUuid')} props={{ placeholder: 'E.g. Richmond Volleyball' }} relation={{ model: 'organizer', query: { owner: user.user_id } }} />
       </Field>
       <Field label="Session Description" tip="Let people know what's great about the session! Remember: the more detail you provide, the more likely people are to decide to attend." example="Tips: Who is this session for? What benefits will people get from it? What will the session be like? What will we do? Is any prior experience needed?">
         <TextField multi size="XL" {...this.getAttr('description')} />

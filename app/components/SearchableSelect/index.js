@@ -6,6 +6,7 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
   static propTypes = {
     value: PropTypes.any,
     onChange: PropTypes.func,
+    placeholder: PropTypes.string,
     options: PropTypes.array,
     addItem: PropTypes.func,
     deleteItem: PropTypes.func,
@@ -84,7 +85,6 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
     }
     if (newState.highlightIndex) {
       const maxIndex = (newState.filteredOptions || filteredOptions).length - 1;
-      console.log([0, newState.highlightIndex, maxIndex].sort((a, b) => a - b));
       newState.highlightIndex = [0, newState.highlightIndex, maxIndex].sort((a, b) => a - b)[1];
     }
     if (newState.search === '') {
@@ -112,10 +112,11 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
     else if (type === 'mouseout') this.setState({ ignoreBlur: false });
   }
   render() {
-    const { value, options, className, lazyLoad } = this.props;
+    const { value, placeholder, options, className, lazyLoad } = this.props;
     const { visible, search, filteredOptions, highlightIndex } = this.state;
     const searchAttrs = {
       type: 'text',
+      placeholder,
       className,
       onChange: this.searchEvent,
       onKeyDown: this.searchEvent

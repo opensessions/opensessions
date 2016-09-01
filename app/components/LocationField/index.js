@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 import GoogleMapLoader from 'react-google-maps/lib/GoogleMapLoader';
 import GoogleMap from 'react-google-maps/lib/GoogleMap';
@@ -8,21 +8,19 @@ import styles from './styles.css';
 
 export default class LocationField extends React.Component {
   static propTypes = {
-    value: React.PropTypes.string,
-    dataValue: React.PropTypes.object,
-    onChange: React.PropTypes.func,
-    onDataChange: React.PropTypes.func,
-    onFocus: React.PropTypes.func,
-    onBlur: React.PropTypes.func,
-    defaultLocation: React.PropTypes.object,
-    className: React.PropTypes.string,
+    value: PropTypes.string,
+    dataValue: PropTypes.object,
+    onChange: PropTypes.func,
+    onDataChange: PropTypes.func,
+    defaultLocation: PropTypes.object,
+    className: PropTypes.string,
   }
   constructor(props) {
     super(props);
     this.state = { clean: true };
   }
   componentDidMount() {
-    const options = { types: [] };
+    const options = { types: [], componentRestrictions: { country: 'gb' } };
     const { input } = this.refs;
     const { maps } = window.google;
     const autocomplete = new maps.places.Autocomplete(input, options);
@@ -32,24 +30,22 @@ export default class LocationField extends React.Component {
       return place;
     });
   }
-  onBlur = (event) => {
+  onBlur = event => {
     if (!this.state.clean) {
       event.target.value = '';
     }
-    if (this.props.onBlur) this.props.onBlur(event);
   }
-  onFocus = (event) => {
+  onFocus = event => {
     event.target.select();
-    if (this.props.onFocus) this.props.onFocus(event);
   }
-  onChange = (event) => {
+  onChange = event => {
     if (!(event.nativeEvent.detail && event.nativeEvent.detail === 'generated')) {
       this.setState({ clean: false });
       event.stopPropagation();
       event.preventDefault();
     }
   }
-  onPlaceChange = (place) => {
+  onPlaceChange = place => {
     if (!place.geometry) throw alert('No map data for this location; please try a different address');
     this.latLngChange(place.geometry.location, { placeID: place.place_id });
     this.props.onChange(place.formatted_address);
@@ -64,7 +60,7 @@ export default class LocationField extends React.Component {
     this.changeCenter(locationData);
     this.props.onDataChange(locationData);
   }
-  changeCenter = (locationData) => {
+  changeCenter = locationData => {
     if (this.refs.component) {
       this.refs.component.panTo(locationData);
     }
@@ -92,6 +88,7 @@ export default class LocationField extends React.Component {
         icon: { url: '/images/map-pin-active.svg' },
         defaultAnimation: 2,
         draggable: true,
+        cursor: 'url("/images/cursor/draggable.png"), move',
         onDragend: drag => {
           this.latLngChange(drag.latLng);
         }
@@ -101,11 +98,13 @@ export default class LocationField extends React.Component {
         defaultCenter: locationData,
         center: locationData,
         ref: 'component',
+        draggableCursor: 'url("/images/cursor/draggable.png"), move',
+        draggingCursor: 'url("/images/cursor/dragging.png"), move',
         options: { streetViewControl: false, scrollwheel: false, mapTypeControl: false }
       };
       map = (<GoogleMapLoader
         containerElement={<div className={styles.mapView} />}
-        googleMapElement={<GoogleMap {...mapProps}>
+        googleMapElement={<GoogleMap {...mapProps} draggableCursor={mapProps.draggableCursor}>
           <Marker {...marker} />
         </GoogleMap>}
       />);
