@@ -1,4 +1,5 @@
 .imageField {
+  max-width: 28em;
   &.loading {
     cursor: wait;
     & img.preview {
@@ -21,8 +22,12 @@
       background: #FFF;
       color: #444;
     }
+    & + .choose {
+      margin-left: .5em;
+    }
     & .text {
       padding: .25em 1em;
+      display: inline-block;
     }
     & img {
       max-width: 2.5em;

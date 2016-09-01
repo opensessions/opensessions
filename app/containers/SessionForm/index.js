@@ -51,6 +51,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
         { renderer: this.renderPricingFieldset, slug: 'pricing', props: { label: 'Pricing', validity: 'none', title: 'Add pricing for your session', subtitle: 'If your session is paid, describe pricing levels here' } },
         { renderer: this.renderRestrictionsFieldset, slug: 'restrictions', props: { label: 'Who it\'s for', validity: 'none', title: 'Who is your session for?', subtitle: 'Specify any restrictions that apply and disabilities catered for' } },
         { renderer: this.renderContactFieldset, slug: 'contact', props: { label: 'Contact info', validity: 'none', title: 'Who can people talk to about this session?', subtitle: 'Help potential attendees by providing details of who they can contact' } },
+        { renderer: this.renderImageFieldset, slug: 'photo', props: { label: 'Photo', validity: 'none', title: 'Add a photo of your session', subtitle: 'Show people what to expect from this session' } },
         { renderer: this.renderScheduleFieldset, slug: 'schedule', required: ['schedule'], props: { label: 'Add a schedule', heading: 'Scheduling', validity: false, title: 'Add a schedule for your sessions', subtitle: 'You can add multiple dates for sessions which occur regularly' } }
       ]
     };
@@ -190,8 +191,15 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       </Field>
     </div>);
   }
-  renderAdditionalFieldset = () => {
+  renderImageFieldset = () => {
     const session = this.getSession();
+    return (<div>
+      <Field fullSize tipType="inline" tipTitle="upload a real photo of your session" tip="People are much more likely to attend a session if it has a real photo (One taken on your smartphone will do)">
+        <ImageUpload preview {...this.getAttr('image')} upload={{ URL: `/api/session/${session.uuid}/image`, name: 'image' }} />
+      </Field>
+    </div>);
+  }
+  renderAdditionalFieldset = () => {
     const coachOptions = [
       { text: 'No, the session is unlead' },
       { text: 'Yes, the session is coached' }
@@ -205,9 +213,6 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       </Field>
       <Field label="Will participants receive coaching?">
         <BoolRadio options={coachOptions} {...this.getAttr('hasCoaching')} />
-      </Field>
-      <Field label="Image">
-        <ImageUpload preview {...this.getAttr('image')} upload={{ URL: `/api/session/${session.uuid}/image`, name: 'image' }} />
       </Field>
     </div>);
   }

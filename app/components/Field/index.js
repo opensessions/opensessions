@@ -5,6 +5,7 @@ import styles from './styles.css';
 export default class Field extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
     label: PropTypes.string,
+    tipType: PropTypes.string,
     tip: PropTypes.string,
     tipTitle: PropTypes.string,
     example: PropTypes.string,
@@ -23,7 +24,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
     this.setState({ hasFocus: event.type === 'focus' });
   }
   render() {
-    const { label, fullSize, tip, tipTitle, example, element, children } = this.props;
+    const { label, fullSize, tipType, tip, tipTitle, example, element, children } = this.props;
     let input;
     if (element) {
       input = element;
@@ -32,7 +33,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
     }
     let tooltip;
     if (tip) {
-      tooltip = (<div className={styles.tip}>
+      tooltip = (<div className={[styles.tip, tipType ? styles[tipType] : styles.tipFloat].join(' ')}>
         <strong>{tipTitle || label}</strong>
         <p>{tip}</p>
         {example ? <p className={styles.example}>{example}</p> : null}

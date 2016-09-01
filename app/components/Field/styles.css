@@ -14,13 +14,13 @@
   position: relative;
   padding: .75em 0;
   form[data-hasFocus='false'] &:hover {
-    & .tip {
+    & .tip.tipFloat {
       opacity: 1;
       bottom: 100%;
     }
   }
   &[data-hasfocus='true'] {
-    & .tip {
+    & .tip.tipFloat {
       opacity: 1;
       bottom: 100%;
     }
@@ -30,35 +30,50 @@
     line-height: 2;
   }
   & .tip {
-    position: absolute;
-    z-index: 3;
-    opacity: 0;
-    transition: .4s all ease;
-    background-color: #FFF;
-    padding: .75em;
-    pointer-events: none;
-    bottom: 90%;
-    top: auto;
-    &::before {
-      content: 'i';
-      position: absolute;
-      border-radius: 1em;
-      background-color: #00AEEF;
-      color: #FFF;
-      line-height: 1;
-      width: 1em;
-      text-align: center;
+    &.inline {
       font-style: italic;
-      font-family: serif;
-      font-size: 1.5em;
-      top: -.5em;
-      left: -.5em;
+      max-width: 28em;
+      color: #777;
+      & strong {
+        font-weight: normal;
+        font-size: 1.2em;
+        &::before {
+          content: 'Tip: ';
+          font-weight: bold;
+        }
+      }
     }
-    & > p {
-      font-size: .9em;
-    }
-    & .example {
-      font-weight: 300;
+    &.tipFloat {
+      position: absolute;
+      z-index: 3;
+      opacity: 0;
+      transition: .4s all ease;
+      background-color: #FFF;
+      padding: .75em;
+      pointer-events: none;
+      bottom: 90%;
+      top: auto;
+      &::before {
+        content: 'i';
+        position: absolute;
+        border-radius: 1em;
+        background-color: #00AEEF;
+        color: #FFF;
+        line-height: 1;
+        width: 1em;
+        text-align: center;
+        font-style: italic;
+        font-family: serif;
+        font-size: 1.5em;
+        top: -.5em;
+        left: -.5em;
+      }
+      & > p {
+        font-size: .9em;
+      }
+      & .example {
+        font-weight: 300;
+      }
     }
   }
   & .inputWrap {
@@ -93,25 +108,29 @@
       max-width: 54%;
     }
     & .tip {
-      z-index: 0;
-      top: 2em;
-      right: 8em;
-      bottom: auto;
-      max-width: 20em;
-      max-width: 42%;
-      transform: scale(.85);
-      transition-duration: .3s;
-      & > p {
-        font-size: 1em;
+      &.tipFloat {
+        z-index: 0;
+        top: 2em;
+        right: 6em;
+        bottom: auto;
+        max-width: 20em;
+        max-width: 42%;
+        transform: scale(.825) perspective(16em);
+        transition-duration: .3s;
+        color: #FFF;
+        & > p {
+          font-size: 1em;
+        }
       }
     }
     form[data-hasFocus='false'] &:hover,
     &[data-hasfocus='true'] {
-      & .tip {
+      & .tip.tipFloat {
         opacity: 1;
         bottom: auto;
         right: 0;
         transform: scale(1);
+        color: inherit;
       }
     }
   }

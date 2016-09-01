@@ -9,11 +9,15 @@ export default class ImageUploadField extends React.Component { // eslint-disabl
     onChange: PropTypes.func,
     upload: PropTypes.object,
     addText: PropTypes.string,
+    editText: PropTypes.string,
     preview: PropTypes.bool
   }
   constructor() {
     super();
     this.state = { status: '' };
+  }
+  reset = () => {
+    this.props.onChange('');
   }
   handleChange = event => {
     event.stopPropagation();
@@ -38,12 +42,19 @@ export default class ImageUploadField extends React.Component { // eslint-disabl
     }
   }
   render() {
-    const { value, preview, addText } = this.props;
+    const { value, preview, addText, editText } = this.props;
     const { status } = this.state;
-    return (<div className={`${styles.imageField} ${status === 'Uploading...' ? styles.loading : ''}`}>
+    return (<div className={[styles.imageField, status === 'Uploading...' ? styles.loading : null].join(' ')}>
       {preview ? <img src={value ? `${value}?${Date.now()}` : '/images/placeholder.png'} role="presentation" className={styles.preview} /> : null}
-      <label className={styles.choose}><img src="/images/camera.png" role="presentation" /> <span className={styles.text}>{addText || 'Add photo'}</span> <input type="file" onChange={this.handleChange} /></label>
-      <span className={styles.status}>{status}</span>
+      <div>
+        {value ? <label className={styles.choose} onClick={this.reset}><img src="/images/remove.png" role="presentation" /> <span className={styles.text}>Remove photo</span></label> : null}
+        <label className={styles.choose}>
+          <img src={value ? '/images/change.png' : '/images/camera.png'} role="presentation" />
+          <span className={styles.text}>{value ? editText || 'Change photo' : addText || 'Add photo'}</span>
+          <input type="file" onChange={this.handleChange} />
+        </label>
+        <span className={styles.status}>{status}</span>
+      </div>
     </div>);
   }
 }

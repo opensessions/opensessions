@@ -44,6 +44,7 @@ a.addButton {
 
 .delButton {
   cursor: pointer;
+  min-width: 2em;
 }
 
 .maxReached {

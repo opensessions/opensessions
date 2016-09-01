@@ -303,11 +303,14 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     </section>);
   }
   renderShare() {
-    const { title, href } = this.state.session;
+    const { session } = this.state;
+    const { title, href } = session;
     const link = `${window.location.origin}${href}`;
-    return (<div className={styles.shareSection}>
+    const disabled = session.state !== 'published';
+    return (<div className={[styles.shareSection, disabled ? styles.disabled : null].join(' ')}>
       <div className={styles.inner}>
         Share this session
+        {disabled ? <sub> (enabled when published)</sub> : null}
         <SocialShareIcons link={link} title={title} />
       </div>
     </div>);
