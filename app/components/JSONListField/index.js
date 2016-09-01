@@ -30,8 +30,13 @@ export default class JSONListField extends React.Component { // eslint-disable-l
     const { onChange, onAddEmpty } = this.props;
     const { empty } = this.state;
     const value = this.getValue();
-    const newRow = duplicateObject(value.length ? value.slice(-1)[0] : empty);
-    if (onAddEmpty) onAddEmpty(newRow);
+    let newRow;
+    if (value.length) {
+      newRow = duplicateObject(value.slice(-1)[0]);
+      if (onAddEmpty) onAddEmpty(newRow);
+    } else {
+      newRow = duplicateObject(empty);
+    }
     value.push(newRow);
     onChange(value);
     this.setState({ empty: {} });
@@ -73,7 +78,7 @@ export default class JSONListField extends React.Component { // eslint-disable-l
                 let { empty } = this.state;
                 if (!empty) empty = {};
                 empty[name] = value;
-                if (Object.keys(empty).length === components.length) this.addEmpty();
+                if (Object.keys(empty).length) this.addEmpty();
                 else this.setState({ empty });
               } else {
                 const list = this.props.value;
