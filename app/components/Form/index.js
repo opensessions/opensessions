@@ -61,7 +61,7 @@ export default class Form extends React.Component { // eslint-disable-line react
     return this.props.children instanceof Array ? this.props.children : [this.props.children];
   }
   handlePublish = event => {
-    const { type, target, keyCode } = event;
+    const { type, keyCode } = event;
     if (type === 'click' || (type === 'keyup' && keyCode === 13)) this.props.onPublish();
   }
   refocus = () => {

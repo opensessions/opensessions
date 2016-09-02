@@ -283,13 +283,12 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     </div>);
   }
   renderSocialFieldset = () => {
-    const session = this.getSession();
     return (<div>
-      <Field label="Website"><TextField placeholder="https://" {...this.getAttr('socialWebsite')} /></Field>
-      <Field label="Facebook page or group"><TextField placeholder="https://" {...this.getAttr('socialFacebook')} /></Field>
-      <Field label="Instagram"><TextField placeholder="@goodgym" {...this.getAttr('socialInstagram')} /></Field>
-      <Field label="Twitter handle"><TextField placeholder="@goodgym" {...this.getAttr('socialTwitter')} /></Field>
-      <Field label="Hashtag"><TextField placeholder="#UseYourRun" {...this.getAttr('socialHashtag')} /></Field>
+      <Field label="Website" tip="Enter the website URL where potential attendees can find out more information about your sessions. Linking to the specific page on your site that relates to the session is better if possible"><TextField placeholder="https://" {...this.getAttr('socialWebsite')} /></Field>
+      <Field label="Facebook page or group" tip="Enter the URL of your Facebook page or Facebook group, where attendees can see who else usually attends"><TextField placeholder="https://" {...this.getAttr('socialFacebook')} /></Field>
+      <Field label="Instagram" tip="Enter the Instragram Account for your organisation" example="E.g. @instagoodgym"><TextField placeholder="@instagoodgym" {...this.getAttr('socialInstagram')} /></Field>
+      <Field label="Twitter handle" tip="Enter the Twitter Handle for your organisation" example="E.g. @goodgym"><TextField placeholder="@goodgym" {...this.getAttr('socialTwitter')} /></Field>
+      <Field label="Hashtag" tip="Enter the Hashtag for your session, if you have one" example="E.g. #UseYourRun"><TextField placeholder="#UseYourRun" {...this.getAttr('socialHashtag')} /></Field>
     </div>);
   }
   renderScheduleFieldset = () => (<div>
