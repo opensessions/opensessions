@@ -101,8 +101,8 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       let text = isPublished ? 'View' : 'Preview';
       if (isSaving) text = 'Saving...';
       const viewURL = `/session/${session.uuid}${params.tab ? `?tab=${params.tab}` : ''}`;
-      actions.push(<Link key="view" to={viewURL} className={`${publishStyles.previewButton} ${isSaving ? publishStyles.disabled : ''}`}>{text}</Link>);
-      actions.push(<a key="publish" onClick={isPublished ? this.unpublishSession : this.publishSession} className={publishStyles[`action${isPublished ? 'Unpublish' : 'Publish'}`]}>{isPublished ? 'Unpublish' : 'Publish'}</a>);
+      actions.push(<Link key="view" to={viewURL} className={[publishStyles.previewButton, isSaving ? publishStyles.disabled : null].join(' ')}>{text}</Link>);
+      actions.push(<a key="publish" onClick={isPublished ? this.unpublishSession : this.publishSession} className={[publishStyles[`action${isPublished ? 'Unpublish' : 'Publish'}`], isSaving ? publishStyles.disabled : null].join(' ')}>{isPublished ? 'Unpublish' : 'Publish'}</a>);
     }
     return actions;
   }

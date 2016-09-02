@@ -37,17 +37,17 @@
       margin: .1em 0 .1em 1em;
       &.previewButton {
         background-color: #1A90CD;
-        &.disabled {
-          background-color: #AAA;
-          pointer-events: none;
-          cursor: wait;
-        }
       }
       &.actionUnpublish {
         background-color: var(--draftColor);
       }
       &.actionPublish {
         background-color: var(--liveColor);
+      }
+      &.disabled {
+        background-color: #AAA;
+        pointer-events: none;
+        cursor: wait;
       }
     }
   }

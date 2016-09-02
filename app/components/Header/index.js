@@ -27,7 +27,7 @@ export default class Header extends React.Component { // eslint-disable-line rea
           <img src="/images/beta.svg" alt="beta" className={styles.beta} />
         </Link>
         <nav className={styles.nav}>
-          {this.context.user ? <Link to="/session/add" activeClassName="active">{addSession}</Link> : <LoginButton lock={this.props.lock}>{addSession}</LoginButton>}
+          {this.context.user ? <Link to="/session/add" activeClassName="active">{addSession}</Link> : <LoginButton lock={this.context.lockLogin}>{addSession}</LoginButton>}
           {this.renderLoginButton()}
         </nav>
       </div>

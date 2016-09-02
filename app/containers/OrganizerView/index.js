@@ -48,7 +48,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
   }
   photoChange = image => {
     const { organizer } = this.state;
-    return apiModel.edit('organizer', params.uuid, { image }).then(res => {
+    return apiModel.edit('organizer', organizer.uuid, { image }).then(res => {
       this.setState({ organizer: res.instance });
     }).catch(error => {
       this.setState({ error });
