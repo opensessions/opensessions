@@ -71,7 +71,6 @@ module.exports = (app) => {
         document.head.appendChild(script);
       }
       addScript("https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places");
-      addScript("https://cdn.auth0.com/js/lock/10.2.2/lock.min.js");
     `);
   });
 

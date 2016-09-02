@@ -67,7 +67,7 @@ export default class SessionTileView extends React.Component { // eslint-disable
   renderAddSchedule() {
     if (!this.isOwner()) return (<li>No schedule yet</li>);
     return (<li className={styles.addSchedule}>
-      <Link to={`${this.props.session.href}/edit`}><b>+</b> Add a schedule</Link>
+      <Link to={`${this.props.session.href}/edit/schedule`}><b>+</b> Add a schedule</Link>
     </li>);
   }
   renderSchedule(occurrence, key) {

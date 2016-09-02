@@ -9,14 +9,6 @@ import styles from './styles.css';
 export default class HomePage extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
     user: PropTypes.object,
-  };
-  static childContextTypes = {
-    user: PropTypes.object,
-  };
-  getChildContext() {
-    return {
-      user: this.context.user,
-    };
   }
   renderSessionList() {
     const { user } = this.context;

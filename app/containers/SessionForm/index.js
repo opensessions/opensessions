@@ -277,7 +277,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     const emailProps = { options: emailOptions, addItem: this.addEmail };
     return (<div>
       <Field label="Full name" tip="Who's the best person for attendees to contact if they have questions about this session?"><TextField {...this.getAttr('contactName')} /></Field>
-      <Field label="Email address" tip="What is their email address?"><SearchableSelect {...this.getAttr('contactEmail')} {...emailProps} /></Field>
+      <Field label="Email address" tip="What is their email address?"><SearchableSelect {...this.getAttr('contactEmail')} onChange={value => this.updateSession('contactEmail', value || '')} {...emailProps} /></Field>
       <Field label="Phone number" tip="What is their phone number (optional)?"><TextField {...this.getAttr('contactPhone')} /></Field>
     </div>);
   }

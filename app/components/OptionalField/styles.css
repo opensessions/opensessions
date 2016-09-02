@@ -23,7 +23,7 @@
     &:last-child {
       width: 50%;
     }
-    & .inputField {
+    & input.inputField {
       width: 8rem;
       animation: appear .2s;
     }
