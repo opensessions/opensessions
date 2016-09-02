@@ -18,7 +18,7 @@ export default class OptionalField extends React.Component { // eslint-disable-l
   }
   componentWillReceiveProps(nextProps) {
     const { value } = nextProps;
-    if (this.props.value != value) this.setState({ showInput: !!value && value !== '0' }); // eslint-disable-line eqeqeq
+    if (!this.state.showInput && this.props.value != value) this.setState({ showInput: !!value && value !== '0' }); // eslint-disable-line eqeqeq
   }
   handleChange = event => {
     const { target } = event;

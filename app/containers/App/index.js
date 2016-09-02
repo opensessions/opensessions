@@ -11,7 +11,6 @@
  */
 
 import React, { PropTypes } from 'react';
-import Auth0Lock from 'auth0-lock';
 import Intercom from 'react-intercom';
 import Helmet from 'react-helmet';
 
@@ -42,7 +41,8 @@ export default class App extends React.Component { // eslint-disable-line react/
   };
   static childContextTypes = {
     user: PropTypes.object,
-    lock: PropTypes.object,
+    lockSignUp: PropTypes.object,
+    lockLogin: PropTypes.object,
     router: PropTypes.object,
     setMeta: PropTypes.func
   }
@@ -55,23 +55,21 @@ export default class App extends React.Component { // eslint-disable-line react/
   getChildContext() {
     return {
       user: this.state.profile,
-      lock: this.lock, // both user and lock are stored in context as they both need to be accessible from multiple components across the app
+      lockSignUp: this.state.lock ? this.state.lock.SignUp : null,
+      lockLogin: this.state.lock ? this.state.lock.Login : null,
       router: this.context.router,
       setMeta: this.setMeta
     };
   }
-  componentWillMount() {
-    this.createLock();
-    this.setupProfile();
-  }
   componentDidMount() {
     cookieConsent();
+    this.createLock();
   }
   setMeta = meta => {
     this.setState({ meta });
   }
-  setupProfile() {
-    this.lock.getProfile(getUserToken(this.lock), (err, profile) => {
+  setupProfile = lock => {
+    lock.getProfile(getUserToken(), (err, profile) => {
       if (err) {
         localStorage.removeItem('userToken');
         return false;
@@ -93,7 +91,20 @@ export default class App extends React.Component { // eslint-disable-line react/
     });
   }
   createLock() {
-    this.lock = new Auth0Lock('bSVd1LzdwXsKbjF7JXflIc1UuMacffUA', 'opensessions.eu.auth0.com');
+    const { Auth0Lock } = window;
+    const opts = {
+      theme: {
+        logo: `${window.location.origin}/images/auth0-icon.png`,
+        primaryColor: '#1A90CD',
+      },
+      socialButtonStyle: 'big',
+    };
+    const lock = {
+      SignUp: new Auth0Lock('bSVd1LzdwXsKbjF7JXflIc1UuMacffUA', 'opensessions.eu.auth0.com', { allowLogin: false, allowSignUp: true, initialScreen: 'signUp', ...opts }),
+      Login: new Auth0Lock('bSVd1LzdwXsKbjF7JXflIc1UuMacffUA', 'opensessions.eu.auth0.com', { allowLogin: true, allowSignUp: false, initialScreen: 'login', ...opts })
+    };
+    this.setState({ lock });
+    this.setupProfile(lock.Login);
   }
   render() {
     const { meta, profile, notifications } = this.state;
@@ -102,7 +113,7 @@ export default class App extends React.Component { // eslint-disable-line react/
     return (
       <div className={styles.root}>
         <Helmet meta={meta} />
-        <Header lock={this.lock} notifications={notifications} />
+        <Header notifications={notifications} />
         <div className={styles.appBody}>
           <div className={styles.container}>
             {this.props.children}

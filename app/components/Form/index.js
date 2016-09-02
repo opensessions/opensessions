@@ -54,22 +54,17 @@ export default class Form extends React.Component { // eslint-disable-line react
     return { '-1': slugs.find((slug, key) => slugs[key + 1] === activeTab), 0: activeTab, 1: slugs.find((slug, key) => slugs[key - 1] === activeTab) };
   }
   getSlugURL = slug => {
-    let { pathname } = window.location;
+    const { pathname } = window.location;
     return [pathname.match(/^.*edit/) ? pathname.match(/^.*edit/)[0] : pathname, slug].join('/');
   }
   getFieldsets() {
     return this.props.children instanceof Array ? this.props.children : [this.props.children];
   }
-  actionClick = event => {
+  handlePublish = event => {
     const { type, target, keyCode } = event;
     if (type === 'keyup' && keyCode !== 13) return;
     const delta = target.text === 'Next' ? 1 : -1;
-    if (target.text === 'Publish') {
-      this.props.onPublish();
-    } else {
-      const slugs = this.getSlugs();
-      this.setState({ activeTab: slugs[delta] });
-    }
+    this.props.onPublish();
   }
   refocus = () => {
     try {
@@ -112,24 +107,10 @@ export default class Form extends React.Component { // eslint-disable-line react
     });
   }
   renderActionButtons() {
-    const { inactive } = styles;
-    const attr = {
-      onClick: this.actionClick,
-      onKeyUp: this.actionClick,
-      tabIndex: 0
-    };
-    const backAttr = {
-      className: [styles.backButton, inactive].join(' '),
-      to: '/nowhere'
-    };
     const slugs = this.getSlugs();
-    if (slugs[-1]) {
-      backAttr.className = styles.backButton;
-      backAttr.to = this.getSlugURL(slugs[-1]);
-    }
     return (<div className={styles.actionButtons}>
-      <Link {...attr} {...backAttr}>Back</Link>
-      {slugs[1] ? <Link to={this.getSlugURL(slugs[1])}>Next</Link> : <a {...attr}>Publish</a>}
+      {slugs[1] ? <Link to={this.getSlugURL(slugs[1])}>Next</Link> : <a onKeyUp={this.handlePublish} onClick={this.handlePublish} tabIndex="0">Publish</a>}
+      {slugs[-1] ? <Link className={styles.backButton} to={this.getSlugURL(slugs[-1])}>Back</Link> : null}
     </div>);
   }
   render() {

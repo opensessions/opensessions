@@ -37,8 +37,6 @@
     transition: all ease 1s;
   }
   & input[type=file] {
-    visibility: hidden;
-    position: absolute;
-    width: 0;
+    display: none;
   }
 }

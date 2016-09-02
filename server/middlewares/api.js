@@ -65,9 +65,13 @@ module.exports = (app) => {
       analytics.load("${process.env.SEGMENT_WRITE_KEY}");
       }}();
 
-      var maps = document.createElement('script');
-      maps.src = "https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places";
-      document.head.appendChild(maps);
+      function addScript(src) {
+        var script = document.createElement('script');
+        script.src = src;
+        document.head.appendChild(script);
+      }
+      addScript("https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places");
+      addScript("http://cdn.auth0.com/js/lock/10.2.2/lock.min.js");
     `);
   });
 

@@ -55,7 +55,8 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
         event.preventDefault();
         event.stopPropagation();
       } else if (keyCode === 13) {
-        input.blur();
+        if (filteredOptions.length) action = 'chooseSelected';
+        else input.blur();
       }
     } else if (type === 'blur') {
       if (!this.state.ignoreBlur) {

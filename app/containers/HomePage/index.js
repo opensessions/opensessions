@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 import Authenticated from 'components/Authenticated';
 import SessionList from 'containers/SessionList';
@@ -8,16 +8,13 @@ import styles from './styles.css';
 
 export default class HomePage extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
-    user: React.PropTypes.object,
-    lock: React.PropTypes.object,
+    user: PropTypes.object,
   };
   static childContextTypes = {
-    user: React.PropTypes.object,
-    lock: React.PropTypes.object,
+    user: PropTypes.object,
   };
   getChildContext() {
     return {
-      lock: this.context.lock,
       user: this.context.user,
     };
   }
@@ -29,7 +26,7 @@ export default class HomePage extends React.Component { // eslint-disable-line r
   render() {
     return (<div className={styles.container}>
       <h1>Welcome to Open Sessions!</h1>
-      <Authenticated message="Let's get your sessions online." button="Signup or Login">
+      <Authenticated message="Let's get your sessions online." button={["Sign Up", "Login"]}>
         {this.renderSessionList()}
       </Authenticated>
     </div>);

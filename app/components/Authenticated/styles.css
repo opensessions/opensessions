@@ -5,14 +5,21 @@
   margin: auto;
   max-width: var(--pagewidth);
   margin: 1em auto;
-  & > p {
+  & > ol {
     margin: 1em auto;
-    & > a {
+    & > li {
+      list-style: none;
       display: inline-block;
-      padding: 1em;
-      line-height: 1;
-      background: var(--actionColor);
-      color: #FFF;
+      & + li {
+        margin-left: 1em;
+      }
+      & > a {
+        display: inline-block;
+        padding: 1em;
+        line-height: 1;
+        background: var(--actionColor);
+        color: #FFF;
+      }
     }
   }
 }

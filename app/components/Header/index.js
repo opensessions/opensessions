@@ -8,14 +8,11 @@ import styles from './styles.css';
 export default class Header extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
     user: PropTypes.object,
-    lock: PropTypes.object
-  };
-  static propTypes = {
-    lock: PropTypes.object,
+    lockLogin: PropTypes.object
   }
   renderLoginButton() {
     const { user } = this.context;
-    if (!user) return <LoginButton lock={this.props.lock}>Login</LoginButton>;
+    if (!user) return <LoginButton lock={this.context.lockLogin}>Login</LoginButton>;
     const name = user.nickname;
     const greet = 'Hello, ';
     const image = user.picture ? <img src={user.picture} alt={name} className={styles.userIcon} /> : null;
