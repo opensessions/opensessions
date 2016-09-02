@@ -51,6 +51,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
         { renderer: this.renderPricingFieldset, slug: 'pricing', props: { label: 'Pricing', validity: 'none', title: 'Add pricing for your session', subtitle: 'If your session is paid, describe pricing levels here' } },
         { renderer: this.renderRestrictionsFieldset, slug: 'restrictions', props: { label: 'Who it\'s for', validity: 'none', title: 'Who is your session for?', subtitle: 'Specify any restrictions that apply and disabilities catered for' } },
         { renderer: this.renderContactFieldset, slug: 'contact', props: { label: 'Contact info', validity: 'none', title: 'Who can people talk to about this session?', subtitle: 'Help potential attendees by providing details of who they can contact' } },
+        { renderer: this.renderSocialFieldset, slug: 'social', props: { label: 'Social media', validity: 'none', title: 'Where can people find more information about your session online?', subtitle: 'Help potential attendees by providing links where they can find out more' } },
         { renderer: this.renderImageFieldset, slug: 'photo', props: { label: 'Photo', validity: 'none', title: 'Add a photo of your session', subtitle: 'Show people what to expect from this session' } },
         { renderer: this.renderScheduleFieldset, slug: 'schedule', required: ['schedule'], props: { label: 'Add a schedule', heading: 'Scheduling', validity: false, title: 'Add a schedule for your sessions', subtitle: 'You can add multiple dates for sessions which occur regularly' } }
       ]
@@ -279,6 +280,16 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       <Field label="Full name" tip="Who's the best person for attendees to contact if they have questions about this session?"><TextField {...this.getAttr('contactName')} /></Field>
       <Field label="Email address" tip="What is their email address?"><SearchableSelect {...this.getAttr('contactEmail')} onChange={value => this.updateSession('contactEmail', value || '')} {...emailProps} /></Field>
       <Field label="Phone number" tip="What is their phone number (optional)?"><TextField {...this.getAttr('contactPhone')} /></Field>
+    </div>);
+  }
+  renderSocialFieldset = () => {
+    const session = this.getSession();
+    return (<div>
+      <Field label="Website"><TextField placeholder="https://" {...this.getAttr('socialWebsite')} /></Field>
+      <Field label="Facebook page or group"><TextField placeholder="https://" {...this.getAttr('socialFacebook')} /></Field>
+      <Field label="Instagram"><TextField placeholder="@goodgym" {...this.getAttr('socialInstagram')} /></Field>
+      <Field label="Twitter handle"><TextField placeholder="@goodgym" {...this.getAttr('socialTwitter')} /></Field>
+      <Field label="Hashtag"><TextField placeholder="#UseYourRun" {...this.getAttr('socialHashtag')} /></Field>
     </div>);
   }
   renderScheduleFieldset = () => (<div>

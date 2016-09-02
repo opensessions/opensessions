@@ -7,6 +7,7 @@ export default class TextField extends React.Component { // eslint-disable-line 
     value: PropTypes.string,
     onChange: PropTypes.func,
     className: PropTypes.string,
+    placeholder: PropTypes.string,
     validation: PropTypes.object,
     autoFocus: PropTypes.bool,
     multi: PropTypes.bool,
@@ -46,19 +47,20 @@ export default class TextField extends React.Component { // eslint-disable-line 
     return <div className={styles.maxLength}><span className={urgency}>{num}</span> {characters} {characterState}</div>;
   }
   render() {
-    const { value, className, multi, size, validation, autoFocus } = this.props;
+    const { value, className, placeholder, multi, size, validation, autoFocus } = this.props;
     const attrs = {
       value: value || '',
       onChange: this.handleChange,
+      placeholder,
       className,
       autoFocus
     };
     let input;
     if (multi) {
       if (validation && validation.maxLength > 100) {
-        attrs.className = `${attrs.className} ${styles.longText}`;
+        attrs.className = [attrs.className, styles.longText].join(' ');
       } else if (size === 'XL') {
-        attrs.className = `${attrs.className} ${styles.xLongText}`;
+        attrs.className = [attrs.className, styles.xLongText].join(' ');
       }
       input = <textarea {...attrs} />;
     } else {

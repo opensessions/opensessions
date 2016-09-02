@@ -62,7 +62,7 @@ export default class Form extends React.Component { // eslint-disable-line react
   }
   handlePublish = event => {
     const { type, target, keyCode } = event;
-    if (type === 'keyup' && keyCode === 13) this.props.onPublish();
+    if (type === 'click' || (type === 'keyup' && keyCode === 13)) this.props.onPublish();
   }
   refocus = () => {
     try {

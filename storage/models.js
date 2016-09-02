@@ -94,6 +94,11 @@ module.exports = (DataTypes) => ({
       endTime: DataTypes.TIME,
       startDate: DataTypes.DATE,
       startTime: DataTypes.TIME,
+      socialWebsite: DataTypes.STRING(256),
+      socialFacebook: DataTypes.STRING(256),
+      socialInstagram: DataTypes.STRING(64),
+      socialTwitter: DataTypes.STRING(64),
+      socialHashtag: DataTypes.STRING(64),
       _options: {
         getterMethods: {
           href() {
