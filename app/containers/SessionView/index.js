@@ -190,6 +190,11 @@ export default class SessionView extends React.Component { // eslint-disable-lin
             <p>{session.Organizer ? (<Link to={session.Organizer.href}>{session.Organizer.name}</Link>) : 'No organizer'}</p>
             <p>{session.contactPhone ? (<a className={styles.organizerLink} href={`tel:${session.contactPhone}`}><img src="/images/phone.svg" role="presentation" /> {session.contactPhone}</a>) : ''}</p>
             <p>{session.contactEmail ? (<a className={styles.organizerLink} href={`mailto:${session.contactEmail}`}><img src="/images/email.png" role="presentation" /> {session.contactEmail}</a>) : ''}</p>
+            {session.socialWebsite ? <p><a className={styles.organizerLink} href={session.socialWebsite}>{session.socialWebsite}</a></p> : null}
+            {session.socialFacebook ? <p><a className={styles.organizerLink} href={session.socialFacebook}><img src="/images/facebook.png" role="presentation" /> {session.socialFacebook}</a></p> : null}
+            {session.socialInstagram ? <p><a className={styles.organizerLink} href={`https://instagram.com/${session.socialInstagram.slice(1)}`}>{session.socialInstagram}</a></p> : null}
+            {session.socialTwitter ? <p><a className={styles.organizerLink} href={`https://twitter.com/${session.socialTwitter.slice(1)}`}><img src="/images/twitter.png" role="presentation" /> {session.socialTwitter}</a></p> : null}
+            {session.socialHashtag ? <p><a className={styles.organizerLink} href={`https://twitter.com/hashtag/${session.socialHashtag.slice(1)}`}>{session.socialHashtag}</a></p> : null}
           </div>
         </div>
         <div className={styles.info}>
