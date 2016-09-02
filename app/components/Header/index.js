@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 
 import LoginButton from 'components/LoginButton';
+import Sticky from 'components/Sticky';
 
 import styles from './styles.css';
 
@@ -20,7 +21,7 @@ export default class Header extends React.Component { // eslint-disable-line rea
   }
   render() {
     const addSession = <span><span className={styles.plus}>+</span> Add a session</span>;
-    return (<header className={styles.header}>
+    return (<Sticky zIndex={2}><header className={styles.header}>
       <div className={styles.pageMargin}>
         <Link to="/" className={styles.logoLink}>
           <img src="/images/open-sessions.svg" alt="Open Sessions" />
@@ -31,6 +32,6 @@ export default class Header extends React.Component { // eslint-disable-line rea
           {this.renderLoginButton()}
         </nav>
       </div>
-    </header>);
+    </header></Sticky>);
   }
 }

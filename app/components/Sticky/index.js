@@ -15,10 +15,10 @@ export default class Sticky extends React.Component { // eslint-disable-line rea
   render() {
     const { children, zIndex } = this.props;
     return (<div ref="sticky" className={styles.sticky}>
-      <div className={styles.fixed} style={{ zIndex: zIndex || 1, right: this.getOffset() }}>
+      <div className={styles.fixed} style={{ zIndex: zIndex || 1, right: 0 }}>
         {children}
       </div>
-      <div>{children}</div>
+      <div className={styles.static}>{children}</div>
     </div>);
   }
 }

@@ -1,5 +1,8 @@
 .sticky {
   position: relative;
+  & .static {
+    visibility: visible;
+  }
   & .fixed {
     display: none;
   }
@@ -7,6 +10,9 @@
 
 @media (min-width: 36rem) and (min-height: 36rem) {
   .sticky {
+    & .static {
+      visibility: hidden;
+    }
     & .fixed {
       display: block;
       position: fixed;
