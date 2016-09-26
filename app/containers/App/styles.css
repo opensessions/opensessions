@@ -33,12 +33,9 @@ html {
   }
 }
 
-@media (max-width: 36rem) {
+@media (--mobile) {
   html {
     font-size: 56.25%;
-  }
-  .root {
-    padding-top: 0;
   }
 }
 
@@ -48,7 +45,7 @@ html {
   }
 }
 
-@media (min-height: 32rem) {
+@media (--desktop) {
   .root {
     min-height: 100vh;
     display: flex;
@@ -71,37 +68,6 @@ svg {
 img {
   height: auto; /* Make sure images are scaled correctly. */
   max-width: 100%; /* Adhere to container width. */
-}
-
-:global .clearfix::after {
-  content: '';
-  display: block;
-  clear: both;
-}
-
-/* Buttons */
-
-:global .btn {
-  display: block;
-  width: 100%;
-  cursor: pointer;
-  font-size: 1.6rem;
-  position: relative;
-  border: 0;
-  padding: 8px 35px;
-  border-radius: 2px;
-  color: white !important;
-  text-align: center;
-  text-decoration: none;
-  &.btn__large {
-    font-size: 2rem;
-  }
-  &.btn__small {
-    font-size: 1.4rem;
-  }
-  &.btn__submit {
-    background: #89C9E3;
-  }
 }
 
 :global a {

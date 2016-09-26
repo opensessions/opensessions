@@ -293,7 +293,7 @@ a.organizerLink {
   }
 }
 
-@media (min-width: 36rem) {
+@media (--desktop) {
   .detailsSection {
     margin: 2em auto;
   }

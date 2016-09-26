@@ -22,6 +22,9 @@
   --fieldWidth: 36rem;
   --iconSize: 4rem;
   --iconSizeBig: 6rem;
-  --mobileBreakpoint: 32rem;
-  --comfyBreakpoint: 96rem;
+  --mobileBp: 36rem;
+  --comfyBp: 96rem;
 }
+
+@custom-media --mobile (max-width: 576px), (max-width: 1152px) and (min-device-pixel-ratio: 2);
+@custom-media --desktop (min-width: 576px), (min-width: 1152px) and (min-device-pixel-ratio: 2);

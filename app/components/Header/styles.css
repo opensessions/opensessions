@@ -62,7 +62,7 @@
   }
 }
 
-@media (min-width: 36rem) {
+@media (--desktop) {
   .header {
     position: relative;
     z-index: 1;

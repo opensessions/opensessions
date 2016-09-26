@@ -2,6 +2,7 @@
 
 .searchableSelect {
   position: relative;
+  max-width: 100%;
   & > input {
     cursor: default;
     &:focus {

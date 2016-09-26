@@ -148,6 +148,7 @@
     "passport-auth0": "^0.5.2",
     "pg": "^5.1.0",
     "pg-hstore": "^2.3.2",
+    "postcss-custom-media": "^5.0.1",
     "react": "^15.0.1",
     "react-css-modules": "^3.7.6",
     "react-datepicker": "^0.28.1",

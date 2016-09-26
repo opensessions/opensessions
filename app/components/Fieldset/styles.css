@@ -1,3 +1,5 @@
+@import '../../containers/App/variables.css';
+
 .fieldset {
   padding: 0 1em;
   min-width: auto;
@@ -19,7 +21,7 @@
   display: none;
 }
 
-@media (min-width: 36rem) {
+@media (--desktop) {
   .fieldset {
     min-height: 32rem;
   }

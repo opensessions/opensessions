@@ -101,7 +101,7 @@
   }
 }
 
-@media (min-width: 36rem) {
+@media (--desktop) {
   .field {
     max-width: 48em;
     & .inputWrap {
