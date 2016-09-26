@@ -137,9 +137,7 @@ module.exports = (DataTypes) => ({
               return models.Organizer.findOne({ where: { owner: user }, order: ['updatedAt'] }).then(organizer => {
                 prototype.OrganizerUuid = organizer.uuid;
                 return prototype;
-              }).catch(() => {
-                return prototype;
-              });
+              }).catch(() => prototype);
             }
             return Promise.resolve(prototype);
           },
