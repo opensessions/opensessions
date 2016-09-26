@@ -123,7 +123,7 @@
         }
       }
     }
-    form[data-hasFocus='false'] &:hover,
+    &:hover,
     &[data-hasfocus='true'] {
       & .tip.tipFloat {
         opacity: 1;
