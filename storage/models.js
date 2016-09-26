@@ -131,6 +131,18 @@ module.exports = (DataTypes) => ({
             }
             return query;
           },
+          getPrototype(models, user) {
+            const prototype = {};
+            if (user) {
+              return models.Organizer.findOne({ where: { owner: user }, order: ['updatedAt'] }).then(organizer => {
+                prototype.OrganizerUuid = organizer.uuid;
+                return prototype;
+              }).catch(() => {
+                return prototype;
+              });
+            }
+            return Promise.resolve(prototype);
+          },
           makeAssociations(models) {
             models.Session.belongsTo(models.Organizer);
             models.Session.belongsTo(models.Activity);

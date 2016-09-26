@@ -82,7 +82,7 @@ module.exports = (app) => {
         res.status(400).json({ status: 'failure', error: query.message });
         return;
       }
-      Model.findAll(query).then((instances) => {
+      Model.findAll(query).then(instances => {
         res.json({ instances });
       }).catch(error => {
         res.status(404).json({ error: error.message });
@@ -92,12 +92,17 @@ module.exports = (app) => {
 
   api.all('/:model/create', requireLogin, resolveModel, (req, res) => {
     const { Model } = req;
-    const data = req.body;
-    data.owner = getUser(req);
-    Model.create(data).then((instance) => {
-      res.json({ instance });
-    }).catch(error => {
-      res.status(404).json({ error: error.message });
+    const getPrototype = Model.getPrototype || (() => (Promise.resolve({})));
+    getPrototype(database.models, getUser(req)).then(data => {
+      Object.keys(req.body).forEach(key => {
+        data[key] = req.body[key];
+      });
+      data.owner = getUser(req);
+      Model.create(data).then(instance => {
+        res.json({ instance });
+      }).catch(error => {
+        res.status(404).json({ error: error.message });
+      });
     });
   });
 
@@ -110,7 +115,7 @@ module.exports = (app) => {
         res.status(400).json({ status: 'failure', error: query.message });
         return;
       }
-      Model.findOne(query).then((instance) => {
+      Model.findOne(query).then(instance => {
         if (instance) {
           res.json({ instance, schema: getSchema(Model) });
         } else {
@@ -124,13 +129,27 @@ module.exports = (app) => {
 
   api.post('/:model/:uuid', requireLogin, resolveModel, (req, res) => {
     const { Model } = req;
-    Model.findOne({ where: { uuid: req.params.uuid } }).then(instance => {
+    const { uuid } = req.params;
+    const query = Model.getQuery({ where: { uuid } }, database.models, getUser(req));
+    if (query instanceof Error) {
+      res.status(400).json({ status: 'failure', error: query.message });
+      return;
+    }
+    Model.findOne(query).then(instance => {
       if (instance.owner !== getUser(req)) throw new Error(`Must be owner to modify ${Model.name}`);
       const fields = Object.keys(req.body);
       fields.filter(key => key.slice(-4) === 'Uuid').filter(key => req.body[key] === null).forEach(key => {
         instance[`set${key.replace(/Uuid$/, '')}`](null);
       });
-      return instance.update(req.body, { fields, returning: true }).then(savedInstance => {
+      console.log('instance:update', req.body);
+      if (query.include) {
+        query.include.forEach(model => {
+          console.log(model, model.name);
+          delete req.body[model.name];
+        });
+      }
+      console.log('instance:update:2', req.body);
+      return instance.update(req.body, { returning: true }).then(savedInstance => {
         res.json({ instance: savedInstance });
       });
     }).catch(error => {

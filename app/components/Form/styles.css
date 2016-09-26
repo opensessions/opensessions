@@ -37,51 +37,62 @@
 
 .nav {
   padding: 1em .5em;
-  & > h1 {
-    margin: .5em 0;
-    padding: 0 1rem;
-    font-size: .75em;
-    text-align: center;
-    color: #888;
-    text-transform: uppercase;
-  }
-  & > a {
-    padding: 1rem .75rem;
-    line-height: 1.25;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    &:hover,
-    &:focus {
-      text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  & > .navLinks {
+    & > h1 {
+      margin: .5em 0;
+      padding: 0 1rem;
+      font-size: .75em;
+      text-align: center;
+      color: #888;
+      text-transform: uppercase;
     }
-    &.active {
-      cursor: default;
-      font-weight: bold;
-      letter-spacing: -.041em;
-    }
-    & span {
-      letter-spacing: 0;
-      pointer-events: none;
-      padding: 0 0 0 .2em;
-      font-family: monospace;
-      font-weight: normal;
-      font-size: 1.8em;
-      line-height: 0;
-      &.tick {
-        color: #88C541;
+    & > a {
+      padding: 1rem .75rem;
+      line-height: 1.25;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      &:hover {
+        text-decoration: none;
+        & span.tickNone {
+          color: inherit;
+        }
       }
-      &.tickNone {
-        color: #999;
+      &:hover,
+      &.active {
+        font-weight: bold;
+        letter-spacing: -.041em;
+      }
+      &.active {
+        cursor: default;
+      }
+      & span {
+        letter-spacing: 0;
+        pointer-events: none;
+        padding: 0 0 0 .2em;
+        font-family: monospace;
+        font-weight: normal;
+        font-size: 1.8em;
+        line-height: 0;
+        &.tick {
+          color: #88C541;
+        }
+        &.tickNone {
+          color: #999;
+          font-weight: 100;
+          font-family: inherit;
+        }
       }
     }
   }
   & .pending {
-    font-size: .85em;
+    font-size: .78em;
     padding: 1rem .25rem;
     margin: .25rem 1rem;
-    flex-basis: 100%;
     color: #555;
   }
 }
@@ -160,20 +171,23 @@
   .nav {
     font-size: 1.25em;
     width: 12em;
-    > h1 {
-      margin: 2em 0 .5em;
-      padding: 1rem 1.5rem;
-      text-align: left;
+    box-shadow: .1em 0 0 0 #D7D7D7;
+    z-index: 1;
+    & > .navLinks {
+      & > h1 {
+        margin: 2em 0 .5em;
+        padding: 1rem 1.5rem;
+        text-align: left;
+      }
+      & > a {
+        padding: 1.25rem 1.5rem;
+      }
     }
     & .pending {
       border-top: 1px solid;
-      font-size: .85em;
-      padding: 2rem .25rem 1rem;
+      padding: 1.75rem .25rem 1rem;
       border-top: 1px solid;
-      margin: 4rem 1.5rem 0;
-    }
-    & > a {
-      padding: 1.25rem 1.5rem;
+      margin: 4rem 1.5rem .75rem;
     }
   }
   .tabs {
@@ -189,13 +203,17 @@
     padding: .5em;
     display: flex;
     flex-wrap: wrap;
-    & > h1 {
-      flex-basis: 100%;
-    }
-    & > a {
-      flex-grow: 1;
-      text-align: center;
-      justify-content: center;
+    & > .navLinks {
+      display: flex;
+      flex-wrap: wrap;
+      & > h1 {
+        flex-basis: 100%;
+      }
+      & > a {
+        flex-grow: 1;
+        text-align: center;
+        justify-content: center;
+      }
     }
     & > .pending {
       text-align: right;

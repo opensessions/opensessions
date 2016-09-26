@@ -32,7 +32,7 @@ export default class SessionList extends React.Component { // eslint-disable-lin
     }
   }
   fetchData() {
-    apiFetch(`/api/session?${this.props.query}`).then((result) => {
+    apiFetch(`/api/session?${this.props.query}`).then(result => {
       const { instances, error } = result;
       if (instances) this.setState({ sessions: instances, status: 'done' });
       if (error) this.setState({ status: error });

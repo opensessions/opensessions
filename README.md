@@ -28,11 +28,10 @@ Postgres is currently the only storage option configured to run directly with th
     DATABASE_URL=postgres://user:pass@host:5432/db
 
 #### Migrations
-When you need to alter the database, use the Sequelize shell:
+When you need to alter the database, create a migration file like this:
 
-    node_modules/.bin/sequelize migration:create --config storage/migrations.config.js
-    mv migrations/{ timestamp-migration-name }-migration.js storage/migrations
-    git add storage/migrations/{ timestamp-migration-name }-migration.js
+    npm run db:migration:make
+    git add storage/migrations/{ timestamp }-{ migration-name }-migration.js
 
 Then modify the `up`/`down` functions inside the migration file to modify the database.
 

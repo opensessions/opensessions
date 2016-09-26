@@ -165,7 +165,7 @@
   padding: 1.5em;
   box-shadow: 0 .25em .25em rgba(0, 0, 0, .2);
   position: relative;
-  z-index: 2;
+  z-index: 1;
   & h2 {
     font-family: Belgrano, serif;
     font-size: 1.6em;
@@ -282,6 +282,23 @@
     & img {
       max-height: 2em;
       margin-right: .5em;
+    }
+  }
+}
+
+ol.socialLinks {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  & > li {
+    list-style: none;
+  }
+  & a.organizerLink {
+    font-size: .9em;
+    font-weight: bold;
+    &:hover {
+      text-decoration: none;
+      color: inherit;
     }
   }
 }

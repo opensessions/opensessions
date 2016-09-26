@@ -88,7 +88,7 @@ export default class LocationField extends React.Component {
         icon: { url: '/images/map-pin-active.svg' },
         defaultAnimation: 2,
         draggable: true,
-        cursor: 'url("/images/cursor/draggable.png"), move',
+        cursor: '-webkit-grab, move',
         onDragend: drag => {
           this.latLngChange(drag.latLng);
         }
@@ -98,8 +98,7 @@ export default class LocationField extends React.Component {
         defaultCenter: locationData,
         center: locationData,
         ref: 'component',
-        draggableCursor: 'url("/images/cursor/draggable.png"), move',
-        draggingCursor: 'url("/images/cursor/dragging.png"), move',
+        draggableCursor: '-webkit-grab, move',
         options: { streetViewControl: false, scrollwheel: false, mapTypeControl: false }
       };
       map = (<GoogleMapLoader

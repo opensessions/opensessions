@@ -41,7 +41,7 @@ export default class TextField extends React.Component { // eslint-disable-line 
     }
     if (num < 0) {
       num = -num;
-      characterState = 'too many';
+      characterState = 'over';
     }
     const characters = num === 1 ? 'character' : 'characters';
     return <div className={styles.maxLength}><span className={urgency}>{num}</span> {characters} {characterState}</div>;

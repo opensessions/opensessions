@@ -119,11 +119,11 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     if (!organizer) return null;
     const sessions = organizer.Sessions;
     let sessionsDisplay = <li>No sessions yet {this.isOwner() ? <a onClick={this.deleteOrganizer}>delete this organiser</a> : null}</li>;
-    if (sessions.length) sessionsDisplay = sessions.map((session) => (<li key={session.uuid}><SessionTileView session={session} /></li>));
+    if (sessions && sessions.length) sessionsDisplay = sessions.map(session => <li key={session.uuid}><SessionTileView session={session} /></li>);
     let newSessionLink = null;
     if (this.isOwner()) {
       newSessionLink = (<li className={styles.new}>
-        <Link to={`/session/add?OrganizerUuid=${organizer.uuid}`}><b>+</b> Add {sessions.length ? 'another' : 'a'} session</Link>
+        <Link to={`/session/add?OrganizerUuid=${organizer.uuid}`}><b>+</b> Add {sessions && sessions.length ? 'another' : 'a'} session</Link>
       </li>);
     }
     return (<div className={styles.sessions}>
