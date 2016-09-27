@@ -120,7 +120,7 @@ module.exports = (DataTypes) => ({
             if (missingFields.length) {
               errors.push(`Please enter a ${missingFields.map(field => {
                 const data = required[field];
-                const { name } = data.pretty || field;
+                const name = data.pretty || field;
                 return `<a data-tab="${data.tab}" data-field="${name}">${name}</a>`;
               }).join(', ')}`);
             }
