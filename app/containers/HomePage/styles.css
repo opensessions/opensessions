@@ -6,6 +6,6 @@
   text-align: center;
   & > h1 {
     font-size: 1.5em;
-    margin: .75em auto;
+    padding: .75em 0;
   }
 }

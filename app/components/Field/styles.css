@@ -13,16 +13,9 @@
 .field {
   position: relative;
   padding: .75em 0;
-  form[data-hasFocus='false'] &:hover {
-    & .tip.tipFloat {
-      opacity: 1;
-      bottom: 100%;
-    }
-  }
   &[data-hasfocus='true'] {
     & .tip.tipFloat {
       opacity: 1;
-      bottom: 100%;
     }
   }
   & .label {

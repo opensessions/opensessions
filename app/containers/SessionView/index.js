@@ -5,6 +5,7 @@ import GoogleMapLoader from 'react-google-maps/lib/GoogleMapLoader';
 import GoogleMap from 'react-google-maps/lib/GoogleMap';
 import Marker from 'react-google-maps/lib/Marker';
 
+import NotificationBar from 'components/NotificationBar';
 import SocialShareIcons from 'components/SocialShareIcons';
 import LoadingMessage from 'components/LoadingMessage';
 import PublishHeader from 'components/PublishHeader';
@@ -19,7 +20,8 @@ import publishStyles from '../../components/PublishHeader/styles.css';
 export default class SessionView extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
     user: PropTypes.object,
-    setMeta: PropTypes.func
+    setMeta: PropTypes.func,
+    notifications: PropTypes.array
   };
   static propTypes = {
     params: PropTypes.object,
@@ -329,6 +331,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     if (!session) return (<div {...topAttrs}><LoadingMessage message="Loading session" ellipsis /></div>);
     return (<div {...topAttrs}>
       <PublishHeader h2={session && session.state === 'published' ? 'Published session' : 'Preview'} actions={this.getActions()} />
+      <NotificationBar notifications={this.context.notifications} />
       {this.renderDetails()}
       {this.renderShare()}
       {this.renderDescription()}

@@ -141,14 +141,11 @@ module.exports = (app) => {
       fields.filter(key => key.slice(-4) === 'Uuid').filter(key => req.body[key] === null).forEach(key => {
         instance[`set${key.replace(/Uuid$/, '')}`](null);
       });
-      console.log('instance:update', req.body);
       if (query.include) {
         query.include.forEach(model => {
-          console.log(model, model.name);
           delete req.body[model.name];
         });
       }
-      console.log('instance:update:2', req.body);
       return instance.update(req.body, { returning: true }).then(savedInstance => {
         res.json({ instance: savedInstance });
       });

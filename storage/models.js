@@ -108,13 +108,18 @@ module.exports = (DataTypes) => ({
         instanceMethods: {
           canPublish() {
             const session = this;
-            const requiredFields = ['title', 'OrganizerUuid', 'description', 'leader', 'location'];
-            const prettyNames = { OrganizerUuid: 'organizer', startDate: 'start date', startTime: 'start time' };
+            const required = {
+              title: { tab: 'description', pretty: 'Session Title' },
+              OrganizerUuid: { tab: 'description', pretty: 'Organiser Name' },
+              description: { tab: 'description', pretty: 'Session Description' },
+              leader: { tab: 'additional', pretty: 'Leader' },
+              location: { tab: 'location', pretty: 'Address' }
+            };
             const errors = [];
-            const missingFields = requiredFields.filter(field => !session[field]).map(field => (field in prettyNames ? prettyNames[field] : field));
-            if (missingFields.length) errors.push(`missing fields (${missingFields.join(', ')})`);
-            if (!(session.schedule && session.schedule.length >= 1)) errors.push('you must add a schedule');
-            if (errors.length) throw new Error(`Can't publish yet: ${errors.join('; ')}`);
+            const missingFields = Object.keys(required).filter(field => !session[field]);
+            if (missingFields.length) errors.push(`Please enter a ${missingFields.map(field => `<a data-tab="${required[field].tab}" data-field="${field}">${required[field].pretty || field}</a>`).join(', ')}`);
+            if (!(session.schedule && session.schedule.length >= 1)) errors.push('You must add a <a data-tab="schedule">schedule</a>');
+            if (errors.length) throw new Error(`We can't publish this yet! ${errors.join('; ')}`);
             return true;
           },
           setDeleted() {

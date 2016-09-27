@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 import OrganizerView from '../OrganizerView';
 
 import Authenticated from 'components/Authenticated';
+import NotificationBar from 'components/NotificationBar';
 import LoadingMessage from 'components/LoadingMessage';
 import SessionList from 'containers/SessionList';
 
@@ -10,9 +11,10 @@ import { apiModel } from '../../utils/api';
 
 export default class MyProfile extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
-    user: React.PropTypes.object,
-    lock: React.PropTypes.object,
-    router: React.PropTypes.object,
+    user: PropTypes.object,
+    lock: PropTypes.object,
+    router: PropTypes.object,
+    notifications: PropTypes.array,
   }
   constructor(props) {
     super(props);
@@ -31,13 +33,13 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
       }, 1000);
     }
   }
-  onOrganizerChange = (event) => {
+  onOrganizerChange = event => {
     const { value } = event.target;
     this.setState({ selectedOrganizer: value });
   }
   getOrganizer() {
     const { organizers, selectedOrganizer } = this.state;
-    return organizers.filter((item) => item.uuid === selectedOrganizer)[0];
+    return organizers.filter(item => item.uuid === selectedOrganizer)[0];
   }
   fetchData = () => {
     const { user } = this.context;
@@ -63,7 +65,8 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
   }
   render() {
     return (<div>
-      <Authenticated message="You must be logged on to view your profile" button="Log in" lock={this.context.lock}>
+      <NotificationBar notifications={this.context.notifications} zIndex={4} />
+      <Authenticated message="You must be logged on to view your profile" button="Log in">
         {this.renderOrganizers()}
       </Authenticated>
     </div>);

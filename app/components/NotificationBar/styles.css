@@ -1,0 +1,62 @@
+@import '../../containers/App/variables.css';
+
+ol.messages {
+  & > li {
+    list-style: none;
+    color: #FFF;
+    font-size: 1.1em;
+    transition: .5s opacity ease;
+    opacity: .9;
+    &:hover {
+      opacity: 1;
+    }
+    &.dismissed {
+      opacity: 0;
+    }
+    &.standard {
+      background-color: grey;
+    }
+    &.success {
+      background-color: var(--liveColor);
+    }
+    &.warn {
+      background-color: var(--draftColor);
+    }
+    &.error {
+      background-color: var(--errorColor);
+    }
+    & > .inner {
+      max-width: var(--pagewidth);
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      & > span {
+        padding: .75em 1.5em;
+      }
+      & .dismiss {
+        font-size: 2em;
+        line-height: 1;
+        text-decoration: none;
+        opacity: .5;
+        transition: .3s opacity ease;
+        margin: .2em;
+        padding: .05em .25em;
+        border-radius: 50%;
+        &:hover {
+          opacity: 1;
+          background-color: #FFF;
+          color: var(--errorColor);
+        }
+      }
+    }
+  }
+}
+
+@media (--desktop) {
+  ol.messages {
+    position: absolute;
+    left: 0;
+    right: 0;
+  }
+}

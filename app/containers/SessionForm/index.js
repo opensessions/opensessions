@@ -38,6 +38,8 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   static contextTypes = {
     user: PropTypes.object,
     router: PropTypes.object,
+    notifications: PropTypes.array,
+    notify: PropTypes.func,
   }
   constructor(props) {
     super(props);
@@ -129,6 +131,13 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     this.setState({ status: '', session });
     this.autosave(1600);
   }
+  errorClick = event => {
+    const { target } = event;
+    const { tab, field } = target.dataset;
+    const session = this.getSession();
+    if (!tab) return;
+    this.context.router.push(`${session.href}/edit/${tab}#${field}`);
+  }
   changeSessionState = (state) => {
     const session = this.getSession();
     const oldState = session.state;
@@ -139,13 +148,13 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
         resolve(res);
       }).catch(res => {
         session.state = oldState;
-        this.setState({ status: res.error, saveState: 'error' });
+        this.context.notify(<p onClick={this.errorClick} dangerouslySetInnerHTML={{ __html: res.error }} />, 'error');
         reject(res.error);
       });
     });
   }
-  publishSession = () => this.changeSessionState('published').then(() => this.context.router.push(this.state.session.href))
-  unpublishSession = () => this.changeSessionState('unpublished')
+  publishSession = () => this.changeSessionState('published').then(() => this.context.notify('Your session has been published!', 'success')).then(() => this.context.router.push(this.state.session.href))
+  unpublishSession = () => this.changeSessionState('unpublished').then(() => this.context.notify('Your session has been unpublished!', 'warn'))
   addEmail = (email) => {
     this.setState({ customEmails: [{ uuid: email, name: email }] });
     this.updateSession('contactEmail', email);
@@ -164,7 +173,13 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
         if (error) {
           throw new Error(error);
         } else {
-          this.setState({ autosaveState: 'saved', session: instance, status: `Saved ${session.state === 'published' ? 'and published' : 'as draft'}!`, saveState: 'saved' });
+          // this.context.notify(`Saved ${session.state === 'published' ? 'and published' : 'as draft'}!`, 'success');
+          this.setState({
+            autosaveState: 'saved',
+            session: instance,
+            status: `Saved ${session.state === 'published' ? 'and published' : 'as draft'}!`,
+            saveState: 'saved'
+          });
         }
         return result;
       }).catch(result => {
@@ -316,7 +331,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       <Authenticated message="You must login before you can add a session">
         <PublishHeader h2={this.props.headerText ? this.props.headerText : 'Add a session'} h3={session.title || <i>Untitled</i>} actions={this.getActions()} />
         <div className={styles.formBody}>
-          <Form fieldsets={this.state.fieldsets} onPublish={this.publishSession} pendingSteps={this.state.pendingSteps} status={this.state.status} saveState={this.state.saveState} tab={this.props.params.tab}>
+          <Form fieldsets={this.state.fieldsets} onPublish={this.publishSession} pendingSteps={this.state.pendingSteps} status={this.state.status} saveState={this.state.saveState} tab={this.props.params.tab} activeField={this.props.location.hash.slice(1)} notifications={this.context.notifications}>
             {this.renderFieldsets()}
           </Form>
         </div>

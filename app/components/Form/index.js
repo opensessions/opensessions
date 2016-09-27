@@ -1,14 +1,19 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 
+import NotificationBar from 'components/NotificationBar';
+
 import styles from './styles.css';
 import fieldStyles from '../Field/styles.css';
-import appStyles from 'containers/App/styles.css';
 
 export default class Form extends React.Component { // eslint-disable-line react/prefer-stateless-function
+  static contextTypes = {
+    notifications: PropTypes.array,
+  };
   static propTypes = {
     children: PropTypes.node.isRequired,
     tab: PropTypes.any,
+    activeField: PropTypes.any,
     pendingSteps: PropTypes.any,
     onPublish: PropTypes.func,
     fieldsets: PropTypes.array,
@@ -28,8 +33,8 @@ export default class Form extends React.Component { // eslint-disable-line react
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.status !== this.props.status) {
-      if (nextProps.status) this.setState({ saveState: nextProps.status, saveStateClass: styles.error });
-      else this.setState({ saveState: 'Saving...', saveStateClass: styles.saving });
+      if (nextProps.status) this.setState({ saveState: nextProps.status });
+      else this.setState({ saveState: 'Saving...' });
     }
     if (nextProps.tab) {
       this.setState({ activeTab: nextProps.tab });
@@ -66,17 +71,19 @@ export default class Form extends React.Component { // eslint-disable-line react
   }
   refocus = () => {
     try {
-      const firstShownField = Array.filter(this.refs.form.elements, element => element.tagName === 'FIELDSET')
-        .filter(fieldset => fieldset.parentNode.className !== styles.hiddenTab)[0].getElementsByClassName(fieldStyles.field)[0];
-      const appBody = document.getElementsByClassName(appStyles.appBody)[0];
+      const firstShownFields = Array.filter(this.refs.form.elements, element => element.tagName === 'FIELDSET')
+        .filter(fieldset => fieldset.parentNode.className !== styles.hiddenTab)[0].getElementsByClassName(fieldStyles.field);
+      /* const appBody = document.getElementsByClassName(appStyles.appBody)[0];
       const originalScrollTop = appBody.scrollTop;
       const interval = setInterval(() => {
         appBody.scrollTop -= 16 * (((((appBody.scrollTop / originalScrollTop) - .5) * 2) ** 3) + 1);
         if (appBody.scrollTop === 0) {
-          firstShownField.querySelectorAll('[tabIndex], input, textarea, select')[0].focus();
           clearInterval(interval);
         }
-      }, 16);
+      }, 16); */
+      const { activeField } = this.props;
+      const fieldToFocus = activeField ? Array.find(firstShownFields, field => field.getElementsByTagName('label')[0].textContent.match(new RegExp(activeField, 'i'))) : firstShownFields[0];
+      fieldToFocus.querySelectorAll('[tabIndex], input, textarea, select')[0].focus();
     } catch (error) {
       console.error('Couldn\'t refocus', error);
     }
@@ -112,16 +119,18 @@ export default class Form extends React.Component { // eslint-disable-line react
     </div>);
   }
   render() {
-    const { pendingSteps } = this.props;
+    const { saveState, pendingSteps } = this.props;
+    const { notifications } = this.context;
     return (<form onFocus={this.onFocus} onBlur={this.onBlur} className={styles.form} data-hasFocus={this.state.hasFocus} ref="form">
+      <NotificationBar notifications={notifications} />
       <nav className={styles.nav}>
         <div className={styles.navLinks}>
           {this.renderNav()}
         </div>
-        <div className={styles.pending} dangerouslySetInnerHTML={{ __html: pendingSteps ? `Complete <b>${pendingSteps} more</b> step${pendingSteps === 1 ? '' : 's'} to finish your listing` : 'Ready to publish!' }} />
+        <div className={styles.pending}>{pendingSteps ? <p>Complete <b>{`${pendingSteps} more`}</b> step{pendingSteps > 1 ? 's' : ''} to finish your listing</p> : 'Ready to publish!'}</div>
       </nav>
       <div className={styles.tabs}>
-        <div className={`${styles.saveState} ${styles[this.props.saveState || 'unsaved']}`}>{this.state.saveState}</div>
+        <div className={[styles.saveState, styles[saveState || 'unsaved']].join(' ')}>{this.state.saveState}</div>
         {this.renderTab()}
         <nav className={styles.formNav}>
           {this.renderActionButtons()}

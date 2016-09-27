@@ -44,12 +44,19 @@ export default class App extends React.Component { // eslint-disable-line react/
     lockSignUp: PropTypes.object,
     lockLogin: PropTypes.object,
     router: PropTypes.object,
-    setMeta: PropTypes.func
+    setMeta: PropTypes.func,
+    notifications: PropTypes.arrayOf(PropTypes.shape({
+      text: PropTypes.string,
+      onDismiss: PropTypes.func,
+      status: PropTypes.oneOf(['success', 'warn', 'error'])
+    })),
+    notify: PropTypes.func
   }
   constructor() {
     super();
     this.state = {
       profile: null,
+      notifications: []
     };
   }
   getChildContext() {
@@ -58,7 +65,9 @@ export default class App extends React.Component { // eslint-disable-line react/
       lockSignUp: this.state.lock ? this.state.lock.SignUp : null,
       lockLogin: this.state.lock ? this.state.lock.Login : null,
       router: this.context.router,
-      setMeta: this.setMeta
+      setMeta: this.setMeta,
+      notifications: this.state.notifications,
+      notify: this.notify
     };
   }
   componentDidMount() {
@@ -74,20 +83,40 @@ export default class App extends React.Component { // eslint-disable-line react/
         localStorage.removeItem('userToken');
         return false;
       }
+      const { email, nickname } = profile;
+      const createdAt = new Date(profile.created_at);
+      const updatedAt = new Date(profile.updated_at);
       profile.logout = () => {
+        this.notify('Logout successful', 'success');
         this.setState({ profile: null });
       };
       this.setState({ profile });
 
       const { analytics } = window;
       if (analytics) {
-        analytics.identify(profile.email, {
-          name: profile.nickname,
-          email: profile.email
+        analytics.identify(email, {
+          name: nickname,
+          email
         });
       }
 
+      if (Date.now() - createdAt.getTime() <= 60000) this.notify('<b>Congratulations!</b> You have created your account', 'success');
+      else if (Date.now() - updatedAt.getTime() <= 60000) this.notify('Login successful!', 'success');
+
       return true;
+    });
+  }
+  notify = (text, status) => {
+    const notification = {
+      id: Date.now(),
+      text,
+      status
+    };
+    notification.onDismiss = () => {
+      this.setState({ notifications: this.state.notifications.filter(msg => msg.id !== notification.id) });
+    };
+    this.setState({
+      notifications: [notification].concat(this.state.notifications)
     });
   }
   createLock() {
@@ -107,13 +136,13 @@ export default class App extends React.Component { // eslint-disable-line react/
     this.setupProfile(lock.Login);
   }
   render() {
-    const { meta, profile, notifications } = this.state;
+    const { meta, profile } = this.state;
     const { INTERCOM_APPID } = window;
     const user = profile && INTERCOM_APPID ? { appID: INTERCOM_APPID, user_id: profile.user_id, email: profile.email, name: profile.nickname } : null;
     return (
       <div className={styles.root}>
         <Helmet meta={meta} />
-        <Header notifications={notifications} />
+        <Header />
         <div className={styles.appBody}>
           <div className={styles.container}>
             {this.props.children}
