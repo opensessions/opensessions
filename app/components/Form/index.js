@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 
 import NotificationBar from 'components/NotificationBar';
+import FieldsetStatusSvg from 'components/FieldsetStatusSvg';
 
 import styles from './styles.css';
 import fieldStyles from '../Field/styles.css';
@@ -96,7 +97,7 @@ export default class Form extends React.Component { // eslint-disable-line react
       const propFieldset = fieldsets[key];
       const { slug } = propFieldset;
       const className = activeTab === slug ? styles.active : '';
-      let isComplete = <span className={styles.tickNone}>+</span>;
+      let isComplete = <span className={styles.tickNone}><FieldsetStatusSvg /></span>;
       if (validity === true) isComplete = <span className={styles.tick}><img role="presentation" src="/images/tick.svg" /></span>;
       else if (validity === 'none') isComplete = null;
       return [heading ? <h1 key={heading}>{heading}</h1> : null, <Link className={className} to={this.getSlugURL(slug)} key={key}>{label} {isComplete}</Link>];
