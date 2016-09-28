@@ -47,30 +47,29 @@ module.exports = (app, database, opts) => {
         };
         if (state === 'updated') {
           item.data = session.toJSON();
-          const { locationData } = item.data;
+          let { locationData } = item.data;
           if (locationData) {
+            if (typeof locationData === 'string') locationData = JSON.parse(locationData);
             if ('placeID' in locationData && !options.preserveLatLng) {
               delete locationData.lat;
               delete locationData.lng;
             }
             item.data.locationData = locationData;
           }
-          if (item.data.startDate) {
-            const timeFx = ['setHours', 'setMinutes', 'setSeconds'];
-            if (item.data.startTime) {
-              const startTime = item.data.startTime.split(':');
-              timeFx.forEach(fx => {
-                item.data.startDate[fx](startTime.shift());
+          const { schedule } = item.data;
+          if (schedule) {
+            item.data.schedule = schedule.map(slot => {
+              const points = ['start', 'end'];
+              const formatted = {};
+              points.forEach(point => {
+                const date = new Date(`${slot.startDate}T${slot[`${point}Time`]}Z`);
+                date.setTime(date.getTime() + (date.getTimezoneOffset() * 60 * 1000));
+                formatted[point] = date;
               });
-            }
-            if (item.data.endTime) {
-              item.data.endDate = new Date(item.data.startDate.getTime());
-              const endTime = item.data.endTime.split(':');
-              timeFx.forEach(fx => {
-                item.data.endDate[fx](endTime.shift());
-              });
-            }
+              return formatted;
+            });
           }
+          ['activityType', 'startDate', 'startTime', 'endTime'].forEach(key => delete item.data[key]);
         }
         return item;
       });
@@ -90,6 +89,7 @@ module.exports = (app, database, opts) => {
         license: 'https://creativecommons.org/licenses/by/4.0/'
       });
     }).catch(error => {
+      console.log('rdpe error', error);
       res.json({ error });
     });
   });
