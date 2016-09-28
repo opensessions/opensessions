@@ -1,8 +1,9 @@
 const express = require('express');
 
-module.exports = (app, database) => {
+module.exports = (app, database, opts) => {
   const rdpe = express();
   const { Session, Organizer, Activity } = database.models;
+  const options = opts || {};
 
   rdpe.get('/', (req, res) => {
     res.json({
@@ -35,8 +36,8 @@ module.exports = (app, database) => {
       ['uuid', 'ASC']
     ];
     const limit = 50;
-    Session.findAll({ where, order, limit, include: [Organizer, Activity] }).then((rawSessions) => {
-      const sessions = rawSessions.map((session) => {
+    Session.findAll({ where, order, limit, include: [Organizer, Activity] }).then(rawSessions => {
+      const sessions = rawSessions.map(session => {
         const state = session.state === 'published' ? 'updated' : 'deleted';
         const item = {
           state,
@@ -46,10 +47,9 @@ module.exports = (app, database) => {
         };
         if (state === 'updated') {
           item.data = session.toJSON();
-          let { locationData } = item.data;
+          const { locationData } = item.data;
           if (locationData) {
-            if (typeof locationData === 'string') locationData = JSON.parse(locationData);
-            if ('placeID' in locationData) {
+            if ('placeID' in locationData && !options.preserveLatLng) {
               delete locationData.lat;
               delete locationData.lng;
             }
@@ -59,14 +59,14 @@ module.exports = (app, database) => {
             const timeFx = ['setHours', 'setMinutes', 'setSeconds'];
             if (item.data.startTime) {
               const startTime = item.data.startTime.split(':');
-              timeFx.forEach((fx) => {
+              timeFx.forEach(fx => {
                 item.data.startDate[fx](startTime.shift());
               });
             }
             if (item.data.endTime) {
               item.data.endDate = new Date(item.data.startDate.getTime());
               const endTime = item.data.endTime.split(':');
-              timeFx.forEach((fx) => {
+              timeFx.forEach(fx => {
                 item.data.endDate[fx](endTime.shift());
               });
             }

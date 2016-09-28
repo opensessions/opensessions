@@ -27,8 +27,8 @@ module.exports = (app) => {
   const database = storage.getInstance();
   const getUser = req => (req.user ? req.user.sub : null);
 
-  const rdpe = RDPE(app, database);
-  api.use('/rdpe', rdpe);
+  api.use('/rdpe', RDPE(app, database));
+  api.use('/rdpe-legacy', RDPE(app, database, { preserveLatLng: true }));
 
   const requireLogin = jwt({
     secret: new Buffer(process.env.AUTH0_CLIENT_SECRET, 'base64'),

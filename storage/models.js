@@ -118,14 +118,14 @@ module.exports = (DataTypes) => ({
             const errors = [];
             const missingFields = Object.keys(required).filter(field => !session[field]);
             if (missingFields.length) {
-              errors.push(`Please enter a ${missingFields.map(field => {
+              errors.push(`Please enter a ${missingFields.map((field, key) => {
                 const data = required[field];
                 const name = data.pretty || field;
-                return `<a data-tab="${data.tab}" data-field="${name}">${name}</a>`;
+                return `${key && key + 1 === missingFields.length ? 'and ' : ''}<a data-tab="${data.tab}" data-field="${name}">${name}</a>`;
               }).join(', ')}`);
             }
             if (!(session.schedule && session.schedule.length >= 1)) errors.push('You must add a <a data-tab="schedule" data-field="schedule">schedule</a>');
-            if (errors.length) throw new Error(`We can't publish this yet! ${errors.join('. ')}`);
+            if (errors.length) throw new Error(`<b>We can't publish this yet!</b> ${errors.join('. ')}`);
             return true;
           },
           setDeleted() {

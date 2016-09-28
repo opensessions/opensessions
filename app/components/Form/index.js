@@ -44,7 +44,7 @@ export default class Form extends React.Component { // eslint-disable-line react
     }
   }
   componentDidUpdate(oldProps, oldState) {
-    if (oldState.activeTab !== this.state.activeTab) {
+    if (oldState.activeTab !== this.state.activeTab || oldProps.activeField !== this.props.activeField) {
       this.refocus();
     }
   }
@@ -72,8 +72,7 @@ export default class Form extends React.Component { // eslint-disable-line react
   }
   refocus = () => {
     try {
-      const firstShownFields = Array.filter(this.refs.form.elements, element => element.tagName === 'FIELDSET')
-        .filter(fieldset => fieldset.parentNode.className !== styles.hiddenTab)[0].getElementsByClassName(fieldStyles.field);
+      const firstShownFields = Array.filter(this.refs.form.querySelectorAll('fieldset'), e => e.parentNode.className.search(styles.hiddenTab) === -1)[0].getElementsByClassName(fieldStyles.field);
       /* const appBody = document.getElementsByClassName(appStyles.appBody)[0];
       const originalScrollTop = appBody.scrollTop;
       const interval = setInterval(() => {

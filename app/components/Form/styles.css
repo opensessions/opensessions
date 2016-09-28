@@ -45,8 +45,9 @@
       margin: .5em 0;
       padding: 0 1rem;
       font-size: .75em;
+      font-weight: 300;
       text-align: center;
-      color: #888;
+      color: #777;
       text-transform: uppercase;
     }
     & > a {

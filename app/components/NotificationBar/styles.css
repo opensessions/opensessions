@@ -33,6 +33,13 @@ ol.messages {
       justify-content: space-between;
       & > span {
         padding: .75em 1.5em;
+        & a {
+          font-weight: bold;
+          text-decoration: none;
+          &:hover {
+            color: #BEF1BE;
+          }
+        }
       }
       & .dismiss {
         font-size: 2em;
