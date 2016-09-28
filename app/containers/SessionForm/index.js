@@ -47,7 +47,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       session: props.session || {},
       autosaveState: 'none',
       fieldsets: [
-        { renderer: this.renderDescriptionFieldset, slug: 'description', required: ['title', 'OrganizerUuid', 'description'], props: { label: 'Description', heading: 'Session Info', validity: false, title: 'Add details about your session', subtitle: 'You\'ll be able to edit these details later' } },
+        { renderer: this.renderDescriptionFieldset, slug: 'description', required: ['title', 'OrganizerUuid', 'description', 'ActivityUuid'], props: { label: 'Description', heading: 'Session Info', validity: false, title: 'Add details about your session', subtitle: 'You\'ll be able to edit these details later' } },
         { renderer: this.renderAdditionalFieldset, slug: 'additional', required: ['leader'], props: { label: 'Additional info', validity: false, title: 'Add details about your session', subtitle: 'You\'ll be able to edit these details later' } },
         { renderer: this.renderLocationFieldset, slug: 'location', required: ['location'], props: { label: 'Location', validity: false, title: 'Where is your session happening?', subtitle: 'Select a location and let participants know about any meeting instructions' } },
         { renderer: this.renderPricingFieldset, slug: 'pricing', props: { label: 'Pricing', validity: 'none', title: 'Add pricing for your session', subtitle: 'If your session is paid, describe pricing levels here' } },

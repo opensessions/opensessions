@@ -256,22 +256,18 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       <div className={styles.inner}>
         <h2>About this session</h2>
         <ol>
-          {features.map((feature) => {
-            let icon = <span className={styles.iconText}>{feature.iconText}</span>;
-            if (feature.iconImg) {
-              icon = <span><img className={styles.iconImg} src={feature.iconImg} role="presentation" /><br /></span>;
-            }
-            return (<li key={feature.text}>
-              {icon}
-              {feature.text}
-            </li>);
-          })}
+          {features.map(feature => (<li key={feature.text}>
+            {feature.iconImg
+              ? <span><img className={styles.iconImg} src={feature.iconImg} role="presentation" /><br /></span>
+              : <span className={styles.iconText}>{feature.iconText}</span>}
+            {feature.text}
+          </li>))}
         </ol>
       </div>
     </div>);
   }
   renderMap() {
-    const session = this.state.session;
+    const { session } = this.state;
     const { locationData } = session;
     let map = null;
     let address = null;
