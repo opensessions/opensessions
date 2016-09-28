@@ -112,6 +112,7 @@ module.exports = (DataTypes) => ({
               title: { tab: 'description', pretty: 'Session Title' },
               OrganizerUuid: { tab: 'description', pretty: 'Organiser Name' },
               description: { tab: 'description', pretty: 'Session Description' },
+              ActivityUuid: { tab: 'description', pretty: 'Activity Type' },
               leader: { tab: 'additional', pretty: 'Leader' },
               location: { tab: 'location', pretty: 'Address' }
             };
