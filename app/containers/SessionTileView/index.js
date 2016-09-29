@@ -18,7 +18,7 @@ export default class SessionTileView extends React.Component { // eslint-disable
   }
   getTitle() {
     const { session } = this.props;
-    return `${session.title ? session.title : '(Untitled)'}`;
+    return session.title || <i>Untitled</i>;
   }
   isOwner() {
     const { session } = this.props;

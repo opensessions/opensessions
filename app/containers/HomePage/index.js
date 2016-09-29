@@ -34,7 +34,9 @@ export default class HomePage extends React.Component { // eslint-disable-line r
           <h1>Why join open sessions?</h1>
           <p>Open Sessions provides you with one place to easily upload and update your session details, and makes those session details visible to thousands of potential participants across the best sports, fitness and health focussed websites on the web.</p>
           <p>And it's free. Forever.</p>
-          <p><Link to="/session/add" className={styles.button}>Increase the visibility of my sessions</Link></p>
+          <Authenticated button={['Increase the visibility of my sessions']}>
+            <p><Link to="/session/add" className={styles.button}>Increase the visibility of my sessions</Link></p>
+          </Authenticated>
         </div>
       </section>
       <section className={styles.featured}>

@@ -15,18 +15,16 @@ module.exports = (app, database, opts) => {
     const fromTS = req.query.from || 0;
     const afterID = req.query.after;
     const where = {
-      $or: [
-        {
-          updatedAt: fromTS,
-          uuid: {
-            $gt: afterID
-          }
-        }, {
-          updatedAt: {
-            $gt: fromTS,
-          },
+      $or: [{
+        updatedAt: fromTS,
+        uuid: {
+          $gt: afterID
         }
-      ],
+      }, {
+        updatedAt: {
+          $gt: fromTS,
+        },
+      }],
       state: {
         $in: ['published', 'deleted', 'unpublished']
       }

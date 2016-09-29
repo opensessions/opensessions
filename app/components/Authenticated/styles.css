@@ -4,7 +4,8 @@
   text-align: center;
   margin: auto;
   max-width: var(--pagewidth);
-  margin: 1em auto;
+  margin: 0 auto;
+  padding: 2em 1em;
   & > ol {
     margin: 1em auto;
     & > li {

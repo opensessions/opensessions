@@ -56,7 +56,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   }
   getTitle() {
     const { session } = this.state;
-    return `${session.title ? session.title : '(Untitled)'}`;
+    return session.title || <i>Untitled</i>;
   }
   getActions() {
     const user = this.context ? this.context.user : false;

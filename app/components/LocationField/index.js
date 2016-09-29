@@ -7,6 +7,9 @@ import Marker from 'react-google-maps/lib/Marker';
 import styles from './styles.css';
 
 export default class LocationField extends React.Component {
+  static contextTypes = {
+    notify: PropTypes.func
+  };
   static propTypes = {
     value: PropTypes.string,
     dataValue: PropTypes.object,
@@ -46,7 +49,10 @@ export default class LocationField extends React.Component {
     }
   }
   onPlaceChange = place => {
-    if (!place.geometry) throw alert('No map data for this location; please try a different address');
+    if (!place.geometry) {
+      this.context.notify('No map data for this location; please try a different address', 'error');
+      return;
+    }
     this.latLngChange(place.geometry.location, { placeID: place.place_id });
     this.props.onChange(place.formatted_address);
     this.setState({ clean: true });

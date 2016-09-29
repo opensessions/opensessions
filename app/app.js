@@ -58,14 +58,11 @@ ReactDOM.render(
         applyRouterMiddleware(
           useScroll(
             (prevProps, props) => {
-              if (!prevProps || !props) {
-                return true;
+              if (prevProps && props) {
+                if (prevProps.location.pathname !== props.location.pathname) {
+                  return [0, 0];
+                }
               }
-
-              if (prevProps.location.pathname !== props.location.pathname) {
-                return [0, 0];
-              }
-
               return true;
             }
           )

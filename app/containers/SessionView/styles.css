@@ -116,8 +116,6 @@
   padding: .25em;
   font-size: 1.4em;
   &.disabled {
-    filter: grayscale(1);
-    cursor: not-allowed;
     & sub {
       font-size: .75em;
       vertical-align: middle;
@@ -125,6 +123,7 @@
     }
     & a {
       pointer-events: none;
+      opacity: .5;
     }
   }
 }
