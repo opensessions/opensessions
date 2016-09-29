@@ -72,7 +72,7 @@ export default class Form extends React.Component { // eslint-disable-line react
   }
   refocus = () => {
     try {
-      const firstShownFields = Array.filter(this.refs.form.querySelectorAll('fieldset'), e => e.parentNode.className.search(styles.hiddenTab) === -1)[0].getElementsByClassName(fieldStyles.field);
+      const firstFields = Array.filter(this.refs.form.querySelectorAll('fieldset'), e => e.parentNode.className.search(styles.hiddenTab) === -1)[0].getElementsByClassName(fieldStyles.field);
       /* const appBody = document.getElementsByClassName(appStyles.appBody)[0];
       const originalScrollTop = appBody.scrollTop;
       const interval = setInterval(() => {
@@ -82,8 +82,10 @@ export default class Form extends React.Component { // eslint-disable-line react
         }
       }, 16); */
       const { activeField } = this.props;
-      const fieldToFocus = activeField ? Array.find(firstShownFields, field => field.getElementsByTagName('label')[0].textContent.match(new RegExp(activeField, 'i'))) : firstShownFields[0];
-      fieldToFocus.querySelectorAll('[tabIndex], input, textarea, select')[0].focus();
+      const fieldToFocus = activeField ? Array.find(firstFields, field => field.getElementsByTagName('label')[0].textContent.match(new RegExp(activeField, 'i'))) : firstFields[0];
+      requestAnimationFrame(() => {
+        fieldToFocus.querySelectorAll('[tabIndex], input, textarea, select')[0].focus();
+      });
     } catch (error) {
       console.error('Couldn\'t refocus', error);
     }

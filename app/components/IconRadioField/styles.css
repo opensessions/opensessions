@@ -15,6 +15,7 @@
         cursor: pointer;
         display: block;
         transition: .2s all ease;
+        outline-color: inherit;
       }
       &.selected {
         color: var(--actionColor);
@@ -25,8 +26,9 @@
       & svg,
       & img {
         display: block;
-        margin: .5em auto;
-        height: 6rem;
+        margin: 0 auto;
+        padding: .5rem 0;
+        height: 7rem;
         width: 6rem;
       }
       & input {

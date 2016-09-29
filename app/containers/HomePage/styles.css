@@ -50,7 +50,7 @@
     & .columns {
       display: flex;
       & > .column {
-        padding: 0 1em;
+        padding: 0 2em;
       }
     }
     & h1,

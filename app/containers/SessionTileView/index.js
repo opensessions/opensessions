@@ -31,6 +31,7 @@ export default class SessionTileView extends React.Component { // eslint-disable
       apiModel.delete('session', session.uuid).then(response => {
         if (response.status === 'success') {
           this.setState({ isDeleted: true });
+          this.context.notify('Session deleted', 'success');
         } else {
           throw new Error('Failed to delete session');
         }
@@ -44,6 +45,7 @@ export default class SessionTileView extends React.Component { // eslint-disable
     if (confirm('Are you sure you want to duplicate this session?')) {
       apiModel.action('session', session.uuid, 'duplicate').then(response => {
         if (response.status === 'success') {
+          this.context.notify('Session duplicated', 'success');
           window.location = response.instance.href;
         } else {
           throw new Error('Failed to duplicate session');

@@ -115,14 +115,14 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
   render() {
     const { value, placeholder, options, className, lazyLoad } = this.props;
     const { visible, search, filteredOptions, highlightIndex } = this.state;
+    const selected = options.find(option => option.uuid === value);
     const searchAttrs = {
       type: 'text',
-      placeholder,
+      placeholder: selected ? selected.name : placeholder,
       className,
       onChange: this.searchEvent,
       onKeyDown: this.searchEvent
     };
-    const selected = options.find(option => option.uuid === value);
     const valueDisplay = selected ? selected.name : '';
     let input = <input {...searchAttrs} ref="input" onFocus={this.searchEvent} onBlur={this.searchEvent} defaultValue={valueDisplay} />;
     let output = <input {...searchAttrs} className={[className, styles.output].join(' ')} ref="output" value={valueDisplay} style={{ opacity: visible ? 0 : 1 }} tabIndex="-1" />;

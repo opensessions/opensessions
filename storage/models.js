@@ -125,7 +125,13 @@ module.exports = (DataTypes) => ({
                 return `${key && key + 1 === missingFields.length ? 'and ' : ''}<a data-tab="${data.tab}" data-field="${name}">${name}</a>`;
               }).join(', ')}`);
             }
-            if (!(session.schedule && session.schedule.length >= 1)) errors.push('You must add a <a data-tab="schedule" data-field="schedule">schedule</a>');
+            if (session.schedule && session.schedule.length) {
+              if (session.schedule.filter(slot => !(slot.startDate && slot.startTime && slot.endTime)).length) {
+                errors.push('You must complete <a data-tab="schedule" data-field="schedule">schedule</a> information');
+              }
+            } else {
+              errors.push('You must add a <a data-tab="schedule" data-field="schedule">schedule</a>');
+            }
             if (errors.length) throw new Error(`<b>We can't publish this yet!</b> ${errors.join('. ')}`);
             return true;
           },

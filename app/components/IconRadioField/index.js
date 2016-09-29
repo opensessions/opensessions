@@ -14,8 +14,16 @@ export default class IconRadioField extends React.Component { // eslint-disable-
   }
   tabKey = event => {
     const { keyCode } = event;
+    const arrowDeltas = { 37: -1, 39: 1 };
     if (keyCode === 13) {
       event.target.click();
+    } else if (keyCode in arrowDeltas) {
+      const { options, value, onChange } = this.props;
+      const optVals = options.map(option => option.value);
+      const newIndex = optVals.indexOf(value) + arrowDeltas[keyCode];
+      if (optVals[newIndex]) {
+        onChange(optVals[newIndex]);
+      }
     }
   }
   render() {
@@ -25,10 +33,9 @@ export default class IconRadioField extends React.Component { // eslint-disable-
       <ol>
         {options.map(option => {
           const selected = option.value === value;
-          const icon = option.icon ? option.icon : <img src={selected ? option.selectedSrc : option.src} role="presentation" />;
           return (<li className={selected ? styles.selected : ''} key={option.value}>
             <label tabIndex="0" onKeyUp={this.tabKey}>
-              {icon}
+              {option.icon || <img src={selected ? option.selectedSrc : option.src} role="presentation" />}
               {option.text}
               <input {...attrs} value={option.value} selected={selected} />
             </label>
