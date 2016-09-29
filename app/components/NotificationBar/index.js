@@ -32,13 +32,11 @@ export default class NotificationBar extends React.Component { // eslint-disable
   unhideMessages() {
     setTimeout(() => {
       Array.forEach(document.getElementsByClassName(styles.messages), messageList => {
-        console.log('componentDidUpdate:', messageList);
         Array.forEach(messageList.children, li => {
-          console.log('::', li.classList);
           li.classList.remove(styles.hidden);
         });
       });
-    }, 50);
+    }, 40);
   }
   render() {
     const { notifications, zIndex } = this.props;

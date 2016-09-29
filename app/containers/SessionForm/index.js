@@ -61,9 +61,8 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   }
   componentDidMount() {
     this.fetchData();
-    console.log('componentDidMount');
   }
-  onChange = (session) => {
+  onChange = session => {
     const { fieldsets } = this.state;
     const invalidValues = [undefined, 'null', '""', '[]'];
     let pendingSteps = 0;
@@ -71,8 +70,8 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       let validity = 'none';
       if (fieldset.required) {
         validity = true;
-        fieldset.required.forEach(field => {
-          if (invalidValues.filter(value => value === JSON.stringify(session[field])).length !== 0) validity = false;
+        fieldset.required.map(field => JSON.stringify(session[field])).forEach(fieldVal => {
+          if (invalidValues.filter(value => value === fieldVal).length) validity = false;
         });
         if (!validity) pendingSteps += 1;
       }
@@ -138,7 +137,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     if (!tab) return;
     this.context.router.push(`${session.href}/edit/${tab}#${field}`);
   }
-  changeSessionState = (state) => {
+  changeSessionState = state => {
     const session = this.getSession();
     const oldState = session.state;
     session.state = state;

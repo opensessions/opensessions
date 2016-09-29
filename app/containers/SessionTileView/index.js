@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 
 import CalendarSvg from 'components/CalendarSvg';
@@ -10,10 +10,11 @@ import styles from './styles.css';
 
 export default class SessionTileView extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
-    session: React.PropTypes.object,
-  }
+    session: PropTypes.object,
+  };
   static contextTypes = {
-    user: React.PropTypes.object,
+    user: PropTypes.object,
+    notify: PropTypes.func,
   }
   getTitle() {
     const { session } = this.props;
@@ -31,8 +32,10 @@ export default class SessionTileView extends React.Component { // eslint-disable
         if (response.status === 'success') {
           this.setState({ isDeleted: true });
         } else {
-          alert('Failed to delete session');
+          throw new Error('Failed to delete session');
         }
+      }).catch(() => {
+        this.context.notify('Failed to delete session', 'error');
       });
     }
   }
@@ -43,8 +46,10 @@ export default class SessionTileView extends React.Component { // eslint-disable
         if (response.status === 'success') {
           window.location = response.instance.href;
         } else {
-          alert('Failed to duplicate session');
+          throw new Error('Failed to duplicate session');
         }
+      }).catch(() => {
+        this.context.notify('Failed to duplicate session', 'error');
       });
     }
   }

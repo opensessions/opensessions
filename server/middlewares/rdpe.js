@@ -85,7 +85,7 @@ module.exports = (app, database, opts) => {
       const query = Object.keys(next).map(key => [key, encodeURIComponent(next[key])].join('=')).join('&');
       res.json({
         items: sessions,
-        next: `/api/rdpe/sessions?${query}`,
+        next: `${options.baseURL || '/api/rdpe'}/sessions?${query}`,
         license: 'https://creativecommons.org/licenses/by/4.0/'
       });
     }).catch(error => {
