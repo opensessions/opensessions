@@ -48,9 +48,8 @@
       }
     }
     & .columns {
-      display: flex;
       & > .column {
-        padding: 0 2em;
+        padding: 1em;
       }
     }
     & h1,
@@ -90,5 +89,16 @@
 @media (--desktop) {
   .landing {
     font-size: 1.1em;
+    & > section {
+      & .columns {
+        display: flex;
+        flex-wrap: wrap;
+        & > .column {
+          padding: 0 2em;
+          flex-basis: 32rem;
+          flex-grow: 1;
+        }
+      }
+    }
   }
 }

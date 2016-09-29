@@ -58,11 +58,10 @@ module.exports = (app, database, opts) => {
           }
           const { schedule } = item.data;
           if (schedule) {
-            const points = ['start', 'end'];
             const defaultTime = { start: '00:00:00', end: '23:59:59' };
             item.data.schedule = schedule.map(slot => {
               const formatted = {};
-              points.forEach(point => {
+              ['start', 'end'].forEach(point => {
                 const date = new Date(`${slot.startDate}T${slot[`${point}Time`] || defaultTime[point]}Z`);
                 date.setTime(date.getTime() + (date.getTimezoneOffset() * 60 * 1000));
                 formatted[point] = date;

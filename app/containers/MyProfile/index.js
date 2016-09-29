@@ -57,7 +57,7 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
     const { sessions, organizers, status } = this.state;
     if (organizers) {
       if (organizers.length) {
-        return <OrganizerView router={this.context.router} organizer={this.getOrganizer()} unassignedSessions={sessions} organizerList={organizers} onOrganizerChange={this.onOrganizerChange} />;
+        return <OrganizerView organizer={this.getOrganizer()} unassignedSessions={sessions} organizerList={organizers} onOrganizerChange={this.onOrganizerChange} />;
       }
       return (<SessionList sessions={sessions} />);
     }

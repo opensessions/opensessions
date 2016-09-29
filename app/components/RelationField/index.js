@@ -39,7 +39,7 @@ export default class RelationField extends React.Component { // eslint-disable-l
   }
   fetchRelation(value) {
     const { relation, onChange } = this.props;
-    return apiModel.search(relation.model, relation.query).then((result) => {
+    return apiModel.search(relation.model, relation.query).then(result => {
       if (value) onChange(value);
       this.setState({ options: result.instances });
     });

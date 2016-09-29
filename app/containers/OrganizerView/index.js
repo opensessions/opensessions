@@ -12,7 +12,6 @@ import styles from './styles.css';
 
 export default class OrganizerView extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
-    router: PropTypes.object,
     organizer: PropTypes.object,
     params: PropTypes.object,
     unassignedSessions: PropTypes.array,
@@ -22,6 +21,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
   static contextTypes = {
     user: PropTypes.object,
     router: PropTypes.object,
+    notify: PropTypes.func
   }
   constructor(props) {
     super(props);
@@ -82,7 +82,10 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
   deleteOrganizer = () => {
     const { organizer } = this.state;
     return apiModel.delete('organizer', organizer.uuid).then(res => {
-      if (res.status === 'success') ('router' in this.props ? this.props : this.context).router.push('/');
+      if (res.status === 'success') {
+        this.context.notify('Organiser deleted!', 'success');
+        this.context.router.push('/');
+      }
     }).catch(() => {
       this.setState({ error: 'failed to delete organiser' });
     });

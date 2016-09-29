@@ -24,7 +24,9 @@ export default class HomePage extends React.Component { // eslint-disable-line r
         <div className={styles.container}>
           <h1>Get your sessions discovered</h1>
           <h2>Your gateway to the most popular physical activity finders on the web</h2>
-          <p><Link to="/session/add">+ Add a session</Link></p>
+          <Authenticated button={['Sign Up', 'Login']}>
+            <p><Link to="/session/add">+ Add a session</Link></p>
+          </Authenticated>
         </div>
       </section>
       <section>
@@ -62,12 +64,11 @@ export default class HomePage extends React.Component { // eslint-disable-line r
     return (<div>
       <NotificationBar notifications={this.context.notifications} zIndex={4} />
       {this.renderLandingPage()}
-      <div className={styles.container}>
-        <h1>Welcome to Open Sessions!</h1>
-        <Authenticated message="Let's get your sessions online." button={['Sign Up', 'Login']}>
+      <Authenticated>
+        <div className={styles.container}>
           {this.renderSessionList()}
-        </Authenticated>
-      </div>
+        </div>
+      </Authenticated>
     </div>);
   }
 }
