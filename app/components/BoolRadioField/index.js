@@ -1,26 +1,20 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 import styles from './styles.css';
 
 export default class BoolRadioField extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
-    onChange: React.PropTypes.func,
-    value: React.PropTypes.any,
-    options: React.PropTypes.array,
-  }
-  getValue() {
-    return this.valueFromProps(this.props);
-  }
-  getOptions() {
-    return this.props.options ? this.props.options : [{ text: 'No' }, { text: 'Yes' }];
+    onChange: PropTypes.func,
+    value: PropTypes.any,
+    options: PropTypes.array,
   }
   parseProps() {
-    return { value: this.getValue(), options: this.getOptions() };
+    return {
+      value: `${this.props.value || false}`,
+      options: this.props.options || [{ text: 'No' }, { text: 'Yes' }]
+    };
   }
-  valueFromProps(props) {
-    return ('value' in props && props.value && props.value.toString) ? props.value.toString() : 'false';
-  }
-  handleChange = (event) => {
+  handleChange = event => {
     const { value } = event.target;
     const state = { value };
     this.setState(state);
@@ -42,7 +36,7 @@ export default class BoolRadioField extends React.Component { // eslint-disable-
       text: options[0].text
     }];
     const radios = (<ol>
-      {parsedOptions.map((option) => {
+      {parsedOptions.map(option => {
         const checked = option.value === value;
         return (<li className={checked ? styles.selected : ''} key={option.value}>
           <label>

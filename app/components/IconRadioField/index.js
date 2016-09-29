@@ -19,10 +19,10 @@ export default class IconRadioField extends React.Component { // eslint-disable-
       event.target.click();
     } else if (keyCode in arrowDeltas) {
       const { options, value, onChange } = this.props;
-      const optVals = options.map(option => option.value);
-      const newIndex = optVals.indexOf(value) + arrowDeltas[keyCode];
-      if (optVals[newIndex]) {
-        onChange(optVals[newIndex]);
+      const vals = options.map(option => option.value);
+      const newIndex = vals.indexOf(value) + arrowDeltas[keyCode];
+      if (vals[newIndex]) {
+        onChange(vals[newIndex]);
       }
     }
   }

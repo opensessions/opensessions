@@ -1,16 +1,16 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 import styles from './styles.css';
 
 export default class OptionalField extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
-    value: React.PropTypes.any,
-    onChange: React.PropTypes.func,
-    no: React.PropTypes.any,
-    yes: React.PropTypes.any,
-    null: React.PropTypes.string,
-    component: React.PropTypes.object,
-    multiline: React.PropTypes.bool
+    value: PropTypes.any,
+    onChange: PropTypes.func,
+    no: PropTypes.any,
+    yes: PropTypes.any,
+    null: PropTypes.string,
+    component: PropTypes.object,
+    multiline: PropTypes.bool
   }
   constructor() {
     super();
@@ -23,7 +23,7 @@ export default class OptionalField extends React.Component { // eslint-disable-l
   handleChange = event => {
     const { target } = event;
     const value = target ? target.value : event;
-    if (this.props.onChange) this.props.onChange(value);
+    this.props.onChange(value);
   }
   radioClick = event => {
     const showInput = event.target.value === 'true';
