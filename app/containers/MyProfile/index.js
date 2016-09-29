@@ -3,7 +3,6 @@ import React, { PropTypes } from 'react';
 import OrganizerView from '../OrganizerView';
 
 import Authenticated from 'components/Authenticated';
-import NotificationBar from 'components/NotificationBar';
 import LoadingMessage from 'components/LoadingMessage';
 import SessionList from 'containers/SessionList';
 
@@ -14,7 +13,6 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
     user: PropTypes.object,
     lock: PropTypes.object,
     router: PropTypes.object,
-    notifications: PropTypes.array,
   }
   constructor(props) {
     super(props);
@@ -65,7 +63,6 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
   }
   render() {
     return (<div>
-      <NotificationBar notifications={this.context.notifications} zIndex={4} />
       <Authenticated message="You must be logged on to view your profile" button="Log in">
         {this.renderOrganizers()}
       </Authenticated>

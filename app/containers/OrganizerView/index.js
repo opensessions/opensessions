@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 
 import { apiModel } from '../../utils/api';
 
+import NotificationBar from 'components/NotificationBar';
 import SessionTileView from '../SessionTileView';
 import LoadingMessage from 'components/LoadingMessage';
 import SessionList from 'containers/SessionList';
@@ -21,7 +22,8 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
   static contextTypes = {
     user: PropTypes.object,
     router: PropTypes.object,
-    notify: PropTypes.func
+    notify: PropTypes.func,
+    notifications: PropTypes.array,
   }
   constructor(props) {
     super(props);
@@ -70,8 +72,11 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
         apiModel.edit('organizer', organizer.uuid, options).then(res => {
           const { instance, error } = res;
           if (error) throw new Error('failed to rename organiser');
+          this.context.notify('Organiser successfully renamed!', 'success');
+          this.context.router.push(instance.href);
           this.setState({ organizer: instance, actionState: 'none' });
         }).catch(error => {
+          this.context.notify('Couldn\'t rename organiser', 'error');
           this.setState({ actionState: 'none', error: error.message });
         });
       }
@@ -165,6 +170,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
   render() {
     const { organizer, error, status } = this.state;
     return (<div className={styles.organizerView}>
+      <NotificationBar notifications={this.context.notifications} zIndex={3} />
       {organizer ? this.renderOrganizer(organizer) : <LoadingMessage message={status} ellipsis />}
       {error ? <LoadingMessage message={error} /> : null}
       <div className={styles.container}>

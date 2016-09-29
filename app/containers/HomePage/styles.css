@@ -23,7 +23,7 @@
       }
     }
     &.heading {
-      background: url('/images/landing-hero.jpg') center center no-repeat;
+      background: var(--darkBlue) url('/images/landing-hero.jpg') center center no-repeat;
       background-size: cover;
       color: #FFF;
       & h1 {

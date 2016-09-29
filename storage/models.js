@@ -39,11 +39,14 @@ module.exports = (DataTypes) => ({
         },
         classMethods: {
           getQuery(query, models, user) {
+            const sessionQuery = models.Session.getQuery(user ? { where: { owner: user } } : {}, models, user);
+            delete sessionQuery.include;
             query.include = [{
               model: models.Session,
-              where: { state: { $in: user ? ['published', 'draft', 'unpublished'] : ['published'] } },
+              where: sessionQuery.where, // { state: { $in: user ? ['published', 'draft', 'unpublished'] : ['published'] } },
               required: false
             }];
+            console.log('Organizer.getQuery', [user], sessionQuery);
             return query;
           },
           makeAssociations(models) {
@@ -142,10 +145,20 @@ module.exports = (DataTypes) => ({
         classMethods: {
           getQuery(query, models, user) {
             query.include = [models.Organizer, models.Activity];
-            if (!('where' in query)) query.where = {};
-            query.where.state = user ? { $not: 'deleted' } : 'published';
-            if ('owner' in query.where && query.where.owner !== user) {
-              return Error('Must be logged in to search by owner');
+            query.where = query.where || {};
+            if (user) {
+              if (query.where.owner) {
+                if (query.where.owner === user) {
+                  query.where.state = { $not: 'deleted' };
+                } else {
+                  query.where.state = 'published';
+                }
+              } else {
+                query.where.owner = user;
+                query.where.state = { $not: 'deleted' };
+              }
+            } else {
+              query.where.state = 'published';
             }
             return query;
           },
