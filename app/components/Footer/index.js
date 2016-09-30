@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router';
 
+import Authenticated from 'components/Authenticated';
 import LogoutLink from 'components/LogoutLink';
 
 import styles from './styles.css';
@@ -19,9 +20,11 @@ export default class Footer extends React.Component { // eslint-disable-line rea
             <p><Link to="/">Site map</Link></p>
           </div>
           <div className={styles.column}>
-            <h2>Your account</h2>
-            <p><Link to="/">Help Desk</Link></p>
-            <p><LogoutLink>Log out</LogoutLink></p>
+            <Authenticated>
+              <h2>Your account</h2>
+              <p><Link to="/">Help Desk</Link></p>
+              <p><LogoutLink>Log out</LogoutLink></p>
+            </Authenticated>
           </div>
           <div className={styles.column}>
             <p>In association with</p>

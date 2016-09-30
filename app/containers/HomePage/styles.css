@@ -30,6 +30,7 @@
         color: inherit;
       }
       & a {
+        background: none;
         margin: .5em 0;
         padding: .5em 2em;
         border: .2em solid;
@@ -81,13 +82,11 @@
     }
     & a {
       display: inline-block;
-      &.button {
-        font-family: Belgrano, sans-serif;
-        padding: .5em 1em;
-        font-size: 1.5em;
-        color: #FFF;
-        background-color: #1B91CD;
-      }
+      font-family: Belgrano, sans-serif;
+      padding: .5em 1em;
+      font-size: 1.5em;
+      color: #FFF;
+      background-color: #1B91CD;
     }
   }
 }

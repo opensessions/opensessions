@@ -23,7 +23,7 @@ export default class Authenticated extends React.Component { // eslint-disable-l
   renderOut() {
     const { message, button } = this.props;
     return (<div className={styles.noAuth}>
-      <p>{message}</p>
+      {message ? <p>{message}</p> : null}
       {button ? this.renderButton() : null}
     </div>);
   }

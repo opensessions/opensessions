@@ -5,7 +5,10 @@
   margin: auto;
   max-width: var(--pagewidth);
   margin: 0 auto;
-  padding: 2em 1em;
+  padding: 1em;
+  & > p {
+    padding: 1em 0;
+  }
   & > ol {
     margin: 1em auto;
     & > li {
