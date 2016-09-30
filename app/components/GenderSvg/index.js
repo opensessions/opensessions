@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 export default class GenderSvg extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
-    only: React.PropTypes.any
+    only: PropTypes.any
   }
   male() {
     return (<g>

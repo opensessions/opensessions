@@ -18,17 +18,8 @@ export default class HomePage extends React.Component { // eslint-disable-line r
     if (!user) return <LoadingMessage message="Loading user" ellipsis />;
     return <SessionList query={`owner=${user.user_id}`} />;
   }
-  renderLandingPage() {
-    return (<div className={styles.landing}>
-      <section className={styles.heading}>
-        <div className={styles.container}>
-          <h1>Get your sessions discovered</h1>
-          <h2>Your gateway to the most popular physical activity finders on the web</h2>
-          <Authenticated button={['Sign Up', 'Login']}>
-            <p><Link to="/session/add"><b>+</b> Add a session</Link></p>
-          </Authenticated>
-        </div>
-      </section>
+  renderMarketingSections() {
+    return (<div>
       <section>
         <div className={styles.container}>
           <h1>Why join open sessions?</h1>
@@ -60,6 +51,20 @@ export default class HomePage extends React.Component { // eslint-disable-line r
           <Link to="/partner" className={styles.button}>Become a partner</Link>
         </div>
       </section>
+    </div>);
+  }
+  renderLandingPage() {
+    return (<div className={styles.landing}>
+      <section className={styles.heading}>
+        <div className={styles.container}>
+          <h1>Get your sessions discovered</h1>
+          <h2>Your gateway to the most popular physical activity finders on the web</h2>
+          <Authenticated button={['Sign Up', 'Login']}>
+            <p><Link to="/session/add"><b>+</b> Add a session</Link></p>
+          </Authenticated>
+        </div>
+      </section>
+      {this.context.user ? null : this.renderMarketingSections()}
     </div>);
   }
   render() {

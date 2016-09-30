@@ -12,7 +12,7 @@
 
 .landing {
   text-align: center;
-  & > section {
+  & section {
     background-color: #EEE;
     padding: 2em 0;
     &.featured {
@@ -94,7 +94,7 @@
 @media (--desktop) {
   .landing {
     font-size: 1.1em;
-    & > section {
+    & section {
       & .columns {
         display: flex;
         flex-wrap: wrap;

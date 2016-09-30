@@ -3,7 +3,7 @@
 .sessionList {
   & p.intro {
     text-align: center;
-    margin: 0;
+    margin: 1em auto;
     padding: .25em 0;
   }
   & ol.list {
