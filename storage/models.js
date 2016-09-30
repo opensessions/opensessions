@@ -39,7 +39,7 @@ module.exports = (DataTypes) => ({
         },
         classMethods: {
           getQuery(query, models, user) {
-            const sessionQuery = models.Session.getQuery(user ? { where: { owner: user } } : {}, models, user);
+            const sessionQuery = models.Session.getQuery({}, models, user);
             query.include = [{
               model: models.Session,
               where: sessionQuery.where,

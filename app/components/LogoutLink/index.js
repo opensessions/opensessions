@@ -1,25 +1,19 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 export default class LogoutLink extends React.Component {
   static propTypes = {
-    value: React.PropTypes.string,
-    invisible: React.PropTypes.bool,
-  }
+    children: PropTypes.node,
+  };
   static contextTypes = {
-    user: React.PropTypes.object,
+    user: PropTypes.object,
   }
   onClick = () => {
-    localStorage.removeItem('userToken');
     const { user } = this.context;
     user.logout();
   }
-  renderLogoutLink() {
-    const { value } = this.props;
-    const { user } = this.context;
-    if (!user) return this.props.invisible ? null : <span>You're already logged out!</span>;
-    return <a onClick={this.onClick}>{value}</a>;
-  }
   render() {
-    return <span>{this.renderLogoutLink()}</span>;
+    const { children } = this.props;
+    const { user } = this.context;
+    return <span>{user ? <a onClick={this.onClick}>{children}</a> : null}</span>;
   }
 }

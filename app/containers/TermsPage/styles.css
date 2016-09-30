@@ -21,6 +21,7 @@
   & section {
     max-width: 92rem;
     margin: 4rem auto;
+    padding: 0 1em;
   }
   & blockquote {
     margin: .5em 0;

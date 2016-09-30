@@ -21,7 +21,7 @@ export default class Footer extends React.Component { // eslint-disable-line rea
           <div className={styles.column}>
             <h2>Your account</h2>
             <p><Link to="/">Help Desk</Link></p>
-            <p><LogoutLink value="Log out" invisible /></p>
+            <p><LogoutLink>Log out</LogoutLink></p>
           </div>
           <div className={styles.column}>
             <p>In association with</p>

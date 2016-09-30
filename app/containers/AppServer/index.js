@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 import Header from 'components/Header';
 import Footer from 'components/Footer';
@@ -7,14 +7,14 @@ import Footer from 'components/Footer';
 
 export default class AppServer extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
-    content: React.PropTypes.string,
+    content: PropTypes.string,
   };
   static contextTypes = {
-    router: React.PropTypes.object,
+    router: PropTypes.object,
   };
   static childContextTypes = {
-    user: React.PropTypes.object,
-    router: React.PropTypes.object,
+    user: PropTypes.object,
+    router: PropTypes.object,
   };
   constructor() {
     super();

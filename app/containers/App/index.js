@@ -73,6 +73,7 @@ export default class App extends React.Component { // eslint-disable-line react/
   componentDidMount() {
     cookieConsent();
     this.createLock();
+    if (navigator.userAgent.indexOf('MSIE') >= 0) this.notify('Internet Explorer is not supported. Consider using an up-to-date browser for the best experience', 'warn');
   }
   setMeta = meta => {
     this.setState({ meta });
@@ -87,6 +88,7 @@ export default class App extends React.Component { // eslint-disable-line react/
       const createdAt = new Date(profile.created_at);
       const updatedAt = new Date(profile.updated_at);
       profile.logout = () => {
+        localStorage.removeItem('userToken');
         this.notify('Logout successful', 'success');
         this.setState({ profile: null });
       };

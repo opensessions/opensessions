@@ -4,6 +4,9 @@ import { apiModel } from 'utils/api';
 import styles from './styles.css';
 
 export default class ImageUploadField extends React.Component { // eslint-disable-line react/prefer-stateless-function
+  static contextTypes = {
+    notify: PropTypes.func
+  };
   static propTypes = {
     value: PropTypes.string,
     onChange: PropTypes.func,
@@ -14,7 +17,7 @@ export default class ImageUploadField extends React.Component { // eslint-disabl
   }
   constructor() {
     super();
-    this.state = { status: '' };
+    this.state = { isUploading: false };
   }
   reset = () => {
     this.props.onChange('');
@@ -28,32 +31,31 @@ export default class ImageUploadField extends React.Component { // eslint-disabl
       const { upload, onChange } = this.props;
       const formData = new FormData();
       formData.append(upload.name, file, file.name);
-      this.setState({ status: 'Uploading...' });
+      this.setState({ isUploading: true });
       apiModel.upload(upload.URL, formData).then(data => {
-        this.setState({ status: '' });
+        this.setState({ isUploading: false });
         const { instance } = data;
         onChange(instance[upload.name]);
       }).catch(error => {
-        let status = 'Failed to upload image';
-        if (error.status === 413) status = 'Failed to upload image (file too large)';
-        this.setState({ status });
+        this.setState({ isUploading: false });
+        this.context.notify(`Failed to upload image ${error.status === 413 ? '(file too large)' : ''}`, 'error');
         console.error(error);
       });
     }
   }
   render() {
     const { value, preview, addText, editText } = this.props;
-    const { status } = this.state;
-    return (<div className={[styles.imageField, status === 'Uploading...' ? styles.loading : null].join(' ')}>
+    const { isUploading } = this.state;
+    const uploadText = value ? editText || 'Change photo' : addText || 'Add photo';
+    return (<div className={[styles.imageField, isUploading ? styles.loading : null].join(' ')}>
       {preview ? <img src={value ? `${value}?${Date.now()}` : '/images/placeholder.png'} role="presentation" className={styles.preview} /> : null}
       <div>
         {value ? <label className={styles.choose} onClick={this.reset}><img src="/images/remove.png" role="presentation" /> <span className={styles.text}>Remove photo</span></label> : null}
         <label className={styles.choose}>
           <img src={value ? '/images/change.png' : '/images/camera.png'} role="presentation" />
-          <span className={styles.text}>{value ? editText || 'Change photo' : addText || 'Add photo'}</span>
+          <span className={styles.text}>{isUploading ? 'Uploading...' : uploadText}</span>
           <input type="file" onChange={this.handleChange} />
         </label>
-        <span className={styles.status}>{status}</span>
       </div>
     </div>);
   }
