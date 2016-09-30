@@ -26,7 +26,7 @@ export default class NotificationBar extends React.Component { // eslint-disable
       target.parentNode.parentNode.classList.add(styles.hidden);
       setTimeout(() => {
         this.props.notifications.find(msg => msg.id == id).onDismiss(); // eslint-disable-line eqeqeq
-      }, 300);
+      }, 200);
     }
   }
   unhideMessages() {
@@ -36,7 +36,7 @@ export default class NotificationBar extends React.Component { // eslint-disable
           li.classList.remove(styles.hidden);
         });
       });
-    }, 40);
+    }, 30);
   }
   render() {
     const { notifications, zIndex } = this.props;

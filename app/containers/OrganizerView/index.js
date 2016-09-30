@@ -28,8 +28,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
   constructor(props) {
     super(props);
     this.state = {
-      organizer: props.organizer || null,
-      status: 'Loading organizer'
+      organizer: props.organizer || null
     };
   }
   componentDidMount() {
@@ -92,6 +91,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
         this.context.router.push('/');
       }
     }).catch(() => {
+      this.context.notify('Couldn\'t delete organiser', 'error');
       this.setState({ error: 'failed to delete organiser' });
     });
   }
@@ -118,8 +118,8 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     const { organizerList, onOrganizerChange } = this.props;
     if (!organizerList) return null;
     return (<select onChange={onOrganizerChange}>
-      <option>Select organizer</option>
-      {organizerList.map((organizer) => <option key={organizer.uuid} value={organizer.uuid}>{organizer.name}</option>)}
+      <option>Select organiser</option>
+      {organizerList.map(organizer => <option key={organizer.uuid} value={organizer.uuid}>{organizer.name}</option>)}
     </select>);
   }
   renderSessions() {
@@ -152,7 +152,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     return <ImageUpload value={organizer.image} onChange={this.photoChange} preview={false} addText="Update photo" upload={{ URL: `/api/organizer/${organizer.uuid}/image`, name: 'image' }} />;
   }
   renderOrganizer(organizer) {
-    const imageUrl = organizer.image || '/images/organizer-bg-default.png';
+    const imageUrl = organizer.image ? organizer.image : '/images/organizer-bg-default.png';
     return (<div>
       <div className={styles.bannerImage} style={{ backgroundImage: `url(${imageUrl})` }}>
         <div className={styles.container}>
@@ -168,10 +168,10 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     </div>);
   }
   render() {
-    const { organizer, error, status } = this.state;
+    const { organizer, error } = this.state;
     return (<div className={styles.organizerView}>
       <NotificationBar notifications={this.context.notifications} zIndex={3} />
-      {organizer ? this.renderOrganizer(organizer) : <LoadingMessage message={status} ellipsis />}
+      {organizer ? this.renderOrganizer(organizer) : <LoadingMessage message="Loading organiser" ellipsis />}
       {error ? <LoadingMessage message={error} /> : null}
       <div className={styles.container}>
         {this.renderSessions()}

@@ -304,6 +304,7 @@ ol.socialLinks {
 
 a.organizerLink {
   color: var(--actionColor);
+  word-break: break-all;
   & > img {
     width: 1em;
   }

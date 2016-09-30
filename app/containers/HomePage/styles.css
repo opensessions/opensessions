@@ -35,12 +35,18 @@
         border: .2em solid;
         border-radius: .2em;
         font-size: 1.2em;
+        font-family: Belgrano, sans-serif;
         line-height: 1;
         text-decoration: none;
         box-shadow: inset 0 0 0 0 #182750;
         transition: .5s ease all;
         &:hover {
           box-shadow: inset 0 -2em 0 0 #1B91CD;
+        }
+        & b {
+          font-size: 1.5em;
+          line-height: .5;
+          vertical-align: sub;
         }
       }
       & h1 {
@@ -70,7 +76,7 @@
       font-weight: 300;
     }
     & p {
-      margin: 1.5rem auto;
+      margin: 2rem auto;
       max-width: 96rem;
     }
     & a {

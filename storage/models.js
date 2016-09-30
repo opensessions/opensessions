@@ -40,13 +40,11 @@ module.exports = (DataTypes) => ({
         classMethods: {
           getQuery(query, models, user) {
             const sessionQuery = models.Session.getQuery(user ? { where: { owner: user } } : {}, models, user);
-            delete sessionQuery.include;
             query.include = [{
               model: models.Session,
-              where: sessionQuery.where, // { state: { $in: user ? ['published', 'draft', 'unpublished'] : ['published'] } },
+              where: sessionQuery.where,
               required: false
             }];
-            console.log('Organizer.getQuery', [user], sessionQuery);
             return query;
           },
           makeAssociations(models) {
@@ -145,20 +143,16 @@ module.exports = (DataTypes) => ({
         classMethods: {
           getQuery(query, models, user) {
             query.include = [models.Organizer, models.Activity];
-            query.where = query.where || {};
+            query.where = { $and: query.where ? [query.where] : [] };
             if (user) {
-              if (query.where.owner) {
-                if (query.where.owner === user) {
-                  query.where.state = { $not: 'deleted' };
-                } else {
-                  query.where.state = 'published';
-                }
-              } else {
-                query.where.owner = user;
-                query.where.state = { $not: 'deleted' };
-              }
+              query.where.$and.push({
+                $or: [
+                  { state: { $not: 'deleted' }, owner: user },
+                  { state: 'published' }
+                ]
+              });
             } else {
-              query.where.state = 'published';
+              query.where.$and.push({ state: 'published' });
             }
             return query;
           },

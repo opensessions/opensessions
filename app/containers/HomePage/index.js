@@ -25,7 +25,7 @@ export default class HomePage extends React.Component { // eslint-disable-line r
           <h1>Get your sessions discovered</h1>
           <h2>Your gateway to the most popular physical activity finders on the web</h2>
           <Authenticated button={['Sign Up', 'Login']}>
-            <p><Link to="/session/add">+ Add a session</Link></p>
+            <p><Link to="/session/add"><b>+</b> Add a session</Link></p>
           </Authenticated>
         </div>
       </section>

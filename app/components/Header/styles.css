@@ -19,6 +19,7 @@
         max-height: 3em;
         &.logo {
           margin-bottom: -.25em;
+          max-width: 7.5em;
         }
         &.beta {
           width: 2.5em;
