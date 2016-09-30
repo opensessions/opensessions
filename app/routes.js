@@ -33,6 +33,14 @@ export default function createRoutes() {
           .catch(errorLoading);
       },
     }, {
+      path: '/partner',
+      name: 'partner',
+      getComponent(nextState, cb) {
+        System.import('containers/PartnerPage')
+          .then(loadModule(cb))
+          .catch(errorLoading);
+      },
+    }, {
       path: '/profile',
       name: 'My profile',
       getComponent(nextState, cb) {

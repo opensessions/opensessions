@@ -1,0 +1,48 @@
+@import '../../containers/App/variables.css';
+
+.partner {
+  color: #333;
+  background: #FFF;
+  text-align: center;
+  & h1,
+  & h2 {
+    font-weight: normal;
+    font-family: Belgrano, sans-serif;
+  }
+  & h1 {
+    font-size: 2.5em;
+  }
+  & h2 {
+    font-size: 1.75em;
+    margin: .5em auto;
+    color: var(--actionColor);
+  }
+  & section {
+    max-width: 92rem;
+    margin: auto;
+    padding: 3em 1em;
+    &.heading {
+      max-width: none;
+      font-size: 1.2em;
+      margin: 0;
+      padding: 3em 1em;
+      background: #333 url('/images/landing-hero.jpg') 50% 50% no-repeat;
+      background-size: cover;
+      color: #FFF;
+      & h2 {
+        color: inherit;
+        font-family: inherit;
+        font-weight: 300;
+      }
+    }
+  }
+  & a.button {
+    display: inline-block;
+    background-color: var(--actionColor);
+    color: #FFF;
+    padding: 1em;
+    line-height: 1;
+    margin: 1em auto;
+    font-size: 1.5em;
+  }
+}

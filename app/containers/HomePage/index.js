@@ -57,7 +57,7 @@ export default class HomePage extends React.Component { // eslint-disable-line r
         <div className={styles.container}>
           <h1>Do you already use a system to manage your sessions?</h1>
           <p>If you already use a booking system, club management system, or similar, then we can connect directly to that system to access the sessions that you want to promote. Get in touch with us to find out more.</p>
-          <Link to="http://www.opensessions.io/open-sessions-connect" className={styles.button}>Become a partner</Link>
+          <Link to="/partner" className={styles.button}>Become a partner</Link>
         </div>
       </section>
     </div>);
