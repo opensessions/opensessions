@@ -41,8 +41,7 @@ export default class App extends React.Component { // eslint-disable-line react/
   };
   static childContextTypes = {
     user: PropTypes.object,
-    lockSignUp: PropTypes.object,
-    lockLogin: PropTypes.object,
+    locks: PropTypes.object,
     router: PropTypes.object,
     setMeta: PropTypes.func,
     notifications: PropTypes.arrayOf(PropTypes.shape({
@@ -62,8 +61,10 @@ export default class App extends React.Component { // eslint-disable-line react/
   getChildContext() {
     return {
       user: this.state.profile,
-      lockSignUp: this.state.lock ? this.state.lock.SignUp : null,
-      lockLogin: this.state.lock ? this.state.lock.Login : null,
+      locks: {
+        signup: this.state.lock ? this.state.lock.SignUp : null,
+        login: this.state.lock ? this.state.lock.Login : null
+      },
       router: this.context.router,
       setMeta: this.setMeta,
       notifications: this.state.notifications,
