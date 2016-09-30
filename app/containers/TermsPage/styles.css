@@ -1,0 +1,35 @@
+@import '../../containers/App/variables.css';
+
+.terms {
+  color: #333;
+  & h1 {
+    color: #FFF;
+    font-family: Belgrano, sans-serif;
+    letter-spacing: .2em;
+    font-weight: normal;
+    padding: 3em 1em;
+    font-size: 2em;
+    text-align: center;
+    background: #333 url('/images/terms-hero.jpg') 50% 50% no-repeat;
+    background-size: cover;
+  }
+  & h2 {
+    font-weight: bold;
+    font-size: 1.75em;
+    margin: .5em auto;
+  }
+  & section {
+    max-width: 92rem;
+    margin: 4rem auto;
+  }
+  & blockquote {
+    margin: .5em 0;
+    padding: .5em;
+    border-left: .2em solid #CCC;
+    color: #555;
+    font-style: italic;
+  }
+  & a {
+    color: var(--actionColor);
+  }
+}

@@ -25,10 +25,10 @@ export default function createRoutes() {
           .catch(errorLoading);
       },
     }, {
-      path: '/forgot',
-      name: 'forgot',
+      path: '/terms',
+      name: 'terms',
       getComponent(nextState, cb) {
-        System.import('containers/ForgotPage')
+        System.import('containers/TermsPage')
           .then(loadModule(cb))
           .catch(errorLoading);
       },
