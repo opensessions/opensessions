@@ -22,26 +22,22 @@ export default class Field extends React.Component { // eslint-disable-line reac
   onFocusChange = event => {
     this.setState({ hasFocus: event.type === 'focus' });
   }
+  renderTooltip() {
+    const { label, tipType, tip, tipTitle, example } = this.props;
+    return (<div className={[styles.tip, tipType ? styles[tipType] : styles.tipFloat].join(' ')}>
+      <strong>{tipTitle || label}</strong>
+      <p>{tip}</p>
+      {example ? <p className={styles.example}>{example}</p> : null}
+    </div>);
+  }
   render() {
-    const { label, fullSize, tipType, tip, tipTitle, example, children } = this.props;
-    let input;
-    if (children) {
-      input = children;
-    }
-    let tooltip;
-    if (tip) {
-      tooltip = (<div className={[styles.tip, tipType ? styles[tipType] : styles.tipFloat].join(' ')}>
-        <strong>{tipTitle || label}</strong>
-        <p>{tip}</p>
-        {example ? <p className={styles.example}>{example}</p> : null}
-      </div>);
-    }
+    const { label, fullSize, tip, children } = this.props;
     return (<div className={styles.field} data-valid={this.state.valid} data-hasfocus={this.state.hasFocus} onFocus={this.onFocusChange} onBlur={this.onFocusChange}>
       <label className={styles.label}>{label}</label>
       <div className={fullSize ? '' : styles.inputWrap}>
-        {input}
+        {children}
       </div>
-      {tooltip}
+      {tip ? this.renderTooltip() : null}
     </div>);
   }
 }

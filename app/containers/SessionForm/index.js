@@ -65,20 +65,18 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   onChange = session => {
     const { fieldsets } = this.state;
     const invalidValues = [undefined, 'null', '""', '[]'];
-    let pendingSteps = 0;
     fieldsets.filter(fieldset => fieldset.required).forEach(fieldset => {
       let validity = true;
-      fieldset.required.map(field => JSON.stringify(session[field])).forEach(fieldVal => {
-        if (invalidValues.filter(value => value === fieldVal).length) validity = false;
+      fieldset.required.map(field => JSON.stringify(session[field])).forEach(val => {
+        if (invalidValues.indexOf(val) >= 0) validity = false;
       });
-      if (!validity) pendingSteps += 1;
       fieldset.props.validity = validity;
     });
+    const pendingSteps = fieldsets.filter(fieldset => fieldset.props.validity).length;
     this.setState({ fieldsets, pendingSteps });
   }
   getSession() {
-    const { session } = this.state;
-    return session || {};
+    return this.state.session || {};
   }
   getAttr = name => {
     const session = this.getSession();
@@ -103,7 +101,6 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   }
   fetchData = () => {
     const { session, params, location } = this.props;
-    const { router } = this.context;
     const uuid = session ? session.uuid : (params.uuid || null);
     if (uuid) {
       apiModel.get('session', uuid).then(res => {
@@ -112,7 +109,8 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       });
     } else {
       apiModel.new('session', location.query).then(res => {
-        router.push(`${res.instance.href}/edit`);
+        this.context.notify('Created a new session', 'success');
+        this.context.router.push(`${res.instance.href}/edit`);
       });
     }
   }
