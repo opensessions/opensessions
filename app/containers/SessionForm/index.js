@@ -45,7 +45,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     super(props);
     this.state = {
       session: props.session || {},
-      autosaveState: 'none',
+      isSaving: false,
       fieldsets: [
         { renderer: this.renderDescriptionFieldset, slug: 'description', required: ['title', 'OrganizerUuid', 'description', 'ActivityUuid'], props: { label: 'Description', heading: 'Session Info', validity: false, title: 'Add details about your session', subtitle: 'You\'ll be able to edit these details later' } },
         { renderer: this.renderAdditionalFieldset, slug: 'additional', required: ['leader'], props: { label: 'Additional info', validity: false, title: 'Add details about your session', subtitle: 'You\'ll be able to edit these details later' } },
@@ -66,25 +66,19 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     const { fieldsets } = this.state;
     const invalidValues = [undefined, 'null', '""', '[]'];
     let pendingSteps = 0;
-    fieldsets.forEach((fieldset, key) => {
-      let validity = 'none';
-      if (fieldset.required) {
-        validity = true;
-        fieldset.required.map(field => JSON.stringify(session[field])).forEach(fieldVal => {
-          if (invalidValues.filter(value => value === fieldVal).length) validity = false;
-        });
-        if (!validity) pendingSteps += 1;
-      }
-      fieldsets[key].props.validity = validity;
+    fieldsets.filter(fieldset => fieldset.required).forEach(fieldset => {
+      let validity = true;
+      fieldset.required.map(field => JSON.stringify(session[field])).forEach(fieldVal => {
+        if (invalidValues.filter(value => value === fieldVal).length) validity = false;
+      });
+      if (!validity) pendingSteps += 1;
+      fieldset.props.validity = validity;
     });
     this.setState({ fieldsets, pendingSteps });
   }
   getSession() {
-    let { session } = this.state;
-    if (!session) session = {};
-    session.update = this.updateSession;
-    session.publish = this.publishSession;
-    return session;
+    const { session } = this.state;
+    return session || {};
   }
   getAttr = name => {
     const session = this.getSession();
@@ -94,10 +88,9 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     };
   }
   getActions = () => {
-    const { session, autosaveState } = this.state;
+    const { session, isSaving } = this.state;
     const { params } = this.props;
     const isPublished = session.state === 'published';
-    const isSaving = autosaveState === 'pending';
     const actions = [];
     if (session.state) {
       let text = isPublished ? 'View' : 'Preview';
@@ -160,7 +153,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   }
   autosave = (ms) => {
     if (this.timeout) clearTimeout(this.timeout);
-    this.setState({ autosaveState: 'pending', status: 'Saving...', saveState: 'saving' });
+    this.setState({ isSaving: true, status: 'Saving...', saveState: 'saving' });
     this.timeout = setTimeout(() => {
       const session = this.getSession();
       if (session.state !== 'unpublished') {
@@ -172,23 +165,17 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
         if (error) {
           throw new Error(error);
         } else {
-          // this.context.notify(`Saved ${session.state === 'published' ? 'and published' : 'as draft'}!`, 'success');
-          this.setState({
-            autosaveState: 'saved',
-            session: instance,
-            status: `Saved ${session.state === 'published' ? 'and published' : 'as draft'}!`,
-            saveState: 'saved'
-          });
+          this.setState({ isSaving: false, session: instance, status: 'Saved draft!', saveState: 'saved' });
         }
         return result;
       }).catch(result => {
-        this.setState({ status: `Failed saving: ${result.error}`, autosaveState: 'saved', saveState: 'error' });
+        this.setState({ status: `Failed saving: ${result.error}`, isSaving: false, saveState: 'error' });
+        this.context.notify('Autosave failed', 'error');
       });
     }, ms);
   }
   renderFieldsets() {
-    let key = 0;
-    return this.state.fieldsets.map(fieldset => <Fieldset key={++key} {...fieldset.props}>{fieldset.renderer()}</Fieldset>);
+    return this.state.fieldsets.map((fieldset, key) => <Fieldset key={key} {...fieldset.props}>{fieldset.renderer()}</Fieldset>);
   }
   renderDescriptionFieldset = () => {
     const user = this.context.user || {};
@@ -196,7 +183,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       <Field label="Session Title" tip="Enter a title for your session" example="E.g. Volleyball training">
         <TextField validation={{ maxLength: 50 }} {...this.getAttr('title')} />
       </Field>
-      <Field label="Organiser Name" name="OrganizerUuid" tip="Enter the name of your club or organisation. If you don't represent a club or organisation, enter your own name" example="E.g. Richmond Volleyball">
+      <Field label="Organiser Name" tip="Enter the name of your club or organisation. If you don't represent a club or organisation, enter your own name" example="E.g. Richmond Volleyball">
         <Relation {...this.getAttr('OrganizerUuid')} props={{ placeholder: 'E.g. Richmond Volleyball' }} relation={{ model: 'organizer', query: { owner: user.user_id } }} />
       </Field>
       <Field label="Session Description" tip="Let people know what's great about the session! Remember: the more detail you provide, the more likely people are to decide to attend." example="Tips: Who is this session for? What benefits will people get from it? What will the session be like? What will we do? Is any prior experience needed?">
@@ -215,28 +202,22 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       </Field>
     </div>);
   }
-  renderAdditionalFieldset = () => {
-    const coachOptions = [
-      { text: 'No, the session is unlead' },
-      { text: 'Yes, the session is coached' }
-    ];
-    return (<div>
-      <Field label="Is there anything participants should bring?" tipTitle="What to bring" tip="Let participants know how to prepare for your session. Is there anything they will need to bring?">
-        <TextField multi validation={{ maxLength: 500 }} {...this.getAttr('preparation')} />
-      </Field>
-      <Field label="Who is the leader for this session?" tipTitle="Session Leader" tip="Enter the name of the person who will be leading the session. It's helpful for participants to know who's in charge when they arrive" example="E.g. John Smith">
-        <TextField {...this.getAttr('leader')} />
-      </Field>
-      <Field label="Will participants receive coaching?">
-        <BoolRadio options={coachOptions} {...this.getAttr('hasCoaching')} />
-      </Field>
-    </div>);
-  }
+  renderAdditionalFieldset = () => (<div>
+    <Field label="Is there anything participants should bring?" tipTitle="What to bring" tip="Let participants know how to prepare for your session. Is there anything they will need to bring?">
+      <TextField multi validation={{ maxLength: 500 }} {...this.getAttr('preparation')} />
+    </Field>
+    <Field label="Who is the leader for this session?" tipTitle="Session Leader" tip="Enter the name of the person who will be leading the session. It's helpful for participants to know who's in charge when they arrive" example="E.g. John Smith">
+      <TextField {...this.getAttr('leader')} />
+    </Field>
+    <Field label="Will participants receive coaching?">
+      <BoolRadio {...this.getAttr('hasCoaching')} options={[{ text: 'No, the session is unlead' }, { text: 'Yes, the session is coached' }]} />
+    </Field>
+  </div>)
   renderLocationFieldset = () => {
     const session = this.getSession();
     return (<div>
       <Field label="Address" tip="Type to search an address and select from the dropdown">
-        <Location {...this.getAttr('location')} dataValue={session.locationData} onDataChange={value => session.update('locationData', value)} />
+        <Location {...this.getAttr('location')} dataValue={session.locationData} onDataChange={value => this.updateSession('locationData', value)} />
       </Field>
       <Field label="Meeting Instructions" tip="What should participants do when they arrive at the venue or location? Try to be as specific as possible." example="E.g. Meet in the main reception area">
         <TextField multi validation={{ maxLength: 500 }} {...this.getAttr('meetingPoint')} />
@@ -253,6 +234,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   </div>)
   renderRestrictionsFieldset = () => {
     const session = this.getSession();
+    const MAX_AGE = 120;
     const genderOptions = [
       { text: 'None (Mixed)', value: 'mixed', icon: <GenderSvg /> },
       { text: 'Male only', value: 'male', icon: <GenderSvg only="male" /> },
@@ -264,10 +246,10 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
         <IconRadio options={genderOptions} {...this.getAttr('genderRestriction')} />
       </Field>
       <Field label="Is there a minimum age?" tipTitle="Minimum age" tip="If there is a minimum age, select 'yes' then enter the age">
-        <Optional {...this.getAttr('minAgeRestriction')} component={{ type: NumField, props: { validation: { min: 0, max: session.maxAgeRestriction || 120 }, format: ': years old' } }} null="0" />
+        <Optional {...this.getAttr('minAgeRestriction')} component={{ type: NumField, props: { validation: { min: 0, max: session.maxAgeRestriction || MAX_AGE }, format: ': years old' } }} null="0" />
       </Field>
       <Field label="Is there a maximum age?" tipTitle="Maximum age" tip="If there is a maximum age, select 'yes' then enter the age">
-        <Optional {...this.getAttr('maxAgeRestriction')} component={{ type: NumField, props: { validation: { min: session.minAgeRestriction || 0, max: 120 }, format: ': years old' } }} null="0" />
+        <Optional {...this.getAttr('maxAgeRestriction')} component={{ type: NumField, props: { validation: { min: session.minAgeRestriction || 0, max: MAX_AGE }, format: ': years old' } }} null="0" />
       </Field>
       <Field label="Are you able to offer support to people with disabilities?" tipTitle="Disability support" tip="Please tick all disabilities that you can cater for in your session. If you are not sure, do not tick any" fullSize>
         <MultiField options={disabilities} {...this.getAttr('abilityRestriction')} />
@@ -278,15 +260,13 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     const session = this.getSession();
     const user = this.context.user || {};
     let emailOptions = user ? [{ uuid: user.email, name: user.email }] : [];
-    if (this.state) {
-      if (this.state.customEmails) {
-        emailOptions = emailOptions.concat(this.state.customEmails);
-      }
+    if (this.state.customEmails) {
+      emailOptions = emailOptions.concat(this.state.customEmails);
     }
     if (session) {
       const { contactEmail } = session;
       if (contactEmail && contactEmail !== user.email) {
-        emailOptions = emailOptions.concat([{ uuid: contactEmail, name: contactEmail }]);
+        emailOptions.push({ uuid: contactEmail, name: contactEmail });
       }
     }
     const emailProps = { options: emailOptions, addItem: this.addEmail };

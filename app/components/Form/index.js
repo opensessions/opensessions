@@ -73,14 +73,6 @@ export default class Form extends React.Component { // eslint-disable-line react
   refocus = () => {
     try {
       const firstFields = Array.filter(this.refs.form.querySelectorAll('fieldset'), e => e.parentNode.className.search(styles.hiddenTab) === -1)[0].getElementsByClassName(fieldStyles.field);
-      /* const appBody = document.getElementsByClassName(appStyles.appBody)[0];
-      const originalScrollTop = appBody.scrollTop;
-      const interval = setInterval(() => {
-        appBody.scrollTop -= 16 * (((((appBody.scrollTop / originalScrollTop) - .5) * 2) ** 3) + 1);
-        if (appBody.scrollTop === 0) {
-          clearInterval(interval);
-        }
-      }, 16); */
       const { activeField } = this.props;
       const fieldToFocus = activeField ? Array.find(firstFields, field => field.getElementsByTagName('label')[0].textContent.match(new RegExp(activeField, 'i'))) : firstFields[0];
       requestAnimationFrame(() => {

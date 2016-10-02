@@ -10,7 +10,6 @@ export default class Field extends React.Component { // eslint-disable-line reac
     tipTitle: PropTypes.string,
     example: PropTypes.string,
     fullSize: PropTypes.bool,
-    element: PropTypes.node,
     children: PropTypes.node
   }
   constructor(props) {
@@ -24,11 +23,9 @@ export default class Field extends React.Component { // eslint-disable-line reac
     this.setState({ hasFocus: event.type === 'focus' });
   }
   render() {
-    const { label, fullSize, tipType, tip, tipTitle, example, element, children } = this.props;
+    const { label, fullSize, tipType, tip, tipTitle, example, children } = this.props;
     let input;
-    if (element) {
-      input = element;
-    } else if (children) {
+    if (children) {
       input = children;
     }
     let tooltip;

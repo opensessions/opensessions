@@ -43,16 +43,16 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     const { params } = this.props;
     return apiModel.get('organizer', params.uuid).then(res => {
       this.setState({ organizer: res.instance });
-    }).catch(error => {
-      this.setState({ error });
+    }).catch(() => {
+      this.context.notify('Failed to retrieve organiser', 'error');
     });
   }
   photoChange = image => {
     const { organizer } = this.state;
     return apiModel.edit('organizer', organizer.uuid, { image }).then(res => {
       this.setState({ organizer: res.instance, modified: Date.now() });
-    }).catch(error => {
-      this.setState({ error });
+    }).catch(() => {
+      this.context.notify('Couldn\'t change the image', 'error');
     });
   }
   isOwner() {
@@ -66,6 +66,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
   renameOrganizer = name => {
     if (typeof name === 'string') {
       const { organizer } = this.state;
+      if (name === organizer.name) return;
       const options = { name };
       if (options.name) {
         apiModel.edit('organizer', organizer.uuid, options).then(res => {
@@ -74,9 +75,9 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
           this.context.notify('Organiser successfully renamed!', 'success');
           this.context.router.push(instance.href);
           this.setState({ organizer: instance, actionState: 'none' });
-        }).catch(error => {
+        }).catch(() => {
           this.context.notify('Couldn\'t rename organiser', 'error');
-          this.setState({ actionState: 'none', error: error.message });
+          this.setState({ actionState: 'none' });
         });
       }
     } else {
@@ -92,7 +93,6 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
       }
     }).catch(() => {
       this.context.notify('Couldn\'t delete organiser', 'error');
-      this.setState({ error: 'failed to delete organiser' });
     });
   }
   renameEvents = event => {
@@ -169,11 +169,10 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     </div>);
   }
   render() {
-    const { organizer, error } = this.state;
+    const { organizer } = this.state;
     return (<div className={styles.organizerView}>
       <NotificationBar notifications={this.context.notifications} zIndex={3} />
       {organizer ? this.renderOrganizer(organizer) : <LoadingMessage message="Loading organiser" ellipsis />}
-      {error ? <LoadingMessage message={error} /> : null}
       <div className={styles.container}>
         {this.renderSessions()}
       </div>

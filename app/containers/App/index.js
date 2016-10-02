@@ -61,10 +61,7 @@ export default class App extends React.Component { // eslint-disable-line react/
   getChildContext() {
     return {
       user: this.state.profile,
-      locks: {
-        signup: this.state.lock ? this.state.lock.SignUp : null,
-        login: this.state.lock ? this.state.lock.Login : null
-      },
+      locks: this.state.locks ? this.state.locks : { signup: null, login: null },
       router: this.context.router,
       setMeta: this.setMeta,
       notifications: this.state.notifications,
@@ -74,7 +71,8 @@ export default class App extends React.Component { // eslint-disable-line react/
   componentDidMount() {
     cookieConsent();
     this.createLock();
-    if (navigator.userAgent.indexOf('MSIE') >= 0) this.notify('Internet Explorer is not supported. Consider using an up-to-date browser for the best experience', 'warn');
+    const { userAgent } = navigator;
+    if (userAgent.indexOf('MSIE') >= 0 || (userAgent.indexOf('Trident') >= 0 && !userAgent.indexOf('x64') >= 0)) this.notify('Internet Explorer is not well-supported. Consider using an up-to-date browser for the best experience', 'warn');
   }
   setMeta = meta => {
     this.setState({ meta });
@@ -91,6 +89,7 @@ export default class App extends React.Component { // eslint-disable-line react/
       profile.logout = () => {
         localStorage.removeItem('userToken');
         this.notify('Logout successful', 'success');
+        this.context.router.push('/');
         this.setState({ profile: null });
       };
       this.setState({ profile });
@@ -131,12 +130,12 @@ export default class App extends React.Component { // eslint-disable-line react/
       },
       socialButtonStyle: 'big',
     };
-    const lock = {
-      SignUp: new Auth0Lock('bSVd1LzdwXsKbjF7JXflIc1UuMacffUA', 'opensessions.eu.auth0.com', { allowLogin: false, allowSignUp: true, initialScreen: 'signUp', ...opts }),
-      Login: new Auth0Lock('bSVd1LzdwXsKbjF7JXflIc1UuMacffUA', 'opensessions.eu.auth0.com', { allowLogin: true, allowSignUp: false, initialScreen: 'login', ...opts })
+    const locks = {
+      signup: new Auth0Lock('bSVd1LzdwXsKbjF7JXflIc1UuMacffUA', 'opensessions.eu.auth0.com', { allowLogin: false, allowSignUp: true, initialScreen: 'signUp', ...opts }),
+      login: new Auth0Lock('bSVd1LzdwXsKbjF7JXflIc1UuMacffUA', 'opensessions.eu.auth0.com', { allowLogin: true, allowSignUp: false, initialScreen: 'login', ...opts })
     };
-    this.setState({ lock });
-    this.setupProfile(lock.Login);
+    this.setState({ locks });
+    this.setupProfile(locks.login);
   }
   render() {
     const { meta, profile } = this.state;
