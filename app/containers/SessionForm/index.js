@@ -39,13 +39,17 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     user: PropTypes.object,
     router: PropTypes.object,
     notifications: PropTypes.array,
-    notify: PropTypes.func,
+    notify: PropTypes.func
+  };
+  static childContextTypes = {
+    formLock: PropTypes.bool,
   }
   constructor(props) {
     super(props);
     this.state = {
       session: props.session || {},
-      isSaving: false,
+      isPendingSave: false,
+      isSaving: true,
       fieldsets: [
         { renderer: this.renderDescriptionFieldset, slug: 'description', required: ['title', 'OrganizerUuid', 'description', 'ActivityUuid'], props: { label: 'Description', heading: 'Session Info', validity: false, title: 'Add details about your session', subtitle: 'You\'ll be able to edit these details later' } },
         { renderer: this.renderAdditionalFieldset, slug: 'additional', required: ['leader'], props: { label: 'Additional info', validity: false, title: 'Add details about your session', subtitle: 'You\'ll be able to edit these details later' } },
@@ -58,6 +62,9 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
         { renderer: this.renderScheduleFieldset, slug: 'schedule', required: ['schedule'], props: { label: 'Add a schedule', heading: 'Scheduling', validity: false, title: 'Add a schedule for your sessions', subtitle: 'You can add multiple dates for sessions which occur regularly' } }
       ]
     };
+  }
+  getChildContext() {
+    return { formLock: this.state.isSaving };
   }
   componentDidMount() {
     this.fetchData();
@@ -86,16 +93,16 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     };
   }
   getActions = () => {
-    const { session, isSaving } = this.state;
+    const { session, isPendingSave } = this.state;
     const { params } = this.props;
     const isPublished = session.state === 'published';
     const actions = [];
     if (session.state) {
       let text = isPublished ? 'View' : 'Preview';
-      if (isSaving) text = 'Saving...';
+      if (isPendingSave) text = 'Saving...';
       const viewURL = `/session/${session.uuid}${params.tab ? `?tab=${params.tab}` : ''}`;
-      actions.push(<Link key="view" to={viewURL} className={[publishStyles.previewButton, isSaving ? publishStyles.disabled : null].join(' ')}>{text}</Link>);
-      actions.push(<a key="publish" onClick={isPublished ? this.unpublishSession : this.publishSession} className={[publishStyles[`action${isPublished ? 'Unpublish' : 'Publish'}`], isSaving ? publishStyles.disabled : null].join(' ')}>{isPublished ? 'Unpublish' : 'Publish'}</a>);
+      actions.push(<Link key="view" to={viewURL} className={[publishStyles.previewButton, isPendingSave ? publishStyles.disabled : null].join(' ')}>{text}</Link>);
+      actions.push(<a key="publish" onClick={isPublished ? this.unpublishSession : this.publishSession} className={[publishStyles[`action${isPublished ? 'Unpublish' : 'Publish'}`], isPendingSave ? publishStyles.disabled : null].join(' ')}>{isPublished ? 'Unpublish' : 'Publish'}</a>);
     }
     return actions;
   }
@@ -105,7 +112,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     if (uuid) {
       apiModel.get('session', uuid).then(res => {
         this.onChange(res.instance);
-        this.setState({ session: res.instance });
+        this.setState({ session: res.instance, isSaving: false });
       });
     } else {
       apiModel.new('session', location.query).then(res => {
@@ -116,6 +123,8 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   }
   updateSession = (name, value) => {
     const session = this.getSession();
+    const { isSaving } = this.state;
+    if (isSaving) return;
     session[name] = value;
     this.onChange(session);
     this.setState({ status: '', session });
@@ -151,23 +160,23 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   }
   autosave = (ms) => {
     if (this.timeout) clearTimeout(this.timeout);
-    this.setState({ isSaving: true, status: 'Saving...', saveState: 'saving' });
+    this.setState({ isPendingSave: true, status: 'Saving...', saveState: 'saving' });
     this.timeout = setTimeout(() => {
+      this.setState({ isSaving: true, status: 'Saving...', saveState: 'saving' });
       const session = this.getSession();
       if (session.state !== 'unpublished') {
         session.state = 'draft';
       }
-      this.setState({ status: 'Saving...', saveState: 'saving' });
       apiModel.edit('session', session.uuid, session).then(result => {
         const { instance, error } = result;
         if (error) {
           throw new Error(error);
         } else {
-          this.setState({ isSaving: false, session: instance, status: 'Saved draft!', saveState: 'saved' });
+          this.setState({ isPendingSave: false, isSaving: false, session: instance, status: 'Saved draft!', saveState: 'saved' });
         }
         return result;
       }).catch(result => {
-        this.setState({ status: `Failed saving: ${result.error}`, isSaving: false, saveState: 'error' });
+        this.setState({ status: `Failed saving: ${result.error}`, isPendingSave: false, isSaving: false, saveState: 'error' });
         this.context.notify('Autosave failed', 'error');
       });
     }, ms);

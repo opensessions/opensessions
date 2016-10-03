@@ -61,7 +61,7 @@
         top: -.5em;
         left: -.5em;
       }
-      & > p {
+      & p {
         font-size: .9em;
       }
       & .example {
@@ -111,7 +111,7 @@
         transform: scale(.825) perspective(16em);
         transition-duration: .3s;
         color: #FFF;
-        & > p {
+        & p {
           font-size: 1em;
         }
       }

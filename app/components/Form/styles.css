@@ -2,6 +2,19 @@
 
 .form {
   display: flex;
+  &.disabled {
+    & input[type],
+    & select,
+    & textarea {
+      color: #666;
+      background-color: #E3E3E3 !important;
+      cursor: wait;
+      pointer-events: none;
+      &:focus {
+        outline-width: .02em;
+      }
+    }
+  }
   & input[type=text],
   & input[type=email],
   & input[type=number],
@@ -149,6 +162,7 @@
   transition: .1s ease all;
   opacity: 1;
   max-width: 42em;
+  padding: .5em;
   &.unsaved {
     color: transparent;
   }

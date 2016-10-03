@@ -49,13 +49,15 @@ export default class App extends React.Component { // eslint-disable-line react/
       onDismiss: PropTypes.func,
       status: PropTypes.oneOf(['success', 'warn', 'error'])
     })),
-    notify: PropTypes.func
+    notify: PropTypes.func,
+    isLoadingUser: PropTypes.bool
   }
   constructor() {
     super();
     this.state = {
       profile: null,
-      notifications: []
+      notifications: [],
+      isLoadingUser: true
     };
   }
   getChildContext() {
@@ -65,7 +67,8 @@ export default class App extends React.Component { // eslint-disable-line react/
       router: this.context.router,
       setMeta: this.setMeta,
       notifications: this.state.notifications,
-      notify: this.notify
+      notify: this.notify,
+      isLoadingUser: this.state.isLoadingUser
     };
   }
   componentDidMount() {
@@ -81,6 +84,7 @@ export default class App extends React.Component { // eslint-disable-line react/
     lock.getProfile(getUserToken(), (err, profile) => {
       if (err) {
         localStorage.removeItem('userToken');
+        this.setState({ isLoadingUser: false });
         return false;
       }
       const { email, nickname } = profile;
@@ -92,7 +96,7 @@ export default class App extends React.Component { // eslint-disable-line react/
         this.context.router.push('/');
         this.setState({ profile: null });
       };
-      this.setState({ profile });
+      this.setState({ profile, isLoadingUser: false });
 
       const { analytics } = window;
       if (analytics) {
