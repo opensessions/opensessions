@@ -124,8 +124,6 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
       onKeyDown: this.searchEvent
     };
     const valueDisplay = selected ? selected.name : '';
-    let input = <input {...searchAttrs} ref="input" onFocus={this.searchEvent} onBlur={this.searchEvent} defaultValue={valueDisplay} />;
-    let output = <input {...searchAttrs} className={[className, styles.output].join(' ')} ref="output" value={valueDisplay} style={{ opacity: visible ? 0 : 1 }} tabIndex="-1" />;
     let searchResults = null;
     if (visible && (lazyLoad ? search : true)) {
       let index = -1;
@@ -135,8 +133,8 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
     }
     const action = <a className={[styles.action, search && !filteredOptions.length ? styles.add : styles.clear, value || search ? null : styles.hide].join(' ')} onClick={this.resetValue} />;
     return (<div className={styles.searchableSelect}>
-      {input}
-      {output}
+      <input {...searchAttrs} ref="input" onFocus={this.searchEvent} onBlur={this.searchEvent} defaultValue={valueDisplay} />
+      <input {...searchAttrs} className={[className, styles.output].join(' ')} value={valueDisplay} style={{ opacity: visible ? 0 : 1 }} tabIndex="-1" />
       {action}
       {searchResults}
     </div>);

@@ -15,13 +15,10 @@ export default class Field extends React.Component { // eslint-disable-line reac
   constructor(props) {
     super(props);
     this.state = {
-      valid: true,
       hasFocus: false
     };
   }
-  onFocusChange = event => {
-    this.setState({ hasFocus: event.type === 'focus' });
-  }
+  onFocusChange = event => this.setState({ hasFocus: event.type === 'focus' })
   renderTooltip() {
     const { label, tipType, tip, tipTitle, example } = this.props;
     return (<div className={[styles.tip, tipType ? styles[tipType] : styles.tipFloat].join(' ')}>
@@ -32,7 +29,7 @@ export default class Field extends React.Component { // eslint-disable-line reac
   }
   render() {
     const { label, fullSize, tip, children } = this.props;
-    return (<div className={styles.field} data-valid={this.state.valid} data-hasfocus={this.state.hasFocus} onFocus={this.onFocusChange} onBlur={this.onFocusChange}>
+    return (<div className={styles.field} data-hasfocus={this.state.hasFocus} onFocus={this.onFocusChange} onBlur={this.onFocusChange}>
       <label className={styles.label}>{label}</label>
       <div className={fullSize ? '' : styles.inputWrap}>
         {children}

@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 
-import { apiFetch } from '../../utils/api';
+import { apiModel } from '../../utils/api';
 
 import SessionTileView from 'containers/SessionTileView';
 import LoadingMessage from 'components/LoadingMessage';
@@ -12,12 +12,15 @@ export default class SessionList extends React.Component { // eslint-disable-lin
   static propTypes = {
     sessions: PropTypes.array,
     query: PropTypes.string
+  };
+  static contextTypes = {
+    notify: PropTypes.func
   }
   constructor(props) {
     super();
-    this.state = { sessions: [], status: 'loading' };
+    this.state = { sessions: [], isLoading: true };
     if (props.sessions) {
-      this.state = { sessions: props.sessions, status: 'passed' };
+      this.state = { sessions: props.sessions, isLoading: false };
     }
   }
   componentDidMount() {
@@ -28,23 +31,26 @@ export default class SessionList extends React.Component { // eslint-disable-lin
   componentWillReceiveProps(props) {
     const { sessions } = props;
     if (sessions) {
-      this.setState({ sessions: props.sessions, status: 'passed' });
+      this.setState({ sessions: props.sessions, isLoading: false });
     }
   }
   fetchData() {
-    apiFetch(`/api/session?${this.props.query}`).then(result => {
+    return apiModel.search('session', this.props.query).then(result => {
       const { instances, error } = result;
-      if (instances) this.setState({ sessions: instances, status: 'done' });
-      if (error) this.setState({ status: error });
+      if (instances) this.setState({ sessions: instances, isLoading: false });
+      if (error) {
+        this.context.notify('Failed to load sessions', 'error');
+        this.setState({ isLoading: false });
+      }
     });
   }
   render() {
-    const { sessions, status } = this.state;
-    if (status === 'loading') return <div className={styles.sessionList}><LoadingMessage message="Loading sessions" ellipsis /></div>;
+    const { sessions, isLoading } = this.state;
+    if (isLoading) return <div className={styles.sessionList}><LoadingMessage message="Loading sessions" ellipsis /></div>;
     return (<div className={styles.sessionList}>
       <p className={styles.intro}>{sessions.length ? 'These are the sessions you\'ve created so far:' : 'You haven\'t created any sessions yet! Click the button below to create a session.'}</p>
       <ol className={styles.list}>
-        {sessions.map((session) => <li key={session.uuid}><SessionTileView session={session} /></li>)}
+        {sessions.map(session => <li key={session.uuid}><SessionTileView session={session} /></li>)}
       </ol>
       <p><Link to="/session/add" className={styles.add}>+ Add a session</Link></p>
     </div>);
