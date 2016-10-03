@@ -72,7 +72,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       });
       fieldset.props.validity = validity;
     });
-    const pendingSteps = fieldsets.filter(fieldset => fieldset.props.validity).length;
+    const pendingSteps = fieldsets.filter(fieldset => !fieldset.props.validity).length;
     this.setState({ fieldsets, pendingSteps });
   }
   getSession() {
@@ -119,7 +119,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     session[name] = value;
     this.onChange(session);
     this.setState({ status: '', session });
-    this.autosave(1600);
+    this.autosave(1000);
   }
   errorClick = event => {
     const { target } = event;

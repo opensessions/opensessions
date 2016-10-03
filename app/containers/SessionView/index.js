@@ -21,7 +21,8 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   static contextTypes = {
     user: PropTypes.object,
     setMeta: PropTypes.func,
-    notifications: PropTypes.array
+    notifications: PropTypes.array,
+    notify: PropTypes.func
   };
   static propTypes = {
     params: PropTypes.object,
@@ -72,16 +73,18 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     return actions;
   }
   fetchData = () => {
+    this.setState({ isLoading: true });
     apiModel.get('session', this.props.params.uuid).then(result => {
       const { error, instance } = result;
       if (error) throw error;
-      this.setState({ session: instance });
+      this.setState({ session: instance, isLoading: false });
       if (this.context.setMeta) {
         const { image } = instance;
         if (image) this.context.setMeta([{ property: 'og:image', content: image }]);
       }
-    }).catch(error => {
-      this.setState({ error });
+    }).catch(() => {
+      this.context.notify('Failed to load session', 'error');
+      this.setState({ isLoading: false });
     });
   }
   renderDate() {
@@ -213,10 +216,10 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     </div>);
   }
   renderAbout() {
-    const session = this.state.session;
+    const { session } = this.state;
     const features = [];
     const maps = {
-      gender: {
+      genderRestriction: {
         male: {
           text: 'Male Only',
           iconImg: '/images/male-selected.svg'
@@ -229,29 +232,23 @@ export default class SessionView extends React.Component { // eslint-disable-lin
           text: 'Mixed Gender',
           iconImg: '/images/mixed-selected.svg'
         }
+      },
+      hasCoaching: {
+        true: {
+          iconImg: '/images/coached.png',
+          text: 'Coached'
+        }
       }
     };
-    if (session.genderRestriction) {
-      features.push(maps.gender[session.genderRestriction]);
-    }
-    if (session.minAgeRestriction) {
+    Object.keys(maps).filter(key => session[key] && session[key] in maps[key]).forEach(key => {
+      features.push(maps[key][session[key]]);
+    });
+    ['min', 'max'].filter(extremum => session[`${extremum}AgeRestriction`]).forEach(extremum => {
       features.push({
-        iconText: session.minAgeRestriction,
-        text: 'Minimum Age'
+        iconText: session[`${extremum}AgeRestriction`],
+        text: `${extremum}imum Age`
       });
-    }
-    if (session.maxAgeRestriction) {
-      features.push({
-        iconText: session.maxAgeRestriction,
-        text: 'Maximum Age'
-      });
-    }
-    if (session.hasCoaching) {
-      features.push({
-        iconImg: '/images/coached.png',
-        text: 'Coached'
-      });
-    }
+    });
     return (<div className={styles.aboutSection}>
       <div className={styles.inner}>
         <h2>About this session</h2>
@@ -320,19 +317,22 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       </div>
     </div>);
   }
-  render() {
-    const topAttrs = { className: styles.sessionView };
-    const { session, error } = this.state;
-    if (error) return (<div {...topAttrs}><LoadingMessage message={error} /></div>);
-    if (!session) return (<div {...topAttrs}><LoadingMessage message="Loading session" ellipsis /></div>);
-    return (<div {...topAttrs}>
-      <PublishHeader h2={session && session.state === 'published' ? 'Published session' : 'Preview'} actions={this.getActions()} />
-      <NotificationBar notifications={this.context.notifications} />
+  renderSession() {
+    return (<div>
       {this.renderDetails()}
       {this.renderShare()}
       {this.renderDescription()}
       {this.renderAbout()}
       {this.renderMap()}
+    </div>);
+  }
+  render() {
+    const { session, isLoading } = this.state;
+    if (isLoading) return (<div className={styles.sessionView}><LoadingMessage message="Loading session" ellipsis /></div>);
+    return (<div className={styles.sessionView}>
+      {session ? <PublishHeader h2={session && session.state === 'published' ? 'Published session' : 'Preview'} actions={this.getActions()} /> : null}
+      <NotificationBar notifications={this.context.notifications} />
+      {session ? this.renderSession() : <LoadingMessage message="Session not found" />}
     </div>);
   }
 }
