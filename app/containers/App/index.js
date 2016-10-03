@@ -129,6 +129,9 @@ export default class App extends React.Component { // eslint-disable-line react/
         primaryColor: '#1A90CD',
       },
       socialButtonStyle: 'big',
+      languageDictionary: {
+        title: 'Open Sessions'
+      }
     };
     const locks = {
       signup: new Auth0Lock('bSVd1LzdwXsKbjF7JXflIc1UuMacffUA', 'opensessions.eu.auth0.com', { allowLogin: false, allowSignUp: true, initialScreen: 'signUp', ...opts }),
