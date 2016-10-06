@@ -1,0 +1,169 @@
+{
+  "fieldsets": {
+    "description": {
+      "label": "Description",
+      "heading": "Session Info",
+      "title": "Add details about your session",
+      "subtitle": "You'll be able to edit these details later"
+    },
+    "additional": {
+      "label": "Additional info",
+      "title": "Add details about your session",
+      "subtitle": "You'll be able to edit these details later"
+    },
+    "location": {
+      "label": "Location",
+      "title": "Where is your session happening?",
+      "subtitle": "Select a location and let participants know about any meeting instructions"
+    },
+    "pricing": {
+      "label": "Pricing",
+      "title": "Add pricing for your session",
+      "subtitle": "If your session is paid, describe pricing levels here"
+    },
+    "restrictions": {
+      "label": "Who it's for",
+      "title": "Who is your session for?",
+      "subtitle": "Specify any restrictions that apply and disabilities catered for"
+    },
+    "contact": {
+      "label": "Contact info",
+      "title": "Who can people talk to about this session?",
+      "subtitle": "Help potential attendees by providing details of who they can contact"
+    },
+    "social": {
+      "label": "Social media",
+      "title": "Where can people find more information about your session online?",
+      "subtitle": "Help potential attendees by providing links where they can find out more"
+    },
+    "photo": {
+      "label": "Photo",
+      "title": "Add a photo of your session",
+      "subtitle": "Show people what to expect from this session"
+    },
+    "schedule": {
+      "label": "Add a schedule",
+      "heading": "Scheduling",
+      "title": "Add a schedule for your sessions",
+      "subtitle": "You can add multiple dates for sessions which occur regularly"
+    }
+  },
+  "fields": {
+    "title": {
+      "label": "Session Title",
+      "tip": "Enter a title for your session",
+      "example": "E.g. Volleyball training"
+    },
+    "OrganizerUuid": {
+      "label": "Organiser Name",
+      "tip": "Enter the name of your club or organisation. If you don't represent a club or organisation, enter your own name",
+      "example": "E.g. Richmond Volleyball"
+    },
+    "description": {
+      "label": "Session Description",
+      "tip": "Let people know what's great about the session! Remember: the more detail you provide, the more likely people are to decide to attend.",
+      "example": "Tips: Who is this session for? What benefits will people get from it? What will the session be like? What will we do? Is any prior experience needed?"
+    },
+    "ActivityUuid": {
+      "label": "Sport or activity type",
+      "tip": "Enter the type of activity or sport on offer for this session. If multiple activities are on offer at this session, please write 'Multiple Activities'",
+      "placeholder": "E.g. Volleyball",
+      "example": "E.g. Volleyball"
+    },
+    "preparation": {
+      "label": "Is there anything participants should bring?",
+      "tipTitle": "What to bring",
+      "tip": "Let participants know how to prepare for your session. Is there anything they will need to bring?"
+    },
+    "leader": {
+      "label": "Who is the leader for this session?",
+      "tipTitle": "Session Leader",
+      "tip": "Enter the name of the person who will be leading the session. It's helpful for participants to know who's in charge when they arrive",
+      "example": "E.g. John Smith"
+    },
+    "hasCoaching": {
+      "label": "Will participants receive coaching?"
+    },  
+    "location": {
+      "label": "Address",
+      "tip": "Type to search an address and select from the dropdown"
+    },
+    "meetingPoint": {
+      "label": "Meeting Instructions",
+      "tip": "What should participants do when they arrive at the venue or location? Try to be as specific as possible.",
+      "example": "E.g. Meet in the main reception area"
+    },
+    "price": {
+      "label": "Price"
+    },
+    "quantity": {
+      "label": "Spaces available",
+      "tip": "How many spaces are available?"
+    },
+    "genderRestriction": {
+      "label": "Gender restrictions",
+      "tipTitle": "Gender restrictions",
+      "tip": "Select 'none' if there are no restrictions on gender"
+    },
+    "minAgeRestriction": {
+      "label": "Is there a minimum age?",
+      "tipTitle": "Minimum age",
+      "tip": "If there is a minimum age, select 'yes' then enter the age"
+    },
+    "maxAgeRestriction": {
+      "label": "Is there a maximum age?",
+      "tipTitle": "Maximum age",
+      "tip": "If there is a maximum age, select 'yes' then enter the age"
+    },
+    "abilityRestriction": {
+      "label": "Are you able to offer support to people with disabilities?",
+      "tipTitle": "Disability support",
+      "tip": "Please tick all disabilities that you can cater for in your session. If you are not sure, do not tick any",
+      "fullSize": true
+    },
+    "contactName": {
+      "label": "Full name",
+      "tip": "Who's the best person for attendees to contact if they have questions about this session?"
+    },
+    "contactEmail": {
+      "label": "Email address",
+      "tip": "What is their email address?"
+    },
+    "contactPhone": {
+      "label": "Phone number",
+      "tip": "What is their phone number (optional)?"
+    },
+    "socialWebsite": {
+      "label": "Website",
+      "tip": "Enter the website URL where potential attendees can find out more information about your sessions. Linking to the specific page on your site that relates to the session is better if possible"
+    },
+    "socialFacebook": {
+      "label": "Facebook page or group",
+      "tip": "Enter the URL of your Facebook page or Facebook group, where attendees can see who else usually attends"
+    },
+    "socialInstagram": {
+      "label": "Instagram",
+      "tip": "Enter the Instragram Account for your organisation",
+      "example": "E.g. @instagoodgym"
+    },
+    "socialTwitter": {
+      "label": "Twitter handle",
+      "tip": "Enter the Twitter Handle for your organisation",
+      "example": "E.g. @goodgym"
+    },
+    "socialHashtag": {
+      "label": "Hashtag",
+      "tip": "Enter the Hashtag for your session, if you have one",
+      "example": "E.g. #UseYourRun"
+    },
+    "image": {
+      "fullSize": true,
+      "tipType": "inline",
+      "tipTitle": "upload a real photo of your session",
+      "tip": "People are much more likely to attend a session if it has a real photo (One taken on your smartphone will do)"
+    },
+    "schedule": {
+      "fullSize": true
+    }
+  }
+}

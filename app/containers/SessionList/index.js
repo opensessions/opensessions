@@ -3,8 +3,8 @@ import { Link } from 'react-router';
 
 import { apiModel } from '../../utils/api';
 
-import SessionTileView from 'containers/SessionTileView';
-import LoadingMessage from 'components/LoadingMessage';
+import SessionTileView from '../SessionTileView';
+import LoadingMessage from '../../components/LoadingMessage';
 
 import styles from './styles.css';
 

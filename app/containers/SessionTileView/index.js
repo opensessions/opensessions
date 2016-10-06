@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 
-import CalendarSvg from 'components/CalendarSvg';
+import CalendarSvg from '../../components/CalendarSvg';
 
-import { parseSchedule } from 'utils/calendar';
-import { apiModel } from 'utils/api';
+import { parseSchedule } from '../../utils/calendar';
+import { apiModel } from '../../utils/api';
 
 import styles from './styles.css';
 
@@ -79,7 +79,7 @@ export default class SessionTileView extends React.Component { // eslint-disable
   }
   renderSchedule(occurrence, key) {
     const date = parseSchedule(occurrence);
-    return (<li className={`${styles.schedule} ${date.hasOccurred ? styles.occurred : null}`} key={key}>
+    return (<li className={[styles.schedule, date.hasOccurred ? styles.occurred : null].join(' ')} key={key}>
       <CalendarSvg />
       <span>{date.date} {date.time ? <span className={styles.time}>at {date.time}</span> : null}</span>
       <span>{date.hasOccurred ? ' (Past)' : ''}</span>
@@ -93,9 +93,6 @@ export default class SessionTileView extends React.Component { // eslint-disable
     let schedules = [];
     if (session.schedule) {
       schedules = session.schedule.map(this.renderSchedule);
-    }
-    if (session.startDate || session.startTime) {
-      schedules.push(this.renderSchedule(session, 'raw'));
     }
     return (<article className={styles.tile}>
       <div className={styles.imgCol}>

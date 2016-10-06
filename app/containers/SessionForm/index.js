@@ -28,6 +28,8 @@ import publishStyles from '../../components/PublishHeader/styles.css';
 
 import { apiModel } from '../../utils/api';
 
+import formCopy from './copy.json';
+
 export default class SessionForm extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
     session: PropTypes.object,
@@ -46,21 +48,72 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   }
   constructor(props) {
     super(props);
+    const MAX_AGE = 120;
+    const GENDER_OPTIONS = [
+      { text: 'None (Mixed)', value: 'mixed', icon: <GenderSvg /> },
+      { text: 'Male only', value: 'male', icon: <GenderSvg only="male" /> },
+      { text: 'Female only', value: 'female', icon: <GenderSvg only="female" /> }
+    ];
+    const DISABILITIES = ['Learning disability', 'Mental health condition', 'Physical impairment', 'Visual impairment', 'Deaf', 'Please ask for more info'];
     this.state = {
       session: props.session || {},
       isPendingSave: false,
       isSaving: true,
+      copy: formCopy,
       fieldsets: [
-        { renderer: this.renderDescriptionFieldset, slug: 'description', required: ['title', 'OrganizerUuid', 'description', 'ActivityUuid'], props: { label: 'Description', heading: 'Session Info', validity: false, title: 'Add details about your session', subtitle: 'You\'ll be able to edit these details later' } },
-        { renderer: this.renderAdditionalFieldset, slug: 'additional', required: ['leader'], props: { label: 'Additional info', validity: false, title: 'Add details about your session', subtitle: 'You\'ll be able to edit these details later' } },
-        { renderer: this.renderLocationFieldset, slug: 'location', required: ['location'], props: { label: 'Location', validity: false, title: 'Where is your session happening?', subtitle: 'Select a location and let participants know about any meeting instructions' } },
-        { renderer: this.renderPricingFieldset, slug: 'pricing', props: { label: 'Pricing', validity: 'none', title: 'Add pricing for your session', subtitle: 'If your session is paid, describe pricing levels here' } },
-        { renderer: this.renderRestrictionsFieldset, slug: 'restrictions', props: { label: 'Who it\'s for', validity: 'none', title: 'Who is your session for?', subtitle: 'Specify any restrictions that apply and disabilities catered for' } },
-        { renderer: this.renderContactFieldset, slug: 'contact', props: { label: 'Contact info', validity: 'none', title: 'Who can people talk to about this session?', subtitle: 'Help potential attendees by providing details of who they can contact' } },
-        { renderer: this.renderSocialFieldset, slug: 'social', props: { label: 'Social media', validity: 'none', title: 'Where can people find more information about your session online?', subtitle: 'Help potential attendees by providing links where they can find out more' } },
-        { renderer: this.renderImageFieldset, slug: 'photo', props: { label: 'Photo', validity: 'none', title: 'Add a photo of your session', subtitle: 'Show people what to expect from this session' } },
-        { renderer: this.renderScheduleFieldset, slug: 'schedule', required: ['schedule'], props: { label: 'Add a schedule', heading: 'Scheduling', validity: false, title: 'Add a schedule for your sessions', subtitle: 'You can add multiple dates for sessions which occur regularly' } }
-      ]
+        { slug: 'description', required: ['title', 'OrganizerUuid', 'description', 'ActivityUuid'], fields: ['title', 'OrganizerUuid', 'description', 'ActivityUuid'], props: { validity: false } },
+        { slug: 'additional', required: ['leader'], props: { validity: false }, fields: ['preparation', 'leader', 'hasCoaching'] },
+        { slug: 'location', required: ['location'], props: { validity: false }, fields: ['location', 'meetingPoint'] },
+        { slug: 'pricing', props: { validity: 'none' }, fields: ['price', 'quantity'] },
+        { slug: 'restrictions', props: { validity: 'none' }, fields: ['genderRestriction', 'minAgeRestriction', 'maxAgeRestriction', 'abilityRestriction'] },
+        { slug: 'contact', props: { validity: 'none' }, fields: ['contactName', 'contactEmail', 'contactPhone'] },
+        { slug: 'social', props: { validity: 'none' }, fields: ['socialWebsite', 'socialFacebook', 'socialInstagram', 'socialTwitter', 'socialHashtag'] },
+        { slug: 'photo', props: { validity: 'none' }, fields: ['image'] },
+        { slug: 'schedule', required: ['schedule'], props: { validity: false }, fields: ['schedule'] }
+      ],
+      fields: {
+        title: () => <TextField validation={{ maxLength: 50 }} {...this.getAttr('title')} />,
+        OrganizerUuid: () => <Relation {...this.getAttr('OrganizerUuid')} props={{ placeholder: 'E.g. Richmond Volleyball' }} relation={{ model: 'organizer', query: { owner: this.context.user ? this.context.user.user_id : null } }} />,
+        description: () => <TextField multi size="XL" {...this.getAttr('description')} />,
+        ActivityUuid: () => <Relation {...this.getAttr('ActivityUuid')} relation={{ model: 'activity', query: { } }} props={{ lazyLoad: true, maxOptions: 5 }} />,
+        preparation: () => <TextField multi validation={{ maxLength: 500 }} {...this.getAttr('preparation')} />,
+        leader: () => <TextField {...this.getAttr('leader')} />,
+        hasCoaching: () => <BoolRadio {...this.getAttr('hasCoaching')} options={[{ text: 'No, the session is unlead' }, { text: 'Yes, the session is coached' }]} />,
+        location: () => <Location {...this.getAttr('location')} dataValue={this.state.session.locationData} onDataChange={value => this.updateSession('locationData', value)} />,
+        meetingPoint: () => <TextField multi validation={{ maxLength: 500 }} {...this.getAttr('meetingPoint')} />,
+        price: () => <Optional {...this.getAttr('price')} no="Free" yes="Paid" null="0" component={{ type: NumField, props: { validation: { min: 0 }, format: '£ :', step: '0.25' } }} />,
+        quantity: () => <NumField {...this.getAttr('quantity')} validation={{ min: 0 }} />,
+        genderRestriction: () => <IconRadio options={GENDER_OPTIONS} {...this.getAttr('genderRestriction')} />,
+        minAgeRestriction: () => <Optional {...this.getAttr('minAgeRestriction')} component={{ type: NumField, props: { validation: { min: 0, max: this.state.session.maxAgeRestriction || MAX_AGE }, format: ': years old' } }} null="0" />,
+        maxAgeRestriction: () => <Optional {...this.getAttr('maxAgeRestriction')} component={{ type: NumField, props: { validation: { min: this.state.session.minAgeRestriction || 0, max: MAX_AGE }, format: ': years old' } }} null="0" />,
+        abilityRestriction: () => <MultiField options={DISABILITIES} {...this.getAttr('abilityRestriction')} />,
+        contactName: () => <TextField {...this.getAttr('contactName')} />,
+        contactEmail: () => <SearchableSelect {...this.getAttr('contactEmail')} onChange={value => this.updateSession('contactEmail', value || '')} options={this.getEmails()} addItem={this.addEmail} />,
+        contactPhone: () => <TextField {...this.getAttr('contactPhone')} />,
+        socialWebsite: () => <TextField placeholder="https://" {...this.getAttr('socialWebsite')} />,
+        socialFacebook: () => <TextField placeholder="https://" {...this.getAttr('socialFacebook')} />,
+        socialInstagram: () => <TextField placeholder="@instagoodgym" {...this.getAttr('socialInstagram')} />,
+        socialTwitter: () => <TextField placeholder="@goodgym" {...this.getAttr('socialTwitter')} />,
+        socialHashtag: () => <TextField placeholder="#UseYourRun" {...this.getAttr('socialHashtag')} />,
+        image: () => <ImageUpload preview {...this.getAttr('image')} upload={{ URL: `/api/session/${this.state.session.uuid}/image`, name: 'image' }} />,
+        schedule: () => <JSONList
+          {...this.getAttr('schedule')}
+          addText="Add another date"
+          onAddEmpty={newRow => {
+            if (newRow.startDate) {
+              const date = new Date(newRow.startDate);
+              date.setDate(date.getDate() + 7);
+              newRow.startDate = date.toISOString().substr(0, 10);
+            }
+          }}
+          maxLength={10}
+          components={[
+            { label: 'Date', Component: DateField, props: { name: 'startDate' } },
+            { label: 'Start time', Component: TimeField, props: { name: 'startTime' } },
+            { label: 'End time', Component: TimeField, props: { name: 'endTime' } }
+          ]}
+        />
+      }
     };
   }
   getChildContext() {
@@ -105,6 +158,21 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       actions.push(<a key="publish" onClick={isPublished ? this.unpublishSession : this.publishSession} className={[publishStyles[`action${isPublished ? 'Unpublish' : 'Publish'}`], isPendingSave ? publishStyles.disabled : null].join(' ')}>{isPublished ? 'Unpublish' : 'Publish'}</a>);
     }
     return actions;
+  }
+  getEmails() {
+    const session = this.getSession();
+    const user = this.context.user || {};
+    let emailOptions = user ? [{ uuid: user.email, name: user.email }] : [];
+    if (this.state.customEmails) {
+      emailOptions = emailOptions.concat(this.state.customEmails);
+    }
+    if (session) {
+      const { contactEmail } = session;
+      if (contactEmail && contactEmail !== user.email) {
+        emailOptions.push({ uuid: contactEmail, name: contactEmail });
+      }
+    }
+    return emailOptions;
   }
   fetchData = () => {
     const { session, params, location } = this.props;
@@ -182,135 +250,9 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     }, ms);
   }
   renderFieldsets() {
-    return this.state.fieldsets.map((fieldset, key) => <Fieldset key={key} {...fieldset.props}>{fieldset.renderer()}</Fieldset>);
+    return this.state.fieldsets.map((fieldset, key) => <Fieldset key={key} {...fieldset.props} {...this.state.copy.fieldsets[fieldset.slug]}>{this.renderFieldset(fieldset)}</Fieldset>);
   }
-  renderDescriptionFieldset = () => {
-    const user = this.context.user || {};
-    return (<div>
-      <Field label="Session Title" tip="Enter a title for your session" example="E.g. Volleyball training">
-        <TextField validation={{ maxLength: 50 }} {...this.getAttr('title')} />
-      </Field>
-      <Field label="Organiser Name" tip="Enter the name of your club or organisation. If you don't represent a club or organisation, enter your own name" example="E.g. Richmond Volleyball">
-        <Relation {...this.getAttr('OrganizerUuid')} props={{ placeholder: 'E.g. Richmond Volleyball' }} relation={{ model: 'organizer', query: { owner: user.user_id } }} />
-      </Field>
-      <Field label="Session Description" tip="Let people know what's great about the session! Remember: the more detail you provide, the more likely people are to decide to attend." example="Tips: Who is this session for? What benefits will people get from it? What will the session be like? What will we do? Is any prior experience needed?">
-        <TextField multi size="XL" {...this.getAttr('description')} />
-      </Field>
-      <Field label="Sport or activity type" tip="Enter the type of activity or sport on offer for this session. If multiple activities are on offer at this session, please write 'Multiple Activities'" placeholder="E.g. Volleyball" example="E.g. Volleyball">
-        <Relation {...this.getAttr('ActivityUuid')} relation={{ model: 'activity', query: { } }} props={{ lazyLoad: true, maxOptions: 5 }} />
-      </Field>
-    </div>);
-  }
-  renderImageFieldset = () => {
-    const session = this.getSession();
-    return (<div>
-      <Field fullSize tipType="inline" tipTitle="upload a real photo of your session" tip="People are much more likely to attend a session if it has a real photo (One taken on your smartphone will do)">
-        <ImageUpload preview {...this.getAttr('image')} upload={{ URL: `/api/session/${session.uuid}/image`, name: 'image' }} />
-      </Field>
-    </div>);
-  }
-  renderAdditionalFieldset = () => (<div>
-    <Field label="Is there anything participants should bring?" tipTitle="What to bring" tip="Let participants know how to prepare for your session. Is there anything they will need to bring?">
-      <TextField multi validation={{ maxLength: 500 }} {...this.getAttr('preparation')} />
-    </Field>
-    <Field label="Who is the leader for this session?" tipTitle="Session Leader" tip="Enter the name of the person who will be leading the session. It's helpful for participants to know who's in charge when they arrive" example="E.g. John Smith">
-      <TextField {...this.getAttr('leader')} />
-    </Field>
-    <Field label="Will participants receive coaching?">
-      <BoolRadio {...this.getAttr('hasCoaching')} options={[{ text: 'No, the session is unlead' }, { text: 'Yes, the session is coached' }]} />
-    </Field>
-  </div>)
-  renderLocationFieldset = () => {
-    const session = this.getSession();
-    return (<div>
-      <Field label="Address" tip="Type to search an address and select from the dropdown">
-        <Location {...this.getAttr('location')} dataValue={session.locationData} onDataChange={value => this.updateSession('locationData', value)} />
-      </Field>
-      <Field label="Meeting Instructions" tip="What should participants do when they arrive at the venue or location? Try to be as specific as possible." example="E.g. Meet in the main reception area">
-        <TextField multi validation={{ maxLength: 500 }} {...this.getAttr('meetingPoint')} />
-      </Field>
-    </div>);
-  }
-  renderPricingFieldset = () => (<div>
-    <Field label="Price">
-      <Optional {...this.getAttr('price')} no="Free" yes="Paid" null="0" component={{ type: NumField, props: { validation: { min: 0 }, format: '£ :', step: '0.25' } }} />
-    </Field>
-    <Field label="Spaces available" tip="How many spaces are available?">
-      <NumField {...this.getAttr('quantity')} validation={{ min: 0 }} />
-    </Field>
-  </div>)
-  renderRestrictionsFieldset = () => {
-    const session = this.getSession();
-    const MAX_AGE = 120;
-    const genderOptions = [
-      { text: 'None (Mixed)', value: 'mixed', icon: <GenderSvg /> },
-      { text: 'Male only', value: 'male', icon: <GenderSvg only="male" /> },
-      { text: 'Female only', value: 'female', icon: <GenderSvg only="female" /> }
-    ];
-    const disabilities = ['Learning disability', 'Mental health condition', 'Physical impairment', 'Visual impairment', 'Deaf', 'Please ask for more info'];
-    return (<div>
-      <Field label="Gender restrictions" tipTitle="Gender restrictions" tip="Select 'none' if there are no restrictions on gender">
-        <IconRadio options={genderOptions} {...this.getAttr('genderRestriction')} />
-      </Field>
-      <Field label="Is there a minimum age?" tipTitle="Minimum age" tip="If there is a minimum age, select 'yes' then enter the age">
-        <Optional {...this.getAttr('minAgeRestriction')} component={{ type: NumField, props: { validation: { min: 0, max: session.maxAgeRestriction || MAX_AGE }, format: ': years old' } }} null="0" />
-      </Field>
-      <Field label="Is there a maximum age?" tipTitle="Maximum age" tip="If there is a maximum age, select 'yes' then enter the age">
-        <Optional {...this.getAttr('maxAgeRestriction')} component={{ type: NumField, props: { validation: { min: session.minAgeRestriction || 0, max: MAX_AGE }, format: ': years old' } }} null="0" />
-      </Field>
-      <Field label="Are you able to offer support to people with disabilities?" tipTitle="Disability support" tip="Please tick all disabilities that you can cater for in your session. If you are not sure, do not tick any" fullSize>
-        <MultiField options={disabilities} {...this.getAttr('abilityRestriction')} />
-      </Field>
-    </div>);
-  }
-  renderContactFieldset = () => {
-    const session = this.getSession();
-    const user = this.context.user || {};
-    let emailOptions = user ? [{ uuid: user.email, name: user.email }] : [];
-    if (this.state.customEmails) {
-      emailOptions = emailOptions.concat(this.state.customEmails);
-    }
-    if (session) {
-      const { contactEmail } = session;
-      if (contactEmail && contactEmail !== user.email) {
-        emailOptions.push({ uuid: contactEmail, name: contactEmail });
-      }
-    }
-    const emailProps = { options: emailOptions, addItem: this.addEmail };
-    return (<div>
-      <Field label="Full name" tip="Who's the best person for attendees to contact if they have questions about this session?"><TextField {...this.getAttr('contactName')} /></Field>
-      <Field label="Email address" tip="What is their email address?"><SearchableSelect {...this.getAttr('contactEmail')} onChange={value => this.updateSession('contactEmail', value || '')} {...emailProps} /></Field>
-      <Field label="Phone number" tip="What is their phone number (optional)?"><TextField {...this.getAttr('contactPhone')} /></Field>
-    </div>);
-  }
-  renderSocialFieldset = () => (<div>
-    <Field label="Website" tip="Enter the website URL where potential attendees can find out more information about your sessions. Linking to the specific page on your site that relates to the session is better if possible"><TextField placeholder="https://" {...this.getAttr('socialWebsite')} /></Field>
-    <Field label="Facebook page or group" tip="Enter the URL of your Facebook page or Facebook group, where attendees can see who else usually attends"><TextField placeholder="https://" {...this.getAttr('socialFacebook')} /></Field>
-    <Field label="Instagram" tip="Enter the Instragram Account for your organisation" example="E.g. @instagoodgym"><TextField placeholder="@instagoodgym" {...this.getAttr('socialInstagram')} /></Field>
-    <Field label="Twitter handle" tip="Enter the Twitter Handle for your organisation" example="E.g. @goodgym"><TextField placeholder="@goodgym" {...this.getAttr('socialTwitter')} /></Field>
-    <Field label="Hashtag" tip="Enter the Hashtag for your session, if you have one" example="E.g. #UseYourRun"><TextField placeholder="#UseYourRun" {...this.getAttr('socialHashtag')} /></Field>
-  </div>)
-  renderScheduleFieldset = () => (<div>
-    <Field fullSize>
-      <JSONList
-        {...this.getAttr('schedule')}
-        addText="Add another date"
-        onAddEmpty={newRow => {
-          if (newRow.startDate) {
-            const date = new Date(newRow.startDate);
-            date.setDate(date.getDate() + 7);
-            newRow.startDate = date.toISOString().substr(0, 10);
-          }
-        }}
-        maxLength={10}
-        components={[
-          { label: 'Date', Component: DateField, props: { name: 'startDate' } },
-          { label: 'Start time', Component: TimeField, props: { name: 'startTime' } },
-          { label: 'End time', Component: TimeField, props: { name: 'endTime' } }
-        ]}
-      />
-    </Field>
-  </div>)
+  renderFieldset = fieldset => (<div>{fieldset.fields.map(field => (<Field {...this.state.copy.fields[field]}>{this.state.fields[field]()}</Field>))}</div>)
   render() {
     const session = this.getSession();
     return (<div className={styles.form}>

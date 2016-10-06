@@ -26,8 +26,7 @@ export default class Form extends React.Component { // eslint-disable-line react
     super(props);
     this.state = {
       activeTab: props.tab || props.fieldsets[0].slug,
-      saveState: 'Unsaved',
-      hasFocus: false
+      saveState: 'Unsaved'
     };
   }
   componentDidMount() {
@@ -48,12 +47,6 @@ export default class Form extends React.Component { // eslint-disable-line react
     if (oldState.activeTab !== this.state.activeTab || oldProps.activeField !== this.props.activeField) {
       this.refocus();
     }
-  }
-  onFocus = () => {
-    this.setState({ hasFocus: true });
-  }
-  onBlur = () => {
-    this.setState({ hasFocus: false });
   }
   getSlugs = () => {
     const slugs = this.props.fieldsets.map(fieldset => fieldset.slug);
@@ -90,6 +83,7 @@ export default class Form extends React.Component { // eslint-disable-line react
       const { heading, validity, label } = fieldset.props;
       const propFieldset = fieldsets[key];
       const { slug } = propFieldset;
+      console.log('fieldset props ::', fieldset.props, propFieldset);
       const className = activeTab === slug ? styles.active : '';
       let isComplete = <span className={styles.tickNone}><FieldsetStatusSvg /></span>;
       if (validity === true) isComplete = <span className={styles.tick}><img role="presentation" src="/images/tick.svg" /></span>;
@@ -116,7 +110,7 @@ export default class Form extends React.Component { // eslint-disable-line react
   render() {
     const { saveState, pendingSteps } = this.props;
     const { notifications } = this.context;
-    return (<form onFocus={this.onFocus} onBlur={this.onBlur} className={[styles.form, this.context.formLock ? styles.disabled : null].join(' ')} data-hasFocus={this.state.hasFocus} ref="form">
+    return (<form className={[styles.form, this.context.formLock ? styles.disabled : null].join(' ')} ref="form">
       <NotificationBar notifications={notifications} />
       <nav className={styles.nav}>
         <div className={styles.navLinks}>

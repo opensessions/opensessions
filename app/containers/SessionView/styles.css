@@ -117,9 +117,10 @@
   font-size: 1.4em;
   &.disabled {
     & sub {
+      display: inline-block;
+      padding: 0 .5em;
       font-size: .75em;
       vertical-align: middle;
-      padding: 0 .5em;
     }
     & a {
       pointer-events: none;

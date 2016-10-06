@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 
-import Authenticated from 'components/Authenticated';
-import NotificationBar from 'components/NotificationBar';
-import SessionList from 'containers/SessionList';
-import LoadingMessage from 'components/LoadingMessage';
+import Authenticated from '../../components/Authenticated';
+import NotificationBar from '../../components/NotificationBar';
+import SessionList from '../SessionList';
+import LoadingMessage from '../../components/LoadingMessage';
 
 import styles from './styles.css';
 

@@ -3,6 +3,7 @@
 .container {
   max-width: var(--pagewidth);
   margin: auto;
+  padding: 0 .5em;
   text-align: center;
   & > h1 {
     font-size: 1.5em;
@@ -51,7 +52,7 @@
         }
       }
       & h1 {
-        font-size: 2.4em;
+        font-size: 2em;
       }
     }
     & .columns {
@@ -72,7 +73,7 @@
       color: var(--lightBlue);
     }
     & h2 {
-      font-size: 1.6em;
+      font-size: 1.4em;
       max-width: 60rem;
       font-weight: 300;
     }
@@ -95,6 +96,9 @@
   .landing {
     font-size: 1.1em;
     & section {
+      &.heading {
+        font-size: 1.1em;
+      }
       & .columns {
         display: flex;
         flex-wrap: wrap;

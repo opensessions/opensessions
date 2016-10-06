@@ -16,15 +16,15 @@
       font-size: 2rem;
       padding: .25em 0 .25em .5em;
       & img {
-        max-height: 3em;
+        max-height: 2.5em;
         &.logo {
           margin-bottom: -.25em;
           max-width: 7.5em;
         }
         &.beta {
-          width: 2.5em;
-          margin: .25em;
-          margin-left: 5em;
+          width: 2em;
+          margin: .5em;
+          margin-left: 4em;
           vertical-align: bottom;
         }
       }
@@ -82,8 +82,12 @@
     & .pageMargin {
       & .logoLink {
         padding-left: 1%;
+        & img {
+          max-height: 3em;
+        }
         & img.beta {
-          margin-left: .5em;
+          margin: .25em .5em;
+          width: 2.5em;
         }
       }
       & .nav {

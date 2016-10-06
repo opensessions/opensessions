@@ -33,11 +33,10 @@
       }
     }
     & .actions {
-      justify-content: space-between;
       display: flex;
-      font-size: 1.1em;
+      justify-content: space-between;
+      align-items: center;
       flex-wrap: wrap;
-      align-items: flex-end;
       margin: .25em 0;
       & ol.actions {
         display: inline-block;
@@ -48,9 +47,6 @@
           & a {
             display: block;
             color: var(--actionColor);
-            border: .1em solid;
-            padding: .5em 1em;
-            line-height: 1;
             text-decoration: none;
             &:hover {
               background-color: var(--actionColor);
@@ -68,16 +64,19 @@
       }
       & .state {
         display: inline-block;
-        border: .1em solid;
         font-weight: bold;
-        padding: .5em 1em;
-        line-height: 1;
         text-transform: capitalize;
         color: var(--draftColor);
         &.live {
           color: #FFF;
           background: var(--liveColor);
         }
+      }
+      & ol.actions > li a,
+      & .state {
+        border: .1em solid;
+        line-height: 1;
+        padding: .5em;
       }
     }
   }
@@ -100,12 +99,12 @@
           padding: .25em .5em;
           box-shadow: 0 .1em .75em 0 rgba(0, 0, 0, .5);
           &.occurred {
-            background: #999;
+            background: #BBB;
             text-decoration: line-through;
           }
           & > svg {
-            max-height: 1.6em;
-            margin: 0 .75em;
+            max-height: 1.3em;
+            margin: 0 .5em;
             width: auto;
             vertical-align: middle;
           }
@@ -126,6 +125,32 @@
               line-height: .9em;
               display: inline-block;
               vertical-align: text-bottom;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (--desktop) {
+  .tile {
+    & .textCol {
+      & .actions {
+        font-size: 1.1em;
+        & ol.actions > li a,
+        & .state {
+          padding: .5em 1em;
+        }
+      }
+    }
+    & .schedules {
+      & ol {
+        & > li {
+          &.schedule {
+            & > svg {
+              max-height: 1.6em;
+              margin: 0 .75em;
             }
           }
         }

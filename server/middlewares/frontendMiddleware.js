@@ -41,7 +41,9 @@ const addProdMiddlewares = (app, options) => {
   app.use(compression());
   app.use(options.output.publicPath, express.static(options.output.path));
 
-  app.get('*', (req, res) => res.sendFile(path.join(options.output.path, 'index.html')));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(options.output.path, 'index.html'));
+  });
 };
 
 /**

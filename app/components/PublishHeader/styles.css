@@ -24,6 +24,11 @@
       opacity: .5;
     }
   }
+  & .titleInner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
   .actions {
     margin-right: 1%;
     display: flex;
@@ -78,8 +83,6 @@
     & .titleInner {
       max-width: var(--pagewidth);
       margin: auto;
-      display: flex;
-      justify-content: space-between;
       align-items: center;
     }
   }

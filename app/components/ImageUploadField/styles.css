@@ -10,20 +10,23 @@
     display: inline-block;
     padding: .5em;
   }
+  & .buttons {
+    display: flex;
+    margin: .25em 0;
+    flex-wrap: wrap-reverse;
+    justify-content: flex-end;
+  }
   & .choose {
     display: inline-block;
     border: 2px solid #BBB;
     background-color: rgba(230, 230, 230, .75);
-    margin: .5em 0;
+    margin: .25em;
     padding: .25em .5em;
     cursor: pointer;
     &:hover,
     &:focus {
       background: #FFF;
       color: #444;
-    }
-    & + .choose {
-      margin-left: .5em;
     }
     & .text {
       padding: .25em 1em;

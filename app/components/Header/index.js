@@ -14,10 +14,8 @@ export default class Header extends React.Component { // eslint-disable-line rea
   renderLoginButton() {
     const { user } = this.context;
     if (!user) return <LoginButton lock={this.context.locks.login}>Login</LoginButton>;
-    const name = user.nickname;
-    const greet = 'Hello, ';
-    const image = user.picture ? <img src={user.picture} alt={name} className={styles.userIcon} /> : null;
-    return <Link to="/profile">{greet} {name}! {image}</Link>;
+    const { nickname } = user;
+    return <Link to="/profile">Hello, {nickname}! {user.picture ? <img src={user.picture} role="presentation" className={styles.userIcon} /> : null}</Link>;
   }
   render() {
     const addSession = <span><span className={styles.plus}>+</span> Add a session</span>;

@@ -49,7 +49,7 @@ export default class ImageUploadField extends React.Component { // eslint-disabl
     const uploadText = value ? editText || 'Change photo' : addText || 'Add photo';
     return (<div className={[styles.imageField, isUploading ? styles.loading : null].join(' ')}>
       {preview ? <img src={value ? `${value}?${Date.now()}` : '/images/placeholder.png'} role="presentation" className={styles.preview} /> : null}
-      <div>
+      <div className={styles.buttons}>
         {value ? <label className={styles.choose} onClick={this.reset}><img src="/images/remove.png" role="presentation" /> <span className={styles.text}>Remove photo</span></label> : null}
         <label className={styles.choose}>
           <img src={value ? '/images/change.png' : '/images/camera.png'} role="presentation" />

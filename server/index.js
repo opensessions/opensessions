@@ -37,9 +37,8 @@ const apiMiddleware = require('./middlewares/api');
 apiMiddleware(app);
 
 // Initialize frontend middleware that will serve your JS app
-const webpackConfig = isDev
-  ? require('../internals/webpack/webpack.dev.babel')
-  : require('../internals/webpack/webpack.prod.babel');
+const webpackConfig = require(`../internals/webpack/webpack.${isDev ? 'dev' : 'prod'}.babel`);
+
 app.use(frontend(webpackConfig));
 
 const port = process.env.PORT || 3850;

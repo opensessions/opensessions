@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 
-import LoginButton from 'components/LoginButton';
-import LoadingMessage from 'components/LoadingMessage';
+import LoginButton from '../LoginButton';
+import LoadingMessage from '../LoadingMessage';
 
 import styles from './styles.css';
 
