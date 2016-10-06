@@ -13,13 +13,13 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
     user: PropTypes.object,
     lock: PropTypes.object,
     router: PropTypes.object,
+    notify: PropTypes.func
   }
   constructor(props) {
     super(props);
     this.state = {
       organizers: [],
-      sessions: [],
-      status: 'Loading organizers...'
+      sessions: []
     };
   }
   componentDidMount() {
@@ -41,25 +41,22 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
   }
   fetchData = () => {
     const { user } = this.context;
-    this.setState({ status: 'Loading organizers...' });
+    this.setState({ isLoading: true });
     return apiModel.search('organizer', { owner: user.user_id }).then(result => {
       const organizers = result.instances;
       const selectedOrganizer = organizers.length ? organizers[0].uuid : 0;
       return apiModel.search('session', { owner: user.user_id, OrganizerUuid: 'null' }).then(sessionResult => {
         const { instances, error } = sessionResult;
-        this.setState({ selectedOrganizer, organizers, sessions: instances, status: error });
+        if (error) this.context.notify(error, 'error');
+        this.setState({ selectedOrganizer, organizers, sessions: instances, isLoading: false });
       });
     });
   }
   renderOrganizers() {
-    const { sessions, organizers, status } = this.state;
-    if (organizers) {
-      if (organizers.length) {
-        return <OrganizerView organizer={this.getOrganizer()} unassignedSessions={sessions} organizerList={organizers} onOrganizerChange={this.onOrganizerChange} />;
-      }
-      return (<SessionList sessions={sessions} />);
-    }
-    return (<LoadingMessage message={status} ellipsis />);
+    const { sessions, organizers, isLoading } = this.state;
+    if (isLoading) return (<LoadingMessage message="Loading organisers" ellipsis />);
+    if (organizers && organizers.length) return <OrganizerView organizer={this.getOrganizer()} unassignedSessions={sessions} organizerList={organizers} onOrganizerChange={this.onOrganizerChange} />;
+    return (<SessionList sessions={sessions} />);
   }
   render() {
     return (<div>
