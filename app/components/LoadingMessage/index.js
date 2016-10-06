@@ -1,5 +1,7 @@
 import React, { PropTypes } from 'react';
 
+import LoadingIcon from '../LoadingIcon';
+
 import styles from './styles.css';
 
 export default class LoadingMessage extends React.Component { // eslint-disable-line react/prefer-stateless-function
@@ -9,7 +11,8 @@ export default class LoadingMessage extends React.Component { // eslint-disable-
   }
   render() {
     return (<div className={styles.loadingMessage}>
-      {this.props.message}{this.props.ellipsis ? <span className={styles.ellipsis} /> : null}
+      {this.props.message}
+      {this.props.ellipsis ? <LoadingIcon /> : null}
     </div>);
   }
 }

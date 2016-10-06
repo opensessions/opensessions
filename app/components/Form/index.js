@@ -83,7 +83,6 @@ export default class Form extends React.Component { // eslint-disable-line react
       const { heading, validity, label } = fieldset.props;
       const propFieldset = fieldsets[key];
       const { slug } = propFieldset;
-      console.log('fieldset props ::', fieldset.props, propFieldset);
       const className = activeTab === slug ? styles.active : '';
       let isComplete = <span className={styles.tickNone}><FieldsetStatusSvg /></span>;
       if (validity === true) isComplete = <span className={styles.tick}><img role="presentation" src="/images/tick.svg" /></span>;

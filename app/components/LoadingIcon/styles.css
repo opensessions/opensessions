@@ -1,0 +1,21 @@
+.icon {
+  display: inline-block;
+  vertical-align: middle;
+  width: 3em;
+  height: 2em;
+  background: url('/images/app-icon.png') 50% 50% no-repeat;
+  background-size: contain;
+  animation-duration: 1.5s;
+  animation-name: ellipsis;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-out;
+}
+
+@keyframes ellipsis {
+  0% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(360deg);
+  }
+}

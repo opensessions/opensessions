@@ -1,24 +1,25 @@
 import React, { PropTypes } from 'react';
 
-import Fieldset from 'components/Fieldset';
-import Form from 'components/Form';
-import Field from 'components/Field';
-import GenderSvg from 'components/GenderSvg';
-import PublishHeader from 'components/PublishHeader';
+import Fieldset from '../../components/Fieldset';
+import Form from '../../components/Form';
+import Field from '../../components/Field';
+import GenderSvg from '../../components/GenderSvg';
+import PublishHeader from '../../components/PublishHeader';
+import LoadingIcon from '../../components/LoadingIcon';
 
-import TextField from 'components/TextField';
-import DateField from 'components/DateField';
-import TimeField from 'components/TimeField';
-import BoolRadio from 'components/BoolRadioField';
-import IconRadio from 'components/IconRadioField';
-import Location from 'components/LocationField';
-import SearchableSelect from 'components/SearchableSelect';
-import MultiField from 'components/MultiField';
-import ImageUpload from 'components/ImageUploadField';
-import Relation from 'components/RelationField';
-import Optional from 'components/OptionalField';
-import JSONList from 'components/JSONListField';
-import NumField from 'components/NumField';
+import TextField from '../../components/TextField';
+import DateField from '../../components/DateField';
+import TimeField from '../../components/TimeField';
+import BoolRadio from '../../components/BoolRadioField';
+import IconRadio from '../../components/IconRadioField';
+import Location from '../../components/LocationField';
+import SearchableSelect from '../../components/SearchableSelect';
+import MultiField from '../../components/MultiField';
+import ImageUpload from '../../components/ImageUploadField';
+import Relation from '../../components/RelationField';
+import Optional from '../../components/OptionalField';
+import JSONList from '../../components/JSONListField';
+import NumField from '../../components/NumField';
 
 import { Link } from 'react-router';
 import Authenticated from 'components/Authenticated';
@@ -146,10 +147,11 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     };
   }
   getActions = () => {
-    const { session, isPendingSave } = this.state;
+    const { session, isSaving, isPendingSave } = this.state;
     const { params } = this.props;
     const isPublished = session.state === 'published';
     const actions = [];
+    if (isSaving) actions.push(<LoadingIcon />);
     if (session.state) {
       let text = isPublished ? 'View' : 'Preview';
       if (isPendingSave) text = 'Saving...';
