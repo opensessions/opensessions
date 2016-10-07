@@ -41,6 +41,14 @@ export default function createRoutes() {
           .catch(errorLoading);
       },
     }, {
+      path: '/sessions',
+      name: 'sessions',
+      getComponent(nextState, cb) {
+        System.import('containers/ListSessions')
+          .then(loadModule(cb))
+          .catch(errorLoading);
+      },
+    }, {
       path: '/profile',
       name: 'My profile',
       getComponent(nextState, cb) {

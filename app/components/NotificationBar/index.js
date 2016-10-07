@@ -25,9 +25,12 @@ export default class NotificationBar extends React.Component { // eslint-disable
     if (id) {
       target.parentNode.parentNode.classList.add(styles.hidden);
       setTimeout(() => {
-        this.props.notifications.find(msg => msg.id == id).onDismiss(); // eslint-disable-line eqeqeq
+        this.dismiss(id);
       }, 200);
     }
+  }
+  dismiss = id => {
+    this.props.notifications.find(msg => msg.id == id).onDismiss(); // eslint-disable-line eqeqeq
   }
   unhideMessages() {
     setTimeout(() => {
@@ -44,7 +47,8 @@ export default class NotificationBar extends React.Component { // eslint-disable
       <ol className={styles.messages}>
         {notifications.map(message => (<li key={message.id} className={[styles.hidden, styles[message.status || 'standard']].join(' ')}>
           <div className={styles.inner}>
-            {typeof message.text === 'object' ? <span>{message.text}</span> : <span dangerouslySetInnerHTML={{ __html: message.text }} />}
+            {typeof message.text === 'object' ? <span className={styles.text}>{message.text}</span> : <span className={styles.text} dangerouslySetInnerHTML={{ __html: message.text }} />}
+            {message.actions ? <span className={styles.actions}>{message.actions.map(action => <a onClick={() => action.dispatch() && this.dismiss(message.id)}>{action.text}</a>)}</span> : null}
             <a onClick={this.onDismiss} data-id={message.id} className={styles.dismiss}>&times;</a>
           </div>
         </li>))}
