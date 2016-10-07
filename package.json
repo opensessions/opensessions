@@ -26,7 +26,7 @@
     "analyze": "node ./internals/scripts/analyze.js",
     "start": "npm run start:tunnel",
     "start:tunnel": "npm run db:migration:run && npm run build:server:dev && cross-env NODE_ENV=development node lib/server",
-    "start:prod": "npm run db:migration:run && npm run build:server:prod && cross-env NODE_ENV=production node lib/server",
+    "start:prod": "npm run db:migration:run && npm run build && npm run build:server:prod && cross-env NODE_ENV=production node lib/server",
     "pagespeed": "node ./internals/scripts/pagespeed.js",
     "presetup": "npm i chalk",
     "setup": "node ./internals/scripts/setup.js",
@@ -47,7 +47,6 @@
     "test:ie": "npm run test -- --browsers IE",
     "coveralls": "cat ./coverage/lcov/lcov.info | coveralls",
     "postinstall": "npm run build:clean",
-    "heroku-postbuild": "npm run build",
     "push": "npm run test && git push"
   },
   "pre-commit": "lint:staged",
