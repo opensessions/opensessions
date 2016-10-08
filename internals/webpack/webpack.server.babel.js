@@ -2,10 +2,6 @@ const path = require('path');
 const fs = require('fs');
 const webpack = require('webpack');
 
-const dotenv = require('dotenv');
-dotenv.config({ silent: true, path: path.join(process.cwd(), '.env') });
-dotenv.load();
-
 /* eslint-disable */
 const nodeModuleNames = () => (
   fs.readdirSync(path.join(process.cwd(), 'node_modules'))
@@ -36,7 +32,7 @@ module.exports = {
   plugins: [
     new webpack.IgnorePlugin(/\.(css|less|jpg|png|gif|mp4|webm|html|eot|svg|ttf|woff|woff2)$/),
     new webpack.DefinePlugin({
-      'process.env': JSON.stringify(process.env)
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
     })
   ],
   node: {
