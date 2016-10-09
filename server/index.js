@@ -1,4 +1,8 @@
 /* eslint consistent-return:0 */
+const dotenv = require('dotenv');
+dotenv.config({ silent: true });
+dotenv.load();
+
 const express = require('express');
 const logger = require('./logger');
 
@@ -9,6 +13,7 @@ const passport = require('passport');
 const session = require('express-session');
 
 const cookieParser = require('cookie-parser');
+
 
 const app = express();
 
