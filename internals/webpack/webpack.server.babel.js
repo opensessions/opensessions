@@ -1,9 +1,6 @@
 const path = require('path');
 const fs = require('fs');
 const webpack = require('webpack');
-const dotenv = require('dotenv');
-dotenv.config({ silent: true });
-dotenv.load();
 
 /* eslint-disable */
 const nodeModuleNames = () => (
@@ -33,13 +30,15 @@ module.exports = {
     ...nodeModuleNames(),
   },
   plugins: [
-    new webpack.IgnorePlugin(/\.(css|less|jpg|png|gif|mp4|webm|html|eot|svg|ttf|woff|woff2)$/),
-    new webpack.DefinePlugin({
-      'process.env': ['NODE_ENV', 'AUTH0_CLIENT_ID', 'AUTH0_CLIENT_SECRET', 'AUTH0_CLIENT_DOMAIN', 'DATABASE_USER', 'DATABASE_NAME', 'DATABASE_URL', 'GOOGLE_MAPS_API_KEY', 'GOOGLE_ANALYTICS_TRACKINGID', 'INTERCOM_APPID', 'AWS_S3_IMAGES_BASEURL', 'AWS_S3_IMAGES_ACCESSKEY', 'AWS_S3_IMAGES_SECRETKEY', 'FULLSTORY_ORG', 'INSPECTLET_WID'].reduce((obj, key) => {
-        obj[key] = JSON.stringify(process.env[key]);
-        return obj;
-      }, {})
-    })
+    new webpack.IgnorePlugin(/\.(css|less|jpg|png|gif|mp4|webm|html|eot|svg|ttf|woff|woff2)$/)
+    /* new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV)
+      }
+    }) */
   ],
   node: {
     __dirname: true,
