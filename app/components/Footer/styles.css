@@ -4,9 +4,6 @@
   background: #000;
   color: #FFF;
   padding: 0 1em;
-  & a[href='/'] {
-    display: none;
-  }
 }
 
 .footerInner {

@@ -27,8 +27,9 @@ export default class SessionTileView extends React.Component { // eslint-disable
   }
   delete = () => {
     const { session } = this.props;
-    if (confirm('Are you sure you want to delete?', 'Delete', 'Cancel')) {
-      apiModel.delete('session', session.uuid).then(response => {
+    this.context.notify('Are you sure you want to delete?', 'error', [{
+      text: 'Delete',
+      dispatch: () => apiModel.delete('session', session.uuid).then(response => {
         if (response.status === 'success') {
           this.setState({ isDeleted: true });
           this.context.notify('Session deleted', 'success');
@@ -37,13 +38,14 @@ export default class SessionTileView extends React.Component { // eslint-disable
         }
       }).catch(() => {
         this.context.notify('Failed to delete session', 'error');
-      });
-    }
+      })
+    }]);
   }
   duplicate = () => {
     const { session } = this.props;
-    if (confirm('Are you sure you want to duplicate this session?')) {
-      apiModel.action('session', session.uuid, 'duplicate').then(response => {
+    this.context.notify('Are you sure you want to duplicate this session?', null, [{
+      text: 'Duplicate',
+      dispatch: () => apiModel.action('session', session.uuid, 'duplicate').then(response => {
         if (response.status === 'success') {
           this.context.notify('Session duplicated', 'success');
           window.location = response.instance.href;
@@ -52,8 +54,8 @@ export default class SessionTileView extends React.Component { // eslint-disable
         }
       }).catch(() => {
         this.context.notify('Failed to duplicate session', 'error');
-      });
-    }
+      })
+    }]);
   }
   renderActions() {
     const { session } = this.props;

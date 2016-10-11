@@ -39,7 +39,15 @@ export default function createRoutes() {
         System.import('containers/PartnerPage')
           .then(loadModule(cb))
           .catch(errorLoading);
-      },
+      }
+    }, {
+      path: '/sessions',
+      name: 'sessions',
+      getComponent(nextState, cb) {
+        System.import('containers/ListSessions')
+          .then(loadModule(cb))
+          .catch(errorLoading);
+      }
     }, {
       path: '/profile',
       name: 'My profile',

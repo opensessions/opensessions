@@ -67,6 +67,7 @@ module.exports = (app, database, opts) => {
               return formatted;
             });
           }
+          item.data.website = `${req.protocol}://${req.hostname}${item.data.href}`;
           ['activityType', 'startDate', 'startTime', 'endTime'].forEach(key => delete item.data[key]);
         }
         return item;

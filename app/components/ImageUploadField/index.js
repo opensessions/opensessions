@@ -33,7 +33,7 @@ export default class ImageUploadField extends React.Component { // eslint-disabl
       formData.append(upload.name, file, file.name);
       this.setState({ isUploading: true });
       apiModel.upload(upload.URL, formData).then(data => {
-        this.setState({ isUploading: false });
+        this.setState({ isUploading: false, modified: Date.now() });
         const { instance } = data;
         onChange(instance[upload.name]);
       }).catch(error => {
@@ -45,10 +45,10 @@ export default class ImageUploadField extends React.Component { // eslint-disabl
   }
   render() {
     const { value, preview, addText, editText } = this.props;
-    const { isUploading } = this.state;
+    const { isUploading, modified } = this.state;
     const uploadText = value ? editText || 'Change photo' : addText || 'Add photo';
     return (<div className={[styles.imageField, isUploading ? styles.loading : null].join(' ')}>
-      {preview ? <img src={value ? `${value}?${Date.now()}` : '/images/placeholder.png'} role="presentation" className={styles.preview} /> : null}
+      {preview ? <img src={value ? `${value}?${modified || ''}` : '/images/placeholder.png'} role="presentation" className={styles.preview} /> : null}
       <div className={styles.buttons}>
         {value ? <label className={styles.choose} onClick={this.reset}><img src="/images/remove.png" role="presentation" /> <span className={styles.text}>Remove photo</span></label> : null}
         <label className={styles.choose}>

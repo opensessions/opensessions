@@ -15,15 +15,27 @@ ol.messages {
     }
     &.standard {
       background-color: grey;
+      & a:hover {
+        color: grey;
+      }
     }
     &.success {
       background-color: var(--liveColor);
+      & a:hover {
+        color: var(--liveColor);
+      }
     }
     &.warn {
       background-color: var(--draftColor);
+      & a:hover {
+        color: var(--draftColor);
+      }
     }
     &.error {
       background-color: var(--errorColor);
+      & a:hover {
+        color: var(--errorColor);
+      }
     }
     & > .inner {
       max-width: var(--pagewidth);
@@ -31,29 +43,41 @@ ol.messages {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      & > span {
+      & > span.text {
         padding: .75em 1.5em;
         & a {
           font-weight: bold;
           text-decoration: none;
           &:hover {
             color: #BEF1BE;
+            background: none;
           }
+        }
+      }
+      & a {
+        text-decoration: none;
+        padding: .05em .25em;
+        &:hover {
+          background: #FFF;
         }
       }
       & .dismiss {
         font-size: 2em;
         line-height: 1;
-        text-decoration: none;
         opacity: .5;
         transition: .3s opacity ease;
         margin: .2em;
-        padding: .05em .25em;
         border-radius: 50%;
         &:hover {
           opacity: 1;
-          background-color: rgba(0, 0, 0, .2);
         }
+      }
+    }
+    & .actions {
+      flex-grow: 1;
+      & > a {
+        padding: .25em .5em;
+        border: .1em solid;
       }
     }
   }
