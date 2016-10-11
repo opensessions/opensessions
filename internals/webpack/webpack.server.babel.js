@@ -30,15 +30,10 @@ module.exports = {
     ...nodeModuleNames(),
   },
   plugins: [
-    new webpack.IgnorePlugin(/\.(css|less|jpg|png|gif|mp4|webm|html|eot|svg|ttf|woff|woff2)$/)
-    /* new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: JSON.stringify(process.env.NODE_ENV),
-        NODE_ENV: JSON.stringify(process.env.NODE_ENV),
-        NODE_ENV: JSON.stringify(process.env.NODE_ENV),
-        NODE_ENV: JSON.stringify(process.env.NODE_ENV)
-      }
-    }) */
+    new webpack.IgnorePlugin(/\.(css|less|jpg|png|gif|mp4|webm|html|eot|svg|ttf|woff|woff2)$/),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+    })
   ],
   node: {
     __dirname: true,

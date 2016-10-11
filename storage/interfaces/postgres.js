@@ -25,7 +25,7 @@ class PostgresStorage {
       delete fields._options;
       models[name] = db.define(name, fields, options);
     });
-    Object.keys(models).map(name => models[name]).filter(model => model.makeAssociations).forEach(model => model.makeAssociations(models));
+    Object.keys(models).map(name => models[name]).filter(model => model[name].makeAssociations).forEach(model => model.makeAssociations(models));
     return db;
   }
   getInstance() {
