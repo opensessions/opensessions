@@ -49,6 +49,7 @@ module.exports = require('./webpack.base.babel')({
     }),
   ],
   plugins: [
+
     // OccurrenceOrderPlugin is needed for long-term caching to work properly.
     // See http://mxs.is/googmv
     new webpack.optimize.OccurrenceOrderPlugin(true),

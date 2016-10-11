@@ -90,7 +90,8 @@ export default class SessionTileView extends React.Component { // eslint-disable
   render() {
     if (this.state && this.state.isDeleted) return null;
     const { session } = this.props;
-    const isPublished = session.state === 'published';
+    let { state } = session;
+    if (state === 'unpublished') state = 'draft';
     let schedules = [];
     if (session.schedule) {
       schedules = session.schedule.map(this.renderSchedule);
@@ -106,7 +107,7 @@ export default class SessionTileView extends React.Component { // eslint-disable
         </div>
         <div className={styles.actions}>
           {this.renderActions()}
-          <div className={[styles.state, isPublished ? styles.live : ''].join(' ')}>{isPublished ? 'published' : 'draft'}</div>
+          <div className={`${styles.state} ${state === 'published' ? styles.live : ''}`}>{state}</div>
         </div>
       </div>
       <div className={styles.schedules}>
