@@ -1,8 +1,9 @@
 /* eslint consistent-return:0 */
+
 const express = require('express');
 const logger = require('./logger');
 
-const frontend = require('./middlewares/frontend');
+const frontend = require('./middlewares/frontendMiddleware');
 const isDev = process.env.NODE_ENV !== 'production';
 
 const passport = require('passport');

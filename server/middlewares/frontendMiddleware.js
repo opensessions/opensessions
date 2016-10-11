@@ -49,7 +49,7 @@ const addProdMiddlewares = (app, options) => {
 /**
  * Front-end middleware
  */
-module.exports = options => {
+module.exports = (options) => {
   const isProd = process.env.NODE_ENV === 'production';
 
   const app = express();

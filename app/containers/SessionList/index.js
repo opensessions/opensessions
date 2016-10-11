@@ -11,8 +11,6 @@ import styles from './styles.css';
 export default class SessionList extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
     sessions: PropTypes.array,
-    heading: PropTypes.string,
-    hideButton: PropTypes.bool,
     query: PropTypes.object
   };
   static contextTypes = {
@@ -47,17 +45,14 @@ export default class SessionList extends React.Component { // eslint-disable-lin
     });
   }
   render() {
-    const { hideButton } = this.props;
-    let { heading } = this.props;
     const { sessions, isLoading } = this.state;
-    if (!heading) heading = sessions.length ? 'These are the sessions you\'ve created so far:' : 'You haven\'t created any sessions yet! Click the button below to create a session.';
     if (isLoading) return <div className={styles.sessionList}><LoadingMessage message="Loading sessions" ellipsis /></div>;
     return (<div className={styles.sessionList}>
-      <p className={styles.intro}>{heading}</p>
+      <p className={styles.intro}>{sessions.length ? 'These are the sessions you\'ve created so far:' : 'You haven\'t created any sessions yet! Click the button below to create a session.'}</p>
       <ol className={styles.list}>
         {sessions.map(session => <li key={session.uuid}><SessionTileView session={session} /></li>)}
       </ol>
-      {hideButton ? null : <p><Link to="/session/add" className={styles.add}>+ Add a session</Link></p>}
+      <p><Link to="/session/add" className={styles.add}>+ Add a session</Link></p>
     </div>);
   }
 }

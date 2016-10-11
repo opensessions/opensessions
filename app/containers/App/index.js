@@ -112,12 +112,11 @@ export default class App extends React.Component { // eslint-disable-line react/
       return true;
     });
   }
-  notify = (text, status, actions) => {
+  notify = (text, status) => {
     const notification = {
       id: Date.now(),
       text,
-      status,
-      actions
+      status
     };
     notification.onDismiss = () => {
       this.setState({ notifications: this.state.notifications.filter(msg => msg.id !== notification.id) });
