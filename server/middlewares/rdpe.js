@@ -2,7 +2,7 @@ const express = require('express');
 
 module.exports = (app, database, opts) => {
   const rdpe = express();
-  const { Sessions, Organizers, Activities } = database.models;
+  const { Session, Organizer, Activity } = database.models;
   const options = opts || {};
 
   rdpe.get('/', (req, res) => {
@@ -34,7 +34,7 @@ module.exports = (app, database, opts) => {
       ['uuid', 'ASC']
     ];
     const limit = 50;
-    Sessions.findAll({ where, order, limit, include: [Organizers, Activities] }).then(rawSessions => {
+    Session.findAll({ where, order, limit, include: [Organizer, Activity] }).then(rawSessions => {
       const sessions = rawSessions.map(session => {
         const state = session.state === 'published' ? 'updated' : 'deleted';
         const item = {

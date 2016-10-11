@@ -180,12 +180,12 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     const { session, params, location } = this.props;
     const uuid = session ? session.uuid : (params.uuid || null);
     if (uuid) {
-      apiModel.get('sessions', uuid).then(res => {
+      apiModel.get('session', uuid).then(res => {
         this.onChange(res.instance);
         this.setState({ session: res.instance, isSaving: false });
       });
     } else {
-      apiModel.new('sessions', location.query).then(res => {
+      apiModel.new('session', location.query).then(res => {
         this.context.notify('Created a new session', 'success');
         this.context.router.push(`${res.instance.href}/edit`);
       });
@@ -212,7 +212,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     const oldState = session.state;
     session.state = state;
     return new Promise((resolve, reject) => {
-      apiModel.edit('sessions', session.uuid, session).then(res => {
+      apiModel.edit('session', session.uuid, session).then(res => {
         this.setState({ session: res.instance });
         resolve(res);
       }).catch(res => {
@@ -237,7 +237,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       if (session.state !== 'unpublished') {
         session.state = 'draft';
       }
-      apiModel.edit('sessions', session.uuid, session).then(result => {
+      apiModel.edit('session', session.uuid, session).then(result => {
         const { instance, error } = result;
         if (error) {
           throw new Error(error);

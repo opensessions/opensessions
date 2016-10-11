@@ -41,7 +41,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
   }
   fetchData = () => {
     const { params } = this.props;
-    return apiModel.get('organizers', params.uuid).then(res => {
+    return apiModel.get('organizer', params.uuid).then(res => {
       this.setState({ organizer: res.instance });
     }).catch(() => {
       this.context.notify('Failed to retrieve organiser', 'error');
@@ -49,7 +49,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
   }
   photoChange = image => {
     const { organizer } = this.state;
-    return apiModel.edit('organizers', organizer.uuid, { image }).then(res => {
+    return apiModel.edit('organizer', organizer.uuid, { image }).then(res => {
       this.setState({ organizer: res.instance, modified: Date.now() });
     }).catch(() => {
       this.context.notify('Couldn\'t change the image', 'error');
@@ -69,7 +69,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
       if (name === organizer.name) return;
       const options = { name };
       if (options.name) {
-        apiModel.edit('organizers', organizer.uuid, options).then(res => {
+        apiModel.edit('organizer', organizer.uuid, options).then(res => {
           const { instance, error } = res;
           if (error) throw new Error('failed to rename organiser');
           this.context.notify('Organiser successfully renamed!', 'success');
@@ -86,7 +86,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
   }
   deleteOrganizer = () => {
     const { organizer } = this.state;
-    return apiModel.delete('organizers', organizer.uuid).then(res => {
+    return apiModel.delete('organizer', organizer.uuid).then(res => {
       if (res.status === 'success') {
         this.context.notify('Organiser deleted!', 'success');
         this.context.router.push('/');

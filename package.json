@@ -47,13 +47,7 @@
     "test:ie": "npm run test -- --browsers IE",
     "coveralls": "cat ./coverage/lcov/lcov.info | coveralls",
     "postinstall": "npm run build:clean",
-    "push": "npm run test && git push",
-    "docker:run": "npm run docker:run:pg && npm run docker:run:app",
-    "docker:run:pg": "docker run --name opensessions-postgres -d -p 5432:5432 -e POSTGRES_PASSWORD=oli postgres:9.5",
-    "docker:run:app": "docker run --name opensessions-app -t -e DATABASE_URL=postgres://postgres:oli@172.17.0.1:5432/postgres opensessions",
-    "docker:start": "docker build -t opensessions . && npm run docker:run",
-    "docker:stop": "docker stop opensessions-app opensessions-postgres | xargs docker rm",
-    "docker:restart": "npm run docker:stop && npm run docker:start"
+    "push": "npm run test && git push"
   },
   "pre-commit": "lint:staged",
   "babel": {
