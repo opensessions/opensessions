@@ -33,8 +33,9 @@ class PostgresStorage {
       const DATABASE_URL = this.DATABASE_URL;
       const instance = new sequelize(DATABASE_URL, {
         dialect: 'postgres',
-        logging: process.env.NODE_ENV === 'production' ? false : console.log,
+        logging: process.env.DISABLE_PG_LOGS ? false : console.log,
         omitNull: true,
+        freezeTableName: true
       });
       this.instance = this.createModels(instance);
     }

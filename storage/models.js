@@ -4,10 +4,16 @@ module.exports = (DataTypes) => ({
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV1,
       primaryKey: true,
+    },
+    createdAt: {
+      type: DataTypes.DATE
+    },
+    updatedAt: {
+      type: DataTypes.DATE
     }
   },
   tables: {
-    Activity: {
+    Activities: {
       owner: DataTypes.STRING,
       name: DataTypes.STRING,
       _options: {
@@ -17,12 +23,12 @@ module.exports = (DataTypes) => ({
             return query;
           },
           makeAssociations(models) {
-            models.Activity.hasMany(models.Session);
+            models.Activities.hasMany(models.Sessions);
           }
         }
       }
     },
-    Organizer: {
+    Organizers: {
       owner: DataTypes.STRING,
       name: {
         type: DataTypes.STRING,
@@ -39,21 +45,21 @@ module.exports = (DataTypes) => ({
         },
         classMethods: {
           getQuery(query, models, user) {
-            const sessionQuery = models.Session.getQuery({}, models, user);
+            const sessionQuery = models.Sessions.getQuery({}, models, user);
             query.include = [{
-              model: models.Session,
+              model: models.Sessions,
               where: sessionQuery.where,
               required: false
             }];
             return query;
           },
           makeAssociations(models) {
-            models.Organizer.hasMany(models.Session);
+            models.Organizers.hasMany(models.Sessions);
           }
         }
       }
     },
-    Session: {
+    Sessions: {
       state: {
         type: DataTypes.STRING,
         defaultValue: 'draft',
@@ -142,7 +148,7 @@ module.exports = (DataTypes) => ({
         },
         classMethods: {
           getQuery(query, models, user) {
-            query.include = [models.Organizer, models.Activity];
+            query.include = [{ model: models.Organizers, as: 'Organizer' }, { model: models.Activities, as: 'Activity' }];
             query.where = { $and: query.where ? [query.where] : [] };
             if (user) {
               query.where.$and.push({
@@ -159,7 +165,7 @@ module.exports = (DataTypes) => ({
           getPrototype(models, user) {
             const prototype = {};
             if (user) {
-              return models.Organizer.findOne({ where: { owner: user }, order: ['updatedAt'] }).then(organizer => {
+              return models.Organizers.findOne({ where: { owner: user }, order: ['updatedAt'] }).then(organizer => {
                 prototype.OrganizerUuid = organizer.uuid;
                 return prototype;
               }).catch(() => prototype);
@@ -167,8 +173,8 @@ module.exports = (DataTypes) => ({
             return Promise.resolve(prototype);
           },
           makeAssociations(models) {
-            models.Session.belongsTo(models.Organizer);
-            models.Session.belongsTo(models.Activity);
+            models.Sessions.belongsTo(models.Organizers, { as: 'Organizer' });
+            models.Sessions.belongsTo(models.Activities, { as: 'Activity' });
           }
         },
         hooks: {

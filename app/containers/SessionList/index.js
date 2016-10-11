@@ -37,7 +37,7 @@ export default class SessionList extends React.Component { // eslint-disable-lin
     }
   }
   fetchData() {
-    return apiModel.search('session', this.props.query).then(result => {
+    return apiModel.search('sessions', this.props.query).then(result => {
       const { instances, error } = result;
       if (instances) this.setState({ sessions: instances, isLoading: false });
       if (error) {

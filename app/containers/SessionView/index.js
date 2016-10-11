@@ -69,7 +69,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   }
   fetchData = () => {
     this.setState({ isLoading: true });
-    apiModel.get('session', this.props.params.uuid).then(result => {
+    apiModel.get('sessions', this.props.params.uuid).then(result => {
       const { error, instance } = result;
       if (error) throw error;
       this.setState({ session: instance, isLoading: false });

@@ -3,17 +3,16 @@
 const uuid = require('node-uuid');
 
 module.exports = {
-  up: (migration, Sequelize) => {
-    return migration.createTable('Activities', {
+  up: (migration, Sequelize, done) => migration.createTable('Activities', {
       uuid: {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV1,
         primaryKey: true
       },
-      name: Sequelize.STRING,
-    }).then(() => {
-      return migration.addColumn('Sessions', 'ActivityUuid', { type: Sequelize.UUID, allowNull: true, references: { model: 'Activities', key: 'uuid' } });
-    }).then(() => {
+      name: Sequelize.STRING
+    })
+    .then(() => migration.addColumn('Sessions', 'ActivityUuid', { type: Sequelize.UUID, allowNull: true, references: { model: 'Activities', key: 'uuid' } }))
+    .then(() => {
       // source: https://en.wikipedia.org/w/index.php?title=Template:International_Sports_Federations&oldid=733950934
       // naive parsing: $('#wpTextbox1').html().split("\n").map(line => line.match(/\(.*\)/g)).filter(a => a).map(matches => matches[0]).map(sport => sport.replace(/[\(\)]/g, '')).map(name => name.split(' ').map(word => `${word.charAt(0).toUpperCase()}${word.slice(1)}`).join(' '))
       const activities = [
@@ -132,11 +131,8 @@ module.exports = {
         uuid: uuid.v1(),
         name
       })));
-    });
-  },
-  down: (migration) => {
-    return migration.removeColumn('Sessions', 'ActivityUuid').then(() => {
-      return migration.dropTable('Activities');
-    });
-  }
+    }).then(() => done()),
+  down: (migration, Sequelize, done) => migration.removeColumn('Sessions', 'ActivityUuid')
+    .then(() => migration.dropTable('Activities'))
+    .then(() => done())
 };
