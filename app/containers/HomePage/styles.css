@@ -98,19 +98,13 @@
     & section {
       &.heading {
         font-size: 1.1em;
-        & h1 {
-          font-size: 2.4em;
-        }
-        & h2 {
-          font-size: 1.6em;
-        }
       }
       & .columns {
         display: flex;
         flex-wrap: wrap;
         & > .column {
           padding: 0 2em;
-          flex-basis: 28rem;
+          flex-basis: 32rem;
           flex-grow: 1;
         }
       }
