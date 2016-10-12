@@ -1,0 +1,12 @@
+@import '../App/variables.css';
+
+a.page {
+  padding: .5em;
+  color: #FFF;
+  background-color: var(--actionColor);
+  text-decoration: none;
+}
+
+.pagination {
+  text-align: center;
+}
