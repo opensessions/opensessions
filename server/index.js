@@ -3,6 +3,10 @@
 const express = require('express');
 const logger = require('./logger');
 
+const dotenv = require('dotenv');
+dotenv.config({ silent: true });
+dotenv.load();
+
 const frontend = require('./middlewares/frontendMiddleware');
 const isDev = process.env.NODE_ENV !== 'production';
 

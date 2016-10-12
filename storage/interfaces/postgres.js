@@ -1,11 +1,7 @@
 'use strict';
 const sequelize = require('sequelize');
-const dotenv = require('dotenv');
 const definitions = require('../models')(sequelize);
 const extend = require('extend');
-
-dotenv.config({ silent: true });
-dotenv.load();
 
 class PostgresStorage {
   constructor() {
