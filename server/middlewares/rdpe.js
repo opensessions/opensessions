@@ -67,7 +67,7 @@ module.exports = (app, database, opts) => {
               return formatted;
             });
           }
-          item.data.website = `${opts.URL}/${item.data.href}`;
+          item.data.website = `${opts.URL}${item.data.href}`;
           ['activityType', 'startDate', 'startTime', 'endTime'].forEach(key => delete item.data[key]);
         }
         return item;
