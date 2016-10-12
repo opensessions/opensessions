@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { parseSchedule } from 'utils/calendar';
+import { parseSchedule, nextSchedule } from 'utils/calendar';
 
 import GoogleMapLoader from 'react-google-maps/lib/GoogleMapLoader';
 import GoogleMap from 'react-google-maps/lib/GoogleMap';
@@ -85,8 +85,9 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   renderDate() {
     const { session } = this.state;
     const { schedule } = session;
-    if (!(schedule && schedule[0])) return null;
-    const data = parseSchedule(schedule[0]);
+    const next = nextSchedule(schedule);
+    if (!next) return null;
+    const data = parseSchedule(next);
     if (!(data.date || data.time)) {
       return null;
     }

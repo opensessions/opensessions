@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
@@ -68,4 +66,7 @@
          d="M 17.633,0 C 7.895,0 0,7.895 0,17.632 c 0,11.901 17.633,32.212 17.633,32.212 0,0 17.632,-20.311 17.632,-32.212 C 35.265,7.895 27.369,0 17.633,0 Z m 0,27.439 c -5.572,0 -10.09,-4.518 -10.09,-10.089 0,-5.572 4.518,-10.089 10.09,-10.089 5.57,0 10.088,4.517 10.088,10.089 0,5.572 -4.518,10.089 -10.088,10.089 z"
          id="path7"
          inkscape:connector-curvature="0"
-         style="fill:#1a90cd" /></g></g></svg>
+         style="fill:#1a90cd" />
+      </g>
+   </g>
+</svg>

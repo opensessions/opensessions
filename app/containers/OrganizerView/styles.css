@@ -114,3 +114,9 @@
     }
   }
 }
+
+@media (--desktop) {
+  .bannerImage {
+    height: 18em;
+  }
+}

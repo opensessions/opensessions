@@ -1,6 +1,7 @@
 const express = require('express');
 const jwt = require('express-jwt');
 const dotenv = require('dotenv');
+const fs = require('fs');
 
 const Storage = require('../../storage/interfaces/postgres.js');
 const RDPE = require('./rdpe.js');
@@ -169,6 +170,7 @@ module.exports = (app) => {
         .then(instance => {
           const data = {};
           data[field] = `https://${aws.URL}/${result.versions[model === 'organizer' ? 0 : 1].key}`;
+          [image].concat(result.versions).forEach(version => fs.unlink(version.path));
           return instance.update(data)
             .then(final => res.json({ status: 'success', result, baseURL: aws.URL, instance: final }));
         }).catch(error => res.status(404).json({ error })))

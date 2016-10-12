@@ -32,3 +32,15 @@ export function calendarLinks(schedule, title, description, location) {
     googleCalendar: `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates.join('/')}&details=${description}&location=${location}&sprop=&sprop=name:`
   };
 }
+
+export function sortSchedules(schedules) {
+  return schedules.map(slot => ({
+    start: new Date([slot.startDate, slot.startTime].join('T')),
+    end: new Date([slot.startDate, slot.endTime].join('T')),
+    ...slot
+  })).sort((a, b) => a.start - b.start);
+}
+
+export function nextSchedule(schedules) {
+  return sortSchedules(schedules).find(schedule => schedule.start > Date.now());
+}
