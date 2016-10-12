@@ -1,5 +1,7 @@
 const express = require('express');
 
+const isDST = date => date.getTimezoneOffset() === (new Date(2000, 7, 0)).getTimezoneOffset();
+
 module.exports = (app, database, opts) => {
   const rdpe = express();
   const { Session, Organizer, Activity } = database.models;
@@ -61,7 +63,7 @@ module.exports = (app, database, opts) => {
               const formatted = {};
               ['start', 'end'].forEach(point => {
                 const date = new Date(`${slot.startDate}T${slot[`${point}Time`] || defaultTime[point]}Z`);
-                date.setTime(date.getTime() + (date.getTimezoneOffset() * 60 * 1000));
+                date.setTime(date.getTime() + (isDST(date) ? 60 * 60 * 1000 : 0));
                 formatted[point] = date;
               });
               return formatted;
