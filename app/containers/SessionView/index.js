@@ -88,9 +88,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     const next = nextSchedule(schedule);
     if (!next) return null;
     const data = parseSchedule(next);
-    if (!(data.date || data.time)) {
-      return null;
-    }
+    if (!(data.date || data.time)) return null;
     let duration = null;
     if (data.duration) {
       duration = <span className={styles.duration}><img src="/images/clock.svg" role="presentation" />{data.duration}</span>;

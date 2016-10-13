@@ -1,4 +1,5 @@
 const express = require('express');
+process.env.TZ = 'Europe/London';
 
 const isDST = date => date.getTimezoneOffset() === (new Date(2000, 7, 0)).getTimezoneOffset();
 
