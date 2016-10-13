@@ -14,7 +14,7 @@ export default class NumField extends React.Component { // eslint-disable-line r
   }
   handleChange = event => {
     const { value } = event.target;
-    if (this.props.onChange) this.props.onChange(value);
+    this.props.onChange(value || 0);
   }
   render() {
     const { value, className, autoFocus, validation, format, step } = this.props;

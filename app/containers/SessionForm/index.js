@@ -246,7 +246,8 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
         }
         return result;
       }).catch(result => {
-        this.setState({ status: `Failed saving: ${result.error}`, isPendingSave: false, isSaving: false, saveState: 'error' });
+        this.setState({ status: 'Failed saving', isPendingSave: false, isSaving: false, saveState: 'error' });
+        console.error(result.error);
         this.context.notify('Autosave failed', 'error');
       });
     }, ms);

@@ -12,14 +12,6 @@ export default class OptionalField extends React.Component { // eslint-disable-l
     component: PropTypes.object,
     multiline: PropTypes.bool
   }
-  constructor() {
-    super();
-    this.state = { showInput: false };
-  }
-  componentWillReceiveProps(nextProps) {
-    const { value } = nextProps;
-    if (!this.state.showInput && this.props.value != value) this.setState({ showInput: !!value && value !== '0' }); // eslint-disable-line eqeqeq
-  }
   handleChange = event => {
     const { target } = event;
     const value = target ? target.value : event;
@@ -32,7 +24,8 @@ export default class OptionalField extends React.Component { // eslint-disable-l
   }
   render() {
     const { value, component, multiline } = this.props;
-    const { showInput } = this.state;
+    let { showInput } = this.state;
+    showInput = showInput || (!!value && value !== '0');
     const props = {
       className: styles.inputField,
       value: value ? value.toString() : '',
