@@ -1,7 +1,5 @@
 const express = require('express');
-process.env.TZ = 'Europe/London';
-
-const isDST = date => date.getTimezoneOffset() === (new Date(2000, 7, 0)).getTimezoneOffset();
+const moment = require('moment-timezone');
 
 module.exports = (app, database, opts) => {
   const rdpe = express();
@@ -63,9 +61,8 @@ module.exports = (app, database, opts) => {
             item.data.schedule = schedule.map(slot => {
               const formatted = {};
               ['start', 'end'].forEach(point => {
-                const date = new Date(`${slot.startDate}T${slot[`${point}Time`] || defaultTime[point]}Z`);
-                date.setTime(date.getTime() + (isDST(date) ? -60 * 60 * 1000 : 0));
-                formatted[point] = date;
+                const date = moment.tz(`${slot.startDate}T${slot[`${point}Time`] || defaultTime[point]}`, 'Europe/London');
+                formatted[point] = date.format();
               });
               return formatted;
             });
