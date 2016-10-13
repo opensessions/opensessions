@@ -199,6 +199,7 @@
     font-weight: normal;
   }
   & ol {
+    text-transform: capitalize;
     font-size: 1.2em;
     padding: .5em 0;
     & > li {

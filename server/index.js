@@ -2,12 +2,13 @@
 
 const express = require('express');
 const logger = require('./logger');
+// const { sendStoredEmail } = require('./middlewares/email');
 
 const dotenv = require('dotenv');
 dotenv.config({ silent: true });
 dotenv.load();
 
-const frontend = require('./middlewares/frontendMiddleware');
+const frontend = require('./middlewares/frontend');
 const isDev = process.env.NODE_ENV !== 'production';
 
 const passport = require('passport');
@@ -64,4 +65,6 @@ app.listen(port, (err) => {
   } else {
     logger.appStarted(port);
   }
+
+  // sendStoredEmail('welcome', 'oli@imin.co', 'oli').then(console.log).catch(console.log);
 });

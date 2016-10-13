@@ -214,7 +214,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   }
   renderAbout() {
     const { session } = this.state;
-    const features = [];
+    let features = [];
     const maps = {
       genderRestriction: {
         male: {
@@ -237,15 +237,11 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         }
       }
     };
-    Object.keys(maps).filter(key => session[key] && session[key] in maps[key]).forEach(key => {
-      features.push(maps[key][session[key]]);
-    });
-    ['min', 'max'].filter(extremum => session[`${extremum}AgeRestriction`]).forEach(extremum => {
-      features.push({
-        iconText: session[`${extremum}AgeRestriction`],
-        text: `${extremum}imum Age`
-      });
-    });
+    features = features.concat(Object.keys(maps).filter(key => session[key] && session[key] in maps[key]).map(key => maps[key][session[key]]));
+    features = features.concat(['min', 'max'].filter(extremum => session[`${extremum}AgeRestriction`]).map(extremum => ({
+      iconText: session[`${extremum}AgeRestriction`],
+      text: `${extremum}imum Age`
+    })));
     return (<div className={styles.aboutSection}>
       <div className={styles.inner}>
         <h2>About this session</h2>
