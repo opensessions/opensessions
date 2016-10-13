@@ -11,8 +11,8 @@ html {
 }
 
 .root {
-  font-size: 16px;
-  font-size: 1.6rem;
+  font-size: 15px;
+  font-size: 1.5rem;
   margin: auto;
   color: var(--defaultColor);
   background-color: var(--grey);
@@ -47,6 +47,8 @@ html {
 
 @media (--desktop) {
   .root {
+    font-size: 16px;
+    font-size: 1.6rem;
     min-height: 100vh;
     display: flex;
     flex-direction: column;

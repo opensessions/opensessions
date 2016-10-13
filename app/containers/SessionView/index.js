@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { parseSchedule, nextSchedule } from 'utils/calendar';
+import { parseSchedule, sortSchedule } from 'utils/calendar';
 
 import GoogleMapLoader from 'react-google-maps/lib/GoogleMapLoader';
 import GoogleMap from 'react-google-maps/lib/GoogleMap';
@@ -84,23 +84,25 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     });
   }
   renderDate() {
-    const { session } = this.state;
+    const { session, isScheduleExpanded } = this.state;
     const { schedule } = session;
-    const next = nextSchedule(schedule);
-    if (!next) return null;
-    const data = parseSchedule(next);
-    if (!(data.date || data.time)) return null;
-    let duration = null;
-    if (data.duration) {
-      duration = <span className={styles.duration}><img src="/images/clock.svg" role="presentation" />{data.duration}</span>;
-    }
+    const sorted = sortSchedule(schedule).map(parseSchedule).filter(slot => slot.date || slot.time);
+    if (!sorted.length) return null;
+    const LIMIT = 5;
+    let previous = {};
     return (<div className={styles.dateDetail}>
       <img src="/images/calendar.svg" role="presentation" />
-      <span className={styles.detailText}>
-        {data.date}
-        {data.time ? <span className={styles.timespan}>at {data.time}</span> : null}
-        {duration}
-      </span>
+      <ol className={styles.dateList}>
+        {sorted.slice(0, isScheduleExpanded ? Infinity : LIMIT).map(slot => {
+          const element = (<li className={[styles.detailText, previous.hasOccurred && !slot.hasOccurred ? styles.nextOccurring : ''].join(' ')} style={{ 'text-decoration': slot.hasOccurred ? 'line-through' : null }}>
+            {slot.date} {slot.time ? <span className={styles.timespan}>at {slot.time}</span> : null}
+            {slot.duration !== previous.duration ? <span className={styles.duration}><img src="/images/clock.svg" role="presentation" />{slot.duration}</span> : null}
+          </li>);
+          previous = slot;
+          return element;
+        })}
+        {sorted.length > LIMIT ? <li onClick={() => this.setState({ isScheduleExpanded: !isScheduleExpanded })} className={styles.expandSchedule}>{isScheduleExpanded ? 'Show fewer dates ▴' : 'Show more dates ▾'}</li> : null}
+      </ol>
     </div>);
   }
   renderDetails() {

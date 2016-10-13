@@ -107,7 +107,7 @@ export default class SessionTileView extends React.Component { // eslint-disable
         </div>
         <div className={styles.actions}>
           {this.renderActions()}
-          <div className={`${styles.state} ${state === 'published' ? styles.live : ''}`}>{state}</div>
+          <div className={[styles.state, state === 'published' ? styles.live : ''].join(' ')}>{state}</div>
         </div>
       </div>
       <div className={styles.schedules}>

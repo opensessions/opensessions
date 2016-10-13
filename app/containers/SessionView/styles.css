@@ -49,31 +49,62 @@
       font-size: 1.5em;
       padding: .25em 0;
     }
-    & .dateDetail {
-      & .timespan {
-        padding: 0 .5em;
-        font-weight: bold;
-      }
-      & .duration {
-        padding: 0 1em;
-        color: #888;
-        & img {
-          margin: 0 .2em;
-          vertical-align: initial;
-        }
-      }
-    }
     & .dateDetail,
     & .locationDetail {
       display: flex;
-      align-items: center;
       margin: .25em 0;
       & > img {
         height: var(--iconSizeBig);
         width: var(--iconSizeBig);
         margin-right: .75em;
         padding: .25em 0;
-        opacity: .8;
+        opacity: .66;
+      }
+    }
+    & .dateDetail {
+      & .dateList {
+        display: inline-block;
+        vertical-align: top;
+        & > li {
+          list-style: none;
+          color: #999;
+          &.nextOccurring {
+            color: var(--defaultColor);
+            & .duration {
+              color: #888;
+              & img {
+                opacity: 1;
+              }
+            }
+            & .timespan {
+              font-weight: bold;
+            }
+          }
+          &.expandSchedule {
+            color: #E04862;
+            cursor: pointer;
+            &:hover {
+              text-decoration: underline;
+            }
+          }
+          & .duration {
+            padding: 0 1em;
+            white-space: nowrap;
+            text-decoration: inherit;
+            & img {
+              margin: 0 .2em;
+              vertical-align: initial;
+              opacity: .5;
+            }
+          }
+        }
+      }
+    }
+    & .locationDetail {
+      align-items: center;
+      & .detailText {
+        display: inline-block;
+        vertical-align: top;
       }
     }
     & .detailPrice,
@@ -101,10 +132,6 @@
         text-align: center;
       }
     }
-  }
-  & .detailText {
-    display: inline-block;
-    vertical-align: top;
   }
 }
 

@@ -32,7 +32,7 @@ export function calendarLinks(schedule, title, description, location) {
   };
 }
 
-export function sortSchedules(schedules) {
+export function sortSchedule(schedules) {
   if (!(schedules && schedules.length)) return [];
   return schedules.map(slot => ({
     start: new Date([slot.startDate, slot.startTime].join('T')),
@@ -42,5 +42,5 @@ export function sortSchedules(schedules) {
 }
 
 export function nextSchedule(schedules) {
-  return sortSchedules(schedules).find(schedule => schedule.start > Date.now());
+  return sortSchedule(schedules).find(schedule => schedule.start > Date.now());
 }
