@@ -24,7 +24,7 @@ export default class OptionalField extends React.Component { // eslint-disable-l
   }
   render() {
     const { value, component, multiline } = this.props;
-    let { showInput } = this.state;
+    let { showInput } = this.state || {};
     showInput = showInput || (!!value && value !== '0');
     const props = {
       className: styles.inputField,
