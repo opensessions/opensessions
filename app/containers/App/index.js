@@ -79,7 +79,6 @@ export default class App extends React.Component { // eslint-disable-line react/
       }
       const { email, nickname } = profile;
       const createdAt = new Date(profile.created_at);
-      const updatedAt = new Date(profile.updated_at);
       profile.logout = () => {
         localStorage.removeItem('userToken');
         this.notify('Logout successful', 'success');
@@ -97,7 +96,6 @@ export default class App extends React.Component { // eslint-disable-line react/
       }
 
       if (Date.now() - createdAt.getTime() <= 60000) this.notify('<b>Congratulations!</b> You have created your account', 'success');
-      else if (Date.now() - updatedAt.getTime() <= 60000) this.notify('Login successful!', 'success');
 
       return true;
     });

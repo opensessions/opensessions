@@ -48,7 +48,8 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   getSessionImage() {
     const { user } = this.context;
     const { session } = this.state;
-    return user ? `${session.image}?${Date.now()}` : session.image;
+    if (user && user.user_id === session.owner) return `${session.image}?${Date.now().toString().slice(0, -3)}`;
+    return session.image;
   }
   getTitle() {
     const { session } = this.state;

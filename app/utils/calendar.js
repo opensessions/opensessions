@@ -34,6 +34,7 @@ export function calendarLinks(schedule, title, description, location) {
 }
 
 export function sortSchedules(schedules) {
+  if (!(schedules && schedules.length)) return [];
   return schedules.map(slot => ({
     start: new Date([slot.startDate, slot.startTime].join('T')),
     end: new Date([slot.startDate, slot.endTime].join('T')),
