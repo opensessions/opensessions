@@ -39,7 +39,7 @@ app.use(passport.session());
 
 // Initialize api
 const apiMiddleware = require('./middlewares/api');
-apiMiddleware(app);
+app.use('/api', apiMiddleware());
 
 // Initialize frontend middleware that will serve your JS app
 const webpackConfig = require(`../internals/webpack/webpack.${isDev ? 'dev' : 'prod'}.babel`);

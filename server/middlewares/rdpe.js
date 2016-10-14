@@ -1,7 +1,13 @@
 const express = require('express');
 const moment = require('moment-timezone');
 
-module.exports = (app, database, opts) => {
+const equalMicrotime = (notMicrotimeDate) => {
+  const date = new Date(notMicrotimeDate);
+  date.setTime(date.getTime() + 1);
+  return { $lt: date.toISOString(), $gt: notMicrotimeDate };
+};
+
+module.exports = (database, opts) => {
   const rdpe = express();
   const { Session, Organizer, Activity } = database.models;
   const options = opts || {};
@@ -17,13 +23,13 @@ module.exports = (app, database, opts) => {
     const afterID = req.query.after;
     const where = {
       $or: [{
-        updatedAt: fromTS,
+        updatedAt: equalMicrotime(fromTS),
         uuid: {
           $gt: afterID
         }
       }, {
         updatedAt: {
-          $gt: fromTS,
+          $gt: equalMicrotime(fromTS).$lt,
         },
       }],
       state: {

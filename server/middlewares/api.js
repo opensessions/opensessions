@@ -22,14 +22,14 @@ const getSchema = (model => JSON.parse(JSON.stringify(model.fieldRawAttributesMa
 dotenv.config({ silent: true });
 dotenv.load();
 
-module.exports = (app) => {
+module.exports = () => {
   const api = express();
   const storage = new Storage();
   const database = storage.getInstance();
   const getUser = req => (req.user ? req.user.sub : null);
 
-  api.use('/rdpe', RDPE(app, database, { URL: process.env.SERVICE_LOCATION }));
-  api.use('/rdpe-legacy', RDPE(app, database, { URL: process.env.SERVICE_LOCATION, preserveLatLng: true, baseURL: '/api/rdpe-legacy' }));
+  api.use('/rdpe', RDPE(database, { URL: process.env.SERVICE_LOCATION }));
+  api.use('/rdpe-legacy', RDPE(database, { URL: process.env.SERVICE_LOCATION, preserveLatLng: true, baseURL: '/api/rdpe-legacy' }));
 
   const requireLogin = jwt({
     secret: new Buffer(process.env.AUTH0_CLIENT_SECRET, 'base64'),
@@ -207,5 +207,5 @@ module.exports = (app) => {
     }
   });
 
-  app.use('/api', api);
+  return api;
 };
