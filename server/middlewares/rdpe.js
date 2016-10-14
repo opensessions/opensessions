@@ -1,12 +1,12 @@
 const express = require('express');
 const moment = require('moment-timezone');
 
-const equalMicrotime = (notMicrotimeDate) => {
-  const lt = new Date(notMicrotimeDate);
-  lt.setTime(lt.getTime() + 1);
-  const gt = new Date(notMicrotimeDate);
-  gt.setTime(gt.getTime() - 1);
-  return { $lt: lt.toISOString(), $gt: gt.toISOString() };
+const compareMicrotime = (dateString, operator) => {
+  const date = new Date(dateString);
+  const [ lower, upper ] = [-1, 1].map(sigma => new Date(date.getTime() + sigma)).map(date => date.toISOString());
+  if (operator === '=') return { $lt: upper, $gt: lower };
+  else if (operator === '>') return { $gt: upper };
+  else if (operator === '<') return { $lt: lower };
 };
 
 module.exports = (database, opts) => {
@@ -16,7 +16,7 @@ module.exports = (database, opts) => {
 
   rdpe.get('/', (req, res) => {
     res.json({
-      sessions: '/api/rdpe/sessions',
+      sessions: `${options.baseURL}/sessions`,
     });
   });
 
@@ -25,14 +25,12 @@ module.exports = (database, opts) => {
     const afterID = req.query.after;
     const where = {
       $or: [{
-        updatedAt: equalMicrotime(fromTS),
+        updatedAt: compareMicrotime(fromTS, '='),
         uuid: {
           $gt: afterID
         }
       }, {
-        updatedAt: {
-          $gt: equalMicrotime(fromTS).$lt,
-        },
+        updatedAt: compareMicrotime(fromTS, '>'),
       }],
       state: {
         $in: ['published', 'deleted', 'unpublished']
@@ -92,7 +90,7 @@ module.exports = (database, opts) => {
       const query = Object.keys(next).map(key => [key, encodeURIComponent(next[key])].join('=')).join('&');
       res.json({
         items: sessions,
-        next: `${options.baseURL || '/api/rdpe'}/sessions?${query}`,
+        next: `${options.baseURL}/sessions?${query}`,
         license: 'https://creativecommons.org/licenses/by/4.0/'
       });
     }).catch(error => {
