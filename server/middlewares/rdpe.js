@@ -2,9 +2,11 @@ const express = require('express');
 const moment = require('moment-timezone');
 
 const equalMicrotime = (notMicrotimeDate) => {
-  const date = new Date(notMicrotimeDate);
-  date.setTime(date.getTime() + 1);
-  return { $lt: date.toISOString(), $gt: notMicrotimeDate };
+  const lt = new Date(notMicrotimeDate);
+  lt.setTime(lt.getTime() + 1);
+  const gt = new Date(notMicrotimeDate);
+  gt.setTime(gt.getTime() - 1);
+  return { $lt: lt.toISOString(), $gt: gt.toISOString() };
 };
 
 module.exports = (database, opts) => {
