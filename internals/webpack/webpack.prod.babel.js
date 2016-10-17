@@ -5,13 +5,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const OfflinePlugin = require('offline-plugin');
 
-// PostCSS plugins
-const cssnext = require('postcss-cssnext');
-const postcssFocus = require('postcss-focus');
-const postcssReporter = require('postcss-reporter');
-const postcssImport = require('postcss-partial-import');
-const postcssNested = require('postcss-nested');
-const postcssLost = require('lost');
 const dotenv = require('dotenv');
 dotenv.config({ silent: true });
 dotenv.load();
@@ -35,19 +28,6 @@ module.exports = require('./webpack.base.babel')({
     loader: 'css-loader?modules&importLoaders=1!postcss-loader'
   }),
 
-  // In production, we minify our CSS with cssnano
-  postcssPlugins: [
-    postcssImport(),
-    postcssNested(),
-    postcssFocus(), // Add a :focus to every :hover
-    cssnext({ // Allow future CSS features to be used, also auto-prefixes the CSS...
-      browsers: ['last 2 versions', 'IE > 10'], // ...based on this browser list
-    }),
-    postcssLost(),
-    postcssReporter({ // Posts messages from plugins to the terminal
-      clearMessages: true,
-    }),
-  ],
   plugins: [
 
     // OccurrenceOrderPlugin is needed for long-term caching to work properly.

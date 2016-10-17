@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-import SessionForm from 'containers/SessionForm';
+import SessionForm from '../SessionForm';
 
 export default class SessionEdit extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {

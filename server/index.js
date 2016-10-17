@@ -16,6 +16,8 @@ const session = require('express-session');
 
 const cookieParser = require('cookie-parser');
 
+const SSR = require('./lib/server');
+
 const app = express();
 
 // API middleware
@@ -44,6 +46,18 @@ app.use('/api', apiMiddleware());
 // Initialize frontend middleware that will serve your JS app
 const webpackConfig = require(`../internals/webpack/webpack.${isDev ? 'dev' : 'prod'}.babel`);
 
+app.use((req, res, done) => {
+  if ((req.query && req.query.ssr) || req.get('User-Agent').match(/bot|googlebot|crawler|spider|robot|crawling/i)) {
+    SSR.getRenderedPage(req).then(page => {
+      res.send(page);
+    }).catch(error => {
+      console.error(error);
+      res.json({ status: 'error', error });
+    });
+  } else {
+    done();
+  }
+});
 app.use(frontend(webpackConfig));
 
 const port = process.env.PORT || 3850;

@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 
-import NotificationBar from 'components/NotificationBar';
-import FieldsetStatusSvg from 'components/FieldsetStatusSvg';
+import NotificationBar from '../NotificationBar';
+import FieldsetStatusSvg from '../FieldsetStatusSvg';
 
 import styles from './styles.css';
 import fieldStyles from '../Field/styles.css';

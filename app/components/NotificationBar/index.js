@@ -45,13 +45,13 @@ export default class NotificationBar extends React.Component { // eslint-disable
     const { notifications, zIndex } = this.props;
     return (<Sticky zIndex={zIndex || 2}>
       <ol className={styles.messages}>
-        {notifications.map(message => (<li key={message.id} className={[styles.hidden, styles[message.status || 'standard']].join(' ')}>
+        {notifications ? notifications.map(message => (<li key={message.id} className={[styles.hidden, styles[message.status || 'standard']].join(' ')}>
           <div className={styles.inner}>
             {typeof message.text === 'object' ? <span className={styles.text}>{message.text}</span> : <span className={styles.text} dangerouslySetInnerHTML={{ __html: message.text }} />}
             {message.actions ? <span className={styles.actions}>{message.actions.map(action => <a onClick={() => action.dispatch() && this.dismiss(message.id)}>{action.text}</a>)}</span> : null}
             <a onClick={this.onDismiss} data-id={message.id} className={styles.dismiss}>&times;</a>
           </div>
-        </li>))}
+        </li>)) : null}
       </ol>
     </Sticky>);
   }

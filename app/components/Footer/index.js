@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router';
 
-import Authenticated from 'components/Authenticated';
-import LogoutLink from 'components/LogoutLink';
+import Authenticated from '../Authenticated';
+import LogoutLink from '../LogoutLink';
 
 import styles from './styles.css';
 

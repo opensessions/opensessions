@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { apiModel } from 'utils/api';
+import { apiModel } from '../../utils/api';
 
 import styles from './styles.css';
 

@@ -13,13 +13,12 @@ export default class Authenticated extends React.Component { // eslint-disable-l
   };
   static contextTypes = {
     user: PropTypes.object,
-    locks: PropTypes.object,
     isLoadingUser: PropTypes.bool
   }
   renderButton() {
     let { button } = this.props;
     if (!(button instanceof Array)) button = [button];
-    return <ol>{button.map((text, key) => <li key={key}><LoginButton lock={this.context.locks[key === 0 ? 'signup' : 'login']}>{text}</LoginButton></li>)}</ol>;
+    return <ol>{button.map((text, key) => <li key={key}><LoginButton lock={key === 0 ? 'signup' : 'login'}>{text}</LoginButton></li>)}</ol>;
   }
   renderOut() {
     const { message, button } = this.props;

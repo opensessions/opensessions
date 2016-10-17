@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-import TimePickerSimple from 'components/TimePickerSimple';
+import TimePickerSimple from '../TimePickerSimple';
 
 export default class TimeField extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {

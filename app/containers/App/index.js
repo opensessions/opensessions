@@ -14,9 +14,11 @@ import React, { PropTypes } from 'react';
 import Intercom from 'react-intercom';
 import Helmet from 'react-helmet';
 
-import Header from 'components/Header';
-import Footer from 'components/Footer';
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
+
 import getUserToken from './getUserToken';
+import trackPage from '../../utils/analytics';
 
 import styles from './styles.css';
 
@@ -67,6 +69,9 @@ export default class App extends React.Component { // eslint-disable-line react/
     const { userAgent } = navigator;
     if (userAgent.indexOf('MSIE') >= 0 || (userAgent.indexOf('Trident') >= 0 && !userAgent.indexOf('x64') >= 0)) this.notify('Internet Explorer is not well-supported. Consider using an up-to-date browser for the best experience', 'warn');
   }
+  onSignupShow = () => {
+    trackPage('/special:signup');
+  }
   setMeta = meta => {
     this.setState({ meta });
   }
@@ -81,7 +86,6 @@ export default class App extends React.Component { // eslint-disable-line react/
       const createdAt = new Date(profile.created_at);
       profile.logout = () => {
         localStorage.removeItem('userToken');
-        this.notify('Logout successful', 'success');
         this.context.router.push('/');
         this.setState({ profile: null });
       };
@@ -115,7 +119,7 @@ export default class App extends React.Component { // eslint-disable-line react/
     });
   }
   createLock() {
-    const { Auth0Lock } = window;
+    const { Auth0Lock, AUTH0_CLIENT_ID, AUTH0_CLIENT_DOMAIN } = window;
     const opts = {
       theme: {
         logo: `${window.location.origin}/images/auth0-icon.png`,
@@ -127,9 +131,10 @@ export default class App extends React.Component { // eslint-disable-line react/
       }
     };
     const locks = {
-      signup: new Auth0Lock('bSVd1LzdwXsKbjF7JXflIc1UuMacffUA', 'opensessions.eu.auth0.com', { allowLogin: false, allowSignUp: true, initialScreen: 'signUp', ...opts }),
-      login: new Auth0Lock('bSVd1LzdwXsKbjF7JXflIc1UuMacffUA', 'opensessions.eu.auth0.com', { allowLogin: true, allowSignUp: false, initialScreen: 'login', ...opts })
+      signup: new Auth0Lock(AUTH0_CLIENT_ID, AUTH0_CLIENT_DOMAIN, { allowLogin: false, allowSignUp: true, initialScreen: 'signUp', ...opts }),
+      login: new Auth0Lock(AUTH0_CLIENT_ID, AUTH0_CLIENT_DOMAIN, { allowLogin: true, allowSignUp: false, initialScreen: 'login', ...opts })
     };
+    locks.signup.on('show', this.onSignupShow);
     this.setState({ locks });
     this.setupProfile(locks.login);
   }

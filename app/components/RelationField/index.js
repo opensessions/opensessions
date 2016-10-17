@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-import SearchableSelect from 'components/SearchableSelect';
+import SearchableSelect from '../SearchableSelect';
 
 import styles from './styles.css';
 

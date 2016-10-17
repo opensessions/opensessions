@@ -2,9 +2,9 @@ import React, { PropTypes } from 'react';
 
 import OrganizerView from '../OrganizerView';
 
-import Authenticated from 'components/Authenticated';
-import LoadingMessage from 'components/LoadingMessage';
-import SessionList from 'containers/SessionList';
+import Authenticated from '../../components/Authenticated';
+import LoadingMessage from '../../components/LoadingMessage';
+import SessionList from '../../containers/SessionList';
 
 import { apiModel } from '../../utils/api';
 

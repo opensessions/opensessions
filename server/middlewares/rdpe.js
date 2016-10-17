@@ -1,9 +1,9 @@
 const express = require('express');
 const moment = require('moment-timezone');
 
-const compareMicrotime = (dateString, operator) => {
+const compareMicrotime = (dateString, operator) => { // eslint-disable-line consistent-return
   const date = new Date(dateString);
-  const [ lower, upper ] = [-1, 1].map(sigma => new Date(date.getTime() + sigma)).map(date => date.toISOString());
+  const [lower, upper] = [-1, 1].map(sigma => new Date(date.getTime() + sigma)).map(d => d.toISOString());
   if (operator === '=') return { $lt: upper, $gt: lower };
   else if (operator === '>') return { $gt: upper };
   else if (operator === '<') return { $lt: lower };

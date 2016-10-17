@@ -81,7 +81,7 @@
             }
           }
           &.expandSchedule {
-            color: #E04862;
+            color: var(--actionColor);
             cursor: pointer;
             &:hover {
               text-decoration: underline;

@@ -3,11 +3,12 @@ import { Link } from 'react-router';
 
 import { apiModel } from '../../utils/api';
 
-import NotificationBar from 'components/NotificationBar';
 import SessionTileView from '../SessionTileView';
-import LoadingMessage from 'components/LoadingMessage';
-import SessionList from 'containers/SessionList';
-import ImageUpload from 'components/ImageUploadField';
+
+import NotificationBar from '../../components/NotificationBar';
+import LoadingMessage from '../../components/LoadingMessage';
+import SessionList from '../../containers/SessionList';
+import ImageUpload from '../../components/ImageUploadField';
 
 import styles from './styles.css';
 

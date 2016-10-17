@@ -1,40 +1,36 @@
 import React, { PropTypes } from 'react';
 
-import Header from 'components/Header';
-import Footer from 'components/Footer';
+import Helmet from 'react-helmet';
 
-// import styles from './styles.css';
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
+
+import styles from '../App/styles.css';
 
 export default class AppServer extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
-    content: PropTypes.string,
-  };
-  static contextTypes = {
-    router: PropTypes.object,
-  };
-  static childContextTypes = {
-    user: PropTypes.object,
-    router: PropTypes.object,
-  };
-  constructor() {
-    super();
-    this.state = {
-      profile: null,
-    };
-  }
-  getChildContext() {
-    return {
-      user: this.state.profile,
-      router: this.context.router,
-    };
+    html: PropTypes.string,
   }
   render() {
-    return (
-      <div>
-        <Header />
-        <div dangerouslySetInnerHTML={{ __html: this.props.content }} />
-        <Footer />
-      </div>
-    );
+    return (<html lang="en">
+      <head>
+        <title>Open Sessions</title>
+        <link type="stylesheet/css" href="/styles.css" />
+      </head>
+      <body>
+        <div id="app">
+          <div className={styles.root}>
+            <Helmet />
+            <Header />
+            <div className={styles.appBody}>
+              <div className={styles.container}>
+                <div dangerouslySetInnerHTML={{ __html: this.props.html }} />
+              </div>
+              <Footer />
+            </div>
+          </div>
+        </div>
+      </body>
+    </html>);
   }
 }

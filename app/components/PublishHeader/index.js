@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-import Sticky from 'components/Sticky';
+import Sticky from '../Sticky';
 
 import styles from './styles.css';
 

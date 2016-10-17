@@ -1,17 +1,16 @@
 import React, { PropTypes } from 'react';
-import { parseSchedule, sortSchedule } from 'utils/calendar';
+import { Link } from 'react-router';
 
 import GoogleMapLoader from 'react-google-maps/lib/GoogleMapLoader';
 import GoogleMap from 'react-google-maps/lib/GoogleMap';
 import Marker from 'react-google-maps/lib/Marker';
 
-import NotificationBar from 'components/NotificationBar';
-import SocialShareIcons from 'components/SocialShareIcons';
-import LoadingMessage from 'components/LoadingMessage';
-import PublishHeader from 'components/PublishHeader';
+import NotificationBar from '../../components/NotificationBar';
+import SocialShareIcons from '../../components/SocialShareIcons';
+import LoadingMessage from '../../components/LoadingMessage';
+import PublishHeader from '../../components/PublishHeader';
 
-import { Link } from 'react-router';
-
+import { parseSchedule, sortSchedule } from '../../utils/calendar';
 import { apiModel } from '../../utils/api';
 
 import styles from './styles.css';
@@ -70,7 +69,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   }
   fetchData = () => {
     this.setState({ isLoading: true });
-    apiModel.get('session', this.props.params.uuid).then(result => {
+    return apiModel.get('session', this.props.params.uuid).then(result => {
       const { error, instance } = result;
       if (error) throw error;
       this.setState({ session: instance, isLoading: false });
@@ -86,15 +85,15 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   renderDate() {
     const { session, isScheduleExpanded } = this.state;
     const { schedule } = session;
-    const sorted = sortSchedule(schedule).map(parseSchedule).filter(slot => slot.date || slot.time);
+    const sorted = sortSchedule(schedule).map(parseSchedule).filter(slot => (slot.date || slot.time) && !slot.hasOccurred);
     if (!sorted.length) return null;
-    const LIMIT = 5;
+    const LIMIT = 2;
     let previous = {};
     return (<div className={styles.dateDetail}>
       <img src="/images/calendar.svg" role="presentation" />
       <ol className={styles.dateList}>
-        {sorted.slice(0, isScheduleExpanded ? Infinity : LIMIT).map(slot => {
-          const element = (<li className={[styles.detailText, previous.hasOccurred && !slot.hasOccurred ? styles.nextOccurring : ''].join(' ')} style={{ 'text-decoration': slot.hasOccurred ? 'line-through' : null }}>
+        {sorted.slice(0, isScheduleExpanded ? Infinity : LIMIT).map((slot, index) => {
+          const element = (<li className={[styles.detailText, index === 0 ? styles.nextOccurring : ''].join(' ')}>
             {slot.date} {slot.time ? <span className={styles.timespan}>at {slot.time}</span> : null}
             {slot.duration !== previous.duration ? <span className={styles.duration}><img src="/images/clock.svg" role="presentation" />{slot.duration}</span> : null}
           </li>);
