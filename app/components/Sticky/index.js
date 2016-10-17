@@ -15,9 +15,7 @@ export default class Sticky extends React.Component { // eslint-disable-line rea
   render() {
     const { children, zIndex } = this.props;
     return (<div ref="sticky" className={styles.sticky}>
-      <div className={styles.fixed} style={{ zIndex: zIndex || 1, right: 0 }}>
-        {children}
-      </div>
+      {window.document ? <div className={styles.fixed} style={{ zIndex: zIndex || 1, right: 0 }}>{children}</div> : null}
       <div className={styles.static}>{children}</div>
     </div>);
   }

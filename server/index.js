@@ -16,7 +16,7 @@ const session = require('express-session');
 
 const cookieParser = require('cookie-parser');
 
-const SSR = require('./lib/server');
+const getRenderedPage = require('./lib/server').default;
 
 const app = express();
 
@@ -48,7 +48,7 @@ const webpackConfig = require(`../internals/webpack/webpack.${isDev ? 'dev' : 'p
 
 app.use((req, res, done) => {
   if ((req.query && req.query.ssr) || req.get('User-Agent').match(/bot|googlebot|crawler|spider|robot|crawling/i)) {
-    SSR.getRenderedPage(req).then(page => {
+    getRenderedPage(req).then(page => {
       res.send(page);
     }).catch(error => {
       console.error(error);
