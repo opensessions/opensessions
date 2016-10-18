@@ -106,8 +106,7 @@
         top: 2em;
         right: 6em;
         bottom: auto;
-        max-width: 20em;
-        max-width: 42%;
+        width: 42%;
         transform: scale(.825) perspective(16em);
         transition-duration: .3s;
         color: #FFF;

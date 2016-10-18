@@ -55,17 +55,21 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     return session.title || <i>Untitled</i>;
   }
   getActions() {
-    const user = this.context ? this.context.user : false;
     const { location } = this.props;
     const { session } = this.state;
     const actions = [];
-    if (user && session && user.user_id === session.owner) {
+    if (this.canEdit()) {
       let editURL = `/session/${session.uuid}/edit`;
       if (location && location.query && location.query.tab) editURL = [editURL, location.query.tab].join('/');
       actions.push(<Link key="edit" to={editURL} className={publishStyles.previewButton}>{session.state === 'published' ? 'Unpublish and edit' : 'Continue editing'}</Link>);
     }
     if (!actions.length) return null;
     return actions;
+  }
+  canEdit() {
+    const user = this.context ? this.context.user : false;
+    const { session } = this.state;
+    return user && session && user.user_id === session.owner;
   }
   fetchData = () => {
     this.setState({ isLoading: true });
@@ -322,7 +326,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     const { session, isLoading } = this.state;
     if (isLoading) return (<div className={styles.sessionView}><LoadingMessage message="Loading session" ellipsis /></div>);
     return (<div className={styles.sessionView}>
-      {session ? <PublishHeader h2={session && session.state === 'published' ? 'Published session' : 'Preview'} actions={this.getActions()} /> : null}
+      {this.canEdit() ? <PublishHeader h2={session && session.state === 'published' ? 'Published session' : 'Preview'} actions={this.getActions()} /> : null}
       <NotificationBar notifications={this.context.notifications} />
       {session ? this.renderSession() : <LoadingMessage message="Session not found" />}
     </div>);

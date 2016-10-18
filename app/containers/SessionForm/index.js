@@ -179,16 +179,15 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   fetchData = () => {
     const { session, params, location } = this.props;
     const uuid = session ? session.uuid : (params.uuid || null);
-    if (uuid) {
-      return apiModel.get('session', uuid).then(res => {
+    return uuid
+      ? apiModel.get('session', uuid).then(res => {
         this.onChange(res.instance);
         this.setState({ session: res.instance, isSaving: false });
+      })
+      : apiModel.new('session', location.query).then(res => {
+        this.context.notify('Created a new session', 'success');
+        this.context.router.push(`${res.instance.href}/edit`);
       });
-    }
-    return apiModel.new('session', location.query).then(res => {
-      this.context.notify('Created a new session', 'success');
-      this.context.router.push(`${res.instance.href}/edit`);
-    });
   }
   updateSession = (name, value) => {
     const session = this.getSession();
