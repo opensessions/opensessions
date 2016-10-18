@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 
+import Helmet from 'react-helmet';
+
 import Authenticated from '../../components/Authenticated';
 import NotificationBar from '../../components/NotificationBar';
 import SessionList from '../SessionList';
@@ -69,6 +71,7 @@ export default class HomePage extends React.Component { // eslint-disable-line r
   }
   render() {
     return (<div>
+      <Helmet meta={[{ property: 'og:title', content: 'Open Sessions' }, { property: 'description', content: 'Open Sessions is your gateway to the most popular physical activity finders on the web.' }]} />
       <NotificationBar notifications={this.context.notifications} zIndex={4} />
       {this.renderLandingPage()}
       <Authenticated>

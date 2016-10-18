@@ -35,12 +35,25 @@ function routeReducer(state = routeInitialState, action) {
   }
 }
 
+const sessionInitialState = fromJS(null);
+
+function sessionViewReducer(state = sessionInitialState, action) {
+  console.log('sessionViewReducer', action);
+  switch (action.type) {
+    case 'SESSION_LOADED':
+      return action.payload;
+    default:
+      return state;
+  }
+}
+
 /**
  * Creates the main reducer with the asynchronously loaded ones
  */
 export default function createReducer(asyncReducers) {
   return combineReducers({
     route: routeReducer,
+    session: sessionViewReducer,
     ...asyncReducers,
   });
 }

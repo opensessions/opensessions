@@ -1,9 +1,11 @@
 function apiFetch(url, opts) {
+  const { localStorage } = window;
+  const base = process.env.SERVICE_LOCATION;
   return new Promise((resolve, reject) => {
     if (typeof opts !== 'object') opts = {};
     const query = opts.query;
     const headers = opts.headers || {};
-    headers.Authorization = `bearer ${localStorage.userToken}`;
+    headers.Authorization = `bearer ${localStorage ? localStorage.userToken : null}`;
     if (opts.body) {
       opts.method = 'POST';
       if (!(opts.body instanceof FormData)) {
@@ -21,7 +23,7 @@ function apiFetch(url, opts) {
     opts.credentials = 'same-origin';
     opts.crossDomain = true;
     opts.headers = headers;
-    fetch(url, opts).then(response => {
+    fetch(`${base}${url}`, opts).then(response => {
       response.json().then(json => {
         if (response.ok) {
           resolve(json);
@@ -31,6 +33,8 @@ function apiFetch(url, opts) {
       }).catch(error => {
         reject({ status: response.status, error });
       });
+    }).catch(error => {
+      reject({ status: 'error', error });
     });
   });
 }

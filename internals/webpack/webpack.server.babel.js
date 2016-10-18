@@ -48,6 +48,10 @@ module.exports = {
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
       window: '({})',
       document: '({})'
+    }),
+    new webpack.ProvidePlugin({
+      // make fetch happen
+      fetch: 'node-fetch',
     })
   ],
   postcss: () => ([

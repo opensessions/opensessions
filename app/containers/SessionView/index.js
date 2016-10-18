@@ -4,6 +4,7 @@ import { Link } from 'react-router';
 import GoogleMapLoader from 'react-google-maps/lib/GoogleMapLoader';
 import GoogleMap from 'react-google-maps/lib/GoogleMap';
 import Marker from 'react-google-maps/lib/Marker';
+import Helmet from 'react-helmet';
 
 import NotificationBar from '../../components/NotificationBar';
 import SocialShareIcons from '../../components/SocialShareIcons';
@@ -19,23 +20,28 @@ import publishStyles from '../../components/PublishHeader/styles.css';
 export default class SessionView extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
     user: PropTypes.object,
-    setMeta: PropTypes.func,
     notifications: PropTypes.array,
-    notify: PropTypes.func
+    notify: PropTypes.func,
+    store: PropTypes.object
   };
   static propTypes = {
     params: PropTypes.object,
     location: PropTypes.object
-  }
+  };
+  static fetchData = (dispatch, params) => apiModel.get('session', params.uuid).then(result => {
+    const { error, instance } = result;
+    if (error) throw error;
+    dispatch({ type: 'SESSION_LOADED', payload: instance });
+  }).catch(console.error)
   constructor() {
     super();
     this.state = {};
   }
   componentDidMount() {
-    this.fetchData();
+    this.fetchDataClient(this.context.store.dispatch, this.props.params);
   }
   getPrice() {
-    let { price } = this.state.session;
+    let { price } = this.context.store.getState().get('session');
     if (!price) return 'Free';
     if (price !== Math.floor(price)) {
       const minor = `0${Math.ceil((price % 1) * 100)}`.slice(-2);
@@ -46,17 +52,17 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   }
   getSessionImage() {
     const { user } = this.context;
-    const { session } = this.state;
+    const session = this.context.store.getState().get('session');
     if (user && user.user_id === session.owner) return `${session.image}?${Date.now().toString().slice(0, -3)}`;
     return session.image;
   }
   getTitle() {
-    const { session } = this.state;
+    const session = this.context.store.getState().get('session');
     return session.title || <i>Untitled</i>;
   }
   getActions() {
     const { location } = this.props;
-    const { session } = this.state;
+    const session = this.context.store.getState().get('session');
     const actions = [];
     if (this.canEdit()) {
       let editURL = `/session/${session.uuid}/edit`;
@@ -68,14 +74,15 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   }
   canEdit() {
     const user = this.context ? this.context.user : false;
-    const { session } = this.state;
+    const session = this.context.store.getState().get('session');
     return user && session && user.user_id === session.owner;
   }
-  fetchData = () => {
+  fetchDataClient = (dispatch, params) => {
     this.setState({ isLoading: true });
-    return apiModel.get('session', this.props.params.uuid).then(result => {
+    return apiModel.get('session', params.uuid).then(result => {
       const { error, instance } = result;
       if (error) throw error;
+      dispatch({ type: 'SESSION_LOADED', payload: instance });
       this.setState({ session: instance, isLoading: false });
       if (this.context.setMeta) {
         const { image } = instance;
@@ -87,7 +94,8 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     });
   }
   renderDate() {
-    const { session, isScheduleExpanded } = this.state;
+    const session = this.context.store.getState().get('session');
+    const { isScheduleExpanded } = this.state;
     const { schedule } = session;
     const sorted = sortSchedule(schedule).map(parseSchedule).filter(slot => (slot.date || slot.time) && !slot.hasOccurred);
     if (!sorted.length) return null;
@@ -109,7 +117,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     </div>);
   }
   renderDetails() {
-    const { session } = this.state;
+    const session = this.context.store.getState().get('session');
     let organizerButton = null;
     if (session.Organizer) {
       organizerButton = <div className={styles.contactButton}><Link to={session.Organizer.href}>View organiser</Link></div>;
@@ -141,10 +149,11 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         </div>
         {organizerButton}
       </div>
+      <Helmet meta={[{ property: 'og:image', content: session.image }]} />
     </div>);
   }
   renderDescription() {
-    const { session } = this.state;
+    const session = this.context.store.getState().get('session');
     let meetingPoint = null;
     if (session.meetingPoint) {
       meetingPoint = (<div className={styles.infoSection}>
@@ -216,7 +225,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     </div>);
   }
   renderAbout() {
-    const { session } = this.state;
+    const session = this.context.store.getState().get('session');
     let features = [];
     const maps = {
       genderRestriction: {
@@ -260,7 +269,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     </div>);
   }
   renderMap() {
-    const { session } = this.state;
+    const session = this.context.store.getState().get('session');
     const { locationData } = session;
     let map = null;
     let address = null;
@@ -301,9 +310,9 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     </section>);
   }
   renderShare() {
-    const { session } = this.state;
+    const session = this.context.store.getState().get('session');
     const { title, href } = session;
-    const link = `${window.location.origin}${href}`;
+    const link = `${process.env.SERVICE_LOCATION}${href}`;
     const disabled = session.state !== 'published';
     return (<div className={[styles.shareSection, disabled ? styles.disabled : null].join(' ')}>
       <div className={styles.inner}>
@@ -323,7 +332,8 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     </div>);
   }
   render() {
-    const { session, isLoading } = this.state;
+    const { isLoading } = this.state;
+    const session = this.context.store.getState().get('session');
     if (isLoading) return (<div className={styles.sessionView}><LoadingMessage message="Loading session" ellipsis /></div>);
     return (<div className={styles.sessionView}>
       {this.canEdit() ? <PublishHeader h2={session && session.state === 'published' ? 'Published session' : 'Preview'} actions={this.getActions()} /> : null}

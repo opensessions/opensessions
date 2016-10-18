@@ -108,10 +108,12 @@
       & .columns {
         display: flex;
         flex-wrap: wrap;
+        justify-content: space-around;
         & > .column {
           padding: 0 2em;
           flex-basis: 28rem;
           flex-grow: 1;
+          max-width: 60rem;
         }
       }
     }

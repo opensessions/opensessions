@@ -53,7 +53,7 @@ module.exports = (options) => ({
   plugins: options.plugins.concat([
     new webpack.optimize.CommonsChunkPlugin('common.js'),
     new webpack.ProvidePlugin({
-      // make fetch available
+      // make fetch happen
       fetch: 'exports?self.fetch!whatwg-fetch',
     }),
 
@@ -63,6 +63,7 @@ module.exports = (options) => ({
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+        SERVICE_LOCATION: 'window.location.origin'
       },
     }),
   ]),
