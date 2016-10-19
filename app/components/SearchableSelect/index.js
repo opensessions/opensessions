@@ -130,11 +130,10 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
         {filteredOptions.map((opt, index) => <li data-key={opt.props.key} data-index={index} {...opt.props} className={index === highlightIndex ? styles.highlight : null} dangerouslySetInnerHTML={{ __html: opt.text.replace(new RegExp(`(${search})`, 'ig'), '<b>$1</b>') }} />)}
       </ol>);
     }
-    const action = <a className={[styles.action, search && !filteredOptions.length ? styles.add : styles.clear, value || search ? null : styles.hide].join(' ')} onClick={this.resetValue} />;
     return (<div className={styles.searchableSelect}>
       <input {...searchAttrs} ref="input" onFocus={this.searchEvent} onBlur={this.searchEvent} defaultValue={valueDisplay} />
       <input {...searchAttrs} className={[className, styles.output].join(' ')} value={valueDisplay} style={{ opacity: visible ? 0 : 1 }} tabIndex="-1" />
-      {action}
+      {search && !filteredOptions.length ? null : <a className={[styles.action, styles.clear, value || search ? null : styles.hide].join(' ')} onClick={this.resetValue} />}
       {searchResults}
     </div>);
   }

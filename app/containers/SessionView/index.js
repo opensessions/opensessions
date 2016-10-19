@@ -87,8 +87,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       dispatch({ type: 'SESSION_LOADED', payload: instance });
       this.setState({ session: instance, isLoading: false });
       if (this.context.setMeta) {
-        const { image } = instance;
-        if (image) this.context.setMeta([{ property: 'og:image', content: image }]);
+        this.context.setMeta([{ property: 'og:image', content: instance.image }, { property: 'og:title', content: instance.title }]);
       }
     }).catch(() => {
       this.context.notify('Failed to load session', 'error');
@@ -146,7 +145,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         </div>
         {organizerButton}
       </div>
-      <Helmet meta={[{ property: 'og:image', content: session.image }]} />
+      <Helmet meta={[{ property: 'og:image', content: session.image }, { property: 'og:title', content: session.title }]} />
     </div>);
   }
   renderDescription() {
@@ -285,7 +284,8 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         defaultCenter,
         onClick: onMapClick,
         options: {
-          streetViewControl: false, scrollwheel: false,
+          streetViewControl: false,
+          scrollwheel: false,
           zoomControl: true,
           zoomControlOptions: {
             position: google ? google.maps.ControlPosition.TOP_LEFT : 1

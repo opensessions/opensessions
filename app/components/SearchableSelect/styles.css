@@ -36,18 +36,6 @@
         content: '\0000D7';
       }
     }
-    &.add {
-      opacity: 1;
-      color: var(--actionColor);
-      font-size: 1.75em;
-      transform: rotate(45deg);
-      padding-right: 1.05rem;
-      padding-top: .92em;
-      font-weight: bold;
-      &::before {
-        content: '\0000D7';
-      }
-    }
     &.hide {
       opacity: 0;
     }
