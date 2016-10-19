@@ -18,6 +18,7 @@
   max-width: var(--sectionWidth);
   text-align: left;
   margin: 1em auto;
+  padding: .5em;
   background: #FFF;
   display: flex;
   flex-wrap: wrap;
@@ -25,15 +26,14 @@
   justify-content: center;
   & .detailsImg,
   & .detailsText {
-    padding: 1em;
+    padding: .5em;
   }
   & .detailsImg {
-    max-width: 48rem;
+    max-width: 46rem;
   }
   & .detailsText {
     flex-grow: 1;
     font-size: 1.1em;
-    padding: 1em;
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
@@ -47,7 +47,7 @@
     }
     & h1 {
       font-size: 1.5em;
-      padding: .25em 0;
+      padding: .25em;
     }
     & .dateDetail,
     & .locationDetail {
@@ -166,12 +166,13 @@
   h2,
   h3,
   h4 {
-    margin: .5em auto;
+    margin: .25em auto .5em;
     font-weight: normal;
     font-family: Belgrano, serif;
   }
   h2 {
     font-size: 2em;
+    margin-top: 0;
   }
   h3 {
     font-size: 1.6em;
@@ -284,12 +285,13 @@
   position: relative;
   & > .address {
     position: absolute;
-    font-size: 1.1em;
+    box-shadow: -.75em .75em .75em -.75em, .75em .75em .75em -.75em;
+    font-size: 1em;
     background-color: #FFF;
     color: #888;
     z-index: 1;
-    right: 10%;
-    width: 30rem;
+    right: 5%;
+    width: 20rem;
     max-width: 65%;
     padding: 2rem;
     text-align: left;
@@ -374,6 +376,12 @@ a.organizerLink {
   }
   .shareSection {
     font-size: 1.5em;
+  }
+  .mapSection {
+    & > .address {
+      font-size: 1.1em;
+      width: 30rem;
+    }
   }
   .mainCol {
     padding: .5em;
