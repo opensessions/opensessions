@@ -17,6 +17,8 @@ import { apiModel } from '../../utils/api';
 import styles from './styles.css';
 import publishStyles from '../../components/PublishHeader/styles.css';
 
+const { google } = window;
+
 export default class SessionView extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
     user: PropTypes.object,
@@ -286,7 +288,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
           streetViewControl: false, scrollwheel: false,
           zoomControl: true,
           zoomControlOptions: {
-            position: google.maps.ControlPosition.TOP_LEFT
+            position: google ? google.maps.ControlPosition.TOP_LEFT : 1
           },
           mapTypeControl: false
         }
