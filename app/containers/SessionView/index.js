@@ -282,7 +282,14 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         defaultZoom: 16,
         defaultCenter,
         onClick: onMapClick,
-        options: { streetViewControl: false, scrollwheel: false }
+        options: {
+          streetViewControl: false, scrollwheel: false,
+          zoomControl: true,
+          zoomControlOptions: {
+            position: google.maps.ControlPosition.TOP_LEFT
+          },
+          mapTypeControl: false
+        }
       };
       map = (<div className={styles.mapFrame}>
         <GoogleMapLoader
