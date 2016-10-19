@@ -27,10 +27,8 @@ export default class ListSessions extends React.Component { // eslint-disable-li
     super();
     this.state = { isLoading: false };
   }
-  componentWillMount() {
-    this.setState({ isLoading: true });
-  }
   componentDidMount() {
+    this.setState({ isLoading: true }); // eslint-disable-line react/no-did-mount-set-state
     this.constructor.fetchData(this.context.store.dispatch).then(() => {
       this.setState({ isLoading: false });
     }).catch(error => {
