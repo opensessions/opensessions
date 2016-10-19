@@ -19,7 +19,6 @@ const getRenderedPage = req => new Promise((resolve, reject) => {
     } else if (redirectLocation) {
       console.log(redirectLocation);
     } else if (renderProps) {
-      console.log('renderProps', renderProps);
       const readyOnAllActions = renderProps.components
         .filter(component => component && component.fetchData)
         .map(component => component.fetchData(store.dispatch, renderProps.params));

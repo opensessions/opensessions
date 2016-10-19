@@ -184,6 +184,19 @@ module.exports = (DataTypes) => ({
                 if (instance.previous('state') === 'published') instance.state = 'unpublished';
               }
             }
+            const socialPrepend = {
+              socialWebsite: ['http://', 'https://'],
+              socialFacebook: 'https://facebook.com/',
+              socialInstagram: '@',
+              socialTwitter: '@',
+              socialHashtag: '#'
+            };
+            Object.keys(socialPrepend).filter(type => instance.changed(type) && instance[type]).forEach(type => {
+              const val = instance[type];
+              let prepend = socialPrepend[type];
+              if (!(prepend instanceof Array)) prepend = [prepend];
+              if (prepend.map(pre => val.indexOf(pre)).indexOf(0) === -1) instance[type] = `${prepend[0]}${val}`;
+            });
           }
         }
       }

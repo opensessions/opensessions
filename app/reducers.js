@@ -38,9 +38,19 @@ function routeReducer(state = routeInitialState, action) {
 const sessionInitialState = fromJS(null);
 
 function sessionViewReducer(state = sessionInitialState, action) {
-  console.log('sessionViewReducer', action);
   switch (action.type) {
     case 'SESSION_LOADED':
+      return action.payload;
+    default:
+      return state;
+  }
+}
+
+const sessionListInitialState = fromJS(null);
+
+function sessionListViewReducer(state = sessionListInitialState, action) {
+  switch (action.type) {
+    case 'SESSION_LIST_LOADED':
       return action.payload;
     default:
       return state;
@@ -54,6 +64,7 @@ export default function createReducer(asyncReducers) {
   return combineReducers({
     route: routeReducer,
     session: sessionViewReducer,
+    sessionList: sessionListViewReducer,
     ...asyncReducers,
   });
 }

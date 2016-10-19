@@ -17,7 +17,7 @@
 .detailsSection {
   max-width: var(--sectionWidth);
   text-align: left;
-  margin: 2em auto;
+  margin: 1em auto;
   background: #FFF;
   display: flex;
   flex-wrap: wrap;
@@ -54,8 +54,8 @@
       display: flex;
       margin: .25em 0;
       & > img {
-        height: var(--iconSizeBig);
-        width: var(--iconSizeBig);
+        height: 4rem;
+        width: 4rem;
         margin-right: .75em;
         padding: .25em 0;
         opacity: .66;
@@ -84,11 +84,11 @@
             color: var(--actionColor);
             cursor: pointer;
             &:hover {
-              text-decoration: underline;
+              color: #034D73;
             }
           }
           & .duration {
-            padding: 0 1em;
+            padding-left: .5em;
             white-space: nowrap;
             text-decoration: inherit;
             & img {
@@ -139,7 +139,7 @@
   background-color: #FFF;
   color: #888;
   text-align: right;
-  margin: 1em 0;
+  margin: .5em 0;
   padding: .25em;
   font-size: 1.4em;
   &.disabled {
@@ -342,6 +342,15 @@ a.organizerLink {
 @media (--desktop) {
   .detailsSection {
     margin: 2em auto;
+    & .detailsText {
+      & .dateDetail,
+      & .locationDetail {
+        & > img {
+          height: var(--iconSizeBig);
+          width: var(--iconSizeBig);
+        }
+      }
+    }
   }
   .descriptionSection {
     h2 {

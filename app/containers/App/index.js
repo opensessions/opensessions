@@ -141,7 +141,8 @@ export default class App extends React.Component { // eslint-disable-line react/
   render() {
     const { meta, profile } = this.state;
     const { INTERCOM_APPID } = window;
-    const user = profile && INTERCOM_APPID ? { appID: INTERCOM_APPID, user_id: profile.user_id, email: profile.email, name: profile.nickname } : null;
+    const intercomProps = profile ? { user_id: profile.user_id, email: profile.email, name: profile.nickname } : {};
+    intercomProps.appID = INTERCOM_APPID;
     return (
       <div className={styles.root}>
         <Helmet meta={meta} />
@@ -152,7 +153,7 @@ export default class App extends React.Component { // eslint-disable-line react/
           </div>
           <Footer />
         </div>
-        {user ? <Intercom {...user} /> : null}
+        {<Intercom {...intercomProps} />}
       </div>
     );
   }

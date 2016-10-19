@@ -47,7 +47,7 @@ app.use('/api', apiMiddleware());
 const webpackConfig = require(`../internals/webpack/webpack.${isDev ? 'dev' : 'prod'}.babel`);
 
 app.use((req, res, done) => {
-  if ((req.query && req.query.ssr) || req.get('User-Agent').match(/bot|googlebot|crawler|spider|robot|crawling/i)) {
+  if ((req.query && req.query.ssr) || req.get('User-Agent').match(/bot|googlebot|facebookexternalhit|crawler|spider|robot|crawling/i)) {
     getRenderedPage(req).then(page => {
       res.send(page);
     }).catch(error => {

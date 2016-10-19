@@ -95,24 +95,19 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   }
   renderDate() {
     const session = this.context.store.getState().get('session');
-    const { isScheduleExpanded } = this.state;
     const { schedule } = session;
     const sorted = sortSchedule(schedule).map(parseSchedule).filter(slot => (slot.date || slot.time) && !slot.hasOccurred);
     if (!sorted.length) return null;
     const LIMIT = 2;
-    let previous = {};
+    const scheduleItems = this.state.scheduleItems || LIMIT;
     return (<div className={styles.dateDetail}>
       <img src="/images/calendar.svg" role="presentation" />
       <ol className={styles.dateList}>
-        {sorted.slice(0, isScheduleExpanded ? Infinity : LIMIT).map((slot, index) => {
-          const element = (<li className={[styles.detailText, index === 0 ? styles.nextOccurring : ''].join(' ')}>
-            {slot.date} {slot.time ? <span className={styles.timespan}>at {slot.time}</span> : null}
-            {slot.duration !== previous.duration ? <span className={styles.duration}><img src="/images/clock.svg" role="presentation" />{slot.duration}</span> : null}
-          </li>);
-          previous = slot;
-          return element;
-        })}
-        {sorted.length > LIMIT ? <li onClick={() => this.setState({ isScheduleExpanded: !isScheduleExpanded })} className={styles.expandSchedule}>{isScheduleExpanded ? 'Show fewer dates ▴' : 'Show more dates ▾'}</li> : null}
+        {sorted.slice(0, scheduleItems).map((slot, index) => <li className={[styles.detailText, index === 0 ? styles.nextOccurring : ''].join(' ')}>
+          {slot.date} {slot.time ? <span className={styles.timespan}>at {slot.time}</span> : null}
+          {index === 0 || slot.duration !== sorted[index - 1].duration ? <span className={styles.duration}><img src="/images/clock.svg" role="presentation" />{slot.duration}</span> : null}
+        </li>)}
+        {sorted.length > LIMIT ? <li onClick={() => this.setState({ scheduleItems: scheduleItems >= sorted.length ? LIMIT : Math.min(scheduleItems + 3, sorted.length) })} className={styles.expandSchedule}>{scheduleItems >= sorted.length ? 'Show fewer dates ▴' : 'Show more dates ▾'}</li> : null}
       </ol>
     </div>);
   }
@@ -318,7 +313,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       <div className={styles.inner}>
         Share this session
         {disabled ? <sub> (enabled when published)</sub> : null}
-        <SocialShareIcons link={link} title={title} />
+        <SocialShareIcons link={link} title={title} message="I found this cool session on Open Sessions! Wanna go?" />
       </div>
     </div>);
   }
