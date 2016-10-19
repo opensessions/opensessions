@@ -53,7 +53,7 @@ export default class ListSessions extends React.Component { // eslint-disable-li
     const [start, end] = [-1, 0].map(index => page + index).map(index => index * limit);
     return (<div>
       {this.renderPagination(page, start, end, maxPage)}
-      {isLoading ? <LoadingMessage message="Loading sessions" ellipsis /> : <SessionList heading="Here is a list of all published sessions:" sessions={sessions.slice(start, end)} />}
+      {isLoading ? <LoadingMessage message="Loading sessions" ellipsis /> : <SessionList heading="Here is a list of all published sessions:" sessions={sessions ? sessions.slice(start, end) : []} />}
       {this.renderPagination(page, start, end, maxPage)}
     </div>);
   }
