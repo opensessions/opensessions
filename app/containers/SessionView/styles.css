@@ -35,6 +35,7 @@
     flex-grow: 1;
     font-size: 1.1em;
     display: flex;
+    flex-basis: 45%;
     flex-wrap: wrap;
     flex-direction: column;
     align-items: flex-start;
@@ -48,6 +49,7 @@
     & h1 {
       font-size: 1.5em;
       padding: .25em;
+      line-height: 1.3;
     }
     & .dateDetail,
     & .locationDetail {
