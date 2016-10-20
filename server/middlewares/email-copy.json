@@ -1,6 +1,7 @@
 {
 	"welcome": {
 		"subject": "Welcome to Open Sessions!",
+		"title": "Welcome to<br>Open Sessions!",
 		"body": "<p>Congratulations on creating your new account with Open Sessions!</p><p>Open Sessions publishes the physical activity sessions you run on our partner websites such as Get Active, so that it can be found by people who want to attend sessions like yours.</p><p><a class=\"button\" href=\"https://app.opensessions.io/\">Start listing your sessions</a></p><h2>What's next?</h2><p>Use <a href=\"https://app.opensessions.io/session/add\">Add a Session</a> to let the world know about the fantastic sessions that you run. It’s simple to use and only takes a few minutes to fill out the basics.</p>"
 	}
 }

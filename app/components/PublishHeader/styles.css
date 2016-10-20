@@ -40,6 +40,15 @@
       padding: .5em 1.5em;
       line-height: 1;
       margin: .1em 0 .1em 1em;
+      transition: .2s all ease;
+      text-decoration: none;
+      &:hover {
+        filter: brightness(1.1);
+      }
+      &:active {
+        transform: scale(.9);
+        filter: brightness(.9);
+      }
       &.previewButton {
         background-color: #1A90CD;
       }

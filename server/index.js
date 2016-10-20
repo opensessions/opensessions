@@ -2,7 +2,7 @@
 
 const express = require('express');
 const logger = require('./logger');
-// const { sendStoredEmail } = require('./middlewares/email');
+const { sendStoredEmail } = require('./middlewares/email');
 
 const dotenv = require('dotenv');
 dotenv.config({ silent: true });
@@ -48,6 +48,7 @@ const webpackConfig = require(`../internals/webpack/webpack.${isDev ? 'dev' : 'p
 
 app.use((req, res, done) => {
   if ((req.query && req.query.ssr) || req.get('User-Agent').match(/bot|googlebot|facebookexternalhit|crawler|spider|robot|crawling/i)) {
+    sendStoredEmail('welcome', 'oli@imin.co', 'oli').then(console.log).catch(console.log);
     getRenderedPage(req).then(page => {
       res.send(page);
     }).catch(error => {
@@ -79,6 +80,4 @@ app.listen(port, (err) => {
   } else {
     logger.appStarted(port);
   }
-
-  // sendStoredEmail('welcome', 'oli@imin.co', 'oli').then(console.log).catch(console.log);
 });

@@ -1,6 +1,11 @@
 @import '../../containers/App/variables.css';
 
 ol.messages {
+  position: fixed;
+  z-index: 12;
+  top: 0;
+  left: 0;
+  right: 0;
   & > li {
     list-style: none;
     color: #FFF;
@@ -86,7 +91,6 @@ ol.messages {
 @media (--desktop) {
   ol.messages {
     position: absolute;
-    left: 0;
-    right: 0;
+    top: auto;
   }
 }

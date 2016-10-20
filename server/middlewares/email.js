@@ -1,27 +1,24 @@
 const sendgrid = require('sendgrid');
 const emailCopy = require('./email-copy.json');
 
-const sendEmail = (subject, to, body, files) => {
+const sendEmail = (subject, to, body, substitutions, files) => {
   const sg = sendgrid(process.env.SENDGRID_SECRET);
   const request = sg.emptyRequest({
     method: 'POST',
     path: '/v3/mail/send',
     body: {
-      personalizations: [
-        {
-          to: [{ email: to }]
-        }
-      ],
+      personalizations: [{
+        to: [{ email: to }],
+        substitutions
+      }],
       from: {
         email: 'hello@opensessions.io'
       },
       subject,
-      content: [
-        {
-          type: 'text/html',
-          value: body
-        }
-      ],
+      content: [{
+        type: 'text/html',
+        value: body
+      }],
       attachments: files || null,
       template_id: '30f00508-77fd-4447-a609-8d8950adfeb7'
     }
@@ -31,8 +28,11 @@ const sendEmail = (subject, to, body, files) => {
 
 const sendStoredEmail = (type, to, name) => {
   const copy = emailCopy[type];
-  const body = [`<p>Dear ${name},</p>`, copy.body, '<p>Best,<br />the Open Sessions team</p>'].join('');
-  return sendEmail(copy.subject, to, body);
+  const { subject, title } = copy;
+  const body = [`<p>Dear ${name},</p>`, copy.body].join('');
+  return sendEmail(subject, to, body, {
+    '-title-': title
+  });
 };
 
 module.exports = { sendEmail, sendStoredEmail };
