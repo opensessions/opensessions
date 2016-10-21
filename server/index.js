@@ -2,14 +2,13 @@
 
 const express = require('express');
 const logger = require('./logger');
-const { sendStoredEmail } = require('./middlewares/email');
+const hooks = require('./middlewares/hooks');
+const frontend = require('./middlewares/frontend');
+const isDev = process.env.NODE_ENV !== 'production';
 
 const dotenv = require('dotenv');
 dotenv.config({ silent: true });
 dotenv.load();
-
-const frontend = require('./middlewares/frontend');
-const isDev = process.env.NODE_ENV !== 'production';
 
 const passport = require('passport');
 const session = require('express-session');
@@ -20,12 +19,12 @@ const getRenderedPage = require('./lib/server').default;
 
 const app = express();
 
-// API middleware
+// Standard node middleware
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// Initialize static serving
+// Static serving
 app.use('/images', express.static('app/images'));
 app.use('/favicon.ico', express.static('app/favicon.ico'));
 
@@ -39,16 +38,16 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Initialize api
+// Initialize the API
 const apiMiddleware = require('./middlewares/api');
 app.use('/api', apiMiddleware());
 
 // Initialize frontend middleware that will serve your JS app
 const webpackConfig = require(`../internals/webpack/webpack.${isDev ? 'dev' : 'prod'}.babel`);
 
+// Catch bots and serve special rendered components
 app.use((req, res, done) => {
   if ((req.query && req.query.ssr) || req.get('User-Agent').match(/bot|googlebot|facebookexternalhit|crawler|spider|robot|crawling/i)) {
-    sendStoredEmail('welcome', 'oli@imin.co', 'oli').then(console.log).catch(console.log);
     getRenderedPage(req).then(page => {
       res.send(page);
     }).catch(error => {
@@ -59,14 +58,17 @@ app.use((req, res, done) => {
     done();
   }
 });
+
+// Webhooks
+app.use('/hooks', hooks());
+
+// Webpack frontend (hot reloading etc for dev)
 app.use(frontend(webpackConfig));
 
 const port = process.env.PORT || 3850;
 
-app.listen(port, (err) => {
-  if (err) {
-    return logger.error(err);
-  }
+app.listen(port, err => {
+  if (err) return logger.error(err);
 
   // Connect to ngrok in dev mode
   if (isDev) {

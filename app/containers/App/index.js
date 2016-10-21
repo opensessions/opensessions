@@ -70,7 +70,7 @@ export default class App extends React.Component { // eslint-disable-line react/
     if (userAgent.indexOf('MSIE') >= 0 || (userAgent.indexOf('Trident') >= 0 && !userAgent.indexOf('x64') >= 0)) this.notify('Internet Explorer is not well-supported. Consider using an up-to-date browser for the best experience', 'warn');
   }
   onSignupShow = () => {
-    trackPage('/special:signup');
+    trackPage(window.location.href, '/special:signup');
   }
   setMeta = meta => {
     this.setState({ meta });
@@ -131,8 +131,8 @@ export default class App extends React.Component { // eslint-disable-line react/
       }
     };
     const locks = {
-      signup: new Auth0Lock(AUTH0_CLIENT_ID, AUTH0_CLIENT_DOMAIN, { allowLogin: false, allowSignUp: true, initialScreen: 'signUp', ...opts }),
-      login: new Auth0Lock(AUTH0_CLIENT_ID, AUTH0_CLIENT_DOMAIN, { allowLogin: true, allowSignUp: false, initialScreen: 'login', ...opts })
+      signup: new Auth0Lock(AUTH0_CLIENT_ID, AUTH0_CLIENT_DOMAIN, { initialScreen: 'signUp', ...opts }),
+      login: new Auth0Lock(AUTH0_CLIENT_ID, AUTH0_CLIENT_DOMAIN, { initialScreen: 'login', ...opts })
     };
     locks.signup.on('show', this.onSignupShow);
     this.setState({ locks });

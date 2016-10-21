@@ -53,8 +53,10 @@
       padding: .5em;
       list-style: none;
       line-height: 1;
+      font-weight: bold;
       & > b {
         pointer-events: none;
+        font-weight: normal;
       }
       &.highlight {
         background: var(--actionColor);

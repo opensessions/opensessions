@@ -27,11 +27,14 @@
     background-color: #EFEFEF;
     transition: .2s ease;
     transition-property: background, opacity;
-    outline: .05em solid transparent;
+    outline: 0;
     &:focus {
-      outline-width: .15em;
-      outline-color: #00AEEF;
       background-color: #FFF;
+      box-shadow: 0 0 .15em 0 #00AEEF;
+      border-color: #00AEEF;
+    }
+    &::selection {
+      background-color: #154B5F;
     }
   }
   & input[type=text],

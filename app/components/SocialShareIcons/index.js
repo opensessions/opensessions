@@ -1,5 +1,7 @@
 import React, { PropTypes } from 'react';
 
+import trackPage from '../../utils/analytics';
+
 import styles from './styles.css';
 
 export default class SocialShareIcons extends React.Component { // eslint-disable-line react/prefer-stateless-function
@@ -13,12 +15,12 @@ export default class SocialShareIcons extends React.Component { // eslint-disabl
     const title = encodeURIComponent(this.props.title);
     const message = encodeURIComponent(this.props.message);
     const icons = [
-      { url: `http://www.facebook.com/share.php?u=${link}&title=${title}`, img: '/images/facebook.png' },
-      { url: `http://twitter.com/home?status=${title}+${link}`, img: '/images/twitter.png' },
-      { url: `mailto:?subject=${title}&body=${message}%0A%0A${link}`, img: '/images/email.png' }
+      { id: 'facebook', url: `http://www.facebook.com/share.php?u=${link}&title=${title}`, img: '/images/facebook.png' },
+      { id: 'twitter', url: `http://twitter.com/home?status=${title}+${link}`, img: '/images/twitter.png' },
+      { id: 'email', url: `mailto:?subject=${title}&body=${message}%0A%0A${link}`, img: '/images/email.png' }
     ];
     return (<ol className={styles.socialIcons}>
-      {icons.map(icon => <li key={icon.img}><a href={icon.url} target="blank"><img src={icon.img} role="presentation" /></a></li>)}
+      {icons.map(icon => <li key={icon.img}><a onClick={() => trackPage(window.location.href, `${this.props.link}/share:${icon.id}`)} href={icon.url} target="blank"><img src={icon.img} role="presentation" /></a></li>)}
     </ol>);
   }
 }
