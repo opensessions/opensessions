@@ -47,7 +47,7 @@
         font-family: Belgrano, sans-serif;
         line-height: 1;
         text-decoration: none;
-        transition: .3s ease all;
+        transition: .2s ease all;
         &:hover {
           background-color: #1B91CD;
           border-color: #1B91CD;

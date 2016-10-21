@@ -60,6 +60,8 @@
         font-size: 1.5em;
         top: -.5em;
         left: -.5em;
+        transform: scale(0);
+        transition: inherit;
       }
       & p {
         font-size: .9em;
@@ -109,7 +111,6 @@
         width: 42%;
         transform: scale(.825) perspective(16em);
         transition-duration: .3s;
-        color: #FFF;
         & p {
           font-size: 1em;
         }
@@ -118,11 +119,20 @@
     &:hover,
     &[data-hasfocus='true'] {
       & .tip.tipFloat {
-        opacity: 1;
+        opacity: .75;
         bottom: auto;
         right: 0;
         transform: scale(1);
         color: inherit;
+        &:before {
+          transform: scale(1);
+        }
+      }
+    }
+    &:hover {
+      & .tip.tipFloat {
+        z-index: 1;
+        opacity: 1;
       }
     }
   }
