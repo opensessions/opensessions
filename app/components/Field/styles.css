@@ -106,7 +106,7 @@
       &.tipFloat {
         z-index: 0;
         top: 2em;
-        right: 6em;
+        right: 0;
         bottom: auto;
         width: 42%;
         transform: scale(.825) perspective(16em);
@@ -121,7 +121,6 @@
       & .tip.tipFloat {
         opacity: .75;
         bottom: auto;
-        right: 0;
         transform: scale(1);
         color: inherit;
       }

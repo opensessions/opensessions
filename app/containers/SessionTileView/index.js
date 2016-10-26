@@ -14,6 +14,7 @@ export default class SessionTileView extends React.Component { // eslint-disable
   };
   static contextTypes = {
     user: PropTypes.object,
+    router: PropTypes.object,
     notify: PropTypes.func,
   }
   getTitle() {
@@ -48,7 +49,7 @@ export default class SessionTileView extends React.Component { // eslint-disable
       dispatch: () => apiModel.action('session', session.uuid, 'duplicate').then(response => {
         if (response.status === 'success') {
           this.context.notify('Session duplicated', 'success');
-          window.location = response.instance.href;
+          this.context.router.push(response.instance.href);
         } else {
           throw new Error('Failed to duplicate session');
         }

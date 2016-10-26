@@ -6,6 +6,7 @@ import Field from '../../components/Field';
 import GenderSvg from '../../components/GenderSvg';
 import PublishHeader from '../../components/PublishHeader';
 import LoadingIcon from '../../components/LoadingIcon';
+import LoadingMessage from '../../components/LoadingMessage';
 
 import TextField from '../../components/TextField';
 import DateField from '../../components/DateField';
@@ -60,6 +61,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       session: props.session || {},
       isPendingSave: false,
       isSaving: true,
+      isLoading: true,
       copy: formCopy,
       fieldsets: [
         { slug: 'description', required: ['title', 'OrganizerUuid', 'description', 'ActivityUuid'], fields: ['title', 'OrganizerUuid', 'description', 'ActivityUuid'], props: { validity: false } },
@@ -182,7 +184,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     return uuid
       ? apiModel.get('session', uuid).then(res => {
         this.onChange(res.instance);
-        this.setState({ session: res.instance, isSaving: false });
+        this.setState({ session: res.instance, isSaving: false, isLoading: false });
       })
       : apiModel.new('session', location.query).then(res => {
         this.context.notify('Created a new session', 'success');
@@ -237,11 +239,8 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       }
       apiModel.edit('session', session.uuid, session).then(result => {
         const { instance, error } = result;
-        if (error) {
-          throw new Error(error);
-        } else {
-          this.setState({ isPendingSave: false, isSaving: false, session: instance, status: 'Saved draft!', saveState: 'saved' });
-        }
+        if (error) throw new Error(error);
+        this.setState({ isPendingSave: false, isSaving: false, session: instance, status: 'Saved draft!', saveState: 'saved' });
         return result;
       }).catch(result => {
         this.setState({ status: 'Failed saving', isPendingSave: false, isSaving: false, saveState: 'error' });
@@ -250,6 +249,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       });
     }, ms);
   }
+  renderForm = () => <Form fieldsets={this.state.fieldsets} onPublish={this.publishSession} pendingSteps={this.state.pendingSteps} status={this.state.status} saveState={this.state.saveState} tab={this.props.params.tab} activeField={this.props.location.hash.slice(1)} notifications={this.context.notifications}>{this.renderFieldsets()}</Form>
   renderFieldsets = () => this.state.fieldsets.map((fieldset, key) => <Fieldset key={key} {...fieldset.props} {...this.state.copy.fieldsets[fieldset.slug]}>{this.renderFieldset(fieldset)}</Fieldset>)
   renderFieldset = fieldset => <div>{fieldset.fields.map(this.renderField)}</div>
   renderField = field => <Field key={field} {...this.state.copy.fields[field]}>{this.state.fields[field] ? this.state.fields[field]() : <TextField {...this.getAttr(field)} />}</Field>
@@ -259,9 +259,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       <Authenticated message="You must login before you can add a session">
         <PublishHeader h2={this.props.headerText ? this.props.headerText : 'Add a session'} h3={session.title || <i>Untitled</i>} actions={this.getActions()} />
         <div className={styles.formBody}>
-          <Form fieldsets={this.state.fieldsets} onPublish={this.publishSession} pendingSteps={this.state.pendingSteps} status={this.state.status} saveState={this.state.saveState} tab={this.props.params.tab} activeField={this.props.location.hash.slice(1)} notifications={this.context.notifications}>
-            {this.renderFieldsets()}
-          </Form>
+          {this.state.isLoading ? <LoadingMessage message="Loading" ellipsis /> : this.renderForm()}
         </div>
       </Authenticated>
     </div>);

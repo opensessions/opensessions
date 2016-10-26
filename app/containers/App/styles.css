@@ -111,7 +111,7 @@ img {
       opacity: 1;
     }
     & > .modalFG {
-      transform: perspective(60em) rotateX(0deg);
+      transform: perspective(60em) rotateX(0deg) scale(1);
       opacity: 1;
     }
   }
@@ -131,6 +131,6 @@ img {
     max-width: 94vw;
     transition: .75s ease all;
     opacity: 0;
-    transform: perspective(60em) rotateX(45deg);
+    transform: perspective(60em) rotateX(45deg) scale(.75);
   }
 }

@@ -14,9 +14,7 @@
     & > li {
       list-style: none;
       display: inline-block;
-      & + li {
-        margin-left: 1em;
-      }
+      margin: 0 .5em;
       & > a {
         display: inline-block;
         padding: 1em;
