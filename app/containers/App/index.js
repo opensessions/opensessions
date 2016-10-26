@@ -12,7 +12,6 @@
 
 import React, { PropTypes } from 'react';
 import Intercom from 'react-intercom';
-import Helmet from 'react-helmet';
 
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
@@ -33,13 +32,13 @@ export default class App extends React.Component { // eslint-disable-line react/
     user: PropTypes.object,
     locks: PropTypes.object,
     router: PropTypes.object,
-    setMeta: PropTypes.func,
     notifications: PropTypes.arrayOf(PropTypes.shape({
       text: PropTypes.string,
       onDismiss: PropTypes.func,
       status: PropTypes.oneOf(['success', 'warn', 'error'])
     })),
     notify: PropTypes.func,
+    modal: PropTypes.object,
     isLoadingUser: PropTypes.bool
   }
   constructor() {
@@ -55,9 +54,9 @@ export default class App extends React.Component { // eslint-disable-line react/
       user: this.state.profile,
       locks: this.state.locks ? this.state.locks : { signup: null, login: null },
       router: this.context.router,
-      setMeta: this.setMeta,
       notifications: this.state.notifications,
       notify: this.notify,
+      modal: { dispatch: this.modal, close: () => this.setState({ modal: null }) },
       isLoadingUser: this.state.isLoadingUser
     };
   }
@@ -71,9 +70,6 @@ export default class App extends React.Component { // eslint-disable-line react/
   }
   onSignupShow = () => {
     trackPage(window.location.href, '/special:signup');
-  }
-  setMeta = meta => {
-    this.setState({ meta });
   }
   setupProfile = lock => {
     lock.getProfile(getUserToken(), (err, profile) => {
@@ -118,6 +114,9 @@ export default class App extends React.Component { // eslint-disable-line react/
       notifications: [notification].concat(this.state.notifications)
     });
   }
+  modal = options => {
+    this.setState({ modal: options.component });
+  }
   createLock() {
     const { Auth0Lock, AUTH0_CLIENT_ID, AUTH0_CLIENT_DOMAIN } = window;
     const opts = {
@@ -139,13 +138,12 @@ export default class App extends React.Component { // eslint-disable-line react/
     this.setupProfile(locks.login);
   }
   render() {
-    const { meta, profile } = this.state;
+    const { profile, modal } = this.state;
     const { INTERCOM_APPID } = window;
     const intercomProps = profile ? { user_id: profile.user_id, email: profile.email, name: profile.nickname } : {};
     intercomProps.appID = INTERCOM_APPID;
     return (
       <div className={styles.root}>
-        <Helmet meta={meta} />
         <Header />
         <div className={styles.appBody}>
           <div className={styles.container}>
@@ -153,7 +151,11 @@ export default class App extends React.Component { // eslint-disable-line react/
           </div>
           <Footer />
         </div>
-        {<Intercom {...intercomProps} />}
+        <Intercom {...intercomProps} />
+        <div className={[styles.modal, modal ? styles.show : null].join(' ')}>
+          <div className={styles.modalBG} onClick={() => this.setState({ modal: null })} />
+          <div className={styles.modalFG}>{modal || null}</div>
+        </div>
       </div>
     );
   }

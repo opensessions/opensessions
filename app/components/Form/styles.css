@@ -2,53 +2,6 @@
 
 .form {
   display: flex;
-  &.disabled {
-    & input[type],
-    & select,
-    & textarea {
-      color: #666;
-      background-color: #E3E3E3 !important;
-      cursor: wait;
-      pointer-events: none;
-      &:focus {
-        outline-width: .02em;
-      }
-    }
-  }
-  & input[type=text],
-  & input[type=email],
-  & input[type=number],
-  & input[type=date],
-  & input[type=time],
-  & select,
-  & textarea {
-    padding: .4em;
-    border: .1em solid #C2C2C2;
-    background-color: #EFEFEF;
-    transition: .2s ease;
-    transition-property: background, opacity;
-    outline: 0;
-    &:focus {
-      background-color: #FFF;
-      box-shadow: 0 0 .15em 0 #00AEEF;
-      border-color: #00AEEF;
-    }
-    &::selection {
-      background-color: #154B5F;
-    }
-  }
-  & input[type=text],
-  & input[type=email],
-  & input[type=number],
-  & select,
-  & textarea {
-    width: 36rem;
-    max-width: 100%;
-  }
-  & input[type=number] {
-    padding: 0 0 0 .4em;
-    line-height: 2em;
-  }
 }
 
 .nav {

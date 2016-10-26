@@ -50,13 +50,27 @@
     max-height: 22.5rem;
     overflow-y: auto;
     & > li {
-      padding: .5em;
       list-style: none;
       line-height: 1;
-      font-weight: bold;
-      & > b {
-        pointer-events: none;
-        font-weight: normal;
+      position: relative;
+      & > .text {
+        padding: .5em;
+        font-weight: bold;
+        display: block;
+        & > b {
+          pointer-events: none;
+          font-weight: normal;
+        }
+      }
+      & > .action {
+        position: absolute;
+        z-index: 1;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        display: inline-flex;
+        align-items: center;
+        padding: .5em;
       }
       &.highlight {
         background: var(--actionColor);

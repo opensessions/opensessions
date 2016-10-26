@@ -53,10 +53,10 @@ const apiModel = {
     return apiFetch(`/api/${model}/${uuid}`, { body });
   },
   delete(model, uuid) {
-    return apiFetch(`/api/${model}/${uuid}/delete`);
+    return apiModel.action(model, uuid, 'delete');
   },
   action(model, uuid, action) {
-    return apiFetch(`/api/${model}/${uuid}/${action}`);
+    return apiFetch(`/api/${model}/${uuid}/action/${action}`);
   },
   upload(url, body) {
     return apiFetch(url, { body });

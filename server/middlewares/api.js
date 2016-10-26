@@ -6,18 +6,12 @@ const fs = require('fs');
 const Storage = require('../../storage/interfaces/postgres.js');
 const RDPE = require('./rdpe.js');
 const s3 = require('./s3.js');
+const email = require('./email');
 
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 
 const capitalize = string => `${string[0].toUpperCase()}${string.substr(1)}`;
-
-const getSchema = (model => JSON.parse(JSON.stringify(model.fieldRawAttributesMap, (key, value) => {
-  if (key === 'Model') {
-    return;
-  }
-  return value; // eslint-disable-line consistent-return
-})));
 
 dotenv.config({ silent: true });
 dotenv.load();
@@ -56,6 +50,10 @@ module.exports = () => {
     return query;
   };
 
+  const instanceToJSON = (instance, models, user) => Object.assign(instance.get(), {
+    actions: instance.getActions ? instance.getActions(models, user) : null
+  });
+
   api.get('/config.js', (req, res) => {
     const windowKeys = ['GOOGLE_MAPS_API_KEY', 'INTERCOM_APPID', 'AWS_S3_IMAGES_BASEURL', 'AUTH0_CLIENT_ID', 'AUTH0_CLIENT_DOMAIN'];
     res.send(`
@@ -83,7 +81,7 @@ module.exports = () => {
         return;
       }
       Model.findAll(query).then(instances => {
-        res.json({ instances });
+        res.json({ instances: instances.map(instance => instanceToJSON(instance, database.models, getUser(req))) });
       }).catch(error => {
         res.status(404).json({ error: error.message });
       });
@@ -116,11 +114,8 @@ module.exports = () => {
         return;
       }
       Model.findOne(query).then(instance => {
-        if (instance) {
-          res.json({ instance, schema: getSchema(Model) });
-        } else {
-          throw new Error('Instance could not be retrieved');
-        }
+        if (!instance) throw new Error('Instance could not be retrieved');
+        res.json({ instance: instanceToJSON(instance, database.models, getUser(req)) });
       }).catch(error => {
         res.status(404).json({ error: error.message, isLoggedIn: !!req.user });
       });
@@ -154,29 +149,33 @@ module.exports = () => {
     });
   });
 
-  api.post('/:model/:uuid/:field', requireLogin, resolveModel, upload.single('image'), (req, res) => {
+  api.post('/:model/:uuid/:field', requireLogin, resolveModel, upload.single('image'), (req, res, next) => {
     const { Model } = req;
     const image = req.file;
-    const { model, uuid, field } = req.params;
-    const aws = {
-      URL: process.env.AWS_S3_IMAGES_BASEURL,
-      path: `uploads/${model}/${field}/`,
-      accessKeyId: process.env.AWS_S3_IMAGES_ACCESSKEY,
-      secretAccessKey: process.env.AWS_S3_IMAGES_SECRETKEY
-    };
-    s3(aws, image.path, uuid)
-      .then(result => Model.findOne({ where: { uuid } })
-        .then(instance => {
-          const data = {};
-          data[field] = `https://${aws.URL}/${result.versions[model === 'organizer' ? 0 : 1].key}`;
-          [image].concat(result.versions).forEach(version => fs.unlink(version.path));
-          return instance.update(data)
-            .then(final => res.json({ status: 'success', result, baseURL: aws.URL, instance: final }));
-        }).catch(error => res.status(404).json({ error })))
-      .catch(error => res.status(400).json({ error }));
+    if (image) {
+      const { model, uuid, field } = req.params;
+      const aws = {
+        URL: process.env.AWS_S3_IMAGES_BASEURL,
+        path: `uploads/${model}/${field}/`,
+        accessKeyId: process.env.AWS_S3_IMAGES_ACCESSKEY,
+        secretAccessKey: process.env.AWS_S3_IMAGES_SECRETKEY
+      };
+      s3(aws, image.path, uuid)
+        .then(result => Model.findOne({ where: { uuid } })
+          .then(instance => {
+            const data = {};
+            data[field] = `https://${aws.URL}/${result.versions[model === 'organizer' ? 0 : 1].key}`;
+            [image].concat(result.versions).forEach(version => fs.unlink(version.path));
+            return instance.update(data)
+              .then(final => res.json({ status: 'success', result, baseURL: aws.URL, instance: final }));
+          }).catch(error => res.status(404).json({ error })))
+        .catch(error => res.status(400).json({ error }));
+    } else {
+      next();
+    }
   });
 
-  api.get('/:model/:uuid/:action', requireLogin, resolveModel, (req, res) => {
+  api.all('/:model/:uuid/action/:action', requireLogin, resolveModel, (req, res) => {
     const { Model } = req;
     const { uuid, action } = req.params;
     const query = Model.getQuery({ where: { uuid, owner: getUser(req) } }, database.models, getUser(req));
@@ -187,6 +186,28 @@ module.exports = () => {
     if (action === 'delete') {
       Model.findOne(query)
         .then(instance => (instance.setDeleted ? instance.setDeleted() : instance.destroy()))
+        .then(() => res.json({ status: 'success' }))
+        .catch(error => res.status(404).json({ status: 'failure', error: error.message }));
+    } else if (action === 'message') {
+      Model.findOne(query)
+        .then(instance => {
+          const contact = {
+            to: instance.contactEmail,
+            name: instance.contactName
+          };
+          if (!(req.body.name && req.body.from && req.body.body)) throw Error('Incomplete form');
+          const message = {
+            name: req.body.name,
+            from: req.body.from,
+            text: req.body.body
+          };
+          return email.sendEmail('Someone has submitted a question on Open Sessions', 'hello+organizer@opensessions.io', `
+            <p>Hey, ${contact.name} &lt;${contact.to}&gt;! A message has been sent on Open Sessions.</p>
+            <p>Here's the message:</p>
+            <p style="padding:.5em;white-space:pre;background:#FFF;">From: ${message.name} &lt;${message.from}&gt;</p>
+            <p style="padding:.5em;white-space:pre;background:#FFF;">${message.text}</p>
+          `, { '-title-': 'Organizer communication' });
+        })
         .then(() => res.json({ status: 'success' }))
         .catch(error => res.status(404).json({ status: 'failure', error: error.message }));
     } else if (action === 'duplicate') {

@@ -37,7 +37,7 @@ export default class RelationField extends React.Component { // eslint-disable-l
   handleValueChange = (value) => {
     if (this.props.onChange) this.props.onChange(value === 'none' ? null : value);
   }
-  fetchRelation(value) {
+  fetchRelation = value => {
     const { relation, onChange } = this.props;
     return apiModel.search(relation.model, relation.query).then(result => {
       if (value) onChange(value);
@@ -50,7 +50,7 @@ export default class RelationField extends React.Component { // eslint-disable-l
     const options = 'options' in state ? state.options : [];
     const searchableAttrs = { options, value, className };
     return (<div className={styles.relationWrap}>
-      <SearchableSelect {...searchableAttrs} {...props} onChange={this.handleValueChange} addItem={this.newRelation} />
+      <SearchableSelect {...searchableAttrs} {...props} dispatchRefresh={this.fetchRelation} onChange={this.handleValueChange} addItem={this.newRelation} />
     </div>);
   }
 }

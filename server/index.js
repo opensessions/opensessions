@@ -2,7 +2,6 @@
 
 const express = require('express');
 const logger = require('./logger');
-const hooks = require('./middlewares/hooks');
 const frontend = require('./middlewares/frontend');
 const isDev = process.env.NODE_ENV !== 'production';
 
@@ -60,7 +59,7 @@ app.use((req, res, done) => {
 });
 
 // Webhooks
-app.use('/hooks', hooks());
+// app.use('/hooks', hooks());
 
 // Webpack frontend (hot reloading etc for dev)
 app.use(frontend(webpackConfig));

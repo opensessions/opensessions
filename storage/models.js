@@ -11,9 +11,27 @@ module.exports = (DataTypes) => ({
       owner: DataTypes.STRING,
       name: DataTypes.STRING,
       _options: {
+        getterMethods: {
+          href() {
+            return `/${this.Model.name.toLowerCase()}/${this.uuid}`;
+          },
+        },
+        instanceMethods: {
+          getActions(models, user) {
+            const actions = [];
+            if (user && user === this.owner && this.get('SessionsCount') === '0') {
+              actions.push({ type: 'delete', url: `/api${this.href}/delete` });
+            }
+            return actions;
+          }
+        },
         classMethods: {
-          getQuery(query) {
+          getQuery(query, models) {
             // query.where = { };
+            if (!query) query = {};
+            query.include = [{ model: models.Session, attributes: [], required: false }];
+            query.attributes = ['uuid', 'name', 'owner', 'Activity.createdAt', 'Activity.updatedAt', [DataTypes.fn('COUNT', DataTypes.col('Sessions.ActivityUuid')), 'SessionsCount']];
+            query.group = ['Activity.uuid'];
             return query;
           },
           makeAssociations(models) {
@@ -36,6 +54,15 @@ module.exports = (DataTypes) => ({
           href() {
             return `/${this.Model.name.toLowerCase()}/${this.uuid}`;
           },
+        },
+        instanceMethods: {
+          getActions(models, user) {
+            const actions = [];
+            if (user && user === this.owner && this.Sessions.length === 0) {
+              actions.push({ type: 'delete', url: `/api${this.href}/delete` });
+            }
+            return actions;
+          }
         },
         classMethods: {
           getQuery(query, models, user) {
@@ -138,6 +165,13 @@ module.exports = (DataTypes) => ({
           },
           setDeleted() {
             return this.state === 'draft' ? this.destroy() : this.update({ state: 'deleted' });
+          },
+          getActions(models, user) {
+            const actions = [];
+            if (user && user === this.owner) {
+              actions.push({ type: 'edit' });
+            }
+            return actions;
           }
         },
         classMethods: {

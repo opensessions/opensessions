@@ -1,0 +1,40 @@
+@import '../../containers/App/variables.css';
+
+.button {
+  display: inline-block;
+  font-family: Belgrano, serif;
+  background-color: #1A90CD;
+  color: #FFF;
+  padding: .5em 1.5em;
+  line-height: 1;
+  margin: .25em .5em;
+  transition: .2s all ease;
+  text-decoration: none;
+  &:active {
+    transform: scale(.9);
+  }
+  &:hover {
+    text-decoration: none;
+    background-color: #0B6898;
+  }
+  &.draft {
+    background-color: var(--draftColor);
+    &:hover {
+      filter: brightness(.8);
+    }
+  }
+  &.live {
+    background-color: var(--liveColor);
+    &:hover {
+      background-color: #6FA72D;
+    }
+  }
+  &.disabled {
+    background-color: #AAA;
+    pointer-events: none;
+    cursor: wait;
+    &:hover {
+      background-color: #777;
+    }
+  }
+}

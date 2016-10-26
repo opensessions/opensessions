@@ -6,6 +6,7 @@ import GoogleMap from 'react-google-maps/lib/GoogleMap';
 import Marker from 'react-google-maps/lib/Marker';
 import Helmet from 'react-helmet';
 
+import MessageModal from '../Modals/Message';
 import NotificationBar from '../../components/NotificationBar';
 import SocialShareIcons from '../../components/SocialShareIcons';
 import LoadingMessage from '../../components/LoadingMessage';
@@ -24,6 +25,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     user: PropTypes.object,
     notifications: PropTypes.array,
     notify: PropTypes.func,
+    modal: PropTypes.object,
     store: PropTypes.object
   };
   static propTypes = {
@@ -86,9 +88,6 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       if (error) throw error;
       dispatch({ type: 'SESSION_LOADED', payload: instance });
       this.setState({ session: instance, isLoading: false });
-      if (this.context.setMeta) {
-        this.context.setMeta([{ property: 'og:image', content: instance.image }, { property: 'og:title', content: instance.title }]);
-      }
     }).catch(() => {
       this.context.notify('Failed to load session', 'error');
       this.setState({ isLoading: false });
@@ -196,6 +195,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
             <p>{session.Organizer ? (<Link to={session.Organizer.href}>{session.Organizer.name}</Link>) : 'No organizer'}</p>
             <p>{session.contactPhone ? (<a className={styles.organizerLink} href={`tel:${session.contactPhone}`}><img src="/images/phone.svg" role="presentation" /> {session.contactPhone}</a>) : ''}</p>
             <p>{session.contactEmail ? (<a className={styles.organizerLink} href={`mailto:${session.contactEmail}`}><img src="/images/email.png" role="presentation" /> {session.contactEmail}</a>) : ''}</p>
+            <p>{session.contactEmail ? (<a className={styles.organizerLink} onClick={() => this.context.modal.dispatch({ component: <MessageModal to={session.contactEmail} title={<span>Ask <b>{session.contactName}</b> from <b>{session.Organizer.name}</b> a question</span>} url={`/api/session/${session.uuid}/action/message`} /> })}><img src="/images/email.png" role="presentation" /> Message organiser</a>) : ''}</p>
             <ol className={styles.socialLinks}>
               {session.socialWebsite ? <li><a className={styles.organizerLink} href={session.socialWebsite}>{session.socialWebsite}</a></li> : null}
               {session.socialFacebook ? <li><a className={styles.organizerLink} href={session.socialFacebook}><img src="/images/facebook.png" role="presentation" /> Facebook page</a></li> : null}

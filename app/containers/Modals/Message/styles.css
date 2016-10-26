@@ -1,0 +1,33 @@
+.modal {
+  font-size: 1.1em;
+  & h1 {
+    font-weight: normal;
+  }
+  & .question {
+    margin: .5em auto;
+  }
+  & label {
+    display: block;
+    padding: .5em;
+    text-align: left;
+  }
+  & input,
+  & textarea {
+    width: 100% !important;
+  }
+  & a {
+    font-size: 1.2em;
+  }
+}
+
+.sentTick {
+  display: inline-block;
+  font-size: 1.25em;
+  padding: 1em;
+  border-radius: 50%;
+  background: #FFF;
+  & img {
+    width: 4em;
+    height: 4em;
+  }
+}

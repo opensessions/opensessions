@@ -1,0 +1,22 @@
+.modal {
+  background: #E6E6E6;
+  max-width: 94vw;
+  padding: 1.5em;
+  font-size: 1.1em;
+  width: 36em;
+  text-align: center;
+  & h1 {
+    font-weight: normal;
+    margin: .5em auto;
+  }
+  & p {
+    margin: .5em auto;
+  }
+  & input,
+  & textarea {
+    width: 100% !important;
+  }
+  & a {
+    font-size: 1.2em;
+  }
+}

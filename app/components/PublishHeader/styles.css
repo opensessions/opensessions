@@ -42,20 +42,26 @@
       margin: .1em 0 .1em 1em;
       transition: .2s all ease;
       text-decoration: none;
-      &:hover {
-        filter: brightness(.9);
-      }
       &:active {
         transform: scale(.9);
       }
       &.previewButton {
         background-color: #1A90CD;
+        &:hover {
+          background-color: #0B6898;
+        }
       }
       &.actionUnpublish {
         background-color: var(--draftColor);
+        &:hover {
+          filter: brightness(.8);
+        }
       }
       &.actionPublish {
         background-color: var(--liveColor);
+        &:hover {
+          background-color: #6FA72D;
+        }
       }
       &.disabled {
         background-color: #AAA;

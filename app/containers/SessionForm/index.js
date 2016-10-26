@@ -250,10 +250,9 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       });
     }, ms);
   }
-  renderFieldsets() {
-    return this.state.fieldsets.map((fieldset, key) => <Fieldset key={key} {...fieldset.props} {...this.state.copy.fieldsets[fieldset.slug]}>{this.renderFieldset(fieldset)}</Fieldset>);
-  }
-  renderFieldset = fieldset => (<div>{fieldset.fields.map(field => <Field {...this.state.copy.fields[field]}>{this.state.fields[field]()}</Field>)}</div>)
+  renderFieldsets = () => this.state.fieldsets.map((fieldset, key) => <Fieldset key={key} {...fieldset.props} {...this.state.copy.fieldsets[fieldset.slug]}>{this.renderFieldset(fieldset)}</Fieldset>)
+  renderFieldset = fieldset => <div>{fieldset.fields.map(this.renderField)}</div>
+  renderField = field => <Field key={field} {...this.state.copy.fields[field]}>{this.state.fields[field] ? this.state.fields[field]() : <TextField {...this.getAttr(field)} />}</Field>
   render() {
     const session = this.getSession();
     return (<div className={styles.form}>

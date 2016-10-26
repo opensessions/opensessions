@@ -124,15 +124,15 @@
         right: 0;
         transform: scale(1);
         color: inherit;
-        &:before {
-          transform: scale(1);
-        }
       }
     }
     &:hover {
       & .tip.tipFloat {
         z-index: 1;
         opacity: 1;
+        &::before {
+          transform: scale(1);
+        }
       }
     }
   }

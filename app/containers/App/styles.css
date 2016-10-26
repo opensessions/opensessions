@@ -10,20 +10,21 @@ html {
   overflow-y: auto !important;
 }
 
+a {
+  color: inherit;
+  cursor: pointer;
+  &:hover,
+  &:focus {
+    text-decoration: underline;
+  }
+}
+
 .root {
   font-size: 15px;
   font-size: 1.5rem;
   margin: auto;
   color: var(--defaultColor);
   background-color: var(--grey);
-  & a {
-    color: inherit;
-    cursor: pointer;
-    &:hover,
-    &:focus {
-      text-decoration: underline;
-    }
-  }
   & .appBody {
     flex-grow: 1;
     display: flex;
@@ -89,5 +90,47 @@ img {
   }
   & .cc_logo {
     display: none;
+  }
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  transition: .5s ease all;
+  &.show {
+    pointer-events: all;
+    & > .modalBG {
+      opacity: 1;
+    }
+    & > .modalFG {
+      transform: perspective(60em) rotateX(0deg);
+      opacity: 1;
+    }
+  }
+  & > .modalBG {
+    position: absolute;
+    transition: .5s ease all;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    z-index: -1;
+    background-color: rgba(0, 0, 0, .75);
+    opacity: 0;
+  }
+  & > .modalFG {
+    background: #EEE;
+    max-width: 94vw;
+    transition: .75s ease all;
+    opacity: 0;
+    transform: perspective(60em) rotateX(45deg);
   }
 }

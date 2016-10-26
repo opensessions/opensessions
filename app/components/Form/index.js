@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 
 import NotificationBar from '../NotificationBar';
 import FieldsetStatusSvg from '../FieldsetStatusSvg';
+import GenericForm from '../GenericForm';
 
 import styles from './styles.css';
 import fieldStyles from '../Field/styles.css';
@@ -109,21 +110,23 @@ export default class Form extends React.Component { // eslint-disable-line react
   render() {
     const { saveState, pendingSteps } = this.props;
     const { notifications } = this.context;
-    return (<form className={[styles.form, this.context.formLock ? styles.disabled : null].join(' ')} ref="form">
-      <NotificationBar notifications={notifications} />
-      <nav className={styles.nav}>
-        <div className={styles.navLinks}>
-          {this.renderNav()}
-        </div>
-        <div className={styles.pending}>{pendingSteps ? <p>Complete <b>{`${pendingSteps} more`}</b> step{pendingSteps > 1 ? 's' : ''} to finish your listing</p> : 'Ready to publish!'}</div>
-      </nav>
-      <div className={styles.tabs}>
-        <div className={[styles.saveState, styles[saveState || 'unsaved']].join(' ')}>{this.state.saveState}</div>
-        {this.renderTab()}
-        <nav className={styles.formNav}>
-          {this.renderActionButtons()}
+    return (<GenericForm disabled={this.context.formLock}>
+      <form ref="form" className={styles.form}>
+        <NotificationBar notifications={notifications} />
+        <nav className={styles.nav}>
+          <div className={styles.navLinks}>
+            {this.renderNav()}
+          </div>
+          <div className={styles.pending}>{pendingSteps ? <p>Complete <b>{`${pendingSteps} more`}</b> step{pendingSteps > 1 ? 's' : ''} to finish your listing</p> : 'Ready to publish!'}</div>
         </nav>
-      </div>
-    </form>);
+        <div className={styles.tabs}>
+          <div className={[styles.saveState, styles[saveState || 'unsaved']].join(' ')}>{this.state.saveState}</div>
+          {this.renderTab()}
+          <nav className={styles.formNav}>
+            {this.renderActionButtons()}
+          </nav>
+        </div>
+      </form>
+    </GenericForm>);
   }
 }

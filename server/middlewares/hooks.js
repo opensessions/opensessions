@@ -1,5 +1,5 @@
 const express = require('express');
-const { sendStoredEmail } = require('./email');
+const sendStoredEmail = require('./email').sendStoredEmail;
 
 const authenticated = () => false;
 

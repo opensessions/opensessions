@@ -1,5 +1,7 @@
 import React, { PropTypes } from 'react';
 
+import { apiFetch } from '../../utils/api';
+
 import styles from './styles.css';
 
 export default class SearchableSelect extends React.Component { // eslint-disable-line react/prefer-stateless-function
@@ -9,7 +11,7 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
     placeholder: PropTypes.string,
     options: PropTypes.array,
     addItem: PropTypes.func,
-    deleteItem: PropTypes.func,
+    dispatchRefresh: PropTypes.func,
     className: PropTypes.string,
     lazyLoad: PropTypes.bool,
     maxOptions: PropTypes.number
@@ -21,15 +23,19 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
   setValue = value => {
     this.props.onChange(value);
     this.setState({ visible: false, search: '', ignoreBlur: false });
+    this.refs.input.blur();
   }
-  resetValue = () => {
-    this.setValue(null);
+  resetValue = () => this.setValue(null)
+  match = (name, search, type) => {
+    const types = { start: ['^', ''], notStart: ['^.+(', ')'], any: ['(', ')'] };
+    const [pre, post] = types[type];
+    return name.match(new RegExp(`${pre}${search}${post}`, 'ig'));
   }
   filterOptions = search => {
     let { options, maxOptions } = this.props; // eslint-disable-line prefer-const
-    if (search) options = options.filter(option => option.name.match(new RegExp(`^${search}`, 'i'))).concat(options.filter(option => option.name.match(new RegExp(`^.+(${search})`, 'i'))));
+    if (search) options = options.filter(opt => this.match(opt.name, search, 'start')).concat(options.filter(opt => this.match(opt.name, search, 'notStart')));
     if (maxOptions) options = options.slice(0, maxOptions);
-    return options.map(option => ({ text: option.name, props: { key: option.uuid, onMouseOver: this.itemHover, onClick: this.itemClick } }));
+    return options.map(({ name, actions, uuid }) => ({ text: name, html: name.replace(new RegExp(`(${search})`, 'ig'), '<b>$1</b>'), actions, props: { key: uuid } }));
   }
   searchEvent = event => {
     const { type, target } = event;
@@ -94,11 +100,20 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
     if (Object.keys(newState).length) this.setState(newState);
   }
   itemHover = event => {
-    this.setState({ highlightIndex: parseInt(event.target.dataset.index, 10) });
+    this.setState({ highlightIndex: parseInt(event.target.parentNode.getElementsByClassName(styles.text)[0].dataset.index, 10) });
   }
-  itemClick = event => {
-    const value = event.target.dataset.key;
-    this.setValue(value);
+  actionClick = event => {
+    event.stopPropagation();
+    event.preventDefault();
+    let { action } = event.target.dataset;
+    if (!action) return;
+    action = JSON.parse(action);
+    if (action.type === 'delete') {
+      apiFetch(action.url).then(() => {
+        this.props.dispatchRefresh();
+        this.resetValue();
+      });
+    }
   }
   addItem = () => {
     const { search } = this.state;
@@ -126,8 +141,12 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
     const valueDisplay = selected ? selected.name : '';
     let searchResults = null;
     if (visible && (lazyLoad ? search : true)) {
+      // const actionTypeIcons = { delete: <IconGarbage size={20} /> };
       searchResults = (<ol className={styles.searchResults} onMouseOver={this.dropdownEvent} onMouseOut={this.dropdownEvent} ref="searchResults">
-        {filteredOptions.map((opt, index) => <li data-key={opt.props.key} data-index={index} {...opt.props} className={index === highlightIndex ? styles.highlight : null} dangerouslySetInnerHTML={{ __html: opt.text.replace(new RegExp(`(${search})`, 'ig'), '<b>$1</b>') }} />)}
+        {filteredOptions.map((opt, index) => <li {...opt.props} className={index === highlightIndex ? styles.highlight : null} onMouseOver={this.itemHover}>
+          <span className={styles.text} dangerouslySetInnerHTML={{ __html: opt.html }} data-index={index} onMouseUp={() => this.setValue(opt.props.key)} data-key={opt.props.key} />
+          {/* opt.actions ? opt.actions.map(action => <span key={action.type} className={styles.action} onClick={this.actionClick} data-action={JSON.stringify(action)}>{actionTypeIcons[action.type] || action.type}</span>) : null*/}
+        </li>)}
       </ol>);
     }
     return (<div className={styles.searchableSelect}>

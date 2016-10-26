@@ -4,6 +4,7 @@ build
 server/lib
 node_modules
 stats.json
+.ackrc
 
 # Cruft
 .DS_Store
