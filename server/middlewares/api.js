@@ -161,7 +161,7 @@ module.exports = () => {
         secretAccessKey: process.env.AWS_S3_IMAGES_SECRETKEY
       };
       s3(aws, image.path, uuid)
-        .then(result => Model.findOne({ where: { uuid } })
+        .then(result => Model.findOne({ where: { uuid, owner: getUser(req) } })
           .then(instance => {
             const data = {};
             data[field] = `https://${aws.URL}/${result.versions[model === 'organizer' ? 0 : 1].key}`;
@@ -175,56 +175,66 @@ module.exports = () => {
     }
   });
 
-  api.all('/:model/:uuid/action/:action', requireLogin, resolveModel, (req, res) => {
+  api.all('/:model/:uuid/action/message', resolveModel, (req, res) => {
     const { Model } = req;
-    const { uuid, action } = req.params;
-    const query = Model.getQuery({ where: { uuid, owner: getUser(req) } }, database.models, getUser(req));
+    const { uuid } = req.params;
+    const query = Model.getQuery({ where: { uuid } }, database.models, getUser(req));
     if (query instanceof Error) {
       res.status(400).json({ status: 'failure', error: query.message });
       return;
     }
-    if (action === 'delete') {
-      Model.findOne(query)
-        .then(instance => (instance.setDeleted ? instance.setDeleted() : instance.destroy()))
-        .then(() => res.json({ status: 'success' }))
+    Model.findOne(query).then(instance => {
+      const contact = {
+        to: instance.contactEmail,
+        name: instance.contactName
+      };
+      if (!(req.body.name && req.body.from && req.body.body)) throw Error('Incomplete form');
+      const message = {
+        name: req.body.name,
+        from: req.body.from,
+        text: req.body.body
+      };
+      return email.sendEmail('Someone has submitted a question on Open Sessions', 'hello+organizer@opensessions.io', `
+        <p>Hey, ${contact.name} &lt;${contact.to}&gt;! A message has been sent on Open Sessions.</p>
+        <p>Here's the message:</p>
+        <p style="padding:.5em;white-space:pre;background:#FFF;">From: ${message.name} &lt;${message.from}&gt;</p>
+        <p style="padding:.5em;white-space:pre;background:#FFF;">${message.text}</p>
+      `, { '-title-': 'Organizer communication' }).then(() => res.json({ status: 'success' }))
         .catch(error => res.status(404).json({ status: 'failure', error: error.message }));
-    } else if (action === 'message') {
-      Model.findOne(query)
-        .then(instance => {
-          const contact = {
-            to: instance.contactEmail,
-            name: instance.contactName
-          };
-          if (!(req.body.name && req.body.from && req.body.body)) throw Error('Incomplete form');
-          const message = {
-            name: req.body.name,
-            from: req.body.from,
-            text: req.body.body
-          };
-          return email.sendEmail('Someone has submitted a question on Open Sessions', 'hello+organizer@opensessions.io', `
-            <p>Hey, ${contact.name} &lt;${contact.to}&gt;! A message has been sent on Open Sessions.</p>
-            <p>Here's the message:</p>
-            <p style="padding:.5em;white-space:pre;background:#FFF;">From: ${message.name} &lt;${message.from}&gt;</p>
-            <p style="padding:.5em;white-space:pre;background:#FFF;">${message.text}</p>
-          `, { '-title-': 'Organizer communication' });
-        })
-        .then(() => res.json({ status: 'success' }))
-        .catch(error => res.status(404).json({ status: 'failure', error: error.message }));
-    } else if (action === 'duplicate') {
-      Model.findOne(query)
-        .then(base => {
-          const data = base.dataValues;
+    }).catch(() => {
+      res.status(404).json({ status: 'failure', error: 'Record not found' });
+    });
+  });
+
+  api.all('/:model/:uuid/action/:action', resolveModel, (req, res) => {
+    const { Model } = req;
+    const { uuid, action } = req.params;
+    requireLogin(req, res, () => {
+      const query = Model.getQuery({ where: { uuid } }, database.models, getUser(req));
+      if (query instanceof Error) {
+        res.status(400).json({ status: 'failure', error: query.message });
+        return;
+      }
+      Model.findOne(query).then(instance => {
+        if (action === 'delete') {
+          return (instance.setDeleted ? instance.setDeleted() : instance.destroy())
+            .then(() => res.json({ status: 'success' }))
+            .catch(error => res.status(404).json({ status: 'failure', error: error.message }));
+        } else if (action === 'duplicate') {
+          const data = instance.dataValues;
           delete data.uuid;
           data.title = `${data.title} (duplicated)`;
-          Model.create(data).then(instance => {
-            res.json({ status: 'success', instance });
+          return Model.create(data).then(newInstance => {
+            res.json({ status: 'success', instance: newInstance });
           }).catch(err => {
-            res.status(404).json({ status: 'failure', error: err.message });
+            res.status(500).json({ status: 'failure', error: err.message });
           });
-        });
-    } else {
-      res.status(400).json({ status: 'failure', error: `Unrecognized action '${action}'` });
-    }
+        }
+        return res.status(400).json({ status: 'failure', error: `Unrecognized action '${action}'` });
+      }).catch(() => {
+        res.status(404).json({ status: 'failure', error: 'Record not found' });
+      });
+    });
   });
 
   return api;
