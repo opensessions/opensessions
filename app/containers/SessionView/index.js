@@ -194,7 +194,6 @@ export default class SessionView extends React.Component { // eslint-disable-lin
           <div className={`${styles.floatingInfo} ${styles.organizerInfo}`}>
             <p>{session.Organizer ? (<Link to={session.Organizer.href}>{session.Organizer.name}</Link>) : 'No organizer'}</p>
             <p>{session.contactPhone ? (<a className={styles.organizerLink} href={`tel:${session.contactPhone}`}><img src="/images/phone.svg" role="presentation" /> {session.contactPhone}</a>) : ''}</p>
-            <p>{session.contactEmail ? (<a className={styles.organizerLink} href={`mailto:${session.contactEmail}`}><img src="/images/email.png" role="presentation" /> {session.contactEmail}</a>) : ''}</p>
             <p>{session.contactEmail ? (<a className={styles.organizerLink} onClick={() => this.context.modal.dispatch({ component: <MessageModal to={session.contactEmail} title={<span>Ask <b>{session.contactName}</b> from <b>{session.Organizer.name}</b> a question</span>} url={`/api/session/${session.uuid}/action/message`} /> })}><img src="/images/email.png" role="presentation" /> Message organiser</a>) : ''}</p>
             <ol className={styles.socialLinks}>
               {session.socialWebsite ? <li><a className={styles.organizerLink} href={session.socialWebsite}>{session.socialWebsite}</a></li> : null}
