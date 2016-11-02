@@ -34,6 +34,7 @@ export default class MessageModal extends React.Component { // eslint-disable-li
       <p>Your message has been sent</p>
       <p><span className={styles.sentTick}><img alt="tick" src="/images/tick.svg" /></span></p>
       <p>Replies will be sent to {this.state.form.from}</p>
+      <br />
       <p><Button onClick={() => this.context.modal.close()}>OK</Button></p>
     </GenericModal>) });
   }).catch(error => {

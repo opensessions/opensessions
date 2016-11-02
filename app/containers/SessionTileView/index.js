@@ -60,18 +60,15 @@ export default class SessionTileView extends React.Component { // eslint-disable
   }
   renderActions() {
     const { session } = this.props;
-    const isPublished = session.state === 'published';
-    const actions = [];
-    if (this.isOwner()) {
-      if (!isPublished) actions.push({ key: 'edit', item: <Link to={`${session.href}/edit`}>Edit</Link> });
-      else actions.push({ key: 'view', item: <Link to={session.href}>View</Link> });
-      actions.push({ key: 'copy', item: <a onClick={this.duplicate}>Duplicate</a> });
-      actions.push({ key: 'delete', item: <a onClick={this.delete} className={styles.delete}>Delete</a> });
-    } else {
-      actions.push({ key: session.href, item: <Link to={session.href}>View</Link> });
-    }
+    const actionTypes = {
+      edit: <Link to={`${session.href}/edit`}>Edit</Link>,
+      view: <Link to={session.href}>View</Link>,
+      duplicate: <a onClick={this.duplicate}>Duplicate</a>,
+      delete: <a onClick={this.delete} className={styles.delete}>Delete</a>
+    };
+    const actions = session.actions.length ? session.actions : ['view'];
     return (<ol className={styles.actions}>
-      {actions.map(action => <li key={action.key}>{action.item}</li>)}
+      {actions.map(key => <li key={key}>{actionTypes[key]}</li>)}
     </ol>);
   }
   renderAddSchedule() {
@@ -106,7 +103,7 @@ export default class SessionTileView extends React.Component { // eslint-disable
           <h1><Link to={session.href}>{this.getTitle()}</Link></h1>
           <div className={styles.location}>{session.location}</div>
         </div>
-        <div className={styles.actions}>
+        <div className={styles.meta}>
           {this.renderActions()}
           <div className={[styles.state, state === 'published' ? styles.live : ''].join(' ')}>{state}</div>
         </div>

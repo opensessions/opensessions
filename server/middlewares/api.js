@@ -6,7 +6,6 @@ const fs = require('fs');
 const Storage = require('../../storage/interfaces/postgres.js');
 const RDPE = require('./rdpe.js');
 const s3 = require('./s3.js');
-const email = require('./email');
 
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
@@ -50,9 +49,15 @@ module.exports = () => {
     return query;
   };
 
-  const instanceToJSON = (instance, models, user) => Object.assign(instance.get(), {
-    actions: instance.getActions ? instance.getActions(models, user) : null
-  });
+  const instanceToJSON = (instance, user) => {
+    const json = Object.assign(instance.get(), {
+      actions: instance.getActions ? instance.getActions(database.models, user) : null
+    });
+    ['Sessions'].filter(type => json[type]).forEach(type => {
+      json[type] = json[type].map(child => instanceToJSON(child, user));
+    });
+    return json;
+  };
 
   api.get('/config.js', (req, res) => {
     const windowKeys = ['GOOGLE_MAPS_API_KEY', 'INTERCOM_APPID', 'AWS_S3_IMAGES_BASEURL', 'AUTH0_CLIENT_ID', 'AUTH0_CLIENT_DOMAIN'];
@@ -81,7 +86,7 @@ module.exports = () => {
         return;
       }
       Model.findAll(query).then(instances => {
-        res.json({ instances: instances.map(instance => instanceToJSON(instance, database.models, getUser(req))) });
+        res.json({ instances: instances.map(instance => instanceToJSON(instance, getUser(req))) });
       }).catch(error => {
         res.status(404).json({ error: error.message });
       });
@@ -90,14 +95,14 @@ module.exports = () => {
 
   api.all('/:model/create', requireLogin, resolveModel, (req, res) => {
     const { Model } = req;
-    const getPrototype = Model.getPrototype || (() => (Promise.resolve({})));
+    const getPrototype = Model.getPrototype || (() => Promise.resolve({}));
     getPrototype(database.models, getUser(req)).then(data => {
       Object.keys(req.body).forEach(key => {
         data[key] = req.body[key];
       });
       data.owner = getUser(req);
       Model.create(data).then(instance => {
-        res.json({ instance });
+        res.json({ instance: instanceToJSON(instance, getUser(req)) });
       }).catch(error => {
         res.status(404).json({ error: error.message });
       });
@@ -111,14 +116,14 @@ module.exports = () => {
       const query = Model.getQuery({ where: { uuid } }, database.models, getUser(req));
       if (query instanceof Error) {
         res.status(400).json({ status: 'failure', error: query.message });
-        return;
+      } else {
+        Model.findOne(query).then(instance => {
+          if (!instance) throw new Error('Instance could not be retrieved');
+          res.json({ instance: instanceToJSON(instance, getUser(req)) });
+        }).catch(error => {
+          res.status(404).json({ error: error.message, isLoggedIn: !!req.user });
+        });
       }
-      Model.findOne(query).then(instance => {
-        if (!instance) throw new Error('Instance could not be retrieved');
-        res.json({ instance: instanceToJSON(instance, database.models, getUser(req)) });
-      }).catch(error => {
-        res.status(404).json({ error: error.message, isLoggedIn: !!req.user });
-      });
     });
   });
 
@@ -128,24 +133,47 @@ module.exports = () => {
     const query = Model.getQuery({ where: { uuid } }, database.models, getUser(req));
     if (query instanceof Error) {
       res.status(400).json({ status: 'failure', error: query.message });
-      return;
-    }
-    Model.findOne(query).then(instance => {
-      if (instance.owner !== getUser(req)) throw new Error(`Must be owner to modify ${Model.name}`);
-      const fields = Object.keys(req.body);
-      fields.filter(key => key.slice(-4) === 'Uuid').filter(key => req.body[key] === null).forEach(key => {
-        instance[`set${key.replace(/Uuid$/, '')}`](null);
-      });
-      if (query.include) {
-        query.include.forEach(model => {
-          delete req.body[model.name];
+    } else {
+      Model.findOne(query).then(instance => {
+        if (instance.owner !== getUser(req)) throw new Error(`Must be owner to modify ${Model.name}`);
+        const fields = Object.keys(req.body);
+        fields.filter(key => key.slice(-4) === 'Uuid').filter(key => req.body[key] === null).forEach(key => {
+          instance[`set${key.replace(/Uuid$/, '')}`](null);
         });
-      }
-      return instance.update(req.body, { returning: true }).then(savedInstance => {
-        res.json({ instance: savedInstance });
+        if (query.include) {
+          query.include.forEach(model => {
+            delete req.body[model.name];
+          });
+        }
+        return instance.update(req.body, { returning: true }).then(savedInstance => {
+          res.json({ instance: instanceToJSON(savedInstance, getUser(req)) });
+        });
+      }).catch(error => {
+        res.status(404).json({ error: error.message });
       });
-    }).catch(error => {
-      res.status(404).json({ error: error.message });
+    }
+  });
+
+  api.all('/:model/:uuid/action/:action', resolveModel, (req, res) => {
+    const { Model } = req;
+    const { uuid, action } = req.params;
+    requireLogin(req, res, () => {
+      const user = getUser(req);
+      const query = Model.getQuery({ where: { uuid } }, database.models, user);
+      if (query instanceof Error) {
+        res.status(400).json({ status: 'failure', error: query.message });
+      } else {
+        Model.findOne(query).then(instance => {
+          const actions = instance.getActions(database.models, user);
+          if (actions.indexOf(action) !== -1) {
+            instance[action](req)
+              .then(result => res.json(Object.assign({ status: 'success' }, result)))
+              .catch(error => res.status(404).json({ status: 'failure', error }));
+          } else {
+            res.status(500).json({ status: 'failure', error: `'${action}' is an unavailable action` });
+          }
+        }).catch(() => res.status(404).json({ status: 'failure', error: 'Record not found', query: query.where }));
+      }
     });
   });
 
@@ -173,68 +201,6 @@ module.exports = () => {
     } else {
       next();
     }
-  });
-
-  api.all('/:model/:uuid/action/message', resolveModel, (req, res) => {
-    const { Model } = req;
-    const { uuid } = req.params;
-    const query = Model.getQuery({ where: { uuid } }, database.models, getUser(req));
-    if (query instanceof Error) {
-      res.status(400).json({ status: 'failure', error: query.message });
-      return;
-    }
-    Model.findOne(query).then(instance => {
-      const contact = {
-        to: instance.contactEmail,
-        name: instance.contactName
-      };
-      if (!(req.body.name && req.body.from && req.body.body)) throw Error('Incomplete form');
-      const message = {
-        name: req.body.name,
-        from: req.body.from,
-        text: req.body.body
-      };
-      return email.sendEmail('Someone has submitted a question on Open Sessions', 'hello+organizer@opensessions.io', `
-        <p>Hey, ${contact.name} &lt;${contact.to}&gt;! A message has been sent on Open Sessions.</p>
-        <p>Here's the message:</p>
-        <p style="padding:.5em;white-space:pre;background:#FFF;">From: ${message.name} &lt;${message.from}&gt;</p>
-        <p style="padding:.5em;white-space:pre;background:#FFF;">${message.text}</p>
-      `, { '-title-': 'Organizer communication' }).then(() => res.json({ status: 'success' }))
-        .catch(error => res.status(404).json({ status: 'failure', error: error.message }));
-    }).catch(() => {
-      res.status(404).json({ status: 'failure', error: 'Record not found' });
-    });
-  });
-
-  api.all('/:model/:uuid/action/:action', resolveModel, (req, res) => {
-    const { Model } = req;
-    const { uuid, action } = req.params;
-    requireLogin(req, res, () => {
-      const query = Model.getQuery({ where: { uuid } }, database.models, getUser(req));
-      if (query instanceof Error) {
-        res.status(400).json({ status: 'failure', error: query.message });
-        return;
-      }
-      Model.findOne(query).then(instance => {
-        if (action === 'delete') {
-          return (instance.setDeleted ? instance.setDeleted() : instance.destroy())
-            .then(() => res.json({ status: 'success' }))
-            .catch(error => res.status(404).json({ status: 'failure', error: error.message }));
-        } else if (action === 'duplicate') {
-          const data = instance.dataValues;
-          delete data.uuid;
-          data.title = `${data.title} (duplicated)`;
-          return Model.create(data).then(newInstance => {
-            res.json({ status: 'success', instance: newInstance });
-          }).catch(err => {
-            res.status(500).json({ status: 'failure', error: err.message });
-          });
-        }
-        return res.status(400).json({ status: 'failure', error: `Unrecognized action '${action}'` });
-      }).catch(() => {
-        res.status(404).json({ status: 'failure', error: 'Record not found' });
-      });
-    });
   });
 
   return api;

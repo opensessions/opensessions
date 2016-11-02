@@ -167,9 +167,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     const session = this.getSession();
     const user = this.context.user || {};
     let emailOptions = user ? [{ uuid: user.email, name: user.email }] : [];
-    if (this.state.customEmails) {
-      emailOptions = emailOptions.concat(this.state.customEmails);
-    }
+    if (this.state.customEmails) emailOptions = emailOptions.concat(this.state.customEmails);
     if (session) {
       const { contactEmail } = session;
       if (contactEmail && contactEmail !== user.email) {

@@ -32,7 +32,7 @@
         font-weight: normal;
       }
     }
-    & .actions {
+    & .meta {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -136,7 +136,7 @@
 @media (--desktop) {
   .tile {
     & .textCol {
-      & .actions {
+      & .meta {
         font-size: 1.1em;
         & ol.actions > li a,
         & .state {

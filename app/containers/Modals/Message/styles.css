@@ -22,7 +22,8 @@
 
 .sentTick {
   display: inline-block;
-  font-size: 1.25em;
+  font-size: 1em;
+  margin: 2em auto;
   padding: 1em;
   border-radius: 50%;
   background: #FFF;

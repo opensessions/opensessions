@@ -31,7 +31,6 @@ export default class Form extends React.Component { // eslint-disable-line react
     };
   }
   componentDidMount() {
-    console.log('componentDidMount', this.state);
     this.refocus();
   }
   componentWillReceiveProps(nextProps) {
@@ -47,7 +46,6 @@ export default class Form extends React.Component { // eslint-disable-line react
   }
   componentDidUpdate(oldProps, oldState) {
     if (oldState.activeTab !== this.state.activeTab || oldProps.activeField !== this.props.activeField) {
-      console.log('componentDidUpdate', this.state);
       this.refocus();
     }
   }

@@ -81,6 +81,10 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     const session = this.context.store.getState().get('session');
     return user && session && user.user_id === session.owner;
   }
+  dispatchMessageModal = () => {
+    const session = this.context.store.getState().get('session');
+    this.context.modal.dispatch({ component: <MessageModal to={session.contactEmail} title={<span>Ask <b>{session.contactName}</b> {session.Organizer ? <span>from <b>{session.Organizer.name}</b></span> : ''} a question</span>} url={`/api/session/${session.uuid}/action/message`} /> });
+  }
   fetchDataClient = (dispatch, params) => {
     this.setState({ isLoading: true });
     return apiModel.get('session', params.uuid).then(result => {
@@ -194,7 +198,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
           <div className={`${styles.floatingInfo} ${styles.organizerInfo}`}>
             <p>{session.Organizer ? (<Link to={session.Organizer.href}>{session.Organizer.name}</Link>) : 'No organizer'}</p>
             <p>{session.contactPhone ? (<a className={styles.organizerLink} href={`tel:${session.contactPhone}`}><img src="/images/phone.svg" role="presentation" /> {session.contactPhone}</a>) : ''}</p>
-            <p>{session.contactEmail ? (<a className={styles.organizerLink} onClick={() => this.context.modal.dispatch({ component: <MessageModal to={session.contactEmail} title={<span>Ask <b>{session.contactName}</b> from <b>{session.Organizer.name}</b> a question</span>} url={`/api/session/${session.uuid}/action/message`} /> })}><img src="/images/email.png" role="presentation" /> Message organiser</a>) : ''}</p>
+            <p>{session.contactEmail ? (<a className={styles.organizerLink} onClick={this.dispatchMessageModal}><img src="/images/email.png" role="presentation" /> Message organiser</a>) : ''}</p>
             <ol className={styles.socialLinks}>
               {session.socialWebsite ? <li><a className={styles.organizerLink} href={session.socialWebsite}>{session.socialWebsite}</a></li> : null}
               {session.socialFacebook ? <li><a className={styles.organizerLink} href={session.socialFacebook}><img src="/images/facebook.png" role="presentation" /> Facebook page</a></li> : null}
@@ -333,7 +337,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   render() {
     const { isLoading } = this.state;
     const session = this.context.store.getState().get('session');
-    if (isLoading) return (<div className={styles.sessionView}><LoadingMessage message="Loading session" ellipsis /></div>);
+    if (isLoading) return <div className={styles.sessionView}><LoadingMessage message="Loading" ellipsis /></div>;
     return (<div className={styles.sessionView}>
       {this.canEdit() ? <PublishHeader h2={session && session.state === 'published' ? 'Published session' : 'Preview'} actions={this.getActions()} /> : null}
       <NotificationBar notifications={this.context.notifications} />

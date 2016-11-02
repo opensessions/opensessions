@@ -1,3 +1,5 @@
+const email = require('../server/middlewares/email');
+
 module.exports = (DataTypes) => ({
   tablePrototype: {
     uuid: {
@@ -17,17 +19,19 @@ module.exports = (DataTypes) => ({
           },
         },
         instanceMethods: {
+          delete() {
+            return this.destroy();
+          },
           getActions(models, user) {
             const actions = [];
             if (user && user === this.owner && this.get('SessionsCount') === '0') {
-              actions.push({ type: 'delete', url: `/api${this.href}/delete` });
+              actions.push('delete');
             }
             return actions;
           }
         },
         classMethods: {
           getQuery(query, models) {
-            // query.where = { };
             if (!query) query = {};
             query.include = [{ model: models.Session, attributes: [], required: false }];
             query.attributes = ['uuid', 'name', 'owner', 'Activity.createdAt', 'Activity.updatedAt', [DataTypes.fn('COUNT', DataTypes.col('Sessions.ActivityUuid')), 'SessionsCount']];
@@ -56,10 +60,13 @@ module.exports = (DataTypes) => ({
           },
         },
         instanceMethods: {
+          delete() {
+            return this.destroy();
+          },
           getActions(models, user) {
             const actions = [];
             if (user && user === this.owner && this.Sessions.length === 0) {
-              actions.push({ type: 'delete', url: `/api${this.href}/delete` });
+              actions.push('delete');
             }
             return actions;
           }
@@ -163,15 +170,34 @@ module.exports = (DataTypes) => ({
             if (errors.length) throw new Error(`<b>We can't publish this yet!</b> ${errors.join('. ')}`);
             return true;
           },
-          setDeleted() {
-            return this.state === 'draft' ? this.destroy() : this.update({ state: 'deleted' });
-          },
           getActions(models, user) {
             const actions = [];
+            actions.push('message');
             if (user && user === this.owner) {
-              actions.push({ type: 'edit' });
+              actions.push('edit');
+              actions.push('duplicate');
+              actions.push('delete');
             }
             return actions;
+          },
+          delete() {
+            return (this.state === 'draft' ? this.destroy() : this.update({ state: 'deleted' }));
+          },
+          duplicate(req) {
+            const data = this.dataValues;
+            delete data.uuid;
+            data.title = `${data.title} (duplicated)`;
+            return req.Model.create(data).then(instance => ({ instance }));
+          },
+          message(req) {
+            const message = req.body;
+            if (['name', 'from', 'body'].filter(name => message[name]).length < 3) return Promise.reject('Incomplete form');
+            return email.sendEmail('Someone has submitted a question on Open Sessions', 'hello+organizer@opensessions.io', `
+              <p>Hey, ${this.contactName} &lt;${this.contactEmail}&gt;! A message has been sent on Open Sessions.</p>
+              <p>Here's the message:</p>
+              <p style="padding:.5em;white-space:pre;background:#FFF;">From: ${message.name} &lt;${message.from}&gt;</p>
+              <p style="padding:.5em;white-space:pre;background:#FFF;">${message.body}</p>
+            `, { '-title-': 'Organizer communication' });
           }
         },
         classMethods: {
