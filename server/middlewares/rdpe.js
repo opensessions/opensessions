@@ -19,6 +19,8 @@ module.exports = (database, opts) => {
       sessions: `${options.baseURL}/sessions`,
     });
   });
+  
+  const hiddenFields = ['activityType', 'startDate', 'startTime', 'endTime', 'contactEmail'];
 
   rdpe.get('/sessions', (req, res) => {
     const fromTS = req.query.from || 0;
@@ -67,7 +69,7 @@ module.exports = (database, opts) => {
             item.data.schedule = schedule.map(slot => {
               const formatted = {};
               ['start', 'end'].forEach(point => {
-                const date = moment.tz(`${slot.startDate}T${slot[`${point}Time`] || defaultTime[point]}`, 'Europe/London');
+                const date = moment.tz(`${slot.startDate}T${slot[`${point}Time`] || defaultTime[point]}`, process.env.LOCALE_TIMEZONE);
                 formatted[point] = date.format();
               });
               return formatted;
@@ -75,7 +77,7 @@ module.exports = (database, opts) => {
           }
           item.data.website = `${opts.URL}${item.data.href}`;
           item.data.messageURL = `${opts.URL}${item.data.href}/action/message`;
-          ['activityType', 'startDate', 'startTime', 'endTime'].forEach(key => delete item.data[key]);
+          hiddenFields.forEach(key => delete item.data[key]);
         }
         return item;
       });

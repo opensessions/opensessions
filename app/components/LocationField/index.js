@@ -23,7 +23,8 @@ export default class LocationField extends React.Component {
     this.state = { clean: true };
   }
   componentDidMount() {
-    const options = { types: [], componentRestrictions: { country: 'gb' } };
+    const { LOCALE_COUNTRY } = window;
+    const options = { types: [], componentRestrictions: { country: LOCALE_COUNTRY } };
     const { input } = this.refs;
     const { maps } = window.google;
     const autocomplete = new maps.places.Autocomplete(input, options);

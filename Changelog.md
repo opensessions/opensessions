@@ -13,3 +13,6 @@
 #### 0.2.1
 - Email functionality via sendgrid
 - Schedule display on session details page
+- Organiser messaging functionality
+- Partial Server Side Rendering
+- Locale config (Google map country and timezone) in env
