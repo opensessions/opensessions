@@ -74,6 +74,7 @@ module.exports = (database, opts) => {
             });
           }
           item.data.website = `${opts.URL}${item.data.href}`;
+          item.data.messageURL = `${opts.URL}${item.data.href}/action/message`;
           ['activityType', 'startDate', 'startTime', 'endTime'].forEach(key => delete item.data[key]);
         }
         return item;
