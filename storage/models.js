@@ -65,7 +65,7 @@ module.exports = (DataTypes) => ({
           },
           getActions(models, user) {
             const actions = [];
-            if (user && user === this.owner && this.Sessions.length === 0) {
+            if (user && user === this.owner && (!this.Sessions || this.Sessions.length === 0)) {
               actions.push('delete');
             }
             return actions;
@@ -111,6 +111,7 @@ module.exports = (DataTypes) => ({
         type: DataTypes.FLOAT(2),
         validate: { min: 0 }
       },
+      // pricing: DataTypes.JSON,
       quantity: DataTypes.INTEGER,
       genderRestriction: {
         type: DataTypes.STRING(16),
