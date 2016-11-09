@@ -49,8 +49,9 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   getLowestPrice() {
     const sorted = this.getPrices().sort((p1, p2) => p1.price > p2.price);
     if (sorted.length) {
-      return sorted.length > 1 ? `From £${sorted[0].price}` : `£${sorted[0].price}`;
-    } else return 'Free';
+      return sorted.length > 1 ? `from £${sorted[0].price}` : `£${sorted[0].price}`;
+    }
+    return 'Free';
   }
   getPrices() {
     const { pricing } = this.context.store.getState().get('session');
@@ -269,7 +270,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         }
       };
       if (firstFree) features = features.concat([{ text: 'First session free', icon: <PriceSVG free /> }]);
-      features = features.concat([paymentMethodIcons[paymentMethods]]);
+      if (paymentMethods in paymentMethodIcons) features = features.concat([paymentMethodIcons[paymentMethods]]);
     }
     return (<div className={styles.aboutSection}>
       <div className={styles.inner}>

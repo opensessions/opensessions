@@ -39,7 +39,7 @@ export default class PricingField extends React.Component { // eslint-disable-li
   }
   setPaidMulti = () => {
     let { value } = this.props;
-    let { prices } = value;
+    const { prices } = value;
     value.type = 'paid';
     value.prices = ((prices && prices.length) ? prices : [{ price: '' }]).concat({ price: '' });
     this.props.onChange(value);

@@ -227,7 +227,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       }
       apiModel.edit('session', session.uuid, session).then(result => {
         const { instance, error } = result;
-        if (this.state.isPendingSave) return;
+        if (this.state.isPendingSave) return true;
         if (error) throw new Error(error);
         this.setState({ isPendingSave: false, isSaving: false, session: instance, status: 'Saved draft!', saveState: 'saved' });
         return result;
