@@ -55,7 +55,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   }
   getPrices() {
     const { pricing } = this.context.store.getState().get('session');
-    return pricing ? pricing.prices : [];
+    return pricing && pricing.prices ? pricing.prices : [];
   }
   getSessionImage() {
     const { user } = this.context;
