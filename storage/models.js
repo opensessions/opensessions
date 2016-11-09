@@ -107,11 +107,7 @@ module.exports = (DataTypes) => ({
       locationData: DataTypes.JSON,
       meetingPoint: DataTypes.STRING,
       attendanceType: DataTypes.STRING,
-      price: {
-        type: DataTypes.FLOAT(2),
-        validate: { min: 0 }
-      },
-      // pricing: DataTypes.JSON,
+      pricing: DataTypes.JSON,
       quantity: DataTypes.INTEGER,
       genderRestriction: {
         type: DataTypes.STRING(16),
@@ -182,7 +178,7 @@ module.exports = (DataTypes) => ({
             return actions;
           },
           delete() {
-            return (this.state === 'draft' ? this.destroy() : this.update({ state: 'deleted' }));
+            return this.state === 'draft' ? this.destroy() : this.update({ state: 'deleted' });
           },
           duplicate(req) {
             const data = this.dataValues;

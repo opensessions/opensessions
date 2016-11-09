@@ -21,8 +21,9 @@ module.exports = () => {
   const database = storage.getInstance();
   const getUser = req => (req.user ? req.user.sub : null);
 
-  api.use('/rdpe', RDPE(database, { URL: process.env.SERVICE_LOCATION }));
-  api.use('/rdpe-legacy', RDPE(database, { URL: process.env.SERVICE_LOCATION, preserveLatLng: true, baseURL: '/api/rdpe-legacy' }));
+  const rdpeConfig = { timezone: process.env.LOCALE_TIMEZONE, URL: process.env.SERVICE_LOCATION };
+  api.use('/rdpe', RDPE(database, rdpeConfig));
+  api.use('/rdpe-legacy', RDPE(database, Object.assign(rdpeConfig, { preserveLatLng: true, baseURL: '/api/rdpe-legacy' })));
 
   const requireLogin = jwt({
     secret: new Buffer(process.env.AUTH0_CLIENT_SECRET, 'base64'),
@@ -168,7 +169,7 @@ module.exports = () => {
           if (actions.indexOf(action) !== -1) {
             instance[action](req)
               .then(result => res.json(Object.assign({ status: 'success' }, result)))
-              .catch(error => res.status(404).json({ status: 'failure', error }));
+              .catch(error => console.log(error) || res.status(404).json({ status: 'failure', error }));
           } else {
             res.status(500).json({ status: 'failure', error: `'${action}' is an unavailable action` });
           }

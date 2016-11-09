@@ -1,0 +1,22 @@
+.box {
+  display: flex;
+}
+
+.checkbox {
+  display: inline-block;
+  vertical-align: middle;
+  border: 1px solid #C8C8C8;
+  background: #FFF;
+  height: 1.5em;
+  width: 1.5em;
+  text-align: center;
+  &.checked {
+    background: #182750;
+    border-color: #182750;
+    color: #FFF;
+  }
+}
+
+.label {
+  margin-left: .5em;
+}

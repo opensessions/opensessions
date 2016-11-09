@@ -1,5 +1,9 @@
 @import '../../containers/App/variables.css';
 
+input[type='text'].smallText {
+  width: 12em;
+}
+
 .maxLength {
   font-size: .825em;
   text-align: right;

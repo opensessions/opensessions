@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 
-import CalendarSvg from '../../components/CalendarSvg';
+import CalendarSVG from '../../components/SVGs/Calendar';
 
 import { parseSchedule } from '../../utils/calendar';
 import { apiModel } from '../../utils/api';
@@ -80,7 +80,7 @@ export default class SessionTileView extends React.Component { // eslint-disable
   renderSchedule(occurrence, key) {
     const date = parseSchedule(occurrence);
     return (<li className={[styles.schedule, date.hasOccurred ? styles.occurred : null].join(' ')} key={key}>
-      <CalendarSvg />
+      <CalendarSVG />
       <span>{date.date} {date.time ? <span className={styles.time}>at {date.time}</span> : null}</span>
       <span>{date.hasOccurred ? ' (Past)' : ''}</span>
     </li>);

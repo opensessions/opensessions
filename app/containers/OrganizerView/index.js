@@ -8,7 +8,7 @@ import SessionTileView from '../SessionTileView';
 import NotificationBar from '../../components/NotificationBar';
 import LoadingMessage from '../../components/LoadingMessage';
 import SessionList from '../../containers/SessionList';
-import ImageUpload from '../../components/ImageUploadField';
+import ImageUpload from '../../components/Fields/ImageUpload';
 
 import styles from './styles.css';
 

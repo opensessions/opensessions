@@ -95,7 +95,10 @@ export default class App extends React.Component { // eslint-disable-line react/
         });
       }
 
-      if (Date.now() - createdAt.getTime() <= 60000) this.notify('<b>Congratulations!</b> You have created your account', 'success');
+      if (Date.now() - createdAt.getTime() <= 60000) {
+        this.notify('<b>Congratulations!</b> You have created your account', 'success');
+        this.context.router.push('/session/add');
+      }
 
       return true;
     });

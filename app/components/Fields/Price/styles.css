@@ -1,0 +1,17 @@
+.field {
+  border: .1em solid #C2C2C2;
+  padding: .4em;
+  background-color: #FFF;
+  display: inline-block;
+  &.hasFocus {
+    box-shadow: 0 0 .5em #00AEEF;
+    border-color: #00AEEF;
+  }
+  & input {
+    width: 4em;
+    margin-left: .25em;
+    &:focus {
+      outline: none;
+    }
+  }
+}

@@ -1,9 +1,9 @@
 import React from 'react';
 
-export default class CalendarSvg extends React.Component { // eslint-disable-line react/prefer-stateless-function
+export default class CalendarSVG extends React.Component { // eslint-disable-line react/prefer-stateless-function
   render() {
     return (<svg version="1.1" x="0px" y="0px" width="54.088px" height="49.801px" viewBox="0 0 54.088 49.801" enableBackground="new 0 0 54.088 49.801">
-      <g id="Clock_pin">
+      <g>
         <g>
           <path
             fill="inherit"

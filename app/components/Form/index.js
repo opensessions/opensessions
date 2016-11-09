@@ -10,8 +10,7 @@ import fieldStyles from '../Field/styles.css';
 
 export default class Form extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
-    notifications: PropTypes.array,
-    formLock: PropTypes.bool
+    notifications: PropTypes.array
   };
   static propTypes = {
     children: PropTypes.node.isRequired,
@@ -110,7 +109,7 @@ export default class Form extends React.Component { // eslint-disable-line react
   render() {
     const { saveState, pendingSteps } = this.props;
     const { notifications } = this.context;
-    return (<GenericForm disabled={this.context.formLock}>
+    return (<GenericForm>
       <form ref="form" className={styles.form}>
         <NotificationBar notifications={notifications} />
         <nav className={styles.nav}>

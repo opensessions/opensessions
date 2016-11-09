@@ -19,7 +19,7 @@ module.exports = (database, opts) => {
       sessions: `${options.baseURL}/sessions`,
     });
   });
-  
+
   const hiddenFields = ['activityType', 'startDate', 'startTime', 'endTime', 'contactEmail'];
 
   rdpe.get('/sessions', (req, res) => {
@@ -69,7 +69,7 @@ module.exports = (database, opts) => {
             item.data.schedule = schedule.map(slot => {
               const formatted = {};
               ['start', 'end'].forEach(point => {
-                const date = moment.tz(`${slot.startDate}T${slot[`${point}Time`] || defaultTime[point]}`, process.env.LOCALE_TIMEZONE);
+                const date = moment.tz(`${slot.startDate}T${slot[`${point}Time`] || defaultTime[point]}`, options.timezone);
                 formatted[point] = date.format();
               });
               return formatted;

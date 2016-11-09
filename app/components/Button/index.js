@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 
 import styles from './styles.css';
 
-export default class Button extends React.Component { // eslint-disable-line react/prefer-stateless-function
+export default class Button extends React.PureComponent {
   static propTypes = {
     children: PropTypes.node,
     onClick: PropTypes.func

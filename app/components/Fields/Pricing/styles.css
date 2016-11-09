@@ -1,0 +1,66 @@
+.field {
+  max-width: 32em;
+}
+
+.isFree {
+  margin: 2em auto;
+  font-size: 1.15em;
+}
+
+.freeIcon {
+  border: .15em solid #88C541;
+  text-align: center;
+  line-height: 1;
+  height: 2em;
+  width: 2em;
+  border-radius: 50%;
+  background-color: #FFF;
+  padding: .25em;
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 1.25em;
+  margin-right: .5em;
+  & img {
+    width: 1em;
+  }
+}
+
+.firstFree {
+  & input[type='checkbox'] {
+    width: 1em;
+    height: 1em;
+    vertical-align: middle;
+  }
+}
+
+.questions {
+  max-width: 24em;
+  & > li {
+    list-style: none;
+    margin: 2em auto;
+    padding: .5em 0;
+    & label {
+      display: block;
+      margin: .5em auto;
+      font-size: 1.1em;
+    }
+  }
+}
+
+.notice {
+  margin: 2em auto;
+  padding: 1em;
+  background: #FFF;
+  box-shadow: .2em .2em .25em rgba(0, 0, 0, .25);
+  & h2 {
+    font-size: 1.25em;
+    font-weight: normal;
+    line-height: 1.2;
+  }
+}
+
+.isPaid {
+  margin: 1em auto;
+  font-size: 1.25em;
+  font-weight: bold;
+}

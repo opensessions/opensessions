@@ -11,16 +11,17 @@ import LoadingMessage from '../../components/LoadingMessage';
 import TextField from '../../components/TextField';
 import DateField from '../../components/DateField';
 import TimeField from '../../components/TimeField';
-import BoolRadio from '../../components/BoolRadioField';
-import IconRadio from '../../components/IconRadioField';
+import BoolRadio from '../../components/Fields/BoolRadio';
+import IconRadio from '../../components/Fields/IconRadio';
 import Location from '../../components/LocationField';
 import SearchableSelect from '../../components/SearchableSelect';
 import MultiField from '../../components/MultiField';
-import ImageUpload from '../../components/ImageUploadField';
+import ImageUpload from '../../components/Fields/ImageUpload';
 import Relation from '../../components/RelationField';
 import Optional from '../../components/OptionalField';
-import JSONList from '../../components/JSONListField';
+import JSONList from '../../components/Fields/JSONList';
 import NumField from '../../components/NumField';
+import PricingField from '../../components/Fields/Pricing';
 
 import { Link } from 'react-router';
 import Authenticated from '../../components/Authenticated';
@@ -44,17 +45,14 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     router: PropTypes.object,
     notifications: PropTypes.array,
     notify: PropTypes.func
-  };
-  static childContextTypes = {
-    formLock: PropTypes.bool,
   }
   constructor(props) {
     super(props);
     const MAX_AGE = 120;
     const GENDER_OPTIONS = [
-      { text: 'None (Mixed)', value: 'mixed', icon: <GenderSvg /> },
-      { text: 'Male only', value: 'male', icon: <GenderSvg only="male" /> },
-      { text: 'Female only', value: 'female', icon: <GenderSvg only="female" /> }
+      { text: 'NONE (MIXED)', value: 'mixed', icon: <GenderSvg /> },
+      { text: 'MALE ONLY', value: 'male', icon: <GenderSvg only="male" /> },
+      { text: 'FEMALE ONLY', value: 'female', icon: <GenderSvg only="female" /> }
     ];
     const DISABILITIES = ['Learning disability', 'Mental health condition', 'Physical impairment', 'Visual impairment', 'Deaf', 'Please ask for more info'];
     this.state = {
@@ -67,7 +65,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
         { slug: 'description', required: ['title', 'OrganizerUuid', 'description', 'ActivityUuid'], fields: ['title', 'OrganizerUuid', 'description', 'ActivityUuid'], props: { validity: false } },
         { slug: 'additional', required: ['leader'], props: { validity: false }, fields: ['preparation', 'leader', 'hasCoaching'] },
         { slug: 'location', required: ['location'], props: { validity: false }, fields: ['location', 'meetingPoint'] },
-        { slug: 'pricing', props: { validity: 'none' }, fields: ['price', 'quantity'] },
+        { slug: 'pricing', props: { validity: 'none' }, fields: ['pricing'] },
         { slug: 'restrictions', props: { validity: 'none' }, fields: ['genderRestriction', 'minAgeRestriction', 'maxAgeRestriction', 'abilityRestriction'] },
         { slug: 'contact', props: { validity: 'none' }, fields: ['contactName', 'contactEmail', 'contactPhone'] },
         { slug: 'social', props: { validity: 'none' }, fields: ['socialWebsite', 'socialFacebook', 'socialInstagram', 'socialTwitter', 'socialHashtag'] },
@@ -77,14 +75,14 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       fields: {
         title: () => <TextField validation={{ maxLength: 50 }} {...this.getAttr('title')} />,
         OrganizerUuid: () => <Relation {...this.getAttr('OrganizerUuid')} props={{ placeholder: 'E.g. Richmond Volleyball' }} relation={{ model: 'organizer', query: { owner: this.context.user ? this.context.user.user_id : null } }} />,
-        description: () => <TextField multi size="XL" {...this.getAttr('description')} />,
+        description: () => <TextField multi size="XL" {...this.getAttr('description')} validation={{ maxLength: 2000 }} />,
         ActivityUuid: () => <Relation {...this.getAttr('ActivityUuid')} relation={{ model: 'activity', query: { } }} props={{ lazyLoad: true, maxOptions: 5 }} />,
         preparation: () => <TextField multi validation={{ maxLength: 500 }} {...this.getAttr('preparation')} />,
         leader: () => <TextField {...this.getAttr('leader')} />,
         hasCoaching: () => <BoolRadio {...this.getAttr('hasCoaching')} options={[{ text: 'No, the session is unlead' }, { text: 'Yes, the session is coached' }]} />,
         location: () => <Location {...this.getAttr('location')} dataValue={this.state.session.locationData} onDataChange={value => this.updateSession('locationData', value)} />,
         meetingPoint: () => <TextField multi validation={{ maxLength: 500 }} {...this.getAttr('meetingPoint')} />,
-        price: () => <Optional {...this.getAttr('price')} no="Free" yes="Paid" null="0" component={{ type: NumField, props: { validation: { min: 0 }, format: '£ :', step: '0.25' } }} />,
+        pricing: () => <PricingField {...this.getAttr('pricing')} />,
         quantity: () => <NumField {...this.getAttr('quantity')} validation={{ min: 0 }} />,
         genderRestriction: () => <IconRadio options={GENDER_OPTIONS} {...this.getAttr('genderRestriction')} />,
         minAgeRestriction: () => <Optional {...this.getAttr('minAgeRestriction')} component={{ type: NumField, props: { validation: { min: 0, max: this.state.session.maxAgeRestriction || MAX_AGE }, format: ': years old' } }} null="0" />,
@@ -119,9 +117,6 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       }
     };
   }
-  getChildContext() {
-    return { formLock: this.state.isSaving };
-  }
   componentDidMount() {
     this.fetchData();
   }
@@ -138,11 +133,8 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     const pendingSteps = fieldsets.filter(fieldset => !fieldset.props.validity).length;
     this.setState({ fieldsets, pendingSteps });
   }
-  getSession() {
-    return this.state.session || {};
-  }
   getAttr = name => {
-    const session = this.getSession();
+    const { session } = this.state;
     return {
       value: session[name],
       onChange: value => this.updateSession(name, value)
@@ -164,7 +156,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     return actions;
   }
   getEmails() {
-    const session = this.getSession();
+    const { session } = this.state;
     const user = this.context.user || {};
     let emailOptions = user ? [{ uuid: user.email, name: user.email }] : [];
     if (this.state.customEmails) emailOptions = emailOptions.concat(this.state.customEmails);
@@ -185,28 +177,26 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
         this.setState({ session: res.instance, isSaving: false, isLoading: false });
       })
       : apiModel.new('session', location.query).then(res => {
-        this.context.notify('Created a new session', 'success');
+        this.context.notify('You have created a new session', 'success');
         this.context.router.push(`${res.instance.href}/edit`);
       });
   }
   updateSession = (name, value) => {
-    const session = this.getSession();
-    const { isSaving } = this.state;
-    if (isSaving) return;
+    const { session } = this.state;
     session[name] = value;
     this.onChange(session);
     this.setState({ status: '', session });
-    this.autosave(1000);
+    this.autosave(2000);
   }
   errorClick = event => {
     const { target } = event;
     const { tab, field } = target.dataset;
-    const session = this.getSession();
+    const { session } = this.state;
     if (!tab) return;
     this.context.router.push(`${session.href}/edit/${tab}#${field}`);
   }
   changeSessionState = state => {
-    const session = this.getSession();
+    const { session } = this.state;
     const oldState = session.state;
     session.state = state;
     return new Promise((resolve, reject) => {
@@ -230,13 +220,14 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     if (this.timeout) clearTimeout(this.timeout);
     this.setState({ isPendingSave: true, status: 'Saving...', saveState: 'saving' });
     this.timeout = setTimeout(() => {
-      this.setState({ isSaving: true, status: 'Saving...', saveState: 'saving' });
-      const session = this.getSession();
+      this.setState({ isSaving: true, isPendingSave: false, status: 'Saving...', saveState: 'saving' });
+      const { session } = this.state;
       if (session.state !== 'unpublished') {
         session.state = 'draft';
       }
       apiModel.edit('session', session.uuid, session).then(result => {
         const { instance, error } = result;
+        if (this.state.isPendingSave) return;
         if (error) throw new Error(error);
         this.setState({ isPendingSave: false, isSaving: false, session: instance, status: 'Saved draft!', saveState: 'saved' });
         return result;
@@ -252,7 +243,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   renderFieldset = fieldset => <div>{fieldset.fields.map(this.renderField)}</div>
   renderField = field => <Field key={field} {...this.state.copy.fields[field]}>{this.state.fields[field] ? this.state.fields[field]() : <TextField {...this.getAttr(field)} />}</Field>
   render() {
-    const session = this.getSession();
+    const { session } = this.state;
     return (<div className={styles.form}>
       <Authenticated message="You must login before you can add a session">
         <PublishHeader h2={this.props.headerText ? this.props.headerText : 'Add a session'} h3={session.title || <i>Untitled</i>} actions={this.getActions()} />

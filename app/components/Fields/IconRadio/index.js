@@ -7,6 +7,7 @@ export default class IconRadioField extends React.Component { // eslint-disable-
     onChange: PropTypes.func,
     value: PropTypes.string,
     options: PropTypes.array,
+    inline: PropTypes.bool
   }
   handleChange = event => {
     const { value } = event.target;
@@ -25,17 +26,27 @@ export default class IconRadioField extends React.Component { // eslint-disable-
       }
     }
   }
+  renderOption(option, selected) {
+    return (<label tabIndex="0" onKeyUp={this.tabKey} className={styles.notInline}>
+      {option.icon}
+      {option.text}
+      <input type="radio" onChange={this.handleChange} value={option.value} selected={selected} />
+    </label>);
+  }
+  renderOptionInline(option, selected) {
+    return (<label tabIndex="0" onKeyUp={this.tabKey} className={styles.inline}>
+      {option.text}
+      {option.icon}
+      <input type="radio" onChange={this.handleChange} value={option.value} selected={selected} />
+    </label>);
+  }
   render() {
     return (<div className={styles.iconRadio}>
-      <ol>
+      <ol className={this.props.inline ? styles.inlineList : ''}>
         {this.props.options.map(option => {
           const selected = option.value === this.props.value;
           return (<li className={selected ? styles.selected : ''} key={option.value}>
-            <label tabIndex="0" onKeyUp={this.tabKey}>
-              {option.icon || <img src={selected ? option.selectedSrc : option.src} role="presentation" />}
-              {option.text}
-              <input type="radio" onChange={this.handleChange} value={option.value} selected={selected} />
-            </label>
+            {this.props.inline ? this.renderOptionInline(option, selected) : this.renderOption(option, selected)}
           </li>);
         })}
       </ol>

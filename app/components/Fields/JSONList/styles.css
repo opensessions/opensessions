@@ -1,4 +1,4 @@
-@import '../../containers/App/variables.css';
+@import '../../../containers/App/variables.css';
 
 :global div.react-datepicker__input-container {
   > input[type=text] {
@@ -36,7 +36,10 @@
 
 a.addButton {
   display: inline-block;
-  background-color: var(--actionColor);
+  background-color: var(--liveColor);
+  font-family: Belgrano, serif;
+  font-size: 1.2em;
+  line-height: 1;
   color: #FFF;
   margin: .5em 0;
   padding: .5em 1em;

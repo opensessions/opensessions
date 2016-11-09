@@ -11,6 +11,8 @@ import NotificationBar from '../../components/NotificationBar';
 import SocialShareIcons from '../../components/SocialShareIcons';
 import LoadingMessage from '../../components/LoadingMessage';
 import PublishHeader from '../../components/PublishHeader';
+import PaymentSVG from '../../components/SVGs/PaymentMethod';
+import PriceSVG from '../../components/SVGs/Price';
 
 import { parseSchedule, sortSchedule } from '../../utils/calendar';
 import { apiModel } from '../../utils/api';
@@ -44,15 +46,15 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   componentDidMount() {
     this.fetchDataClient(this.context.store.dispatch, this.props.params);
   }
-  getPrice() {
-    let { price } = this.context.store.getState().get('session');
-    if (!price) return 'Free';
-    if (price !== Math.floor(price)) {
-      const minor = `0${Math.ceil((price % 1) * 100)}`.slice(-2);
-      const major = Math.floor(price);
-      price = `${major}.${minor}`;
-    }
-    return `£${price}`;
+  getLowestPrice() {
+    const sorted = this.getPrices().sort((p1, p2) => p1.price > p2.price);
+    if (sorted.length) {
+      return sorted.length > 1 ? `From £${sorted[0].price}` : `£${sorted[0].price}`;
+    } else return 'Free';
+  }
+  getPrices() {
+    const { pricing } = this.context.store.getState().get('session');
+    return pricing ? pricing.prices : [];
   }
   getSessionImage() {
     const { user } = this.context;
@@ -91,7 +93,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       const { error, instance } = result;
       if (error) throw error;
       dispatch({ type: 'SESSION_LOADED', payload: instance });
-      this.setState({ session: instance, isLoading: false });
+      this.setState({ isLoading: false });
     }).catch(() => {
       this.context.notify('Failed to load session', 'error');
       this.setState({ isLoading: false });
@@ -140,7 +142,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         {this.renderDate()}
         <div className={styles.detailPrice}>
           <img src="/images/tag.svg" role="presentation" />
-          <b>{this.getPrice()}</b>
+          <b>{this.getLowestPrice()}</b>
         </div>
         {organizerButton}
       </div>
@@ -180,11 +182,12 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         <div className={styles.info}>
           <h3>Pricing</h3>
           <div className={`${styles.floatingInfo} ${styles.pricing}`}>
-            <span className={styles.label}>{session.attendanceType || 'General'}</span>
-            <span className={styles.price}>
-              <img src="/images/tag.svg" role="presentation" />
-              {this.getPrice()}
-            </span>
+            {this.getPrices().map(band => (<div className={styles.price}>
+              <span className={styles.label}>{band.type}</span>
+              <span className={styles.amount}>
+                <img src="/images/tag.svg" role="presentation" /> £{band.price}
+              </span>
+            </div>))}
           </div>
         </div>
         {session.leader ? (<div className={styles.info}>
@@ -249,13 +252,32 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       iconText: session[`${extremum}AgeRestriction`],
       text: `${extremum}imum Age`
     })));
+    if (session.pricing) {
+      const { firstFree, paymentMethods } = session.pricing;
+      const paymentMethodIcons = {
+        card: {
+          text: 'Card only',
+          icon: <PaymentSVG card />
+        },
+        cash: {
+          text: 'Cash only',
+          icon: <PaymentSVG cash />
+        },
+        'cash,card': {
+          text: 'Card or cash',
+          icon: <PaymentSVG card cash />
+        }
+      };
+      if (firstFree) features = features.concat([{ text: 'First session free', icon: <PriceSVG free /> }]);
+      features = features.concat([paymentMethodIcons[paymentMethods]]);
+    }
     return (<div className={styles.aboutSection}>
       <div className={styles.inner}>
         <h2>About this session</h2>
         <ol>
           {features.map(feature => (<li key={feature.text}>
-            {feature.iconImg
-              ? <span><img className={styles.iconImg} src={feature.iconImg} role="presentation" /><br /></span>
+            {feature.iconImg || feature.icon
+              ? <span>{feature.icon ? feature.icon : <img className={styles.iconImg} src={feature.iconImg} role="presentation" />}<br /></span>
               : <span className={styles.iconText}>{feature.iconText}</span>}
             {feature.text}
           </li>))}

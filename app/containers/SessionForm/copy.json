@@ -18,8 +18,8 @@
     },
     "pricing": {
       "label": "Pricing",
-      "title": "Add pricing for your session",
-      "subtitle": "If your session is paid, describe pricing levels here"
+      "title": "How much does your session cost?",
+      "subtitle": "You can add more than one pricing option"
     },
     "restrictions": {
       "label": "Who it's for",
@@ -95,6 +95,9 @@
     },
     "price": {
       "label": "Price"
+    },
+    "pricing": {
+      "fullSize": true
     },
     "quantity": {
       "label": "Spaces available",

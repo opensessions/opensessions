@@ -1,0 +1,72 @@
+@import '../../../containers/App/variables.css';
+
+.iconRadio {
+  & ol {
+    margin: .5em auto;
+    display: flex;
+    justify-content: space-between;
+    color: #999;
+    &.inlineList {
+      color: var(--actionColor);
+      border: .1em solid;
+      & > li {
+        flex-grow: 1;
+        &:hover,
+        &.selected {
+          background-color: var(--actionColor);
+          color: #FFF;
+        }
+        & svg {
+          margin: 0 .25em;
+          font-size: 1.25em;
+        }
+        & label {
+          padding: .5em;
+          transition: none;
+          outline: none;
+        }
+      }
+    }
+    & > li {
+      text-align: center;
+      list-style: none;
+      & label {
+        padding: .25em;
+        cursor: pointer;
+        display: block;
+        transition: .2s all ease;
+        outline-color: inherit;
+        &.inline {
+          & svg {
+            vertical-align: middle;
+            padding: .5rem;
+          }
+        }
+        &.notInline {
+          & svg,
+          & img {
+            display: block;
+            margin: 0 auto;
+            padding: .5rem 0;
+            height: 7rem;
+            width: 9rem;
+          }
+        }
+      }
+      &.selected {
+        color: var(--actionColor);
+        & label {
+          cursor: default;
+        }
+      }
+      & svg,
+      & img {
+        margin: 0 auto;
+        padding: .5rem 0;
+      }
+      & input {
+        display: none;
+      }
+    }
+  }
+}

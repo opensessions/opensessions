@@ -56,6 +56,9 @@ export default class TextField extends React.Component { // eslint-disable-line 
       autoFocus
     };
     let input;
+    if (size === 'S') {
+      attrs.className = [attrs.className, styles.smallText].join(' ');
+    }
     if (multi) {
       if (validation && validation.maxLength > 100) {
         attrs.className = [attrs.className, styles.longText].join(' ');

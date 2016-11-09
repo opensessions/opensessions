@@ -213,8 +213,15 @@
       text-align: center;
       vertical-align: top;
       line-height: 1;
-      & .iconText {
+      & .iconText,
+      & svg {
         color: var(--actionColor);
+      }
+      & svg {
+        max-width: 2.25em;
+        max-height: 2.25em;
+      }
+      & .iconText {
         display: block;
         margin: .5rem 0;
         font-size: 2em;
@@ -270,13 +277,17 @@
   &.pricing {
     display: flex;
     flex-wrap: wrap;
-    & > span {
-      flex-grow: 1;
-      &.price {
-        text-align: right;
-        white-space: nowrap;
-        & > img {
-          margin-right: .5em;
+    flex-direction: column;
+    & .price {
+      display: flex;
+      & > span {
+        flex-grow: 1;
+        &.amount {
+          text-align: right;
+          white-space: nowrap;
+          & > img {
+            margin-right: .5em;
+          }
         }
       }
     }
