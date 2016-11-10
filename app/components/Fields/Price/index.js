@@ -22,7 +22,7 @@ export default class PriceField extends React.Component { // eslint-disable-line
     if (type === 'change') {
       onChange(value);
     } else if (type === 'keyup') {
-      value = this.props.value;
+      value = this.props.value || 0;
       const { keyCode } = event;
       const deltas = { 38: 1, 40: -1 };
       if (keyCode in deltas) {

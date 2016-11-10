@@ -311,6 +311,9 @@
     & > p:first-child {
       font-weight: bold;
     }
+    & a {
+      color: var(--actionColor);
+    }
   }
   & > .mapFrame {
     min-height: 24rem;

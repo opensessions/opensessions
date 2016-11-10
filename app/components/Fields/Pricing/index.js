@@ -107,7 +107,7 @@ export default class PricingField extends React.Component { // eslint-disable-li
       <div><JSONList
         value={value.prices}
         onChange={this.setPrices}
-        addText="Add another"
+        addText="Add attendee type"
         components={[
           { label: 'Type of attendee', Component: TextField, props: { name: 'type', size: 'S', placeholder: 'E.g. Adults / concessions' } },
           { label: 'Price', Component: PriceField, props: { name: 'price' } }

@@ -110,6 +110,9 @@ export default class App extends React.Component { // eslint-disable-line react/
       status,
       actions
     };
+    if (status === 'success') {
+      notification.timeout = 5000;
+    }
     notification.onDismiss = () => {
       this.setState({ notifications: this.state.notifications.filter(msg => msg.id !== notification.id) });
     };
@@ -157,7 +160,10 @@ export default class App extends React.Component { // eslint-disable-line react/
         <Intercom {...intercomProps} />
         <div className={[styles.modal, modal ? styles.show : null].join(' ')}>
           <div className={styles.modalBG} onClick={() => this.setState({ modal: null })} />
-          <div className={styles.modalFG}>{modal || null}</div>
+          <div className={styles.modalFG}>
+            <a className={styles.close} onClick={() => this.setState({ modal: null })}>×</a>
+            {modal || null}
+          </div>
         </div>
       </div>
     );

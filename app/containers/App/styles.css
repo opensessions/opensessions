@@ -132,5 +132,20 @@ img {
     transition: .75s ease all;
     opacity: 0;
     transform: perspective(60em) rotateX(45deg) scale(.75);
+    & .close {
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: .5em;
+      line-height: .75;
+      font-size: 2em;
+      text-decoration: none;
+      color: #666;
+      opacity: .5;
+      transition: .2s ease all;
+      &:hover {
+        opacity: 1;
+      }
+    }
   }
 }

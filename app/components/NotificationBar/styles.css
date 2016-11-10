@@ -11,10 +11,7 @@ ol.messages {
     color: #FFF;
     font-size: 1.1em;
     transition: .2s all ease;
-    opacity: .9;
-    &:hover {
-      opacity: 1;
-    }
+    opacity: 1;
     &.hidden {
       opacity: 0;
     }

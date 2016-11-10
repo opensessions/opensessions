@@ -170,6 +170,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         </div>
       </div>);
     }
+    const prices = this.getPrices();
     return (<div className={styles.descriptionSection}>
       <div className={styles.mainCol}>
         <h2>Description</h2>
@@ -180,17 +181,17 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         {preparation}
       </div>
       <div className={styles.sideCol}>
-        <div className={styles.info}>
+        {prices && prices.length ? (<div className={styles.info}>
           <h3>Pricing</h3>
           <div className={`${styles.floatingInfo} ${styles.pricing}`}>
-            {this.getPrices().map(band => (<div className={styles.price}>
+            {prices.map(band => (<div className={styles.price}>
               <span className={styles.label}>{band.type}</span>
               <span className={styles.amount}>
                 <img src="/images/tag.svg" role="presentation" /> £{band.price}
               </span>
             </div>))}
           </div>
-        </div>
+        </div>) : null}
         {session.leader ? (<div className={styles.info}>
           <h3>Session Leader</h3>
           <div className={styles.floatingInfo}>
@@ -323,7 +324,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
           </GoogleMap>}
         />
       </div>);
-      address = <div className={styles.address}>{session.location.split(',').map(line => <p key={line}>{line}</p>)}</div>;
+      address = <div className={styles.address}>{session.location.split(',').map(line => <p key={line}>{line}</p>)}<br /><p><a href={`https://www.google.com/maps?daddr=${session.location}`} target="blank">Get directions</a></p></div>;
     } else {
       map = (<div className={styles.noLocation}>
         <img src="/images/map-pin.svg" role="presentation" />

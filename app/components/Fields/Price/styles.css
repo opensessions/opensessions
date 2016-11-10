@@ -4,7 +4,7 @@
   background-color: #FFF;
   display: inline-block;
   &.hasFocus {
-    box-shadow: 0 0 .5em #00AEEF;
+    box-shadow: 0 0 .15em #00AEEF;
     border-color: #00AEEF;
   }
   & input {

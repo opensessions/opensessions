@@ -106,7 +106,6 @@ module.exports = (DataTypes) => ({
       location: DataTypes.STRING,
       locationData: DataTypes.JSON,
       meetingPoint: DataTypes.STRING,
-      attendanceType: DataTypes.STRING,
       pricing: DataTypes.JSON,
       quantity: DataTypes.INTEGER,
       genderRestriction: {
@@ -123,9 +122,6 @@ module.exports = (DataTypes) => ({
       contactPhone: DataTypes.STRING,
       contactEmail: DataTypes.STRING,
       schedule: DataTypes.JSON,
-      endTime: DataTypes.TIME,
-      startDate: DataTypes.DATE,
-      startTime: DataTypes.TIME,
       socialWebsite: DataTypes.STRING(256),
       socialFacebook: DataTypes.STRING(256),
       socialInstagram: DataTypes.STRING(64),
@@ -178,7 +174,7 @@ module.exports = (DataTypes) => ({
             return actions;
           },
           delete() {
-            return this.state === 'draft' ? this.destroy() : this.update({ state: 'deleted' });
+            return this.state === 'draft' ? this.destroy() : this.update({ state: 'deleted' }).then(() => Promise.resolve({ message: 'delete success' }));
           },
           duplicate(req) {
             const data = this.dataValues;

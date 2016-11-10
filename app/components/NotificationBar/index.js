@@ -40,12 +40,21 @@ export default class NotificationBar extends React.Component { // eslint-disable
         });
       });
     }, 30);
+    this.props.notifications.forEach(notification => {
+      if (notification.timeout) {
+        setTimeout(() => {
+          const target = Array.find(this.refs.list.children, item => item.dataset.id == notification.id); // eslint-disable-line eqeqeq
+          target.classList.add(styles.hidden);
+          this.onDismiss({ target });
+        }, notification.timeout);
+      }
+    });
   }
   render() {
     const { notifications, zIndex } = this.props;
     return (<Sticky zIndex={zIndex || 2}>
-      <ol className={styles.messages}>
-        {notifications ? notifications.map(message => (<li key={message.id} className={[styles.hidden, styles[message.status || 'standard']].join(' ')}>
+      <ol className={styles.messages} ref="list">
+        {notifications ? notifications.map(message => (<li key={message.id} data-id={message.id} className={[styles.hidden, styles[message.status || 'standard']].join(' ')}>
           <div className={styles.inner}>
             {typeof message.text === 'object' ? <span className={styles.text}>{message.text}</span> : <span className={styles.text} dangerouslySetInnerHTML={{ __html: message.text }} />}
             {message.actions ? <span className={styles.actions}>{message.actions.map(action => <a onClick={() => action.dispatch() && this.dismiss(message.id)}>{action.text}</a>)}</span> : null}

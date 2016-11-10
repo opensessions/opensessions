@@ -3,17 +3,17 @@ import React, { PropTypes } from 'react';
 import Fieldset from '../../components/Fieldset';
 import Form from '../../components/Form';
 import Field from '../../components/Field';
-import GenderSvg from '../../components/GenderSvg';
+import GenderSVG from '../../components/SVGs/Gender';
 import PublishHeader from '../../components/PublishHeader';
 import LoadingIcon from '../../components/LoadingIcon';
 import LoadingMessage from '../../components/LoadingMessage';
 
 import TextField from '../../components/TextField';
-import DateField from '../../components/DateField';
+import DateField from '../../components/Fields/Date';
 import TimeField from '../../components/TimeField';
 import BoolRadio from '../../components/Fields/BoolRadio';
 import IconRadio from '../../components/Fields/IconRadio';
-import Location from '../../components/LocationField';
+import Location from '../../components/Fields/Location';
 import SearchableSelect from '../../components/SearchableSelect';
 import MultiField from '../../components/MultiField';
 import ImageUpload from '../../components/Fields/ImageUpload';
@@ -50,9 +50,9 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     super(props);
     const MAX_AGE = 120;
     const GENDER_OPTIONS = [
-      { text: 'NONE (MIXED)', value: 'mixed', icon: <GenderSvg /> },
-      { text: 'MALE ONLY', value: 'male', icon: <GenderSvg only="male" /> },
-      { text: 'FEMALE ONLY', value: 'female', icon: <GenderSvg only="female" /> }
+      { text: 'NONE (MIXED)', value: 'mixed', icon: <GenderSVG /> },
+      { text: 'MALE ONLY', value: 'male', icon: <GenderSVG only="male" /> },
+      { text: 'FEMALE ONLY', value: 'female', icon: <GenderSVG only="female" /> }
     ];
     const DISABILITIES = ['Learning disability', 'Mental health condition', 'Physical impairment', 'Visual impairment', 'Deaf', 'Please ask for more info'];
     this.state = {
