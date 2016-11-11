@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 
 import IconRadio from '../IconRadio';
-import TextField from '../../TextField';
+import TextField from '../Text';
 import PriceField from '../Price';
 import Checkbox from '../Checkbox';
 import JSONList from '../JSONList';

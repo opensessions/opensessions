@@ -12,7 +12,8 @@ ol.messages {
     font-size: 1.1em;
     transition: .2s all ease;
     opacity: 1;
-    &.hidden {
+    &.hidden,
+    &.dismissed {
       opacity: 0;
     }
     &.standard {

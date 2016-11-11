@@ -1,7 +1,7 @@
-@import '../../containers/App/variables.css';
+@import '../../../containers/App/variables.css';
 
 input[type='text'].smallText {
-  width: 12em;
+  width: 14em;
 }
 
 .maxLength {

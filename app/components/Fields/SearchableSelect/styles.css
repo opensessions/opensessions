@@ -5,9 +5,6 @@
   max-width: 100%;
   & > input {
     cursor: default;
-    &:focus {
-      cursor: text;
-    }
     &.output {
       position: absolute;
       left: 0;

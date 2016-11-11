@@ -16,3 +16,6 @@
 - Organiser messaging functionality
 - Partial Server Side Rendering
 - Locale config (Google map country and timezone) in env
+
+#### 0.2.2
+- Complex pricing

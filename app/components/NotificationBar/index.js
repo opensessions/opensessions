@@ -4,6 +4,8 @@ import Sticky from '../Sticky';
 
 import styles from './styles.css';
 
+const ANIMATION_TIMEOUT = 200;
+
 export default class NotificationBar extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
     notifications: PropTypes.arrayOf(PropTypes.shape({
@@ -23,29 +25,36 @@ export default class NotificationBar extends React.Component { // eslint-disable
     const { target } = event;
     const { id } = target.dataset;
     if (id) {
-      target.parentNode.parentNode.classList.add(styles.hidden);
+      target.parentNode.parentNode.classList.add(styles.dismissed);
       setTimeout(() => {
         this.dismiss(id);
-      }, 200);
+      }, ANIMATION_TIMEOUT);
     }
+  }
+  getItems() {
+    let items = [];
+    Array.map(document.getElementsByClassName(styles.messages), list => {
+      items = items.concat(Array.map(list.children, li => li));
+    });
+    return items;
   }
   dismiss = id => {
     this.props.notifications.find(msg => msg.id == id).onDismiss(); // eslint-disable-line eqeqeq
   }
   unhideMessages() {
     setTimeout(() => {
-      Array.forEach(document.getElementsByClassName(styles.messages), messageList => {
-        Array.forEach(messageList.children, li => {
-          li.classList.remove(styles.hidden);
-        });
+      this.getItems().forEach(li => {
+        li.classList.remove(styles.hidden);
       });
     }, 30);
     this.props.notifications.forEach(notification => {
       if (notification.timeout) {
+        const targets = this.getItems().filter(item => item.dataset.id == notification.id); // eslint-disable-line eqeqeq
         setTimeout(() => {
-          const target = Array.find(this.refs.list.children, item => item.dataset.id == notification.id); // eslint-disable-line eqeqeq
-          target.classList.add(styles.hidden);
-          this.onDismiss({ target });
+          targets.forEach(li => li.classList.add(styles.dismissed));
+          setTimeout(() => {
+            this.dismiss(notification.id);
+          }, ANIMATION_TIMEOUT);
         }, notification.timeout);
       }
     });
@@ -53,7 +62,7 @@ export default class NotificationBar extends React.Component { // eslint-disable
   render() {
     const { notifications, zIndex } = this.props;
     return (<Sticky zIndex={zIndex || 2}>
-      <ol className={styles.messages} ref="list">
+      <ol className={styles.messages}>
         {notifications ? notifications.map(message => (<li key={message.id} data-id={message.id} className={[styles.hidden, styles[message.status || 'standard']].join(' ')}>
           <div className={styles.inner}>
             {typeof message.text === 'object' ? <span className={styles.text}>{message.text}</span> : <span className={styles.text} dangerouslySetInnerHTML={{ __html: message.text }} />}

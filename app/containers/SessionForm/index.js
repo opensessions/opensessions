@@ -8,19 +8,19 @@ import PublishHeader from '../../components/PublishHeader';
 import LoadingIcon from '../../components/LoadingIcon';
 import LoadingMessage from '../../components/LoadingMessage';
 
-import TextField from '../../components/TextField';
+import TextField from '../../components/Fields/Text';
 import DateField from '../../components/Fields/Date';
 import TimeField from '../../components/TimeField';
 import BoolRadio from '../../components/Fields/BoolRadio';
 import IconRadio from '../../components/Fields/IconRadio';
 import Location from '../../components/Fields/Location';
-import SearchableSelect from '../../components/SearchableSelect';
+import SearchableSelect from '../../components/Fields/SearchableSelect';
 import MultiField from '../../components/MultiField';
 import ImageUpload from '../../components/Fields/ImageUpload';
-import Relation from '../../components/RelationField';
+import Relation from '../../components/Fields/Relation';
 import Optional from '../../components/OptionalField';
 import JSONList from '../../components/Fields/JSONList';
-import NumField from '../../components/NumField';
+import NumberField from '../../components/Fields/Number';
 import PricingField from '../../components/Fields/Pricing';
 
 import { Link } from 'react-router';
@@ -83,10 +83,10 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
         location: () => <Location {...this.getAttr('location')} dataValue={this.state.session.locationData} onDataChange={value => this.updateSession('locationData', value)} />,
         meetingPoint: () => <TextField multi validation={{ maxLength: 500 }} {...this.getAttr('meetingPoint')} />,
         pricing: () => <PricingField {...this.getAttr('pricing')} />,
-        quantity: () => <NumField {...this.getAttr('quantity')} validation={{ min: 0 }} />,
+        quantity: () => <NumberField {...this.getAttr('quantity')} validation={{ min: 0 }} />,
         genderRestriction: () => <IconRadio options={GENDER_OPTIONS} {...this.getAttr('genderRestriction')} />,
-        minAgeRestriction: () => <Optional {...this.getAttr('minAgeRestriction')} component={{ type: NumField, props: { validation: { min: 0, max: this.state.session.maxAgeRestriction || MAX_AGE }, format: ': years old' } }} null="0" />,
-        maxAgeRestriction: () => <Optional {...this.getAttr('maxAgeRestriction')} component={{ type: NumField, props: { validation: { min: this.state.session.minAgeRestriction || 0, max: MAX_AGE }, format: ': years old' } }} null="0" />,
+        minAgeRestriction: () => <Optional {...this.getAttr('minAgeRestriction')} component={{ type: NumberField, props: { validation: { min: 0, max: this.state.session.maxAgeRestriction || MAX_AGE }, format: ': years old' } }} null="0" />,
+        maxAgeRestriction: () => <Optional {...this.getAttr('maxAgeRestriction')} component={{ type: NumberField, props: { validation: { min: this.state.session.minAgeRestriction || 0, max: MAX_AGE }, format: ': years old' } }} null="0" />,
         abilityRestriction: () => <MultiField options={DISABILITIES} {...this.getAttr('abilityRestriction')} />,
         contactName: () => <TextField {...this.getAttr('contactName')} />,
         contactEmail: () => <SearchableSelect {...this.getAttr('contactEmail')} onChange={value => this.updateSession('contactEmail', value || '')} options={this.getEmails()} addItem={this.addEmail} />,

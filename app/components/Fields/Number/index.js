@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 
 import styles from './styles.css';
 
-export default class NumField extends React.Component { // eslint-disable-line react/prefer-stateless-function
+export default class NumberField extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     onChange: PropTypes.func,
