@@ -4,7 +4,7 @@ import SearchableSelect from '../SearchableSelect';
 
 import styles from './styles.css';
 
-import { apiModel } from '../../utils/api';
+import { apiModel } from '../../../utils/api';
 
 export default class RelationField extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {

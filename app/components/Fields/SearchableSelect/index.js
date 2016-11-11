@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-import { apiFetch } from '../../utils/api';
+import { apiFetch } from '../../../utils/api';
 
 import styles from './styles.css';
 

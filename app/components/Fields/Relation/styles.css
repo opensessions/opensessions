@@ -1,4 +1,4 @@
-@import '../../containers/App/variables.css';
+@import '../../../containers/App/variables.css';
 
 .addRelation {
   background-color: var(--actionColor);
