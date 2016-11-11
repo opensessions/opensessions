@@ -5,9 +5,24 @@
   font-size: 1.1em;
   width: 36em;
   text-align: center;
+  &.small {
+    width: 24em;
+  }
+  &.large {
+    width: 42em;
+    padding: 2.5em;
+  }
   & h1 {
     font-weight: normal;
     margin: .5em auto;
+  }
+  & h2 {
+    font-size: 1.1em;
+    font-weight: bold;
+  }
+  & h3 {
+    font-size: 1.1em;
+    font-weight: normal;
   }
   & p {
     margin: .5em auto;

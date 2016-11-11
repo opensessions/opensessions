@@ -1,0 +1,18 @@
+.feature {
+  & p {
+    margin: 1em auto;
+  }
+}
+
+.sentTick {
+  display: inline-block;
+  font-size: 1em;
+  margin: 2em auto;
+  padding: 1em;
+  border-radius: 50%;
+  background: #FFF;
+  & img {
+    width: 4em;
+    height: 4em;
+  }
+}

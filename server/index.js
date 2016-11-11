@@ -59,7 +59,8 @@ app.use((req, res, done) => {
 });
 
 // Webhooks
-// app.use('/hooks', hooks());
+const hooks = require('./middlewares/hooks');
+app.use('/hooks', hooks());
 
 // Webpack frontend (hot reloading etc for dev)
 app.use(frontend(webpackConfig));

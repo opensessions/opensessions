@@ -1,5 +1,5 @@
 .box {
-  display: flex;
+  display: inline-flex;
 }
 
 .checkbox {

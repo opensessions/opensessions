@@ -7,6 +7,7 @@ import Checkbox from '../Checkbox';
 import JSONList from '../JSONList';
 import PriceSVG from '../../SVGs/Price';
 import PaymentMethodSVG from '../../SVGs/PaymentMethod';
+import FeatureModal from '../../../containers/Modals/Feature';
 
 import styles from './styles.css';
 
@@ -27,7 +28,8 @@ export default class PricingField extends React.Component { // eslint-disable-li
     onChange: PropTypes.func
   };
   static contextTypes = {
-    notify: PropTypes.func
+    notify: PropTypes.func,
+    modal: PropTypes.object
   }
   setFree = () => {
     const { value, onChange } = this.props;
@@ -124,7 +126,7 @@ export default class PricingField extends React.Component { // eslint-disable-li
       {isPaid ? this.renderPaid() : this.renderFree()}
       <div className={styles.notice}>
         <h2><strong>Please note:</strong> attendees will be able to turn up at your session without reserving a spot</h2>
-        <p><a onClick={() => this.context.notify('Thanks for letting us know! We\'re working on the feature, which will hopefully be ready soon!')}>Need to know who's coming?</a></p>
+        <p><a onClick={() => this.context.modal.dispatch({ component: <FeatureModal feature="Booking & attendee list" /> })}>Need to know who's coming?</a></p>
       </div>
     </div>);
   }
