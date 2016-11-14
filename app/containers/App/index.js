@@ -96,8 +96,10 @@ export default class App extends React.Component { // eslint-disable-line react/
       }
 
       if (Date.now() - createdAt.getTime() <= 60000) {
-        this.notify('<b>Congratulations!</b> You have created your account', 'success');
-        this.context.router.push('/session/add');
+        this.notify('<b>Congratulations!</b> You have created your account - redirecting you to the add a session page', 'success');
+        setTimeout(() => {
+          this.context.router.push('/session/add');
+        }, 2500);
       }
 
       return true;

@@ -18,7 +18,7 @@ import SearchableSelect from '../../components/Fields/SearchableSelect';
 import MultiField from '../../components/MultiField';
 import ImageUpload from '../../components/Fields/ImageUpload';
 import Relation from '../../components/Fields/Relation';
-import Optional from '../../components/OptionalField';
+import Optional from '../../components/Fields/Optional';
 import JSONList from '../../components/Fields/JSONList';
 import NumberField from '../../components/Fields/Number';
 import PricingField from '../../components/Fields/Pricing';

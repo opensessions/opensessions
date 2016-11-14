@@ -1,5 +1,6 @@
 .box {
   display: inline-flex;
+  vertical-align: middle;
 }
 
 .checkbox {

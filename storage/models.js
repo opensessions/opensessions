@@ -154,11 +154,16 @@ module.exports = (DataTypes) => ({
               }).join(', ')}`);
             }
             if (session.schedule && session.schedule.length) {
-              if (session.schedule.filter(slot => !(slot.startDate && slot.startTime && slot.endTime)).length) {
+              if (!session.schedule.every(slot => slot.startDate && slot.startTime && slot.endTime)) {
                 errors.push('You must complete <a data-tab="schedule" data-field="schedule">schedule</a> information');
               }
             } else {
               errors.push('You must add a <a data-tab="schedule" data-field="schedule">schedule</a>');
+            }
+            if (session.pricing && session.pricing.prices && session.pricing.prices.length) {
+              if (!session.pricing.prices.every(band => band.price)) {
+                errors.push('You need to complete <a data-tab="pricing" data-field="pricing">pricing</a> information');
+              }
             }
             if (errors.length) throw new Error(`<b>We can't publish this yet!</b> ${errors.join('. ')}`);
             return true;
