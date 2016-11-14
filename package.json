@@ -179,7 +179,7 @@
     "sequelize-cli": "^2.4.0",
     "transform-loader": "^0.2.3",
     "webpack": "2.1.0-beta.20",
-    "whatwg-fetch": "^1.0.0"
+    "whatwg-fetch": "^2.0.0"
   },
   "devDependencies": {
     "babel-core": "^6.7.7",
