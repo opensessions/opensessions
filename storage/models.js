@@ -145,13 +145,11 @@ module.exports = (DataTypes) => ({
               location: { tab: 'location', pretty: 'Address' }
             };
             const errors = [];
-            const missingFields = Object.keys(required).filter(field => !session[field]);
+            const missingFields = Object.keys(required).filter(key => !session[key]).map(key => required[key]);
             if (missingFields.length) {
-              errors.push(`Please enter a ${missingFields.map((field, key) => {
-                const data = required[field];
-                const name = data.pretty || field;
-                return `${key && key + 1 === missingFields.length ? 'and ' : ''}<a data-tab="${data.tab}" data-field="${name}">${name}</a>`;
-              }).join(', ')}`);
+              errors.push(`Please enter a ${missingFields
+                .map((field, key) => `${key && key + 1 === missingFields.length ? 'and ' : ''}<a data-tab="${field.tab}" data-field="${field.pretty}">${field.pretty}</a>`)
+                .join(', ')}`);
             }
             if (session.schedule && session.schedule.length) {
               if (!session.schedule.every(slot => slot.startDate && slot.startTime && slot.endTime)) {

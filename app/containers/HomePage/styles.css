@@ -14,7 +14,7 @@
 @keyframes appear {
   from {
     opacity: 0;
-    transform: scale(1.25);
+    transform: scale(.9);
   }
   to {
     opacity: 1;

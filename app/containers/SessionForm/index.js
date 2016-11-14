@@ -177,7 +177,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
         this.setState({ session: res.instance, isSaving: false, isLoading: false });
       })
       : apiModel.new('session', location.query).then(res => {
-        this.context.notify('You have created a new session', 'success');
+        if (!(location.hash && location.hash === '#welcome')) this.context.notify('You have created a new session', 'success');
         this.context.router.push(`${res.instance.href}/edit`);
       });
   }

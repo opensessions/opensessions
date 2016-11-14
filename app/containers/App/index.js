@@ -53,7 +53,6 @@ export default class App extends React.Component { // eslint-disable-line react/
     return {
       user: this.state.profile,
       locks: this.state.locks ? this.state.locks : { signup: null, login: null },
-      router: this.context.router,
       notifications: this.state.notifications,
       notify: this.notify,
       modal: { dispatch: this.modal, close: () => this.setState({ modal: null }) },
@@ -96,10 +95,10 @@ export default class App extends React.Component { // eslint-disable-line react/
       }
 
       if (Date.now() - createdAt.getTime() <= 60000) {
-        this.notify('<b>Congratulations!</b> You have created your account - redirecting you to the add a session page', 'success');
+        this.notify('<b>Congratulations!</b> You have created your account', 'success');
         setTimeout(() => {
-          this.context.router.push('/session/add');
-        }, 2500);
+          this.context.router.push('/session/add#welcome');
+        }, 2000);
       }
 
       return true;
