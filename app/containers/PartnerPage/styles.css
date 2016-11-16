@@ -36,12 +36,7 @@
       }
     }
   }
-  & a.button {
-    display: inline-block;
-    background-color: var(--actionColor);
-    color: #FFF;
-    padding: 1em;
-    line-height: 1;
+  & a {
     margin: 1em auto;
     font-size: 1.5em;
   }
