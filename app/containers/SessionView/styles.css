@@ -14,6 +14,17 @@
   margin: auto;
 }
 
+@keyframes appear {
+  from {
+    opacity: 0;
+    transform: translateY(-2em);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .detailsSection {
   max-width: var(--sectionWidth);
   text-align: left;
@@ -24,6 +35,10 @@
   flex-wrap: wrap;
   align-items: stretch;
   justify-content: center;
+  opacity: 0;
+  animation: appear 1s;
+  animation-delay: .5s;
+  animation-fill-mode: forwards;
   & .detailsImg,
   & .detailsText {
     padding: .5em;

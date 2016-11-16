@@ -18,7 +18,7 @@ export default class Header extends React.Component { // eslint-disable-line rea
   }
   render() {
     const addSession = <span><span className={styles.plus}>+</span> Add a session</span>;
-    return (<Sticky zIndex={2}><header className={styles.header}>
+    return (<Sticky zIndex={4}><header className={styles.header}>
       <div className={styles.pageMargin}>
         <Link to="/" className={styles.logoLink}>
           <img src="/images/open-sessions.svg" alt="Open Sessions" className={styles.logo} />

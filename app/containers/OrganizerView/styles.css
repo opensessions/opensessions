@@ -9,12 +9,15 @@
   & .name {
     background: #FFF;
     padding: .5em 0;
+    animation: slide-down .75s;
     & .container {
       display: flex;
       align-items: center;
       flex-wrap: wrap;
       justify-content: space-around;
       & a.rename {
+        display: inline-block;
+        vertical-align: text-top;
         color: #777;
         font-size: .8em;
         opacity: .4;
@@ -101,8 +104,18 @@
   }
 }
 
+@keyframes slide-down {
+  from {
+    transform: translateY(4em);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
 .banner {
-  background-color: #555;
+  background-color: #FFF;
+  overflow: hidden;
 }
 
 .bannerImage {

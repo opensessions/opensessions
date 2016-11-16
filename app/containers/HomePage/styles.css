@@ -11,108 +11,53 @@
   }
 }
 
-@keyframes appear {
-  from {
-    opacity: 0;
-    transform: scale(.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
 .landing {
   text-align: center;
-  & section {
-    background-color: #EEE;
-    padding: 2em 0;
-    &.featured {
-      background-color: var(--lightBlue);
-      color: #FFF;
-      & h1 {
-        color: inherit;
+  & .sections {
+    & section {
+      background-color: #EEE;
+      padding: 2em 0;
+      &.featured {
+        background-color: var(--lightBlue);
+        color: #FFF;
+        & h1 {
+          color: inherit;
+        }
       }
-    }
-    &.heading {
-      background: var(--darkBlue) url('/images/landing-hero.jpg') center center no-repeat;
-      background-size: cover;
-      color: #FFF;
-      & .container {
-        animation: appear 1.5s;
-        transition: 1.5s ease opacity;
-      }
-      & h1 {
-        color: inherit;
-        font-size: 2em;
+      & .columns {
+        & > .column {
+          padding: 1em;
+        }
       }
       & h1,
       & h2 {
-        text-shadow: 0 0 .1em rgba(0, 0, 0, .5);
+        font-weight: normal;
+        margin: 1.5rem auto;
+        padding: 0;
+        line-height: 1.2;
+      }
+      & h1 {
+        font-family: Belgrano, sans-serif;
+        font-size: 1.8em;
+        color: var(--lightBlue);
       }
       & h2 {
-        font-weight: 400;
+        font-size: 1.4em;
+        max-width: 60rem;
+        font-weight: 300;
+      }
+      & p {
+        margin: 2rem auto;
+        max-width: 96rem;
       }
       & a {
-        background: none;
-        margin: .5em 0;
-        padding: .75em 2em;
-        border: .2em solid;
-        font-size: 1.2em;
+        display: inline-block;
         font-family: Belgrano, sans-serif;
-        line-height: 1;
-        text-decoration: none;
-        transition: .2s ease all;
-        &:hover {
-          background-color: #1B91CD;
-          border-color: #1B91CD;
-          color: #FFF;
-        }
-        &:active {
-          transform: scale(.92);
-        }
-        & b {
-          font-size: 2em;
-          line-height: 0;
-          vertical-align: middle;
-          padding: 0 .1em .1em 0;
-          display: inline-block;
-        }
+        padding: .5em 1em;
+        font-size: 1.5em;
+        color: #FFF;
+        background-color: #1B91CD;
       }
-    }
-    & .columns {
-      & > .column {
-        padding: 1em;
-      }
-    }
-    & h1,
-    & h2 {
-      font-weight: normal;
-      margin: 1.5rem auto;
-      padding: 0;
-      line-height: 1.2;
-    }
-    & h1 {
-      font-family: Belgrano, sans-serif;
-      font-size: 1.8em;
-      color: var(--lightBlue);
-    }
-    & h2 {
-      font-size: 1.4em;
-      max-width: 60rem;
-      font-weight: 300;
-    }
-    & p {
-      margin: 2rem auto;
-      max-width: 96rem;
-    }
-    & a {
-      display: inline-block;
-      font-family: Belgrano, sans-serif;
-      padding: .5em 1em;
-      font-size: 1.5em;
-      color: #FFF;
-      background-color: #1B91CD;
     }
   }
 }
@@ -121,16 +66,6 @@
   .landing {
     font-size: 1.1em;
     & section {
-      &.heading {
-        padding: 4em 0;
-        font-size: 1.1em;
-        & h1 {
-          font-size: 2.4em;
-        }
-        & h2 {
-          font-size: 1.6em;
-        }
-      }
       & .columns {
         display: flex;
         flex-wrap: wrap;

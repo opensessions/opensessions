@@ -1,5 +1,14 @@
 @import '../App/variables.css';
 
+@keyframes appear {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 .tile {
   background: #FFF;
   max-width: var(--tileWidth);
@@ -10,6 +19,10 @@
   flex-wrap: wrap;
   justify-content: center;
   & .imgCol {
+    opacity: 0;
+    animation: appear ease 1s;
+    animation-fill-mode: forwards;
+    animation-duration: 1s;
     padding: .25em;
     text-align: center;
     & img {
@@ -23,6 +36,7 @@
     flex-wrap: wrap;
     flex-direction: column;
     justify-content: space-between;
+    animation-delay: .4s;
     & .info {
       & .location {
         color: #777;
@@ -83,6 +97,7 @@
   & .schedules {
     flex-basis: 100%;
     padding: .5em 1em 1em;
+    animation-delay: .8s;
     & > div {
       font-weight: bold;
       text-transform: uppercase;
