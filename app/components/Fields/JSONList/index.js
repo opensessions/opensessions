@@ -1,5 +1,7 @@
 import React, { PropTypes } from 'react';
 
+import Button from '../../Button';
+
 import styles from './styles.css';
 
 const duplicateObject = original => {
@@ -58,7 +60,7 @@ export default class JSONListField extends React.Component { // eslint-disable-l
     this.props.onChange(value);
   }
   renderAdd() {
-    return <a onClick={this.addEmpty} className={styles.addButton}>+ {this.props.addText}</a>;
+    return <Button onClick={this.addEmpty} className={styles.addButton}><b>+</b> {this.props.addText}</Button>;
   }
   renderClear(key) {
     return <span className={styles.delButton} onClick={this.clearRow} key={key} data-key={key}><b>×</b> Clear row</span>;

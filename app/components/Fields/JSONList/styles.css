@@ -38,14 +38,23 @@
 }
 
 a.addButton {
-  display: inline-block;
   background-color: var(--liveColor);
-  font-family: Belgrano, serif;
   font-size: 1.2em;
-  line-height: 1;
   color: #FFF;
   margin: .5em 0;
-  padding: .5em 1em;
+  &:hover {
+    background-color: var(--liveColorDark);
+  }
+  &:active {
+    background-color: var(--liveColorDark);
+  }
+  & b {
+    font-size: 1.5em;
+    font-weight: bold;
+    display: inline-block;
+    line-height: 0;
+    vertical-align: middle;
+  }
 }
 
 .delButton {

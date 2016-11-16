@@ -8,6 +8,7 @@
   --defaultColor: var(--darkBlue);
   --actionColor: var(--lightBlue);
   --liveColor: #88C540;
+  --liveColorDark: #6FA72D;
   --draftColor: #E68229;
   --errorColor: #DE2020;
   --grey: #E6E6E6;

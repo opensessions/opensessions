@@ -5,10 +5,11 @@ import styles from './styles.css';
 export default class Button extends React.PureComponent {
   static propTypes = {
     children: PropTypes.node,
+    className: PropTypes.string,
     onClick: PropTypes.func
   };
   render() {
-    return (<a onClick={this.props.onClick} className={styles.button}>
+    return (<a onClick={this.props.onClick} className={[styles.button, this.props.className].join(' ')}>
       {this.props.children}
     </a>);
   }
