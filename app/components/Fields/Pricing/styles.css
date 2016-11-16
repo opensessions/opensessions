@@ -74,7 +74,7 @@
   display: flex;
   align-items: flex-start;
   margin: 2em auto;
-  padding: 1em;
+  padding: 1.5em;
   background: #FFF;
   box-shadow: .2em .2em .25em rgba(0, 0, 0, .25);
   & h2 {
