@@ -4,6 +4,7 @@ import { Link } from 'react-router';
 import NotificationBar from '../NotificationBar';
 import FieldsetStatusSVG from '../SVGs/FieldsetStatus';
 import GenericForm from '../GenericForm';
+import Button from '../Button';
 
 import styles from './styles.css';
 import fieldStyles from '../Field/styles.css';
@@ -102,8 +103,8 @@ export default class Form extends React.Component { // eslint-disable-line react
   renderActionButtons() {
     const slugs = this.getSlugs();
     return (<div className={styles.actionButtons}>
-      {slugs[1] ? <Link to={this.getSlugURL(slugs[1])}>Next</Link> : <a onKeyUp={this.handlePublish} onClick={this.handlePublish} tabIndex="0">Publish</a>}
-      {slugs[-1] ? <Link className={styles.backButton} to={this.getSlugURL(slugs[-1])}>Back</Link> : null}
+      {slugs[1] ? <Button to={this.getSlugURL(slugs[1])}>Next</Button> : <Button onClick={this.props.onPublish}>Publish</Button>}
+      {slugs[-1] ? <Button className={styles.backButton} to={this.getSlugURL(slugs[-1])}>Back</Button> : null}
     </div>);
   }
   render() {

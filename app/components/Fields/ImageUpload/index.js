@@ -72,7 +72,7 @@ export default class ImageUploadField extends React.Component { // eslint-disabl
     return (<div className={[styles.imageField, isUploading ? styles.loading : null].join(' ')} onDragOver={this.onDragOver} onDragLeave={this.onDragLeave} onDrop={this.onDrop}>
       {preview ? <img src={value ? `${value}?${modified || ''}` : '/images/placeholder.png'} role="presentation" className={styles.preview} /> : null}
       <div className={styles.buttons}>
-        {buttons.map(button => (<label className={styles.choose} onClick={button.onClick} key={button.key}>
+        {buttons.map(button => (<label className={styles.choose} onClick={button.onClick} onKeyUp={event => event.keyCode === 13 && event.target.click()} key={button.key} tabIndex={0}>
           {button.icon} <span className={styles.text}>{button.text}</span> {button.input || null}
         </label>))}
       </div>
