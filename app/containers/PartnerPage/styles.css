@@ -17,7 +17,7 @@
     margin: .5em auto;
     color: var(--actionColor);
   }
-  & section {
+  & .section {
     max-width: 92rem;
     margin: auto;
     padding: 3em 1em;

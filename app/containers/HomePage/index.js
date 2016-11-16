@@ -5,6 +5,7 @@ import Helmet from 'react-helmet';
 
 import Authenticated from '../../components/Authenticated';
 import Banner from '../../components/Banner';
+import Button from '../../components/Button';
 import NotificationBar from '../../components/NotificationBar';
 import SessionList from '../SessionList';
 import LoadingMessage from '../../components/LoadingMessage';
@@ -29,7 +30,7 @@ export default class HomePage extends React.Component { // eslint-disable-line r
           <p>Open Sessions provides you with one place to easily upload and update your session details, and makes those session details visible to thousands of potential participants across the best sports, fitness and health focussed websites on the web.</p>
           <p>And it's free. Forever.</p>
           <Authenticated button={['Increase the visibility of my sessions']}>
-            <p><Link to="/session/add" className={styles.button}>Increase the visibility of my sessions</Link></p>
+            <p><Button to="/session/add">Increase the visibility of my sessions</Button></p>
           </Authenticated>
         </div>
       </section>
@@ -51,7 +52,7 @@ export default class HomePage extends React.Component { // eslint-disable-line r
         <div className={styles.container}>
           <h1>Do you already use a system to manage your sessions?</h1>
           <p>If you already use a booking system, club management system, or similar, then we can connect directly to that system to access the sessions that you want to promote. Get in touch with us to find out more.</p>
-          <Link to="/partner" className={styles.button}>Become a partner</Link>
+          <Button to="/partner">Become a partner</Button>
         </div>
       </section>
     </div>);

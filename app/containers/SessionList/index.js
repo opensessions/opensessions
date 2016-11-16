@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 
 import { apiModel } from '../../utils/api';
 
+import Button from '../../components/Button';
 import SessionTileView from '../SessionTileView';
 import LoadingMessage from '../../components/LoadingMessage';
 
@@ -57,7 +58,7 @@ export default class SessionList extends React.Component { // eslint-disable-lin
       <ol className={styles.list}>
         {sessions.map(session => <li key={session.uuid}><SessionTileView session={session} /></li>)}
       </ol>
-      {hideButton ? null : <p><Link to="/session/add" className={styles.add}>+ Add a session</Link></p>}
+      {hideButton ? null : <p><Button to="/session/add">+ Add a session</Button></p>}
     </div>);
   }
 }
