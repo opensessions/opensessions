@@ -2,7 +2,7 @@
 
 .iconRadio {
   & ol {
-    margin: .5em auto;
+    margin: 1em auto .5em;
     display: flex;
     justify-content: space-between;
     color: #999;
@@ -17,7 +17,6 @@
           color: #FFF;
         }
         & svg {
-          margin: 0 .25em;
           font-size: 1.25em;
         }
         & label {
@@ -31,10 +30,9 @@
       text-align: center;
       list-style: none;
       & label {
-        padding: .25em;
+        padding: .5em;
         cursor: pointer;
         display: block;
-        transition: .2s all ease;
         outline-color: inherit;
         &.inline {
           & svg {
@@ -43,6 +41,13 @@
           }
         }
         &.notInline {
+          &:focus {
+            outline: none;
+            box-shadow: 0 0 .15em .05em, inset 0 0 .15em .05em;
+            &:active {
+              box-shadow: none;
+            }
+          }
           & svg,
           & img {
             display: block;
@@ -53,6 +58,7 @@
           }
         }
       }
+      &:hover,
       &.selected {
         color: var(--actionColor);
         & label {

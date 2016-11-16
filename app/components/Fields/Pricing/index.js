@@ -37,13 +37,13 @@ export default class PricingField extends React.Component { // eslint-disable-li
   }
   setPaid = () => {
     const { value, onChange } = this.props;
-    if (!value || value.type !== 'paid') onChange({ type: 'paid', prices: [{ price: '' }] });
+    if (!value || value.type !== 'paid') onChange({ type: 'paid', prices: [{}] });
   }
   setPaidMulti = () => {
     const { value } = this.props;
     const { prices } = value;
-    value.type = 'paid';
-    value.prices = ((prices && prices.length) ? prices : [{ price: '' }]).concat({ price: '' });
+    value.type = 'multi';
+    value.prices = (prices && prices.length) ? prices : [{}];
     this.props.onChange(value);
   }
   setPaidSimple = () => {
@@ -81,9 +81,9 @@ export default class PricingField extends React.Component { // eslint-disable-li
     const { value } = this.props;
     return (<ol className={styles.questions}>
       <li>
-        {value.prices.length > 1 ? this.renderPrices() : this.renderPrice()}
+        {value.type === 'multi' ? this.renderPrices() : this.renderPrice()}
       </li>
-      <li>
+      <li className={styles.bind}>
         <label>What payment methods do you accept?</label>
         <IconRadio value={value.paymentMethods} options={METHODS_OPTIONS} onChange={this.setMethod} />
       </li>
@@ -100,7 +100,7 @@ export default class PricingField extends React.Component { // eslint-disable-li
     return (<div>
       <label>How much does this session cost?</label>
       <div><PriceField value={value.prices[0] ? value.prices[0].price : ''} onChange={this.changePrice} /></div>
-      <div><a onClick={this.setPaidMulti}>More than one price?</a></div>
+      <div className={styles.changeType}><a onClick={this.setPaidMulti}>More than one price?</a></div>
     </div>);
   }
   renderPrices() {
@@ -109,24 +109,28 @@ export default class PricingField extends React.Component { // eslint-disable-li
       <div><JSONList
         value={value.prices}
         onChange={this.setPrices}
+        onAddEmpty={() => ({})}
         addText="Add attendee type"
         components={[
           { label: 'Type of attendee', Component: TextField, props: { name: 'type', size: 'S', placeholder: 'E.g. Adults / concessions' } },
           { label: 'Price', Component: PriceField, props: { name: 'price' } }
         ]}
       /></div>
-      <div><a onClick={this.setPaidSimple}>Wait! My session has one simple price for everybody</a></div>
+      <div className={styles.changeType}><a onClick={this.setPaidSimple}>Wait! My session has one simple price for everybody</a></div>
     </div>);
   }
   render() {
     const { value } = this.props;
-    const isPaid = value && value.type === 'paid';
+    const isPaid = value && ['paid', 'multi'].indexOf(value.type) !== -1;
     return (<div className={styles.field}>
       <div className={styles.isPaid}><IconRadio options={PAYMENT_OPTIONS} onChange={val => (val === 'free' ? this.setFree() : this.setPaid())} value={isPaid ? 'paid' : 'free'} inline /></div>
       {isPaid ? this.renderPaid() : this.renderFree()}
       <div className={styles.notice}>
-        <h2><strong>Please note:</strong> attendees will be able to turn up at your session without reserving a spot</h2>
-        <p><a onClick={() => this.context.modal.dispatch({ component: <FeatureModal feature="Booking & attendee list" /> })}>Need to know who's coming?</a></p>
+        <span className={styles.iconAlert}>!</span>
+        <div className={styles.noticeText}>
+          <h2><strong>Please note:</strong> attendees will be able to turn up at your session without reserving a spot</h2>
+          <p><a onClick={() => this.context.modal.dispatch({ component: <FeatureModal feature="Booking & attendee list" /> })}>Need to know who's coming?</a></p>
+        </div>
       </div>
     </div>);
   }

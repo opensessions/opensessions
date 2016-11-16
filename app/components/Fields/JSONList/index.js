@@ -33,13 +33,21 @@ export default class JSONListField extends React.Component { // eslint-disable-l
     let newRow;
     if (value.length) {
       newRow = duplicateObject(value.slice(-1)[0]);
-      if (onAddEmpty) onAddEmpty(newRow);
+      if (onAddEmpty) newRow = onAddEmpty(newRow);
     } else {
       newRow = duplicateObject(empty);
     }
     value.push(newRow);
     onChange(value);
     this.setState({ empty: {} });
+  }
+  clearRow = event => {
+    let { target } = event;
+    if (!target.dataset.key) target = target.parentNode;
+    const key = parseInt(target.dataset.key, 10);
+    const value = this.getValue();
+    value[key] = {};
+    this.props.onChange(value);
   }
   deleteRow = event => {
     let { target } = event;
@@ -49,11 +57,14 @@ export default class JSONListField extends React.Component { // eslint-disable-l
     value = value.filter((row, key) => key !== deleteKey);
     this.props.onChange(value);
   }
-  renderAddButton() {
+  renderAdd() {
     return <a onClick={this.addEmpty} className={styles.addButton}>+ {this.props.addText}</a>;
   }
-  renderDeleteButton(key) {
-    return <img src="/images/garbage.svg" role="presentation" className={styles.delButton} onClick={this.deleteRow} key={key} data-key={key} />;
+  renderClear(key) {
+    return <span className={styles.delButton} onClick={this.clearRow} key={key} data-key={key}><b>×</b> Clear row</span>;
+  }
+  renderDelete(key) {
+    return <span className={styles.delButton} onClick={this.deleteRow} key={key} data-key={key}><b>×</b> Delete row</span>;
   }
   renderLabels() {
     const { components } = this.props;
@@ -98,13 +109,13 @@ export default class JSONListField extends React.Component { // eslint-disable-l
     const { value, maxLength } = this.props;
     let { empty } = this.state;
     if (!empty) empty = {};
+    // const rowIsEmpty = row => Object.keys(row).length === 0;
     return (<div className={styles.listBox}>
       <ol className={styles.list}>
         {this.renderLabels()}
-        {value && value.length ? null : this.renderRow('-1', empty, null)}
-        {value ? value.map((row, key) => this.renderRow(key, row, this.renderDeleteButton(key))) : null}
+        {value ? value.map((row, key) => this.renderRow(key, row, this.renderDelete(key))) : null}
       </ol>
-      {!value || (!maxLength || value.length < maxLength) ? this.renderAddButton() : <p className={styles.maxReached}>Open Sessions is still in 'beta' mode. You have reached the maximum number of sessions that can be scheduled</p>}
+      {!value || (!maxLength || value.length < maxLength) ? this.renderAdd() : <p className={styles.maxReached}>Open Sessions is still in 'beta' mode. You have reached the maximum number of sessions that can be scheduled</p>}
     </div>);
   }
 }

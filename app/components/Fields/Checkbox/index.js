@@ -10,11 +10,15 @@ export default class Checkbox extends React.PureComponent {
     onChange: PropTypes.func,
     label: PropTypes.string
   }
+  onKeyUp = event => {
+    console.log(event);
+    if (event.keyCode === 13) this.props.onChange(!this.props.checked);
+  }
   render() {
     const { checked, onChange, label } = this.props;
     return (<span onClick={() => onChange(!checked)} className={styles.box}>
-      <span className={[styles.checkbox, checked ? styles.checked : ''].join(' ')}>
-        {checked ? <TickSVG /> : null}
+      <span className={[styles.checkbox, checked ? styles.checked : ''].join(' ')} tabIndex={0} onKeyUp={this.onKeyUp}>
+        <TickSVG />
       </span>
       <span className={styles.label}>{label}</span>
     </span>);

@@ -16,6 +16,9 @@
   display: table;
   & > li {
     display: table-row-group;
+    &:first-child .row > li {
+      padding: .2em 1em .2em .1em;
+    }
     & .row {
       display: table-row;
       list-style: none;
@@ -48,6 +51,19 @@ a.addButton {
 .delButton {
   cursor: pointer;
   min-width: 2em;
+  color: var(--actionColor);
+  font-size: .9em;
+  padding: .25em;
+  &:hover {
+    filter: brightness(.6);
+  }
+  & b {
+    font-size: 2em;
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 0;
+    padding-bottom: .12em;
+  }
 }
 
 .maxReached {

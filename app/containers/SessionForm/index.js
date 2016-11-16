@@ -10,7 +10,7 @@ import LoadingMessage from '../../components/LoadingMessage';
 
 import TextField from '../../components/Fields/Text';
 import DateField from '../../components/Fields/Date';
-import TimeField from '../../components/TimeField';
+import TimeField from '../../components/Fields/Time';
 import BoolRadio from '../../components/Fields/BoolRadio';
 import IconRadio from '../../components/Fields/IconRadio';
 import Location from '../../components/Fields/Location';
@@ -106,6 +106,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
               date.setDate(date.getDate() + 7);
               newRow.startDate = date.toISOString().substr(0, 10);
             }
+            return newRow;
           }}
           maxLength={10}
           components={[

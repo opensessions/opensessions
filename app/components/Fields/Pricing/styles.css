@@ -1,3 +1,5 @@
+@import '../../../containers/App/variables.css';
+
 .field {
   max-width: 32em;
 }
@@ -7,22 +9,41 @@
   font-size: 1.15em;
 }
 
+.changeType {
+  font-size: .9em;
+  margin: .25em auto;
+}
+
+.iconAlert,
 .freeIcon {
-  border: .15em solid #88C541;
+  border-radius: 50%;
   text-align: center;
   line-height: 1;
+  padding: .25em;
+  vertical-align: middle;
+}
+
+.freeIcon {
   height: 2em;
   width: 2em;
-  border-radius: 50%;
-  background-color: #FFF;
-  padding: .25em;
   display: inline-block;
-  vertical-align: middle;
+  border: .15em solid #88C541;
+  background-color: #FFF;
   font-size: 1.25em;
   margin-right: .5em;
   & img {
     width: 1em;
   }
+}
+
+.iconAlert {
+  margin-right: .5em;
+  padding: .4em;
+  background-color: var(--darkBlue);
+  color: #FFF;
+  line-height: .5;
+  font-size: 1.5em;
+  width: 1.7em;
 }
 
 .firstFree {
@@ -34,11 +55,13 @@
 }
 
 .questions {
-  max-width: 24em;
   & > li {
     list-style: none;
-    margin: 2em auto;
+    margin: 2em 0;
     padding: 1em 0;
+    &.bind {
+      max-width: 24em;
+    }
     & label {
       display: block;
       margin: 0 auto .5em;
@@ -48,6 +71,8 @@
 }
 
 .notice {
+  display: flex;
+  align-items: flex-start;
   margin: 2em auto;
   padding: 1em;
   background: #FFF;
@@ -56,6 +81,7 @@
     font-size: 1.25em;
     font-weight: normal;
     line-height: 1.2;
+    margin-bottom: 1em;
   }
 }
 

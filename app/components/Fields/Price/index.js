@@ -37,8 +37,8 @@ export default class PriceField extends React.Component { // eslint-disable-line
   }
   render() {
     const { value } = this.props;
-    return (<div className={[styles.field, this.state.hasFocus ? styles.hasFocus : ''].join(' ')}>
-      <strong>&pound;</strong><input value={value} onChange={this.inputEvent} onKeyUp={this.inputEvent} onFocus={this.focusEvent} onBlur={this.focusEvent} />
+    return (<div className={[styles.field, this.state.hasFocus ? styles.hasFocus : ''].join(' ')} onClick={() => this.refs.input.focus()}>
+      <strong>&pound;</strong><input value={value !== undefined ? value : ''} onChange={this.inputEvent} onKeyUp={this.inputEvent} onFocus={this.focusEvent} onBlur={this.focusEvent} ref="input" />
     </div>);
   }
 }
