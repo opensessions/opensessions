@@ -42,9 +42,11 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
   }
   fetchData = () => {
     const { params } = this.props;
+    this.setState({ isLoading: true });
     return apiModel.get('organizer', params.uuid).then(res => {
-      this.setState({ organizer: res.instance });
+      this.setState({ organizer: res.instance, isLoading: false });
     }).catch(() => {
+      this.setState({ isLoading: false });
       this.context.notify('Failed to retrieve organiser', 'error');
     });
   }
@@ -106,13 +108,13 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
   renderUnassignedSessions() {
     const { unassignedSessions } = this.props;
     if (!(unassignedSessions && unassignedSessions.length)) return null;
-    const { showSessions } = this.state;
+    const { showSessions, isLoading } = this.state;
     const linkProps = { className: styles.toggle, onClick: this.toggleSessions };
     let text = 'Hide unassigned sessions';
     if (!showSessions) text = `${unassignedSessions.length} session${unassignedSessions.length === 1 ? ' is' : 's are'} currently unassigned to an organizer`;
     return (<div className={styles.unassigned}>
       <p><a {...linkProps}>{text}</a></p>
-      {showSessions ? <SessionList sessions={unassignedSessions} /> : null}
+      {showSessions && !isLoading ? <SessionList sessions={unassignedSessions} /> : null}
     </div>);
   }
   renderOrganizerSelect() {
@@ -155,7 +157,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
   renderOrganizer(organizer) {
     const { modified } = this.state;
     const imageUrl = organizer.image ? `${organizer.image}${modified ? `?${modified}` : ''}` : '/images/organizer-bg-default.png';
-    return (<div>
+    return (<div className={styles.banner}>
       <div className={styles.bannerImage} style={{ backgroundImage: `url(${imageUrl})` }}>
         <div className={styles.container}>
           {this.isOwner() ? this.renderUploadPhoto() : null}

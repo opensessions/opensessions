@@ -45,10 +45,11 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
     return apiModel.search('organizer', { owner: user.user_id }).then(result => {
       const organizers = result.instances;
       const selectedOrganizer = organizers.length ? organizers[0].uuid : 0;
+      this.setState({ selectedOrganizer, organizers, isLoading: true });
       return apiModel.search('session', { owner: user.user_id, OrganizerUuid: 'null' }).then(sessionResult => {
         const { instances, error } = sessionResult;
         if (error) this.context.notify(error, 'error');
-        this.setState({ selectedOrganizer, organizers, sessions: instances, isLoading: false });
+        this.setState({ sessions: instances, isLoading: false });
       });
     });
   }

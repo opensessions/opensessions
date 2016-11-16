@@ -92,31 +92,39 @@
   }
 }
 
+@keyframes appear {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.banner {
+  background-color: #555;
+}
+
 .bannerImage {
   height: 16em;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: 50% 50%;
+  animation: appear 1.5s;
+  transition: 1.5s ease opacity;
   & > .container {
     height: 100%;
     display: flex;
     align-items: flex-end;
     justify-content: flex-end;
-    & a {
-      text-decoration: none;
-      padding: 1em;
-      color: #FFF;
-      opacity: .5;
-      transition: .5s ease all;
-      &:hover {
-        opacity: 1;
-      }
+    & label {
+      font-size: .9em;
     }
   }
 }
 
 @media (--desktop) {
   .bannerImage {
-    height: 18em;
+    font-size: 1.1em;
   }
 }
