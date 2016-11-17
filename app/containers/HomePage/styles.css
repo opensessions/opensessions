@@ -83,8 +83,9 @@
   }
 }
 
-.brand {
-  color: var(--defaultColor);
+.stats {
+  color: var(--actionColor);
+  font-weight: bold;
 }
 
 ol.steps {

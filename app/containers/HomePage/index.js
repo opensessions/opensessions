@@ -12,18 +12,31 @@ import LoadingMessage from '../../components/LoadingMessage';
 
 import styles from './styles.css';
 
+import { apiFetch } from '../../utils/api';
+
 export default class HomePage extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
     locks: PropTypes.object,
     user: PropTypes.object,
     notifications: PropTypes.array,
   }
+  constructor() {
+    super();
+    this.state = {};
+  }
+  componentDidMount() {
+    this.fetchData();
+  }
+  fetchData = () => apiFetch('/api/stats').then(stats => {
+    this.setState({ stats });
+  })
   renderSessionList() {
     const { user } = this.context;
     if (!user) return <LoadingMessage message="Loading user" ellipsis />;
     return <SessionList query={{ owner: user.user_id }} />;
   }
   renderMarketingSections() {
+    const { stats } = this.state;
     return (<div className={styles.sections}>
       <section>
         <div className={styles.container}>
@@ -31,6 +44,7 @@ export default class HomePage extends React.Component { // eslint-disable-line r
           <p>Open Sessions provides you with one place to easily upload and update your session details, and makes them visible to thousands of potential participants across the best sports, fitness and health-focussed websites on the web.</p>
           <p>And it's free. Forever.</p>
           <Button onClick={() => this.context.locks.signup.show()}>Start uploading today</Button>
+          {stats ? <p><span className={styles.stats}>{stats.sessions.published}</span> sessions published and counting!</p> : null}
         </div>
       </section>
       <section className={styles.featured}>
