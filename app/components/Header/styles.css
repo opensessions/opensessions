@@ -56,7 +56,7 @@
         max-height: 4rem;
         margin: -.25em 0 -.25em .5em;
         border-radius: 50%;
-        animation: bloom .5s;
+        animation: bloom 1s;
       }
     }
   }

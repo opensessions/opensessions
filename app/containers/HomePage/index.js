@@ -27,10 +27,10 @@ export default class HomePage extends React.Component { // eslint-disable-line r
     return (<div className={styles.sections}>
       <section>
         <div className={styles.container}>
-          <h1>Why join open sessions?</h1>
+          <h1>What is open sessions?</h1>
           <p>Open Sessions provides you with one place to easily upload and update your session details, and makes those session details visible to thousands of potential participants across the best sports, fitness and health focussed websites on the web.</p>
           <p>And it's free. Forever.</p>
-          <Button onClick={() => this.context.locks.signup.show()}>Increase the visibility of my sessions</Button>
+          <Button onClick={() => this.context.locks.signup.show()}>Start uploading today</Button>
         </div>
       </section>
       <section className={styles.featured}>
@@ -49,7 +49,7 @@ export default class HomePage extends React.Component { // eslint-disable-line r
       </section>
       <section>
         <div className={styles.container}>
-          <h1>Do you already use a system to manage your sessions?</h1>
+          <h1>Already have a session manager?</h1>
           <p>If you already use a booking system, club management system, or similar, then we can connect directly to that system to access the sessions that you want to promote. Get in touch with us to find out more.</p>
           <Button to="/partner">Become a partner</Button>
         </div>
@@ -59,11 +59,21 @@ export default class HomePage extends React.Component { // eslint-disable-line r
   renderLandingPage() {
     return (<div className={styles.landing}>
       <Banner>
-        <h1>Get your sessions discovered</h1>
-        <h2>Your gateway to the most popular physical activity finders on the web</h2>
+        <h1>The free way to promote your sessions</h1>
+        <h2>We upload your sessions to different activity finders&#8212;so you don't have to</h2>
         <Authenticated button={['Sign Up', 'Login']}>
           <p><Link to="/session/add"><b>+</b> Add a session</Link></p>
         </Authenticated>
+        <ol className={styles.steps}>
+          <li className={styles.step}>
+            Upload <b className={styles.yourSessions}>your sessions</b> here
+          </li>
+          <li className={styles.arrow}>➦</li>
+          <li className={styles.step}>
+            <b>Live</b> across numerous activity finders <i>(many more to come!)</i></li>
+          <li className={styles.arrow}>➦</li>
+          <li className={styles.step}>100s more people see <b className={styles.yourSessions}>your activities</b> every day</li>
+        </ol>
       </Banner>
       {this.context.user ? null : this.renderMarketingSections()}
     </div>);
