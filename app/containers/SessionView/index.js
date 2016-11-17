@@ -324,7 +324,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
           </GoogleMap>}
         />
       </div>);
-      address = <div className={styles.address}>{session.location.split(',').map(line => <p key={line}>{line}</p>)}<br /><p><a href={`https://www.google.com/maps?saddr=My+Location&daddr=${session.location}`} target="blank">Get directions</a></p></div>;
+      address = <div className={styles.address}>{session.location.split(',').map(line => <p key={line}>{line}</p>)}<br /><p><a href={`https://maps.google.com/maps?saddr=My+Location&daddr=${session.location}`} target="blank">Get directions</a></p></div>;
     } else {
       map = (<div className={styles.noLocation}>
         <img src="/images/map-pin.svg" role="presentation" />
