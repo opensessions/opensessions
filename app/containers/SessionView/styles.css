@@ -285,9 +285,6 @@
   &.disabilityInfo {
     text-align: right;
     display: flex;
-    & > p {
-
-    }
   }
   &.pricing {
     display: flex;

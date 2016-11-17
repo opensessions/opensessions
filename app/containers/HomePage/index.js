@@ -28,7 +28,7 @@ export default class HomePage extends React.Component { // eslint-disable-line r
       <section>
         <div className={styles.container}>
           <h1>What is open sessions?</h1>
-          <p>Open Sessions provides you with one place to easily upload and update your session details, and makes those session details visible to thousands of potential participants across the best sports, fitness and health focussed websites on the web.</p>
+          <p>Open Sessions provides you with one place to easily upload and update your session details, and makes them visible to thousands of potential participants across the best sports, fitness and health-focussed websites on the web.</p>
           <p>And it's free. Forever.</p>
           <Button onClick={() => this.context.locks.signup.show()}>Start uploading today</Button>
         </div>
@@ -68,10 +68,10 @@ export default class HomePage extends React.Component { // eslint-disable-line r
           <li className={styles.step}>
             Upload <b className={styles.yourSessions}>your sessions</b> here
           </li>
-          <li className={styles.arrow}>➦</li>
+          <li className={styles.arrow}>➣</li>
           <li className={styles.step}>
             <b>Live</b> across numerous activity finders <i>(many more to come!)</i></li>
-          <li className={styles.arrow}>➦</li>
+          <li className={styles.arrow}>➣</li>
           <li className={styles.step}>100s more people see <b className={styles.yourSessions}>your activities</b> every day</li>
         </ol>
       </Banner>

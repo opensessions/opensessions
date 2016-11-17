@@ -92,7 +92,7 @@ ol.steps {
   align-items: center;
   justify-content: space-between;
   max-width: 48em;
-  margin: 1em auto;
+  margin: 2em auto 0;
   line-height: 1.4;
   > li {
     list-style: none;
@@ -100,16 +100,16 @@ ol.steps {
     animation-duration: .75s;
     opacity: 0;
     &:nth-child(2) {
-      animation-delay: .5s;
+      animation-delay: .6s;
     }
     &:nth-child(3) {
-      animation-delay: 1s;
+      animation-delay: .8s;
     }
     &:nth-child(4) {
-      animation-delay: 1.5s;
+      animation-delay: 1.4s;
     }
     &:nth-child(5) {
-      animation-delay: 2s;
+      animation-delay: 1.6s;
     }
     &.arrow {
       width: 1em;
