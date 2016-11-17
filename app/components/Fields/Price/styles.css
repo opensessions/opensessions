@@ -8,10 +8,19 @@
     border-color: #00AEEF;
   }
   & input {
-    width: 4em;
+    width: 3em;
     margin-left: .25em;
+    border: none;
+    padding: 0;
     &:focus {
-      outline: none;
+      outline: none !important;
+      box-shadow: none !important;
+    }
+    &.hide {
+      opacity: 0;
+      &:focus {
+        opacity: 1;
+      }
     }
   }
 }

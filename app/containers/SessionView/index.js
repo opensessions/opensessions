@@ -203,7 +203,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
           <div className={`${styles.floatingInfo} ${styles.organizerInfo}`}>
             <p>{session.Organizer ? (<Link to={session.Organizer.href}>{session.Organizer.name}</Link>) : 'No organizer'}</p>
             <p>{session.contactPhone ? (<a className={styles.organizerLink} href={`tel:${session.contactPhone}`}><img src="/images/phone.svg" role="presentation" /> {session.contactPhone}</a>) : ''}</p>
-            <p>{session.contactEmail ? (<a className={styles.organizerLink} onClick={this.dispatchMessageModal}><img src="/images/email.png" role="presentation" /> Message organiser</a>) : ''}</p>
+            <p>{session.contactEmail ? (<a className={styles.organizerLink} onClick={this.dispatchMessageModal} onKeyUp={event => event.keyCode === 13 && event.target.click()} tabIndex={0}><img src="/images/email.png" role="presentation" /> Message organiser</a>) : ''}</p>
             <ol className={styles.socialLinks}>
               {session.socialWebsite ? <li><a className={styles.organizerLink} href={session.socialWebsite}>{session.socialWebsite}</a></li> : null}
               {session.socialFacebook ? <li><a className={styles.organizerLink} href={session.socialFacebook}><img src="/images/facebook.png" role="presentation" /> Facebook page</a></li> : null}
@@ -324,7 +324,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
           </GoogleMap>}
         />
       </div>);
-      address = <div className={styles.address}>{session.location.split(',').map(line => <p key={line}>{line}</p>)}<br /><p><a href={`https://www.google.com/maps?daddr=${session.location}`} target="blank">Get directions</a></p></div>;
+      address = <div className={styles.address}>{session.location.split(',').map(line => <p key={line}>{line}</p>)}<br /><p><a href={`https://www.google.com/maps?saddr=My+Location&daddr=${session.location}`} target="blank">Get directions</a></p></div>;
     } else {
       map = (<div className={styles.noLocation}>
         <img src="/images/map-pin.svg" role="presentation" />

@@ -14,6 +14,7 @@ import styles from './styles.css';
 
 export default class HomePage extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
+    locks: PropTypes.object,
     user: PropTypes.object,
     notifications: PropTypes.array,
   }
@@ -29,9 +30,7 @@ export default class HomePage extends React.Component { // eslint-disable-line r
           <h1>Why join open sessions?</h1>
           <p>Open Sessions provides you with one place to easily upload and update your session details, and makes those session details visible to thousands of potential participants across the best sports, fitness and health focussed websites on the web.</p>
           <p>And it's free. Forever.</p>
-          <Authenticated button={['Increase the visibility of my sessions']}>
-            <p><Button to="/session/add">Increase the visibility of my sessions</Button></p>
-          </Authenticated>
+          <Button onClick={() => this.context.locks.signup.show()}>Increase the visibility of my sessions</Button>
         </div>
       </section>
       <section className={styles.featured}>

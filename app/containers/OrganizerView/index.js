@@ -148,7 +148,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
   }
   renderName(organizer) {
     if (this.state.actionState && this.state.actionState === 'rename') return <input defaultValue={organizer.name} onKeyDown={this.renameEvents} onBlur={this.renameEvents} autoFocus />;
-    return (<span><Link to={organizer.href}>{organizer.name}</Link> {this.isOwner() ? <a onClick={this.renameOrganizer} className={styles.rename}><img src="/images/change.png" alt="edit" /></a> : null}</span>);
+    return (<span><Link to={organizer.href}>{organizer.name}</Link> {this.isOwner() ? <a onClick={this.renameOrganizer} onKeyUp={event => event.keyCode === 13 && this.renameOrganizer()} className={styles.rename} tabIndex={0}><img src="/images/change.png" alt="edit" /></a> : null}</span>);
   }
   renderUploadPhoto() {
     const { organizer } = this.state;

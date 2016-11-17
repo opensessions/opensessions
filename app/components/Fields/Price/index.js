@@ -21,13 +21,11 @@ export default class PriceField extends React.Component { // eslint-disable-line
     let { value } = target;
     if (type === 'change') {
       onChange(value);
-    } else if (type === 'keyup') {
-      value = this.props.value || 0;
+    } else if (type === 'keydown') {
       const { keyCode } = event;
       const deltas = { 38: 1, 40: -1 };
       if (keyCode in deltas) {
         value = Math.max(0, parseFloat(value) + deltas[keyCode]);
-        event.preventDefault();
         onChange(this.parseNum(value));
       }
     }
@@ -37,8 +35,10 @@ export default class PriceField extends React.Component { // eslint-disable-line
   }
   render() {
     const { value } = this.props;
+    const attrs = { onFocus: this.focusEvent, onBlur: this.focusEvent };
     return (<div className={[styles.field, this.state.hasFocus ? styles.hasFocus : ''].join(' ')} onClick={() => this.refs.input.focus()}>
-      <strong>&pound;</strong><input value={value !== undefined ? value : ''} onChange={this.inputEvent} onKeyUp={this.inputEvent} onFocus={this.focusEvent} onBlur={this.focusEvent} ref="input" />
+      <strong>&pound;</strong>
+      <input value={value !== undefined ? value : ''} onChange={this.inputEvent} onKeyDown={this.inputEvent} ref="input" {...attrs} />
     </div>);
   }
 }

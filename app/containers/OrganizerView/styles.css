@@ -43,6 +43,7 @@
     }
   }
   & h2 {
+    display: none;
     font-family: var(--serifFont);
     font-size: 1.75em;
     font-weight: normal;
@@ -50,7 +51,7 @@
     max-width: var(--tileWidth);
   }
   & .sessions {
-    margin: 4em auto;
+    margin: 2em auto;
     & .unassigned {
       & a.toggle {
         text-align: center;
@@ -139,5 +140,13 @@
 @media (--desktop) {
   .bannerImage {
     font-size: 1.1em;
+  }
+  .organizerView {
+    & h2 {
+      display: block;
+    }
+    & .sessions {
+      margin: 4em auto;
+    }
   }
 }

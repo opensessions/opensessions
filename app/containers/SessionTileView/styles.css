@@ -3,9 +3,11 @@
 @keyframes appear {
   from {
     opacity: 0;
+    transform: translateX(-4em);
   }
   to {
     opacity: 1;
+    transform: translateX(0);
   }
 }
 
@@ -18,11 +20,10 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  animation: appear ease 1s;
+  animation-fill-mode: forwards;
+  animation-duration: 1s;
   & .imgCol {
-    opacity: 0;
-    animation: appear ease 1s;
-    animation-fill-mode: forwards;
-    animation-duration: 1s;
     padding: .25em;
     text-align: center;
     & img {
@@ -36,13 +37,12 @@
     flex-wrap: wrap;
     flex-direction: column;
     justify-content: space-between;
-    animation-delay: .4s;
     & .info {
       & .location {
         color: #777;
       }
       & h1 {
-        font-size: 1.4em;
+        font-size: 1.2em;
         font-weight: normal;
       }
     }
@@ -148,9 +148,26 @@
   }
 }
 
+@media (--mobile) {
+  .tile {
+    & .imgCol {
+      & img {
+        &.noImage {
+          max-width: 16rem;
+        }
+      }
+    }
+  }
+}
+
 @media (--desktop) {
   .tile {
     & .textCol {
+      & .info {
+        & h1 {
+          font-size: 1.4em;
+        }
+      }
       & .meta {
         font-size: 1.1em;
         & ol.actions > li a,

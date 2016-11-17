@@ -9,6 +9,6 @@ export default class LoginButton extends React.Component { // eslint-disable-lin
     children: PropTypes.node,
   }
   render() {
-    return <a tabIndex="0" onClick={() => this.context.locks[this.props.lock].show()}>{this.props.children}</a>;
+    return <a tabIndex="0" onClick={() => this.context.locks[this.props.lock].show()} onKeyUp={event => event.keyCode === 13 && event.target.click()}>{this.props.children}</a>;
   }
 }

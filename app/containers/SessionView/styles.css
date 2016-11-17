@@ -17,11 +17,11 @@
 @keyframes appear {
   from {
     opacity: 0;
-    transform: translateY(-2em);
+    transform: scale(.9);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: scale(1);
   }
 }
 
@@ -35,20 +35,17 @@
   flex-wrap: wrap;
   align-items: stretch;
   justify-content: center;
-  opacity: 0;
-  animation: appear 1s;
-  animation-delay: .5s;
+  animation: appear .5s;
   animation-fill-mode: forwards;
   & .detailsImg,
   & .detailsText {
-    padding: .5em;
+    padding: .25em;
   }
   & .detailsImg {
     max-width: 46rem;
   }
   & .detailsText {
     flex-grow: 1;
-    font-size: 1.1em;
     display: flex;
     flex-basis: 45%;
     flex-wrap: wrap;
@@ -62,7 +59,7 @@
       font-weight: normal;
     }
     & h1 {
-      font-size: 1.5em;
+      font-size: 1.4em;
       padding: .25em;
       line-height: 1.3;
     }
@@ -158,7 +155,7 @@
   text-align: right;
   margin: .5em 0;
   padding: .25em;
-  font-size: 1.4em;
+  font-size: 1.25em;
   &.disabled {
     & sub {
       display: inline-block;
@@ -188,14 +185,14 @@
     font-family: Belgrano, serif;
   }
   h2 {
-    font-size: 2em;
+    font-size: 1.6em;
     margin-top: 0;
   }
   h3 {
-    font-size: 1.6em;
+    font-size: 1.4em;
   }
   h4 {
-    font-size: 1.3em;
+    font-size: 1.2em;
   }
   & .description {
     white-space: pre-wrap;
@@ -207,7 +204,7 @@
 .aboutSection {
   text-align: left;
   background-color: #FFF;
-  padding: 1.5em;
+  padding: 1em;
   box-shadow: 0 .25em .25em rgba(0, 0, 0, .2);
   position: relative;
   z-index: 1;
@@ -282,12 +279,15 @@
 .floatingInfo {
   background-color: #FFF;
   padding: 1em;
-  font-size: 1.1em;
   &.organizerInfo {
     text-align: right;
   }
   &.disabilityInfo {
     text-align: right;
+    display: flex;
+    & > p {
+
+    }
   }
   &.pricing {
     display: flex;
@@ -375,7 +375,15 @@ a.organizerLink {
 @media (--desktop) {
   .detailsSection {
     margin: 2em auto;
+    & .detailsImg,
     & .detailsText {
+      padding: .5em;
+    }
+    & .detailsText {
+      font-size: 1.1em;
+      & h1 {
+        font-size: 1.5em;
+      }
       & .dateDetail,
       & .locationDetail {
         & > img {
@@ -384,6 +392,9 @@ a.organizerLink {
         }
       }
     }
+  }
+  .floatingInfo {
+    font-size: 1.1em;
   }
   .descriptionSection {
     h2 {
