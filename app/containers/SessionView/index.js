@@ -153,7 +153,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     </div>);
   }
   renderLastUpdated(session) {
-    const today = new Date;
+    const today = new Date();
     const updated = new Date(session.updatedAt);
     let updatedAt = '';
     const dayDelta = [today, updated].map(time => Math.floor(time.getTime() / (24 * 60 * 60 * 1000))).reduce((todayDay, updatedDay) => todayDay - updatedDay);
@@ -162,7 +162,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     } else if (dayDelta < 7) {
       updatedAt = `${dayDelta} days ago`;
     } else if (dayDelta < 31) {
-      updatedAt = `${Math.floor(dayDelta / 7)} weeks ago`;
+      updatedAt = `${Math.floor(dayDelta / 7)} week${dayDelta < 14 ? '' : 's'} ago`;
     } else if (dayDelta < 62) {
       updatedAt = 'a month ago';
     } else {
