@@ -62,7 +62,7 @@
     &.bind {
       max-width: 24em;
     }
-    & label {
+    & > label {
       display: block;
       margin: 0 auto .5em;
       font-size: 1.1em;

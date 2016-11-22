@@ -37,9 +37,22 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Initialize the database connection
+const Storage = require('../storage/interfaces/postgres.js');
+const storage = new Storage();
+const database = storage.getInstance();
+
 // Initialize the API
 const apiMiddleware = require('./middlewares/api');
-app.use('/api', apiMiddleware());
+app.use('/api', apiMiddleware(database));
+
+const { sendEngagementEmails } = require('./middlewares/engagement');
+const { CronJob } = require('cron');
+const EVERY_MONDAY = '0 0 0 * * 1';
+const { sendEmail } = require('./middlewares/email');
+const emailCron = new CronJob(EVERY_MONDAY, () => { // eslint-disable-line no-unused-vars
+  sendEngagementEmails(sendEmail, database.models);
+}, null, true, process.env.LOCALE_TIMEZONE);
 
 // Initialize frontend middleware that will serve your JS app
 const webpackConfig = require(`../internals/webpack/webpack.${isDev ? 'dev' : 'prod'}.babel`);

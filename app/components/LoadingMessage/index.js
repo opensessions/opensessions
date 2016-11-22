@@ -8,9 +8,10 @@ export default class LoadingMessage extends React.Component { // eslint-disable-
   static propTypes = {
     message: PropTypes.string,
     ellipsis: PropTypes.bool,
+    inline: PropTypes.bool
   }
   render() {
-    return (<div className={styles.loadingMessage}>
+    return (<div className={[styles.loadingMessage, this.props.inline ? styles.inline : ''].join(' ')}>
       {this.props.message}
       {this.props.ellipsis ? <LoadingIcon /> : null}
     </div>);

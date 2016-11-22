@@ -3,7 +3,6 @@ const jwt = require('express-jwt');
 const dotenv = require('dotenv');
 const fs = require('fs');
 
-const Storage = require('../../storage/interfaces/postgres.js');
 const RDPE = require('./rdpe.js');
 const s3 = require('./s3.js');
 
@@ -15,10 +14,8 @@ const capitalize = string => `${string[0].toUpperCase()}${string.substr(1)}`;
 dotenv.config({ silent: true });
 dotenv.load();
 
-module.exports = () => {
+module.exports = (database) => {
   const api = express();
-  const storage = new Storage();
-  const database = storage.getInstance();
   const getUser = req => (req.user ? req.user.sub : null);
 
   const rdpeConfig = { timezone: process.env.LOCALE_TIMEZONE, URL: process.env.SERVICE_LOCATION };

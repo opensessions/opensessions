@@ -81,7 +81,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   }
   canEdit() {
     const session = this.context.store.getState().get('session');
-    return session.actions.indexOf('edit') !== -1;
+    return session && session.actions.indexOf('edit') !== -1;
   }
   dispatchMessageModal = () => {
     const session = this.context.store.getState().get('session');
