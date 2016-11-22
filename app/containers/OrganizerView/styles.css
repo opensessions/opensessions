@@ -9,7 +9,7 @@
   & .name {
     background: #FFF;
     padding: .5em 0;
-    animation: slide-down .75s;
+    animation: slide-down .6s;
     & .container {
       display: flex;
       align-items: center;

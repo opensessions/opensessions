@@ -41,7 +41,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   }).catch(console.error)
   constructor() {
     super();
-    this.state = {};
+    this.state = { imageExpire: Math.floor(Date.now() / (60 * 1000)) };
   }
   componentDidMount() {
     this.fetchDataClient(this.context.store.dispatch, this.props.params);
@@ -60,7 +60,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   getSessionImage() {
     const { user } = this.context;
     const session = this.context.store.getState().get('session');
-    if (user && user.user_id === session.owner) return `${session.image}?${Date.now().toString().slice(0, -3)}`;
+    if (user && user.user_id === session.owner) return `${session.image}?${this.state.imageExpire}`;
     return session.image;
   }
   getTitle() {
@@ -80,9 +80,8 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     return actions;
   }
   canEdit() {
-    const user = this.context ? this.context.user : false;
     const session = this.context.store.getState().get('session');
-    return user && session && user.user_id === session.owner;
+    return session.actions.indexOf('edit') !== -1;
   }
   dispatchMessageModal = () => {
     const session = this.context.store.getState().get('session');
@@ -138,7 +137,10 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         <img src={session.image ? this.getSessionImage() : '/images/placeholder.png'} role="presentation" />
       </div>
       <div className={styles.detailsText}>
-        <h1>{this.getTitle()}{session.state === 'published' ? null : <span className={styles.state}>(draft)</span>}</h1>
+        <h1>
+          {this.getTitle()}
+          {session.state === 'published' ? null : <span className={styles.state}>(draft)</span>}
+        </h1>
         {locationDetail}
         {this.renderDate()}
         <div className={styles.detailPrice}>
@@ -149,6 +151,24 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       </div>
       <Helmet meta={[{ property: 'og:image', content: session.image }, { property: 'og:title', content: session.title }, { property: 'og:description', content: (session.description || '').substr(0, 256) }]} />
     </div>);
+  }
+  renderLastUpdated(session) {
+    const today = new Date;
+    const updated = new Date(session.updatedAt);
+    let updatedAt = '';
+    const dayDelta = [today, updated].map(time => Math.floor(time.getTime() / (24 * 60 * 60 * 1000))).reduce((todayDay, updatedDay) => todayDay - updatedDay);
+    if (dayDelta === 0) {
+      updatedAt = 'today';
+    } else if (dayDelta < 7) {
+      updatedAt = `${dayDelta} days ago`;
+    } else if (dayDelta < 31) {
+      updatedAt = `${Math.floor(dayDelta / 7)} weeks ago`;
+    } else if (dayDelta < 62) {
+      updatedAt = 'a month ago';
+    } else {
+      updatedAt = 'more than a month ago';
+    }
+    return <span className={styles.lastUpdated}>last updated {updatedAt}</span>;
   }
   renderDescription() {
     const session = this.context.store.getState().get('session');
@@ -179,6 +199,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         </div>
         {meetingPoint}
         {preparation}
+        {this.renderLastUpdated(session)}
       </div>
       <div className={styles.sideCol}>
         {prices && prices.length ? (<div className={styles.info}>
@@ -350,7 +371,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     </div>);
   }
   renderSession() {
-    return (<div>
+    return (<div className={styles.content}>
       {this.renderDetails()}
       {this.renderShare()}
       {this.renderDescription()}
@@ -361,7 +382,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   render() {
     const { isLoading } = this.state;
     const session = this.context.store.getState().get('session');
-    if (isLoading) return <div className={styles.sessionView}><LoadingMessage message="Loading session" ellipsis /></div>;
+    if (isLoading) return <LoadingMessage message="Loading session" ellipsis />;
     return (<div className={styles.sessionView}>
       {this.canEdit() ? <PublishHeader h2={session && session.state === 'published' ? 'Published session' : 'Preview'} actions={this.getActions()} /> : null}
       <NotificationBar notifications={this.context.notifications} />

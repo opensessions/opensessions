@@ -64,7 +64,7 @@
 
 @keyframes bloom {
   from {
-    transform: scale(0) translateY(5em);
+    transform: scale(0) translateY(10em);
     opacity: 0;
   }
   to {

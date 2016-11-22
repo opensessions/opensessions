@@ -9,6 +9,10 @@
   text-align: center;
 }
 
+.content {
+  animation: appear .4s;
+}
+
 .inner {
   max-width: var(--sectionWidth);
   margin: auto;
@@ -17,11 +21,11 @@
 @keyframes appear {
   from {
     opacity: 0;
-    transform: scale(.9);
+    transform: translateY(1em);
   }
   to {
     opacity: 1;
-    transform: scale(1);
+    transform: none;
   }
 }
 
@@ -35,8 +39,6 @@
   flex-wrap: wrap;
   align-items: stretch;
   justify-content: center;
-  animation: appear .5s;
-  animation-fill-mode: forwards;
   & .detailsImg,
   & .detailsText {
     padding: .25em;
@@ -257,6 +259,13 @@
   & > .infoSection {
     margin-top: 2em;
   }
+}
+
+.lastUpdated {
+  font-size: .8em;
+  color: #888;
+  margin: .5em auto;
+  display: block;
 }
 
 .sideCol {
