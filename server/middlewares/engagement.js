@@ -55,29 +55,36 @@ const sendEngagementEmails = (sendEmail, models) => {
     }
     return expiration;
   };
-  models.Session.findAll().then(allSessions => {
+  const sessionHref = session => `${process.env.SERVICE_LOCATION}${session.href}`;
+  models.Session.findAll({ state: { $not: 'deleted' } }).then(allSessions => {
     api.getUsers().then(users => {
       users.forEach(user => {
         const sessions = allSessions.filter(session => session.owner === user.user_id);
+        const published = sessions.filter(session => session.state === 'published');
+        const drafts = sessions.filter(session => session.state !== 'published');
         let email = false;
-        if (sessions.length) {
-          const expirations = sessions.map(getExpirations);
-          if (expirations.some(expiration => expiration.past.week && !expiration.future)) {
-            email = ['Your sessions have just expired', user.email, `<p>Thanks for being one of the first providers to use the Open Sessions uploader. However, we’ve noticed you’ve been a little inactive lately.</p>
+        if (published.length) {
+          const expired = published.map(getExpirations);
+          if (expired.some(exp => exp.past.week) && expired.every(exp => !exp.future)) {
+            email = ['Your sessions have just expired', user.email, `<p>Dear ${user.given_name || user.name},</p>
+            <p>Thanks for being one of the first providers to use the Open Sessions uploader. However, we’ve noticed you’ve been a little inactive lately.</p>
             <p>Login <a href="https://app.opensessions.io/">here</a> and upload more sessions on Open Sessions to ensure they are are visible to thousands of people on Get Active London every month.</p>
             <p>Happy uploading!</p>`, { '-title-': 'Just checking in...' }];
-          } else if (expirations.some(expiration => expiration.future)) {
-            email = ['Good news from Open Sessions', user.email, `<p>Thanks for being one of the first providers to use the Open Sessions uploader. We wanted to let you know that your session information is live <b>right now</b> on Get Active London!</p>
-            <ul>${sessions.map(session => {
+          } else if (expired.some(exp => exp.future)) {
+            email = ['Good news from Open Sessions', user.email, `<p>Dear ${user.given_name || user.name},</p>
+            <p>Thanks for being one of the first providers to use the Open Sessions uploader. We wanted to let you know that your session information is live <b>right now</b> on Get Active London!</p>
+            <p>If your session information is up to date, please simply reply YES to this email. Otherwise, please visit Open Sessions and update them.</p>
+            <ul>${published.map(session => {
               const expiration = getExpirations(session);
-              if (expiration.future) {
-                return `<li><a href="${session.href}">${session.title}</a></li>`;
+              if (expiration.future !== 0) {
+                return `<li><a href="${sessionHref(session)}">${session.title}</a></li>`;
               }
               return '';
             }).join('')}</ul>
-            <p>If your session information is up to date, please simply reply YES to this email. Otherwise, please login to Open Sessions and update it.</p>
             <p>Happy uploading!</p>`, { '-title-': 'All systems go...' }];
           }
+        } else if (drafts.length) {
+          // No sessions published yet
         } else {
           // No sessions made yet
         }
