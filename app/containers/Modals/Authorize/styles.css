@@ -1,19 +1,55 @@
 .auth {
+  max-width: 18em;
+  margin: 1em auto;
+  font-family: Belgrano;
+  & p,
+  & label,
+  & input {
+    font-family: 'Open Sans', sans-serif;
+  }
+  & p {
+    margin: .5em auto;
+    & a {
+      font-size: inherit;
+    }
+  }
+  & a {
+    margin: auto;
+    display: block;
+  }
+  & h2 {
+    font-size: 1.25em;
+    font-weight: normal;
+  }
+  & .question {
+    max-width: 20em;
+    margin: 1em auto;
+  }
   & label {
     text-align: left;
     font-family: serif;
+    display: block;
+  }
+  & .facebook {
+    background-color: #3B5998;
   }
 }
 
+.error {
+  color: #D00;
+}
+
 .or {
-  color: #888;
+  color: #999;
+  font-size: 1.2em;
   text-align: center;
   display: flex;
   align-items: center;
+  margin: 1em auto;
   & hr {
     flex-grow: 1;
     color: #CCC;
-    border-width: .1em;
+    border-width: .08em;
     height: 0;
   }
   & span {

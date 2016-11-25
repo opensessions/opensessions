@@ -9,6 +9,13 @@ const s3 = require('./s3.js');
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 
+const { ManagementClient } = require('auth0');
+
+const authClient = new ManagementClient({
+  token: process.env.AUTH0_CLIENT_TOKEN,
+  domain: process.env.AUTH0_CLIENT_DOMAIN
+});
+
 const capitalize = string => `${string[0].toUpperCase()}${string.substr(1)}`;
 
 dotenv.config({ silent: true });
@@ -56,6 +63,24 @@ module.exports = (database) => {
     });
     return json;
   };
+
+  const isEmail = email => {
+    const regex = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i; // eslint-disable-line no-useless-escape
+    return regex.test(email);
+  };
+
+  api.post('/auth-email', (req, res) => {
+    const { email } = req.body;
+    if (isEmail(email)) {
+      authClient.getUsers({ q: `email:"${email}"` }).then(users => {
+        res.json({ status: 'success', exists: users.length === 1 });
+      }).catch(error => {
+        res.status(500).json({ status: 'failure', error });
+      });
+    } else {
+      res.status(500).json({ status: 'failure', error: 'Invalid email address' });
+    }
+  });
 
   api.get('/stats', (req, res) => {
     database.models.Session.findAll().then(sessions => {

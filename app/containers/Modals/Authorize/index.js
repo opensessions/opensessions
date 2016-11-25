@@ -3,10 +3,13 @@ import React, { PropTypes } from 'react';
 import GenericForm from '../../../components/GenericForm';
 import GenericModal from '../Generic';
 import Button from '../../../components/Button';
+import Checkbox from '../../../components/Fields/Checkbox';
 
 import { apiFetch } from '../../../utils/api';
 
 import styles from './styles.css';
+
+const KEY_ENTER = 13;
 
 export default class AuthModal extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
@@ -14,43 +17,137 @@ export default class AuthModal extends React.Component { // eslint-disable-line 
     user: PropTypes.object
   };
   static propTypes = {
-    feature: PropTypes.string
+    feature: PropTypes.string,
+    stage: PropTypes.string,
+    email: PropTypes.string
   }
   constructor() {
     super();
-    this.state = { form: {} };
+    this.state = { form: {}, showPass: false };
+    const { Auth0, AUTH0_CLIENT_ID, AUTH0_CLIENT_DOMAIN } = window;
+    this.auth0 = new Auth0({ clientID: AUTH0_CLIENT_ID, domain: AUTH0_CLIENT_DOMAIN });
   }
-  send() {
-    if (this.state.form) {
-      apiFetch('/hooks/auth-email', { body: this.state.form }).then(() => {
-        this.context.modal.dispatch({ component: (<GenericModal size="small">
-          <p>You will be notified when the feature is available</p>
-          <p><span className={styles.sentTick}><img alt="tick" src="/images/tick.svg" /></span></p>
-          <p>Thanks for your continued engagement in Open Sessions!</p>
-          <br />
-          <p><Button onClick={this.context.modal.close}>Close</Button></p>
-        </GenericModal>) });
+  facebook() {
+    this.auth0.login({
+      connection: 'facebook',
+      responseType: 'token'
+    });
+  }
+  emailCheck() {
+    const { form } = this.state;
+    if (form && form.email) {
+      apiFetch('/api/auth-email', { body: form }).then(result => {
+        this.context.modal.dispatch({ component: result.exists ? <AuthModal stage="signin" email={form.email} /> : <AuthModal stage="create" email={form.email} /> });
       }).catch(error => {
-        alert(error.error);
+        this.setState({ error: error.error });
       });
-    } else {
-      this.context.modal.close();
     }
   }
-  render() {
+  signIn() {
+    const { form } = this.state;
+    if (!form.password) {
+      this.setState({ error: 'Enter your password' });
+    }
+    this.auth0.login({
+      connection: 'Username-Password-Authentication',
+      responseType: 'token',
+      email: this.props.email || form.email,
+      password: form.password
+    }, error => {
+      if (error) {
+        this.setState({ error: error.toString().split(':')[1] });
+      }
+    });
+  }
+  signUp() {
+    const { form } = this.state;
+    if (form.password !== form.password2) {
+      this.setState({ error: 'Passwords do not match' });
+      return;
+    }
+    this.auth0.signup({
+      connection: 'Username-Password-Authentication',
+      responseType: 'token',
+      email: this.props.email || this.state.form.email,
+      password: this.state.form.password
+    }, error => {
+      if (error) {
+        this.setState({ error: error.toString().split(':')[1] });
+      }
+    });
+  }
+  renderQuestion(label, question) {
+    const { form } = this.state;
+    const { name, props } = question;
+    return (<div className={styles.question}>
+      <label>{label}</label>
+      <input
+        value={form[name]}
+        onChange={event => {
+          const { value } = event.target;
+          form[name] = value;
+          this.setState({ form });
+        }}
+        type={"text"}
+        {...props}
+      />
+    </div>);
+  }
+  renderSignIn() {
+    const { email } = this.props;
+    const { showPass, error } = this.state;
     return (<GenericModal size="small">
-      <div className={styles.auth}>
-        <Button onClick={() => this.send()}>Continue with Facebook</Button>
-        <div className={styles.or}><hr /><span>or</span><hr /></div>
-        <p>Continue with email</p>
+      <div className={styles.auth} onKeyUp={event => event.keyCode === KEY_ENTER && this.signIn()}>
+        {error ? <p className={styles.error}>{error}</p> : null}
+        <h2>Sign in to your account</h2>
         <GenericForm>
-          <div className={styles.question}>
-            <label>Email</label>
-            <input value={this.state.form.email} onChange={event => this.setState({ form: { email: event.target.value } })} type="text" />
-          </div>
-          <Button onClick={() => this.send()}>Continue</Button>
+          {this.renderQuestion('Email', { name: 'email', props: { value: email } })}
+          {this.renderQuestion('Password', { name: 'password', props: { autoFocus: true, type: showPass ? 'text' : 'password' } })}
+          <p className={styles.question}><Checkbox label="Show password" checked={showPass} onChange={() => this.setState({ showPass: !showPass })} /></p>
+          <Button onClick={() => this.signIn()}>Sign in</Button>
         </GenericForm>
-        <p><a>Create an account</a></p>
+        <p><a>I forgot my password</a></p>
+      </div>
+    </GenericModal>);
+  }
+  renderCreate() {
+    const { email } = this.props;
+    const { error } = this.state;
+    return (<GenericModal size="small">
+      <div className={styles.auth} onKeyUp={event => event.keyCode === KEY_ENTER && this.signUp()}>
+        <Button className={styles.facebook} onClick={() => this.facebook()}>Continue with Facebook</Button>
+        <div className={styles.or}><hr /><span>or</span><hr /></div>
+        <h2>Create your Open Sessions Account</h2>
+        <GenericForm>
+          {error ? <p className={styles.error}>{error}</p> : null}
+          {this.renderQuestion('Email', { name: 'email', props: { value: email } })}
+          {this.renderQuestion('Choose a password', { name: 'password', props: { autoFocus: true, type: 'password' } })}
+          {this.renderQuestion('Re-type password', { name: 'password2', props: { type: 'password' } })}
+          <Button onClick={() => this.signUp()}>Create Account</Button>
+        </GenericForm>
+        <p><a onClick={() => this.context.modal.dispatch({ component: <AuthModal /> })}>I already have an account</a></p>
+      </div>
+    </GenericModal>);
+  }
+  render() {
+    const { stage } = this.props;
+    const { error } = this.state;
+    if (stage === 'signin') {
+      return this.renderSignIn();
+    } else if (stage === 'create') {
+      return this.renderCreate();
+    }
+    return (<GenericModal size="small">
+      <div className={styles.auth} onKeyUp={event => event.keyCode === KEY_ENTER && this.emailCheck()}>
+        <Button className={styles.facebook} onClick={() => this.facebook()}>Continue with Facebook</Button>
+        <div className={styles.or}><hr /><span>or</span><hr /></div>
+        <h2>Continue with email</h2>
+        <GenericForm>
+          {error ? <p className={styles.error}>{error}</p> : null}
+          {this.renderQuestion('Email', { name: 'email', props: { autoFocus: true } })}
+          <Button onClick={() => this.emailCheck()}>Continue</Button>
+        </GenericForm>
+        <p><a onClick={() => this.context.modal.dispatch({ component: <AuthModal stage="create" /> })}>Create an account</a></p>
       </div>
     </GenericModal>);
   }

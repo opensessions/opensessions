@@ -11,8 +11,11 @@ export default class Checkbox extends React.PureComponent {
     label: PropTypes.string
   }
   onKeyUp = event => {
-    console.log(event);
-    if (event.keyCode === 13) this.props.onChange(!this.props.checked);
+    if (event.keyCode === 13) {
+      this.props.onChange(!this.props.checked);
+      event.preventDefault();
+      event.stopPropagation();
+    }
   }
   render() {
     const { checked, onChange, label } = this.props;
