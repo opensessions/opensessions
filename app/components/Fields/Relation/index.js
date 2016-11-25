@@ -54,7 +54,7 @@ export default class RelationField extends React.Component { // eslint-disable-l
     const state = this.state || {};
     const { className, props } = this.props;
     let { value } = this.props;
-    if (typeof value === 'object') value = value.uuid;
+    if (value && typeof value === 'object') value = value.uuid;
     const options = 'options' in state ? state.options : [];
     const searchableAttrs = { options, value, className };
     return (<div className={styles.relationWrap}>
