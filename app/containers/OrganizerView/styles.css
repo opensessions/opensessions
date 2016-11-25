@@ -9,7 +9,7 @@
   & .name {
     background: #FFF;
     padding: .5em 0;
-    animation: slide-down .6s;
+    animation: slide-down .6s ease;
     & .container {
       display: flex;
       align-items: center;
@@ -124,7 +124,7 @@
   background-size: cover;
   background-repeat: no-repeat;
   background-position: 50% 50%;
-  animation: appear 1.5s;
+  animation: appear 1.2s ease-in-out;
   transition: 1.5s ease opacity;
   & > .container {
     height: 100%;

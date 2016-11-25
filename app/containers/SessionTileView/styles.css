@@ -11,6 +11,10 @@
   }
 }
 
+.GALLink {
+  display: none;
+}
+
 .tile {
   background: #FFF;
   max-width: var(--tileWidth);

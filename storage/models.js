@@ -9,9 +9,22 @@ module.exports = (DataTypes) => ({
     }
   },
   tables: {
+    /* SessionActivity: {
+      _options: {
+        makeAssociations(models) {
+          models.SessionActivity.belongsTo(models.Session);
+          models.SessionActivity.belongsTo(models.Activity);
+        }
+      }
+    }, */
     Activity: {
       owner: DataTypes.STRING,
-      name: DataTypes.STRING,
+      name: {
+        type: DataTypes.STRING,
+        validate: {
+          not: ['[£$%/\\!?:;,.]', '']
+        }
+      },
       _options: {
         getterMethods: {
           href() {
@@ -24,15 +37,26 @@ module.exports = (DataTypes) => ({
           },
           getActions(models, user) {
             const actions = [];
-            if (user && user === this.owner && this.get('SessionsCount') === '0') {
+            // if (user && user === this.owner && this.get('SessionsCount') === '0') {
+            if (user && user === this.owner) {
               actions.push('delete');
             }
             return actions;
           }
         },
+        hooks: {
+          afterCreate(instance) {
+            return email.sendEmail('Someone has added a new activity on Open Sessions', 'hello+activity@opensessions.io', `
+              <p>A new activity has been created on Open Sessions.</p>
+              <p>It's called ${instance.name} and the session it is attached to may still be in draft mode.</p>
+            `, { '-title-': 'New activity' });
+          }
+        },
         classMethods: {
           getQuery(query, models) {
             if (!query) query = {};
+            // query.attributes = ['uuid', 'name', 'owner', 'Activity.createdAt', 'Activity.updatedAt'];
+            // query.include = [{ model: models.SessionActivity, attributes: [], required: false }];
             query.include = [{ model: models.Session, attributes: [], required: false }];
             query.attributes = ['uuid', 'name', 'owner', 'Activity.createdAt', 'Activity.updatedAt', [DataTypes.fn('COUNT', DataTypes.col('Sessions.ActivityUuid')), 'SessionsCount']];
             query.group = ['Activity.uuid'];
@@ -40,6 +64,7 @@ module.exports = (DataTypes) => ({
           },
           makeAssociations(models) {
             models.Activity.hasMany(models.Session);
+            // models.Activity.belongsToMany(models.Session, { through: models.SessionActivity });
           }
         }
       }
@@ -98,7 +123,6 @@ module.exports = (DataTypes) => ({
       owner: DataTypes.STRING,
       title: DataTypes.STRING(50),
       description: DataTypes.STRING(2048),
-      activityType: DataTypes.STRING,
       preparation: DataTypes.STRING(2048),
       leader: DataTypes.STRING,
       image: DataTypes.STRING(512),
@@ -173,6 +197,7 @@ module.exports = (DataTypes) => ({
               actions.push('edit');
               actions.push('duplicate');
               actions.push('delete');
+              // actions.push('setActivitiesAction');
             }
             return actions;
           },
@@ -182,7 +207,7 @@ module.exports = (DataTypes) => ({
           duplicate(req) {
             const data = this.dataValues;
             delete data.uuid;
-            data.title = `${data.title} (duplicated)`;
+            data.title = data.title.match(/\(duplicated\)$/g) ? data.title : `${data.title} (duplicated)`;
             return req.Model.create(data).then(instance => ({ instance }));
           },
           message(req) {
@@ -194,10 +219,19 @@ module.exports = (DataTypes) => ({
               <p style="padding:.5em;white-space:pre;background:#FFF;">From: ${message.name} &lt;${message.from}&gt;</p>
               <p style="padding:.5em;white-space:pre;background:#FFF;">${message.body}</p>
             `, { '-title-': 'Organizer communication' });
+          },
+          setActivitiesAction(req, models) {
+            let { uuids } = req.body;
+            uuids = uuids.map(uuid => ((typeof uuid === 'string') ? uuid : uuid.uuid));
+            if (uuids) {
+              return models.Activity.findAll({ where: { uuid: { $in: uuids } } }).then(activities => this.setActivities(activities));
+            }
+            return this.setActivities(null);
           }
         },
         classMethods: {
           getQuery(query, models, user) {
+            // query.include = [models.Organizer, { model: models.Activity, through: models.SessionActivity }];
             query.include = [models.Organizer, models.Activity];
             query.where = { $and: query.where ? [query.where] : [] };
             if (user) {
@@ -225,6 +259,7 @@ module.exports = (DataTypes) => ({
           makeAssociations(models) {
             models.Session.belongsTo(models.Organizer);
             models.Session.belongsTo(models.Activity);
+            // models.Session.belongsToMany(models.Activity, { through: models.SessionActivity });
           }
         },
         hooks: {

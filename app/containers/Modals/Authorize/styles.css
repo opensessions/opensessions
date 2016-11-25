@@ -1,0 +1,22 @@
+.auth {
+  & label {
+    text-align: left;
+    font-family: serif;
+  }
+}
+
+.or {
+  color: #888;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  & hr {
+    flex-grow: 1;
+    color: #CCC;
+    border-width: .1em;
+    height: 0;
+  }
+  & span {
+    padding: 0 1em;
+  }
+}

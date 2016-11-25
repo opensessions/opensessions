@@ -70,6 +70,12 @@
       "placeholder": "E.g. Volleyball",
       "example": "E.g. Volleyball"
     },
+    "Activities": {
+      "label": "Sport or activity type",
+      "tip": "Enter the type of activity or sport on offer for this session. If multiple activities are on offer at this session, please write 'Multiple Activities'",
+      "placeholder": "E.g. Volleyball",
+      "example": "E.g. Volleyball"
+    },
     "preparation": {
       "label": "Is there anything participants should bring?",
       "tipTitle": "What to bring",

@@ -20,6 +20,16 @@ const hooks = () => {
     });
   });
 
+  route.post('/feature-dialog', requireLogin, (req, res) => {
+    const { feature } = req.body;
+    const EMAIL = 'hello@opensessions.io';
+    sendEmail('A user has opened a feature dialog', EMAIL, `
+      <p>A user has opened a dialog box for the '${feature}' feature.</p>
+    `, { '-title-': 'Dialog box opened' }).then(() => {
+      res.json({ status: 'success' });
+    });
+  });
+
   return route;
 };
 

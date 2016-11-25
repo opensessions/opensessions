@@ -85,6 +85,10 @@ export default class SessionTileView extends React.Component { // eslint-disable
       <span>{date.hasOccurred ? ' (Past)' : ''}</span>
     </li>);
   }
+  renderGALLink(session) {
+    const { locationData, Activity, location } = session;
+    return <a target="blank" href={`https://beta.getactivelondon.com/results/list?activity=${Activity ? Activity.name : ''}&location=${location}&lat=${locationData ? locationData.lat : ''}&lng=${locationData ? locationData.lng : ''}&radius=4&sortBy=distance`} className={styles.GALLink}>GAL</a>;
+  }
   render() {
     if (this.state && this.state.isDeleted) return null;
     const { session } = this.props;
@@ -100,7 +104,7 @@ export default class SessionTileView extends React.Component { // eslint-disable
       </div>
       <div className={styles.textCol}>
         <div className={styles.info}>
-          <h1><Link to={session.href}>{this.getTitle()}</Link></h1>
+          <h1><Link to={session.href}>{this.getTitle()}</Link> {this.renderGALLink(session)}</h1>
           <div className={styles.location}>{session.location}</div>
         </div>
         <div className={styles.meta}>

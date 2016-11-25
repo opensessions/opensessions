@@ -170,7 +170,7 @@ module.exports = (database) => {
         Model.findOne(query).then(instance => {
           const actions = instance.getActions(database.models, user);
           if (actions.indexOf(action) !== -1) {
-            instance[action](req)
+            instance[action](req, database.models)
               .then(result => res.json(Object.assign({ status: 'success' }, result)))
               .catch(error => console.log(error) || res.status(404).json({ status: 'failure', error }));
           } else {

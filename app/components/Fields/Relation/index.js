@@ -7,6 +7,9 @@ import styles from './styles.css';
 import { apiModel } from '../../../utils/api';
 
 export default class RelationField extends React.Component { // eslint-disable-line react/prefer-stateless-function
+  static contextTypes = {
+    notify: PropTypes.func
+  };
   static propTypes = {
     value: PropTypes.string,
     onChange: PropTypes.func,
@@ -33,6 +36,9 @@ export default class RelationField extends React.Component { // eslint-disable-l
   newRelation = name => apiModel.new(this.props.relation.model, { name }).then(result => {
     this.setState({ relationState: 'none' });
     this.fetchRelation(result.instance.uuid);
+  }).catch(() => {
+    this.context.notify('Couldn\'t create activity type, validation failed', 'error');
+    this.setState({ relationState: 'none' });
   })
   handleValueChange = (value) => {
     if (this.props.onChange) this.props.onChange(value === 'none' ? null : value);
@@ -46,7 +52,9 @@ export default class RelationField extends React.Component { // eslint-disable-l
   }
   render() {
     const state = this.state || {};
-    const { value, className, props } = this.props;
+    const { className, props } = this.props;
+    let { value } = this.props;
+    if (typeof value === 'object') value = value.uuid;
     const options = 'options' in state ? state.options : [];
     const searchableAttrs = { options, value, className };
     return (<div className={styles.relationWrap}>

@@ -48,7 +48,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   }
   getLowestPrice() {
     const sorted = this.getPrices().sort((p1, p2) => p1.price > p2.price);
-    if (sorted.length) {
+    if (sorted.length && sorted[0].price) {
       return sorted.length > 1 ? `from £${sorted[0].price}` : `£${sorted[0].price}`;
     }
     return 'Free';
@@ -133,7 +133,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       </div>);
     }
     return (<div className={styles.detailsSection}>
-      <div className={styles.detailsImg}>
+      <div className={[styles.detailsImg, session.image ? '' : styles.noImg].join(' ')}>
         <img src={session.image ? this.getSessionImage() : '/images/placeholder.png'} role="presentation" />
       </div>
       <div className={styles.detailsText}>
@@ -156,6 +156,12 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     const today = new Date();
     const updated = new Date(session.updatedAt);
     let updatedAt = '';
+    let freshness = 2;
+    const freshStyles = {
+      0: '',
+      1: styles.recent,
+      2: styles.new
+    };
     const dayDelta = [today, updated].map(time => Math.floor(time.getTime() / (24 * 60 * 60 * 1000))).reduce((todayDay, updatedDay) => todayDay - updatedDay);
     if (dayDelta === 0) {
       updatedAt = 'today';
@@ -163,12 +169,14 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       updatedAt = `${dayDelta} days ago`;
     } else if (dayDelta < 31) {
       updatedAt = `${Math.floor(dayDelta / 7)} week${dayDelta < 14 ? '' : 's'} ago`;
-    } else if (dayDelta < 62) {
-      updatedAt = 'a month ago';
+    } else if (dayDelta < 92) {
+      updatedAt = 'over a month ago';
+      freshness = 1;
     } else {
-      updatedAt = 'more than a month ago';
+      updatedAt = 'over three months ago';
+      freshness = 0;
     }
-    return <span className={styles.lastUpdated}>last updated {updatedAt}</span>;
+    return <span className={[styles.lastUpdated, freshStyles[freshness]].join(' ')} title={dayDelta <= 1 ? '' : `${dayDelta} days ago`}>last updated {updatedAt}</span>;
   }
   renderDescription() {
     const session = this.context.store.getState().get('session');

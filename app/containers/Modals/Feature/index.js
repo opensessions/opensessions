@@ -16,9 +16,10 @@ export default class FeatureModal extends React.Component { // eslint-disable-li
   static propTypes = {
     feature: PropTypes.string
   }
-  constructor() {
+  constructor(props) {
     super();
     this.state = { notify: false };
+    apiFetch('/hooks/feature-dialog', { body: { feature: props.feature } });
   }
   send() {
     if (this.state.notify) {

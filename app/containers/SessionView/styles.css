@@ -45,6 +45,9 @@
   }
   & .detailsImg {
     max-width: 46rem;
+    &.noImg {
+      display: none;
+    }
   }
   & .detailsText {
     flex-grow: 1;
@@ -64,6 +67,12 @@
       font-size: 1.4em;
       padding: .25em;
       line-height: 1.3;
+      align-self: stretch;
+      & .lastUpdated {
+        font-weight: normal;
+        font-size: .5em;
+        float: right;
+      }
     }
     & .dateDetail,
     & .locationDetail {
@@ -266,6 +275,16 @@
   color: #888;
   margin: .5em auto;
   display: block;
+  &::before {
+    content: '● ';
+    color: #AAA;
+  }
+  &.new::before {
+    color: var(--liveColor);
+  }
+  &.recent::before {
+    color: var(--actionColor);
+  }
 }
 
 .sideCol {
@@ -293,7 +312,6 @@
   }
   &.disabilityInfo {
     text-align: right;
-    display: flex;
   }
   &.pricing {
     display: flex;
@@ -384,6 +402,11 @@ a.organizerLink {
     & .detailsImg,
     & .detailsText {
       padding: .5em;
+    }
+    & .detailsImg {
+      &.noImg {
+        display: block;
+      }
     }
     & .detailsText {
       font-size: 1.1em;
