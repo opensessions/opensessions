@@ -15,6 +15,7 @@ import Intercom from 'react-intercom';
 
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import Modal from '../../components/Modal';
 
 import getUserToken from './getUserToken';
 
@@ -138,13 +139,7 @@ export default class App extends React.Component { // eslint-disable-line react/
           <Footer />
         </div>
         <Intercom {...intercomProps} />
-        <div className={[styles.modal, modal ? styles.show : null].join(' ')}>
-          <div className={styles.modalBG} onClick={() => this.setState({ modal: null })} />
-          <div className={styles.modalFG}>
-            <a className={styles.close} onClick={() => this.setState({ modal: null })}>×</a>
-            {modal || null}
-          </div>
-        </div>
+        <Modal modal={modal} />
       </div>
     );
   }

@@ -66,7 +66,7 @@ export default class JSONListField extends React.Component { // eslint-disable-l
     return <span className={styles.delButton} onClick={this.clearRow} key={key} data-key={key}><b>×</b> Clear row</span>;
   }
   renderDelete(key) {
-    return <span className={styles.delButton} onClick={this.deleteRow} key={key} data-key={key}><b>×</b> Delete row</span>;
+    return <span tabIndex={0} className={styles.delButton} onKeyUp={event => event.keyCode === 13 && event.target.click()} onClick={this.deleteRow} key={key} data-key={key}><b>×</b> Delete row</span>;
   }
   renderLabels() {
     const { components } = this.props;

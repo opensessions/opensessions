@@ -14,6 +14,6 @@ export default class LogoutLink extends React.Component {
   render() {
     const { children } = this.props;
     const { user } = this.context;
-    return <span>{user ? <a onClick={this.onClick}>{children}</a> : null}</span>;
+    return <span>{user ? <a tabIndex={0} onKeyUp={event => event.keyCode === 13 && event.target.click()} onClick={this.onClick}>{children}</a> : null}</span>;
   }
 }

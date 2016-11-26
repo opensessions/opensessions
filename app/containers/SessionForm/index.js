@@ -90,7 +90,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
         minAgeRestriction: () => <Optional {...this.getAttr('minAgeRestriction')} component={{ type: NumberField, props: { validation: { min: 0, max: this.state.session.maxAgeRestriction || MAX_AGE }, format: ': years old' } }} null="0" />,
         maxAgeRestriction: () => <Optional {...this.getAttr('maxAgeRestriction')} component={{ type: NumberField, props: { validation: { min: this.state.session.minAgeRestriction || 0, max: MAX_AGE }, format: ': years old' } }} null="0" />,
         abilityRestriction: () => <MultiBool options={DISABILITIES} {...this.getAttr('abilityRestriction')} />,
-        contactName: () => <TextField {...this.getAttr('contactName')} />,
+        contactName: () => <SearchableSelect {...this.getAttr('contactName')} onChange={value => this.updateSession('contactName', value || '')} options={this.getNames()} addItem={this.addName} />,
         contactEmail: () => <SearchableSelect {...this.getAttr('contactEmail')} onChange={value => this.updateSession('contactEmail', value || '')} options={this.getEmails()} addItem={this.addEmail} />,
         contactPhone: () => <TextField {...this.getAttr('contactPhone')} />,
         socialWebsite: () => <TextField placeholder="https://" {...this.getAttr('socialWebsite')} />,
@@ -154,22 +154,39 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       if (isPendingSave) text = 'Saving...';
       const viewURL = `/session/${session.uuid}${params.tab ? `?tab=${params.tab}` : ''}`;
       actions.push(<Link key="view" to={viewURL} className={[publishStyles.previewButton, isPendingSave ? publishStyles.disabled : null].join(' ')}>{text}</Link>);
-      actions.push(<a key="publish" onClick={isPublished ? this.unpublishSession : this.publishSession} className={[publishStyles[`action${isPublished ? 'Unpublish' : 'Publish'}`], isPendingSave ? publishStyles.disabled : null].join(' ')}>{isPublished ? 'Unpublish' : 'Publish'}</a>);
+      actions.push(<a key="publish" tabIndex={0} onKeyUp={event => event.keyCode === 13 && event.target.click()} onClick={isPublished ? this.unpublishSession : this.publishSession} className={[publishStyles[`action${isPublished ? 'Unpublish' : 'Publish'}`], isPendingSave ? publishStyles.disabled : null].join(' ')}>{isPublished ? 'Unpublish' : 'Publish'}</a>);
     }
     return actions;
   }
-  getEmails() {
-    const { session } = this.state;
+  getNames() {
+    const { session, customNames } = this.state;
     const user = this.context.user || {};
-    let emailOptions = user ? [{ uuid: user.email, name: user.email }] : [];
-    if (this.state.customEmails) emailOptions = emailOptions.concat(this.state.customEmails);
+    let options = [];
+    if (session) {
+      const { contactName, leader } = session;
+      if (leader && options.indexOf(leader) === -1) {
+        options.push(leader);
+      }
+      if (contactName && options.indexOf(contactName) === -1) {
+        options.push(contactName);
+      }
+    }
+    if (user) options.push(user.nickname);
+    if (customNames) options = options.concat(customNames);
+    return options.map(option => ({ uuid: option, name: option }));
+  }
+  getEmails() {
+    const { session, customEmails } = this.state;
+    const user = this.context.user || {};
+    let emailOptions = user ? [user.email] : [];
+    if (customEmails) emailOptions = emailOptions.concat(customEmails);
     if (session) {
       const { contactEmail } = session;
       if (contactEmail && contactEmail !== user.email) {
-        emailOptions.push({ uuid: contactEmail, name: contactEmail });
+        emailOptions.push(contactEmail);
       }
     }
-    return emailOptions;
+    return emailOptions.map(option => ({ uuid: option, name: option }));
   }
   fetchData = () => {
     const { session, params, location } = this.props;
@@ -215,8 +232,12 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   }
   publishSession = () => this.changeSessionState('published').then(() => this.context.notify('Your session has been published!', 'success')).then(() => this.context.router.push(this.state.session.href))
   unpublishSession = () => this.changeSessionState('unpublished').then(() => this.context.notify('Your session has been unpublished!', 'warn'))
-  addEmail = (email) => {
-    this.setState({ customEmails: [{ uuid: email, name: email }] });
+  addName = name => {
+    this.setState({ customNames: [name] });
+    this.updateSession('contactName', name);
+  }
+  addEmail = email => {
+    this.setState({ customEmails: [email] });
     this.updateSession('contactEmail', email);
   }
   autosave = (ms) => {

@@ -112,11 +112,14 @@ export default class AuthModal extends React.Component { // eslint-disable-line 
       />
     </div>);
   }
+  renderLink(text, onClick) {
+    return <p><a tabIndex={0} onKeyUp={event => event.keyCode === KEY_ENTER && event.target.click()} onClick={onClick}>{text}</a></p>;
+  }
   renderSignIn() {
     const { email } = this.props;
     const { showPass, error } = this.state;
     return (<GenericModal size="small">
-      <div className={styles.auth} onKeyUp={event => event.keyCode === KEY_ENTER && this.signIn()}>
+      <div className={styles.auth} onKeyDown={event => event.keyCode === KEY_ENTER && this.signIn()}>
         <h2>Sign in to your account</h2>
         {error ? <p className={styles.error}>{error}</p> : null}
         <GenericForm>
@@ -125,7 +128,7 @@ export default class AuthModal extends React.Component { // eslint-disable-line 
           <p className={styles.question}><Checkbox label="Show password" checked={showPass} onChange={() => this.setState({ showPass: !showPass })} /></p>
           <Button onClick={() => this.signIn()}>Sign in</Button>
         </GenericForm>
-        <p><a onClick={() => this.forgotPassword()}>I forgot my password</a></p>
+        {this.renderLink('I forgot my password', () => this.forgotPassword())}
       </div>
     </GenericModal>);
   }
@@ -133,7 +136,7 @@ export default class AuthModal extends React.Component { // eslint-disable-line 
     const { email } = this.props;
     const { error } = this.state;
     return (<GenericModal size="small">
-      <div className={styles.auth} onKeyUp={event => event.keyCode === KEY_ENTER && this.signUp()}>
+      <div className={styles.auth} onKeyDown={event => event.keyCode === KEY_ENTER && this.signUp()}>
         <Button className={styles.facebook} onClick={() => this.facebook()}>Continue with Facebook</Button>
         <div className={styles.or}><hr /><span>or</span><hr /></div>
         <h2>Create your Open Sessions Account</h2>
@@ -144,7 +147,7 @@ export default class AuthModal extends React.Component { // eslint-disable-line 
           {this.renderQuestion('Re-type password', { name: 'password2', props: { type: 'password' } })}
           <Button onClick={() => this.signUp()}>Create Account</Button>
         </GenericForm>
-        <p><a onClick={() => this.context.modal.dispatch({ component: <AuthModal /> })}>I already have an account</a></p>
+        {this.renderLink('I already have an account', () => this.context.modal.dispatch({ component: <AuthModal /> }))}
       </div>
     </GenericModal>);
   }
@@ -157,7 +160,7 @@ export default class AuthModal extends React.Component { // eslint-disable-line 
       return this.renderCreate();
     }
     return (<GenericModal size="small">
-      <div className={styles.auth} onKeyUp={event => event.keyCode === KEY_ENTER && this.emailCheck()}>
+      <div className={styles.auth} onKeyDown={event => event.keyCode === KEY_ENTER && this.emailCheck()}>
         <Button className={styles.facebook} onClick={() => this.facebook()}>Continue with Facebook</Button>
         <div className={styles.or}><hr /><span>or</span><hr /></div>
         <h2>Continue with email</h2>
@@ -166,7 +169,7 @@ export default class AuthModal extends React.Component { // eslint-disable-line 
           {this.renderQuestion('Email', { name: 'email', props: { autoFocus: true, name: 'email' } })}
           <Button style={this.state.form.email ? null : 'disabled'} onClick={() => this.emailCheck()}>Continue</Button>
         </GenericForm>
-        <p><a onClick={() => this.context.modal.dispatch({ component: <AuthModal stage="create" /> })}>Create an account</a></p>
+        {this.renderLink('Create an account', () => this.context.modal.dispatch({ component: <AuthModal stage="create" /> }))}
       </div>
     </GenericModal>);
   }

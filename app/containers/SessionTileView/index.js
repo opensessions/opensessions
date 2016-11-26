@@ -63,8 +63,8 @@ export default class SessionTileView extends React.Component { // eslint-disable
     const actionTypes = {
       edit: <Link to={`${session.href}/edit`}>Edit</Link>,
       view: <Link to={session.href}>View</Link>,
-      duplicate: <a onClick={this.duplicate}>Duplicate</a>,
-      delete: <a onClick={this.delete} className={styles.delete}>Delete</a>
+      duplicate: <a onClick={this.duplicate} onKeyUp={({ keyCode, target }) => keyCode === 13 && target.click()} tabIndex={0}>Duplicate</a>,
+      delete: <a onClick={this.delete} onKeyUp={({ keyCode, target }) => keyCode === 13 && target.click()} tabIndex={0} className={styles.delete}>Delete</a>
     };
     const actions = session.actions.length ? session.actions : ['view'];
     return (<ol className={styles.actions}>
