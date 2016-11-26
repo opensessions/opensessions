@@ -18,7 +18,7 @@ export default class Authenticated extends React.Component { // eslint-disable-l
   renderButton() {
     let { button } = this.props;
     if (!(button instanceof Array)) button = [button];
-    return <ol>{button.map((text, key) => <li key={key}><LoginButton lock={key === 0 ? 'signup' : 'login'}>{text}</LoginButton></li>)}</ol>;
+    return button.map((text, key) => <span key={key}><LoginButton lock={key === 0 ? 'signup' : 'login'}>{text}</LoginButton></span>);
   }
   renderOut() {
     const { message, button } = this.props;

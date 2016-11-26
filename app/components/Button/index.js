@@ -9,6 +9,7 @@ export default class Button extends React.PureComponent {
   static propTypes = {
     children: PropTypes.node,
     className: PropTypes.string,
+    style: PropTypes.string,
     to: PropTypes.string,
     onClick: PropTypes.func
   }
@@ -21,7 +22,7 @@ export default class Button extends React.PureComponent {
     }
   }
   render() {
-    return (<a onKeyUp={event => event.keyCode === 13 && this.onClick()} onClick={this.onClick} className={[styles.button, this.props.className].join(' ')} tabIndex={0}>
+    return (<a className={[styles.button, this.props.className, styles[this.props.style]].join(' ')} onKeyUp={event => event.keyCode === 13 && this.onClick()} onClick={this.onClick} tabIndex={0}>
       {this.props.children}
     </a>);
   }

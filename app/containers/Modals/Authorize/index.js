@@ -139,8 +139,8 @@ export default class AuthModal extends React.Component { // eslint-disable-line 
         <h2>Create your Open Sessions Account</h2>
         <GenericForm>
           {error ? <p className={styles.error}>{error}</p> : null}
-          {this.renderQuestion('Email', { name: 'email', props: { value: email } })}
-          {this.renderQuestion('Choose a password', { name: 'password', props: { autoFocus: true, type: 'password' } })}
+          {this.renderQuestion('Email', { name: 'email', props: { value: email, autoFocus: !email } })}
+          {this.renderQuestion('Choose a password', { name: 'password', props: { autoFocus: email, type: 'password' } })}
           {this.renderQuestion('Re-type password', { name: 'password2', props: { type: 'password' } })}
           <Button onClick={() => this.signUp()}>Create Account</Button>
         </GenericForm>
@@ -164,7 +164,7 @@ export default class AuthModal extends React.Component { // eslint-disable-line 
         <GenericForm>
           {error ? <p className={styles.error}>{error}</p> : null}
           {this.renderQuestion('Email', { name: 'email', props: { autoFocus: true, name: 'email' } })}
-          <Button onClick={() => this.emailCheck()}>Continue</Button>
+          <Button style={this.state.form.email ? null : 'disabled'} onClick={() => this.emailCheck()}>Continue</Button>
         </GenericForm>
         <p><a onClick={() => this.context.modal.dispatch({ component: <AuthModal stage="create" /> })}>Create an account</a></p>
       </div>
