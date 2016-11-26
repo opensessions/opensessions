@@ -114,9 +114,13 @@ ol.steps {
     }
     &.arrow {
       width: 1em;
+      font-family: sans-serif;
       font-size: 2.5em;
       animation-name: zoomin;
       color: rgba(255, 255, 255, .5);
+      &::before {
+        content: '🢂';
+      }
     }
     &.step {
       width: 10em;

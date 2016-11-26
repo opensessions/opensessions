@@ -6,6 +6,7 @@ import Button from '../../../components/Button';
 import Checkbox from '../../../components/Fields/Checkbox';
 
 import { apiFetch } from '../../../utils/api';
+import trackPage from '../../../utils/analytics';
 
 import styles from './styles.css';
 
@@ -14,7 +15,8 @@ const KEY_ENTER = 13;
 export default class AuthModal extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
     modal: PropTypes.object,
-    user: PropTypes.object
+    user: PropTypes.object,
+    auth: PropTypes.object
   };
   static propTypes = {
     feature: PropTypes.string,
@@ -24,11 +26,10 @@ export default class AuthModal extends React.Component { // eslint-disable-line 
   constructor() {
     super();
     this.state = { form: {}, showPass: false };
-    const { Auth0, AUTH0_CLIENT_ID, AUTH0_CLIENT_DOMAIN } = window;
-    this.auth0 = new Auth0({ clientID: AUTH0_CLIENT_ID, domain: AUTH0_CLIENT_DOMAIN });
+    trackPage(window.location.href, '/special:signup');
   }
   facebook() {
-    this.auth0.login({
+    this.context.auth.login({
       connection: 'facebook',
       responseType: 'token'
     });
@@ -38,6 +39,7 @@ export default class AuthModal extends React.Component { // eslint-disable-line 
     if (form && form.email) {
       apiFetch('/api/auth-email', { body: form }).then(result => {
         this.context.modal.dispatch({ component: result.exists ? <AuthModal stage="signin" email={form.email} /> : <AuthModal stage="create" email={form.email} /> });
+        this.setState({ error: null });
       }).catch(error => {
         this.setState({ error: error.error });
       });
@@ -48,7 +50,7 @@ export default class AuthModal extends React.Component { // eslint-disable-line 
     if (!form.password) {
       this.setState({ error: 'Enter your password' });
     }
-    this.auth0.login({
+    this.context.auth.login({
       connection: 'Username-Password-Authentication',
       responseType: 'token',
       email: this.props.email || form.email,
@@ -56,6 +58,8 @@ export default class AuthModal extends React.Component { // eslint-disable-line 
     }, error => {
       if (error) {
         this.setState({ error: error.toString().split(':')[1] });
+      } else {
+        this.setState({ error: null });
       }
     });
   }
@@ -65,14 +69,29 @@ export default class AuthModal extends React.Component { // eslint-disable-line 
       this.setState({ error: 'Passwords do not match' });
       return;
     }
-    this.auth0.signup({
+    this.context.auth.signup({
       connection: 'Username-Password-Authentication',
       responseType: 'token',
-      email: this.props.email || this.state.form.email,
-      password: this.state.form.password
+      email: this.props.email || form.email,
+      password: form.password
     }, error => {
       if (error) {
         this.setState({ error: error.toString().split(':')[1] });
+      } else {
+        this.setState({ error: null });
+      }
+    });
+  }
+  forgotPassword() {
+    this.context.auth.changePassword({
+      connection: 'Username-Password-Authentication',
+      email: this.props.email || this.state.form.email
+    }, (error, response) => {
+      if (error) {
+        this.setState({ error: error.toString().split(':')[1] });
+      } else {
+        this.setState({ error: null });
+        this.context.modal.dispatch({ component: <GenericModal size="small">{response.replace(/"/g, '')}</GenericModal> });
       }
     });
   }
@@ -98,15 +117,15 @@ export default class AuthModal extends React.Component { // eslint-disable-line 
     const { showPass, error } = this.state;
     return (<GenericModal size="small">
       <div className={styles.auth} onKeyUp={event => event.keyCode === KEY_ENTER && this.signIn()}>
-        {error ? <p className={styles.error}>{error}</p> : null}
         <h2>Sign in to your account</h2>
+        {error ? <p className={styles.error}>{error}</p> : null}
         <GenericForm>
           {this.renderQuestion('Email', { name: 'email', props: { value: email } })}
           {this.renderQuestion('Password', { name: 'password', props: { autoFocus: true, type: showPass ? 'text' : 'password' } })}
           <p className={styles.question}><Checkbox label="Show password" checked={showPass} onChange={() => this.setState({ showPass: !showPass })} /></p>
           <Button onClick={() => this.signIn()}>Sign in</Button>
         </GenericForm>
-        <p><a>I forgot my password</a></p>
+        <p><a onClick={() => this.forgotPassword()}>I forgot my password</a></p>
       </div>
     </GenericModal>);
   }
@@ -144,7 +163,7 @@ export default class AuthModal extends React.Component { // eslint-disable-line 
         <h2>Continue with email</h2>
         <GenericForm>
           {error ? <p className={styles.error}>{error}</p> : null}
-          {this.renderQuestion('Email', { name: 'email', props: { autoFocus: true } })}
+          {this.renderQuestion('Email', { name: 'email', props: { autoFocus: true, name: 'email' } })}
           <Button onClick={() => this.emailCheck()}>Continue</Button>
         </GenericForm>
         <p><a onClick={() => this.context.modal.dispatch({ component: <AuthModal stage="create" /> })}>Create an account</a></p>

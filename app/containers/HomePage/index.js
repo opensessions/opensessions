@@ -6,6 +6,7 @@ import Helmet from 'react-helmet';
 import Authenticated from '../../components/Authenticated';
 import Banner from '../../components/Banner';
 import Button from '../../components/Button';
+import LoginButton from '../../components/LoginButton';
 import NotificationBar from '../../components/NotificationBar';
 import SessionList from '../SessionList';
 import LoadingMessage from '../../components/LoadingMessage';
@@ -16,7 +17,6 @@ import { apiFetch } from '../../utils/api';
 
 export default class HomePage extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
-    locks: PropTypes.object,
     user: PropTypes.object,
     notifications: PropTypes.array,
   }
@@ -43,7 +43,7 @@ export default class HomePage extends React.Component { // eslint-disable-line r
           <h1>What is open sessions?</h1>
           <p>Open Sessions provides you with one place to easily upload and update your session details, and makes them visible to thousands of potential participants across the best sports, fitness and health-focussed websites on the web.</p>
           <p>And it's free. Forever.</p>
-          <Button onClick={() => this.context.locks.signup.show()}>Start uploading today</Button>
+          <LoginButton button>Start uploading today</LoginButton>
           {stats ? <p><span className={styles.stats}>{stats.sessions.published}</span> sessions published and counting!</p> : null}
         </div>
       </section>
@@ -75,17 +75,17 @@ export default class HomePage extends React.Component { // eslint-disable-line r
       <Banner>
         <h1>The free way to promote your sessions</h1>
         <h2>We upload your sessions to different activity finders&#8212;so you don't have to</h2>
-        <Authenticated button={['Sign Up', 'Login']}>
+        <Authenticated button={[<span><b>+</b> Add a session</span>]}>
           <p><Link to="/session/add"><b>+</b> Add a session</Link></p>
         </Authenticated>
         <ol className={styles.steps}>
           <li className={styles.step}>
             Upload <b className={styles.yourSessions}>your sessions</b> here
           </li>
-          <li className={styles.arrow}>➣</li>
+          <li className={styles.arrow} />
           <li className={styles.step}>
             <b>Live</b> across numerous activity finders <i>(many more to come!)</i></li>
-          <li className={styles.arrow}>➣</li>
+          <li className={styles.arrow} />
           <li className={styles.step}>100s more people see <b className={styles.yourSessions}>your activities</b> every day</li>
         </ol>
       </Banner>
