@@ -132,6 +132,8 @@ img {
     transition: .75s ease all;
     opacity: 0;
     transform: perspective(60em) rotateX(45deg) scale(.75);
+    max-height: 94vh;
+    overflow-y: auto;
     & .close {
       position: absolute;
       top: 0;

@@ -1,8 +1,9 @@
+@import '../../App/variables.css';
+
 .modal {
   background: #E6E6E6;
   max-width: 94vw;
   padding: 1.5em;
-  font-size: 1.1em;
   width: 36em;
   text-align: center;
   &.small {
@@ -33,5 +34,11 @@
   }
   & a {
     font-size: 1.2em;
+  }
+}
+
+@media (--desktop) {
+  .modal {
+    font-size: 1.1em;
   }
 }
