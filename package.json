@@ -51,7 +51,7 @@
     "test:ie": "npm run test -- --browsers IE",
     "coveralls": "cat ./coverage/lcov/lcov.info | coveralls",
     "postinstall": "npm run build:app:clean",
-    "heroku-postbuild": "npm run build:app && npm run build:server",
+    "heroku-postbuild": "echo > .env && npm run build:app && npm run build:server",
     "push": "npm run test && git push"
   },
   "pre-commit": "lint:staged",
