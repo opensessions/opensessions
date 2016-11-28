@@ -1,5 +1,7 @@
+@import '../../App/variables.css';
+
 .auth {
-  max-width: 18em;
+  max-width: 20em;
   margin: 1em auto;
   font-family: Belgrano;
   & p,
@@ -53,5 +55,11 @@
   }
   & span {
     padding: 0 1em;
+  }
+}
+
+@media (--desktop) {
+  .auth {
+    max-width: 18em;
   }
 }

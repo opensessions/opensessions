@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 
 import CalendarSVG from '../../components/SVGs/Calendar';
 
-import { parseSchedule } from '../../utils/calendar';
+import { parseSchedule, sortSchedule } from '../../utils/calendar';
 import { apiModel } from '../../utils/api';
 
 import styles from './styles.css';
@@ -94,10 +94,7 @@ export default class SessionTileView extends React.Component { // eslint-disable
     const { session } = this.props;
     let { state } = session;
     if (state === 'unpublished') state = 'draft';
-    let schedules = [];
-    if (session.schedule) {
-      schedules = session.schedule.map(this.renderSchedule);
-    }
+    const schedules = sortSchedule(session.schedule).map(this.renderSchedule);
     return (<article className={styles.tile}>
       <div className={styles.imgCol}>
         <img src={session.image ? session.image : '/images/placeholder.png'} role="presentation" className={!session.image ? styles.noImage : null} />

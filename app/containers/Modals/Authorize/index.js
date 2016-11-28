@@ -25,10 +25,11 @@ export default class AuthModal extends React.Component { // eslint-disable-line 
   }
   constructor() {
     super();
-    this.state = { form: {}, showPass: false };
+    this.state = { form: {}, showPass: false, isLoading: false };
     trackPage(window.location.href, '/special:signup');
   }
   facebook() {
+    this.setState({ isLoading: true });
     this.context.auth.login({
       connection: 'facebook',
       responseType: 'token'
@@ -37,11 +38,12 @@ export default class AuthModal extends React.Component { // eslint-disable-line 
   emailCheck() {
     const { form } = this.state;
     if (form && form.email) {
+      this.setState({ isLoading: true });
       apiFetch('/api/auth-email', { body: form }).then(result => {
         this.context.modal.dispatch({ component: result.exists ? <AuthModal stage="signin" email={form.email} /> : <AuthModal stage="create" email={form.email} /> });
-        this.setState({ error: null });
+        this.setState({ error: null, isLoading: false });
       }).catch(error => {
-        this.setState({ error: error.error });
+        this.setState({ error: error.error, isLoading: false });
       });
     }
   }
@@ -49,7 +51,9 @@ export default class AuthModal extends React.Component { // eslint-disable-line 
     const { form } = this.state;
     if (!form.password) {
       this.setState({ error: 'Enter your password' });
+      return;
     }
+    this.setState({ isLoading: true });
     this.context.auth.login({
       connection: 'Username-Password-Authentication',
       responseType: 'token',
@@ -57,18 +61,22 @@ export default class AuthModal extends React.Component { // eslint-disable-line 
       password: form.password
     }, error => {
       if (error) {
-        this.setState({ error: error.toString().split(':')[1] });
+        this.setState({ error: error.toString().split(':')[1], isloading: false });
       } else {
-        this.setState({ error: null });
+        this.setState({ error: null, isloading: false });
       }
     });
   }
   signUp() {
     const { form } = this.state;
-    if (form.password !== form.password2) {
+    if (!form.password) {
+      this.setState({ error: 'You must enter a password' });
+      return;
+    } else if (form.password !== form.password2) {
       this.setState({ error: 'Passwords do not match' });
       return;
     }
+    this.setState({ isLoading: true });
     this.context.auth.signup({
       connection: 'Username-Password-Authentication',
       responseType: 'token',
@@ -76,21 +84,22 @@ export default class AuthModal extends React.Component { // eslint-disable-line 
       password: form.password
     }, error => {
       if (error) {
-        this.setState({ error: error.toString().split(':')[1] });
+        this.setState({ error: error.toString().split(':')[1], isLoading: false });
       } else {
-        this.setState({ error: null });
+        this.setState({ error: null, isLoading: false });
       }
     });
   }
   forgotPassword() {
+    this.setState({ isLoading: true });
     this.context.auth.changePassword({
       connection: 'Username-Password-Authentication',
       email: this.props.email || this.state.form.email
     }, (error, response) => {
       if (error) {
-        this.setState({ error: error.toString().split(':')[1] });
+        this.setState({ error: error.toString().split(':')[1], isLoading: false });
       } else {
-        this.setState({ error: null });
+        this.setState({ error: null, isLoading: false });
         this.context.modal.dispatch({ component: <GenericModal size="small">{response.replace(/"/g, '')}</GenericModal> });
       }
     });
@@ -153,20 +162,20 @@ export default class AuthModal extends React.Component { // eslint-disable-line 
   }
   render() {
     const { stage } = this.props;
-    const { error } = this.state;
+    const { isLoading, error } = this.state;
     if (stage === 'signin') {
       return this.renderSignIn();
     } else if (stage === 'create') {
       return this.renderCreate();
     }
-    return (<GenericModal size="small">
+    return (<GenericModal size="small" isLoading={isLoading}>
       <div className={styles.auth} onKeyDown={event => event.keyCode === KEY_ENTER && this.emailCheck()}>
         <Button className={styles.facebook} onClick={() => this.facebook()}>Continue with Facebook</Button>
         <div className={styles.or}><hr /><span>or</span><hr /></div>
         <h2>Continue with email</h2>
         <GenericForm>
           {error ? <p className={styles.error}>{error}</p> : null}
-          {this.renderQuestion('Email', { name: 'email', props: { autoFocus: true, name: 'email' } })}
+          {this.renderQuestion('Email', { name: 'email', props: { autoFocus: true, name: 'email', autoComplete: 'off' } })}
           <Button style={this.state.form.email ? null : 'disabled'} onClick={() => this.emailCheck()}>Continue</Button>
         </GenericForm>
         {this.renderLink('Create an account', () => this.context.modal.dispatch({ component: <AuthModal stage="create" /> }))}

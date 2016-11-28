@@ -57,6 +57,14 @@ export default function createRoutes() {
           .catch(errorLoading);
       }
     }, {
+      path: '/activities',
+      name: 'activities',
+      getComponent(nextState, cb) {
+        System.import('./containers/ListActivities')
+          .then(loadModule(cb))
+          .catch(errorLoading);
+      }
+    }, {
       path: '/profile',
       name: 'My profile',
       getComponent(nextState, cb) {

@@ -57,6 +57,17 @@ function sessionListViewReducer(state = sessionListInitialState, action) {
   }
 }
 
+const activityListInitialState = fromJS(null);
+
+function activityListViewReducer(state = activityListInitialState, action) {
+  switch (action.type) {
+    case 'ACTIVITY_LIST_LOADED':
+      return action.payload;
+    default:
+      return state;
+  }
+}
+
 /**
  * Creates the main reducer with the asynchronously loaded ones
  */
@@ -65,6 +76,7 @@ export default function createReducer(asyncReducers) {
     route: routeReducer,
     session: sessionViewReducer,
     sessionList: sessionListViewReducer,
+    activityList: activityListViewReducer,
     ...asyncReducers,
   });
 }

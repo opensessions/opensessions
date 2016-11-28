@@ -6,6 +6,7 @@ import { apiModel } from '../../utils/api';
 import SessionTileView from '../SessionTileView';
 
 import NotificationBar from '../../components/NotificationBar';
+import Button from '../../components/Button';
 import LoadingMessage from '../../components/LoadingMessage';
 import SessionList from '../../containers/SessionList';
 import ImageUpload from '../../components/Fields/ImageUpload';
@@ -128,20 +129,14 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
   renderSessions() {
     const { organizer } = this.state;
     if (!organizer) return null;
-    const sessions = organizer.Sessions;
+    const sessions = organizer.Sessions || [];
     let sessionsDisplay = <li>No sessions yet {this.isOwner() ? <a onClick={this.deleteOrganizer}>delete this organiser</a> : null}</li>;
-    if (sessions && sessions.length) sessionsDisplay = sessions.map(session => <li key={session.uuid}><SessionTileView session={session} /></li>);
-    let newSessionLink = null;
-    if (this.isOwner()) {
-      newSessionLink = (<li className={styles.new}>
-        <Link to={`/session/add?OrganizerUuid=${organizer.uuid}`}><b>+</b> Add {sessions && sessions.length ? 'another' : 'a'} session</Link>
-      </li>);
-    }
+    if (sessions.length) sessionsDisplay = sessions.map(session => <li key={session.uuid}><SessionTileView session={session} /></li>);
     return (<div className={styles.sessions}>
       <h2>{organizer.name}&rsquo;{organizer.name[organizer.name.length - 1] !== 's' ? 's' : ''} Sessions</h2>
       <ol className={styles.sessionsList}>
         {sessionsDisplay}
-        {newSessionLink}
+        {this.isOwner() ? <li className={styles.new}><Button to={`/session/add?OrganizerUuid=${organizer.uuid}`}><b>+</b> Add {sessions.length ? 'another' : 'a'} session</Button></li> : null}
       </ol>
       {this.isOwner() ? this.renderUnassignedSessions() : null}
     </div>);

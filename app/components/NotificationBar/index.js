@@ -67,7 +67,7 @@ export default class NotificationBar extends React.Component { // eslint-disable
           <div className={styles.inner}>
             {typeof message.text === 'object' ? <span className={styles.text}>{message.text}</span> : <span className={styles.text} dangerouslySetInnerHTML={{ __html: message.text }} />}
             {message.actions ? <span className={styles.actions}>{message.actions.map(action => <a tabIndex={0} onKeyUp={event => event.keyCode === 13 && event.target.click()} onClick={() => action.dispatch() && this.dismiss(message.id)} autoFocus>{action.text}</a>)}</span> : null}
-            <a onClick={this.onDismiss} data-id={message.id} className={styles.dismiss}>&times;</a>
+            <a tabIndex={0} onKeyUp={event => event.keyCode === 13 && event.target.click()} onClick={this.onDismiss} data-id={message.id} className={styles.dismiss}>&times;</a>
           </div>
         </li>)) : null}
       </ol>

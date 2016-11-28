@@ -79,11 +79,8 @@
       padding: 2em 0;
       & > a {
         padding: .75em .5em;
-        text-align: center;
         font-size: 1.2em;
         display: block;
-        color: #FFF;
-        background: var(--actionColor);
         & b {
           padding: 0 .1em;
           font-size: 1.6em;

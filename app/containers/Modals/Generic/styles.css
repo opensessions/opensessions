@@ -3,15 +3,20 @@
 .modal {
   background: #E6E6E6;
   max-width: 94vw;
-  padding: 1.5em;
+  padding: 1em;
   width: 36em;
   text-align: center;
+  transition: .2s ease all;
   &.small {
     width: 24em;
   }
   &.large {
     width: 42em;
     padding: 2.5em;
+  }
+  &.loading {
+    transform: scale(.95);
+    filter: brightness(.5);
   }
   & h1 {
     font-weight: normal;
@@ -40,5 +45,6 @@
 @media (--desktop) {
   .modal {
     font-size: 1.1em;
+    padding: 1.5em;
   }
 }

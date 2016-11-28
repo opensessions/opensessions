@@ -32,7 +32,6 @@
     opacity: 0;
   }
   & > .modalFG {
-    background: #EEE;
     max-width: 94vw;
     transition: .75s ease all;
     opacity: 0;

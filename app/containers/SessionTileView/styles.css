@@ -119,7 +119,7 @@
           padding: .25em .5em;
           box-shadow: 0 .1em .75em 0 rgba(0, 0, 0, .5);
           &.occurred {
-            background: #BBB;
+            opacity: .5;
             text-decoration: line-through;
           }
           & > svg {

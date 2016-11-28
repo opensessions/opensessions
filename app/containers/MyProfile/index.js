@@ -11,7 +11,6 @@ import { apiModel } from '../../utils/api';
 export default class MyProfile extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
     user: PropTypes.object,
-    lock: PropTypes.object,
     router: PropTypes.object,
     notify: PropTypes.func
   }
@@ -55,15 +54,13 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
   }
   renderOrganizers() {
     const { sessions, organizers, isLoading } = this.state;
-    if (isLoading) return (<LoadingMessage message="Loading organisers" ellipsis />);
+    if (isLoading) return <LoadingMessage message="Loading organisers" ellipsis />;
     if (organizers && organizers.length) return <OrganizerView organizer={this.getOrganizer()} unassignedSessions={sessions} organizerList={organizers} onOrganizerChange={this.onOrganizerChange} />;
-    return (<SessionList sessions={sessions} />);
+    return <SessionList sessions={sessions} />;
   }
   render() {
-    return (<div>
-      <Authenticated message="You must be logged on to view your profile" button="Log in">
-        {this.renderOrganizers()}
-      </Authenticated>
-    </div>);
+    return (<Authenticated message="You must be logged on to view your profile" button="Log in">
+      {this.renderOrganizers()}
+    </Authenticated>);
   }
 }
