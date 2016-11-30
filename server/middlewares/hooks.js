@@ -9,6 +9,7 @@ const requireLogin = jwt({
 
 const hooks = () => {
   const route = express();
+  const { SERVICE_LOCATION } = process.env;
 
   route.post('/feature', requireLogin, (req, res) => {
     const { feature, name, email } = req.body;
@@ -21,10 +22,10 @@ const hooks = () => {
   });
 
   route.post('/feature-dialog', requireLogin, (req, res) => {
-    const { feature } = req.body;
+    const { feature, name, email } = req.body;
     const EMAIL = 'hello@opensessions.io';
     sendEmail('A user has opened a feature dialog', EMAIL, `
-      <p>A user has opened a dialog box for the '${feature}' feature.</p>
+      <p>A user (${name} &lt;${email}&gt;) has opened a dialog box for the '${feature}' feature on ${SERVICE_LOCATION}.</p>
     `, { '-title-': 'Dialog box opened' }).then(() => {
       res.json({ status: 'success' });
     });

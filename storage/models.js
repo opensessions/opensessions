@@ -57,22 +57,12 @@ module.exports = (DataTypes) => ({
         classMethods: {
           getQuery(query, models) {
             if (!query) query = {};
-            if (MULTI_ACTIVITY) {
-              // query.attributes = ['uuid', 'name', 'owner', 'Activity.createdAt', 'Activity.updatedAt'];
-              // query.include = [{ model: models.Session, through: models.SessionActivity, required: false }];
-            } else {
-              query.include = [{ model: models.Session, attributes: [], required: false }];
-              query.attributes = ['uuid', 'name', 'owner', 'Activity.createdAt', 'Activity.updatedAt', [DataTypes.fn('COUNT', DataTypes.col('Sessions.ActivityUuid')), 'SessionsCount']];
-              query.group = ['Activity.uuid'];
-            }
+            // query.attributes = ['uuid', 'name', 'owner', 'Activity.createdAt', 'Activity.updatedAt'];
+            // query.include = [{ model: models.Session, through: models.SessionActivity, required: false }];
             return query;
           },
           makeAssociations(models) {
-            if (MULTI_ACTIVITY) {
-              models.Activity.belongsToMany(models.Session, { through: models.SessionActivity });
-            } else {
-              models.Activity.hasMany(models.Session);
-            }
+            models.Activity.belongsToMany(models.Session, { through: models.SessionActivity });
           }
         }
       }
@@ -172,7 +162,6 @@ module.exports = (DataTypes) => ({
               title: { tab: 'description', pretty: 'Session Title' },
               OrganizerUuid: { tab: 'description', pretty: 'Organiser Name' },
               description: { tab: 'description', pretty: 'Session Description' },
-              ActivityUuid: { tab: 'description', pretty: 'Activity Type' },
               leader: { tab: 'additional', pretty: 'Leader' },
               location: { tab: 'location', pretty: 'Address' }
             };
@@ -182,6 +171,9 @@ module.exports = (DataTypes) => ({
               errors.push(`Please enter a ${missingFields
                 .map((field, key) => `${key && key + 1 === missingFields.length ? 'and ' : ''}<a data-tab="${field.tab}" data-field="${field.pretty}">${field.pretty}</a>`)
                 .join(', ')}`);
+            }
+            if (session.Activities && !session.Activities.length) {
+              errors.push('You need to add an <a data-tab="description" data-field="Activity Type">activity type</a>');
             }
             if (session.schedule && session.schedule.length) {
               if (!session.schedule.every(slot => slot.startDate && slot.startTime && slot.endTime)) {
@@ -236,11 +228,7 @@ module.exports = (DataTypes) => ({
         },
         classMethods: {
           getQuery(query, models, user) {
-            if (MULTI_ACTIVITY) {
-              query.include = [models.Organizer, { model: models.Activity, through: models.SessionActivity }];
-            } else {
-              query.include = [models.Organizer, models.Activity];
-            }
+            query.include = [models.Organizer, { model: models.Activity, through: models.SessionActivity }];
             query.where = { $and: query.where ? [query.where] : [] };
             if (user) {
               query.where.$and.push({

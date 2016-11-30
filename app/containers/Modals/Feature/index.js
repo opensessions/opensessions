@@ -19,7 +19,7 @@ export default class FeatureModal extends React.Component { // eslint-disable-li
   constructor(props) {
     super();
     this.state = { notify: false };
-    apiFetch('/hooks/feature-dialog', { body: { feature: props.feature } });
+    apiFetch('/hooks/feature-dialog', { body: { feature: props.feature, email: user.email, name: user.nickname } });
   }
   send() {
     if (this.state.notify) {

@@ -27,7 +27,7 @@ module.exports = (database) => {
 
   const rdpeConfig = { timezone: process.env.LOCALE_TIMEZONE, URL: process.env.SERVICE_LOCATION };
   api.use('/rdpe', RDPE(database, rdpeConfig));
-  api.use('/rdpe-legacy', RDPE(database, Object.assign(rdpeConfig, { preserveLatLng: true, baseURL: '/api/rdpe-legacy' })));
+  api.use('/rdpe-legacy', RDPE(database, Object.assign({}, rdpeConfig, { preserveLatLng: true, baseURL: '/api/rdpe-legacy' })));
 
   const requireLogin = jwt({
     secret: new Buffer(process.env.AUTH0_CLIENT_SECRET, 'base64'),
