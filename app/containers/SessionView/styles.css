@@ -464,3 +464,15 @@ a.organizerLink {
     }
   }
 }
+
+.activitiesList {
+  display: flex;
+  display: none;
+  justify-content: space-between;
+  & > li {
+    list-style: none;
+    padding: .25em;
+    background: #DDD;
+    text-transform: uppercase;
+  }
+}

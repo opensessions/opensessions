@@ -15,6 +15,9 @@
 
 .relationWrap {
   display: flex;
+  &.small {
+    width: 14em;
+  }
   & select {
     flex-grow: 1;
   }

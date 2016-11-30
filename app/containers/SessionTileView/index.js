@@ -103,6 +103,7 @@ export default class SessionTileView extends React.Component { // eslint-disable
         <div className={styles.info}>
           <h1><Link to={session.href}>{this.getTitle()}</Link> {this.renderGALLink(session)}</h1>
           <div className={styles.location}>{session.location}</div>
+          {session.Activities ? <ol className={styles.activities}>{session.Activities.map(activity => <li>{activity.name}</li>)}</ol> : null}
         </div>
         <div className={styles.meta}>
           {this.renderActions()}

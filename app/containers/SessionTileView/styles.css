@@ -15,6 +15,17 @@
   display: none;
 }
 
+:global .admin {
+  & .GALLink {
+    display: inline-block;
+    opacity: .5;
+  }
+}
+
+.activities {
+  display: none;
+}
+
 .tile {
   background: #FFF;
   max-width: var(--tileWidth);

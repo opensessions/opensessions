@@ -15,8 +15,7 @@ export default class Footer extends React.Component { // eslint-disable-line rea
             <h2>Info</h2>
             <p><Link to="/">About this site</Link></p>
             <p><Link to="/terms">Terms</Link></p>
-            <p className={styles.iconInfo}>Open Sessions funded by <a href="https://londonsport.org">London Sport</a></p>
-            <p className={styles.iconInfo}>Icons made by <a href="http://www.flaticon.com/authors/madebyoliver" title="Madebyoliver">Madebyoliver</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank" rel="noopener noreferrer">CC 3.0 BY</a></p>
+            <p className={styles.iconInfo}><a href="https://github.com/opensessions/opensessions">Open Sessions</a> funded by <a href="https://londonsport.org">London Sport</a></p>
           </div>
           <div className={styles.column}>
             <Authenticated>

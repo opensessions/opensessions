@@ -61,9 +61,9 @@ export default class AuthModal extends React.Component { // eslint-disable-line 
       password: form.password
     }, error => {
       if (error) {
-        this.setState({ error: error.toString().split(':')[1], isloading: false });
+        this.setState({ error: error.toString().split(':')[1], isLoading: false });
       } else {
-        this.setState({ error: null, isloading: false });
+        this.setState({ error: null, isLoading: false });
       }
     });
   }
@@ -126,8 +126,8 @@ export default class AuthModal extends React.Component { // eslint-disable-line 
   }
   renderSignIn() {
     const { email } = this.props;
-    const { showPass, error } = this.state;
-    return (<GenericModal size="small">
+    const { showPass, error, isLoading } = this.state;
+    return (<GenericModal size="small" isLoading={isLoading}>
       <div className={styles.auth} onKeyDown={event => event.keyCode === KEY_ENTER && this.signIn()}>
         <h2>Sign in to your account</h2>
         {error ? <p className={styles.error}>{error}</p> : null}
@@ -143,8 +143,8 @@ export default class AuthModal extends React.Component { // eslint-disable-line 
   }
   renderCreate() {
     const { email } = this.props;
-    const { error } = this.state;
-    return (<GenericModal size="small">
+    const { error, isLoading } = this.state;
+    return (<GenericModal size="small" isLoading={isLoading}>
       <div className={styles.auth} onKeyDown={event => event.keyCode === KEY_ENTER && this.signUp()}>
         <Button className={styles.facebook} onClick={() => this.facebook()}>Continue with Facebook</Button>
         <div className={styles.or}><hr /><span>or</span><hr /></div>

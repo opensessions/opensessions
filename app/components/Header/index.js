@@ -9,9 +9,11 @@ import styles from './styles.css';
 export default class Header extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
     user: PropTypes.object,
+    isLoadingUser: PropTypes.bool
   }
   renderLoginButton() {
-    const { user } = this.context;
+    const { user, isLoadingUser } = this.context;
+    if (isLoadingUser) return null;
     if (!user) return <LoginButton lock="login">Login</LoginButton>;
     const { nickname } = user;
     return <Link to="/profile">Hello, {nickname}! {user.picture ? <img src={user.picture} role="presentation" className={styles.userIcon} /> : null}</Link>;

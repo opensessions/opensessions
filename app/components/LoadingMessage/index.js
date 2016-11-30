@@ -12,7 +12,7 @@ export default class LoadingMessage extends React.Component { // eslint-disable-
   }
   render() {
     return (<div className={[styles.loadingMessage, this.props.inline ? styles.inline : ''].join(' ')}>
-      {this.props.message}
+      <span className={styles.text}>{this.props.message}</span>
       {this.props.ellipsis ? <LoadingIcon /> : null}
     </div>);
   }

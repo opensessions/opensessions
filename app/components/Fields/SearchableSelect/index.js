@@ -8,6 +8,7 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
   static propTypes = {
     value: PropTypes.any,
     onChange: PropTypes.func,
+    autoFocus: PropTypes.bool,
     placeholder: PropTypes.string,
     options: PropTypes.array,
     addItem: PropTypes.func,
@@ -16,9 +17,10 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
     lazyLoad: PropTypes.bool,
     maxOptions: PropTypes.number
   }
-  constructor() {
+  constructor(props) {
     super();
-    this.state = { search: '', filteredOptions: [], highlightIndex: 0, visible: false, ignoreBlur: false };
+    const { autoFocus } = props;
+    this.state = { search: '', filteredOptions: [], highlightIndex: 0, visible: !!autoFocus, ignoreBlur: false, autoFocus };
   }
   setValue = value => {
     this.props.onChange(value);
@@ -129,7 +131,7 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
   }
   render() {
     const { value, placeholder, options, className, lazyLoad } = this.props;
-    const { visible, search, filteredOptions, highlightIndex } = this.state;
+    const { visible, search, filteredOptions, highlightIndex, autoFocus } = this.state;
     const selected = options.find(option => option.uuid === value);
     const searchAttrs = {
       type: 'text',
@@ -150,7 +152,7 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
       </ol>);
     }
     return (<div className={styles.searchableSelect}>
-      <input {...searchAttrs} ref="input" onFocus={this.searchEvent} onBlur={this.searchEvent} defaultValue={valueDisplay} />
+      <input {...searchAttrs} autoFocus={autoFocus} ref="input" onFocus={this.searchEvent} onBlur={this.searchEvent} defaultValue={valueDisplay} />
       <input {...searchAttrs} className={[className, styles.output].join(' ')} value={valueDisplay} style={{ opacity: visible ? 0 : 1 }} tabIndex="-1" />
       {search && !filteredOptions.length ? null : <a className={[styles.action, styles.clear, value || search ? null : styles.hide].join(' ')} onClick={this.resetValue} />}
       {searchResults}

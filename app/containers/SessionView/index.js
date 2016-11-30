@@ -198,6 +198,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         </div>
       </div>);
     }
+    const activitiesList = session.Activities ? <ol className={styles.activitiesList}>{session.Activities.map(activity => <li>{activity.name}</li>)}</ol> : null;
     const prices = this.getPrices();
     return (<div className={styles.descriptionSection}>
       <div className={styles.mainCol}>
@@ -207,7 +208,8 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         </div>
         {meetingPoint}
         {preparation}
-        {this.renderLastUpdated(session)}
+        {activitiesList}
+        {/* this.renderLastUpdated(session) */}
       </div>
       <div className={styles.sideCol}>
         {prices && prices.length ? (<div className={styles.info}>

@@ -61,7 +61,7 @@ a.addButton {
   cursor: pointer;
   min-width: 2em;
   color: var(--actionColor);
-  font-size: .9em;
+  font-size: .8em;
   padding: .25em;
   white-space: pre;
   &:hover {
@@ -69,10 +69,11 @@ a.addButton {
   }
   & b {
     font-size: 2em;
+    font-weight: normal;
     display: inline-block;
     vertical-align: middle;
     line-height: 0;
-    padding-bottom: .12em;
+    padding-bottom: .1em;
   }
 }
 
@@ -80,4 +81,10 @@ a.addButton {
   color: #777;
   margin: 1em 0;
   max-width: 32em;
+}
+
+@media (--desktop) {
+  .listBox {
+    overflow-x: visible;
+  }
 }

@@ -19,11 +19,13 @@ export default class JSONListField extends React.Component { // eslint-disable-l
     onChange: PropTypes.func,
     onAddEmpty: PropTypes.func,
     addText: PropTypes.string,
-    maxLength: PropTypes.number
+    deleteText: PropTypes.string,
+    maxLength: PropTypes.number,
+    maxText: PropTypes.string
   }
   constructor() {
     super();
-    this.state = { empty: {} };
+    this.state = { empty: {}, hasAttention: false };
   }
   getValue() {
     return this.props.value || [];
@@ -32,6 +34,7 @@ export default class JSONListField extends React.Component { // eslint-disable-l
     const { onChange, onAddEmpty } = this.props;
     const { empty } = this.state;
     const value = this.getValue();
+    this.setState({ hasAttention: true });
     let newRow;
     if (value.length) {
       newRow = duplicateObject(value.slice(-1)[0]);
@@ -66,7 +69,7 @@ export default class JSONListField extends React.Component { // eslint-disable-l
     return <span className={styles.delButton} onClick={this.clearRow} key={key} data-key={key}><b>×</b> Clear row</span>;
   }
   renderDelete(key) {
-    return <span tabIndex={0} className={styles.delButton} onKeyUp={event => event.keyCode === 13 && event.target.click()} onClick={this.deleteRow} key={key} data-key={key}><b>×</b> Delete row</span>;
+    return <span tabIndex={0} className={styles.delButton} onKeyUp={event => event.keyCode === 13 && event.target.click()} onClick={this.deleteRow} key={key} data-key={key}><b>×</b> {this.props.deleteText || 'Delete row'}</span>;
   }
   renderLabels() {
     const { components } = this.props;
@@ -86,20 +89,21 @@ export default class JSONListField extends React.Component { // eslint-disable-l
           const attrs = {
             fullSize: true,
             label: '',
-            onChange: value => {
-              if (key === '-1') {
+            onChange: (key === '-1'
+              ? value => {
                 let { empty } = this.state;
                 if (!empty) empty = {};
                 empty[name] = value;
                 if (Object.keys(empty).length) this.addEmpty();
                 else this.setState({ empty });
-              } else {
+              }
+              : value => {
                 const list = this.props.value;
                 list[key][name] = value;
                 this.props.onChange(list);
-              }
-            },
-            value: row[name]
+              }),
+            value: row[name],
+            autoFocus: this.state.hasAttention
           };
           return <li key={field.label}><field.Component {...field.props} {...attrs} /></li>;
         })}
@@ -108,7 +112,7 @@ export default class JSONListField extends React.Component { // eslint-disable-l
     </li>);
   }
   render() {
-    const { value, maxLength } = this.props;
+    const { value, maxLength, maxText } = this.props;
     let { empty } = this.state;
     if (!empty) empty = {};
     // const rowIsEmpty = row => Object.keys(row).length === 0;
@@ -117,7 +121,7 @@ export default class JSONListField extends React.Component { // eslint-disable-l
         {this.renderLabels()}
         {value ? value.map((row, key) => this.renderRow(key, row, this.renderDelete(key))) : null}
       </ol>
-      {!value || (!maxLength || value.length < maxLength) ? this.renderAdd() : <p className={styles.maxReached}>Open Sessions is still in 'beta' mode. You have reached the maximum number of sessions that can be scheduled</p>}
+      {!value || (!maxLength || value.length < maxLength) ? this.renderAdd() : <p className={styles.maxReached}>{maxText}</p>}
     </div>);
   }
 }

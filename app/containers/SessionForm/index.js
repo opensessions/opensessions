@@ -15,7 +15,6 @@ import BoolRadio from '../../components/Fields/BoolRadio';
 import IconRadio from '../../components/Fields/IconRadio';
 import Location from '../../components/Fields/Location';
 import SearchableSelect from '../../components/Fields/SearchableSelect';
-import Multi from '../../components/Fields/Multi';
 import MultiBool from '../../components/Fields/MultiBool';
 import ImageUpload from '../../components/Fields/ImageUpload';
 import Relation from '../../components/Fields/Relation';
@@ -63,7 +62,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       isLoading: true,
       copy: formCopy,
       fieldsets: [
-        { slug: 'description', required: ['title', 'OrganizerUuid', 'description', 'ActivityUuid'], fields: ['title', 'OrganizerUuid', 'description', 'ActivityUuid'], props: { validity: false } },
+        { slug: 'description', required: ['title', 'OrganizerUuid', 'description', 'Activities'], fields: ['title', 'OrganizerUuid', 'description', 'Activities'], props: { validity: false } },
         { slug: 'additional', required: ['leader'], props: { validity: false }, fields: ['preparation', 'leader', 'hasCoaching'] },
         { slug: 'location', required: ['location'], props: { validity: false }, fields: ['location', 'meetingPoint'] },
         { slug: 'pricing', props: { validity: 'none' }, fields: ['pricing'] },
@@ -77,7 +76,17 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
         title: () => <TextField validation={{ maxLength: 50 }} {...this.getAttr('title')} />,
         OrganizerUuid: () => <Relation {...this.getAttr('OrganizerUuid')} props={{ placeholder: 'E.g. Richmond Volleyball' }} relation={{ model: 'organizer', query: { owner: this.context.user ? this.context.user.user_id : null } }} />,
         description: () => <TextField multi size="XL" {...this.getAttr('description')} validation={{ maxLength: 2000 }} />,
-        Activities: () => <Multi {...this.getAttr('Activities')} path={this.state.session.href} component={Relation} props={{ relation: { model: 'activity' }, props: { lazyLoad: true, maxOptions: 5 } }} />,
+        Activities: () => <JSONList
+          value={this.state.session.Activities}
+          onChange={activities => this.setActivities(activities)}
+          onAddEmpty={() => ({})}
+          addText="Add category"
+          deleteText="Delete category"
+          maxLength={3}
+          components={[
+            { Component: Relation, props: { size: 'small', relation: { model: 'activity' }, name: 'uuid', props: { lazyLoad: true, maxOptions: 5, placeholder: 'E.g. Badminton' } } }
+          ]}
+        />,
         ActivityUuid: () => <Relation {...this.getAttr('ActivityUuid')} relation={{ model: 'activity', query: { } }} props={{ lazyLoad: true, maxOptions: 5 }} />,
         preparation: () => <TextField multi validation={{ maxLength: 500 }} {...this.getAttr('preparation')} />,
         leader: () => <TextField {...this.getAttr('leader')} />,
@@ -90,8 +99,8 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
         minAgeRestriction: () => <Optional {...this.getAttr('minAgeRestriction')} component={{ type: NumberField, props: { validation: { min: 0, max: this.state.session.maxAgeRestriction || MAX_AGE }, format: ': years old' } }} null="0" />,
         maxAgeRestriction: () => <Optional {...this.getAttr('maxAgeRestriction')} component={{ type: NumberField, props: { validation: { min: this.state.session.minAgeRestriction || 0, max: MAX_AGE }, format: ': years old' } }} null="0" />,
         abilityRestriction: () => <MultiBool options={DISABILITIES} {...this.getAttr('abilityRestriction')} />,
-        contactName: () => <SearchableSelect {...this.getAttr('contactName')} onChange={value => this.updateSession('contactName', value || '')} options={this.getNames()} addItem={this.addName} />,
-        contactEmail: () => <SearchableSelect {...this.getAttr('contactEmail')} onChange={value => this.updateSession('contactEmail', value || '')} options={this.getEmails()} addItem={this.addEmail} />,
+        contactName: () => <SearchableSelect {...this.getAttr('contactName')} onChange={value => this.updateSession('contactName', value || '')} options={this.getNames()} addItem={this.addName} lazyLoad />,
+        contactEmail: () => <SearchableSelect {...this.getAttr('contactEmail')} onChange={value => this.updateSession('contactEmail', value || '')} options={this.getEmails()} addItem={this.addEmail} lazyLoad />,
         contactPhone: () => <TextField {...this.getAttr('contactPhone')} />,
         socialWebsite: () => <TextField placeholder="https://" {...this.getAttr('socialWebsite')} />,
         socialFacebook: () => <TextField placeholder="https://" {...this.getAttr('socialFacebook')} />,
@@ -111,6 +120,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
             return newRow;
           }}
           maxLength={10}
+          maxText="Open Sessions is still in 'beta' mode. You have reached the maximum number of sessions that can be scheduled"
           components={[
             { label: 'Date', Component: DateField, props: { name: 'startDate' } },
             { label: 'Start time', Component: TimeField, props: { name: 'startTime' } },
@@ -136,6 +146,18 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     const pendingSteps = fieldsets.filter(fieldset => !fieldset.props.validity).length;
     this.setState({ fieldsets, pendingSteps });
   }
+  setActivities(activities) {
+    const { Activities } = this.state.session;
+    let uuids = activities.map(activity => activity.uuid).filter((uuid, key) => uuid !== null || ((key + 1) === activities.length && key));
+    uuids = uuids.filter((uuid, key) => uuids.indexOf(uuid) === key);
+    if (uuids.length && uuids.every((uuid, key) => uuid === Activities[key])) return;
+    uuids = uuids.filter(uuid => uuid !== null);
+    apiModel.action('session', this.state.session.uuid, 'setActivitiesAction', { uuids }).then(() => {
+      const { session } = this.state;
+      session.Activities = uuids.map(uuid => ({ uuid }));
+      this.setState({ session });
+    });
+  }
   getAttr = name => {
     const { session } = this.state;
     return {
@@ -160,7 +182,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   }
   getNames() {
     const { session, customNames } = this.state;
-    const user = this.context.user || {};
+    const { user } = this.context;
     let options = [];
     if (session) {
       const { contactName, leader } = session;
@@ -171,7 +193,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
         options.push(contactName);
       }
     }
-    if (user) options.push(user.nickname);
+    if (user && user.nickname[0] === user.nickname[0].toUpperCase()) options.push(user.nickname);
     if (customNames) options = options.concat(customNames);
     return options.map(option => ({ uuid: option, name: option }));
   }
@@ -198,7 +220,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       })
       : apiModel.new('session', location.query).then(res => {
         if (!(location.hash && location.hash === '#welcome')) this.context.notify('You have created a new session', 'success');
-        this.context.router.push(`${res.instance.href}/edit`);
+        this.context.router.replace(`${res.instance.href}/edit`);
       });
   }
   updateSession = (name, value) => {

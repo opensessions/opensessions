@@ -121,6 +121,8 @@ export default class App extends React.Component { // eslint-disable-line react/
         }, 2000);
       }
 
+      if (email.match(/@imin\.co$/i)) document.body.classList.add('admin');
+
       return true;
     });
   }

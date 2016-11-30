@@ -75,6 +75,7 @@ module.exports = (database, opts) => {
               return formatted;
             });
           }
+          if (item.data.Activities) item.data.Activities = item.data.Activities.map(activity => activity.name);
           item.data.website = `${opts.URL}${item.data.href}`;
           item.data.messageURL = `${opts.URL}${item.data.href}/action/message`;
           hiddenFields.forEach(key => delete item.data[key]);

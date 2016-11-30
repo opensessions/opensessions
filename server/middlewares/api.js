@@ -166,8 +166,8 @@ module.exports = (database) => {
       Model.findOne(query).then(instance => {
         if (instance.owner !== getUser(req)) throw new Error(`Must be owner to modify ${Model.name}`);
         const fields = Object.keys(req.body);
-        fields.filter(key => key.slice(-4) === 'Uuid').filter(key => req.body[key] === null).forEach(key => {
-          instance[`set${key.replace(/Uuid$/, '')}`](null);
+        fields.filter(key => key.slice(-4) === 'Uuid').filter(key => req.body[key] === null).map(key => `set${key.replace(/Uuid$/, '')}`).forEach(setter => {
+          if (instance[setter]) instance[setter](null);
         });
         if (query.include) {
           query.include.forEach(model => {
@@ -201,7 +201,7 @@ module.exports = (database) => {
           } else {
             res.status(500).json({ status: 'failure', error: `'${action}' is an unavailable action` });
           }
-        }).catch(() => res.status(404).json({ status: 'failure', error: 'Record not found', query: query.where }));
+        }).catch(error => res.status(404).json({ status: 'failure', error: 'Record not found', message: (error && error.message ? error.message : error).toString(), query: query.where }));
       }
     });
   });

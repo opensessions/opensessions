@@ -1,5 +1,7 @@
 const email = require('../server/middlewares/email');
 
+const MULTI_ACTIVITY = true;
+
 module.exports = (DataTypes) => ({
   tablePrototype: {
     uuid: {
@@ -9,14 +11,14 @@ module.exports = (DataTypes) => ({
     }
   },
   tables: {
-    /* SessionActivity: {
+    SessionActivity: {
       _options: {
         makeAssociations(models) {
-          models.SessionActivity.belongsTo(models.Session);
-          models.SessionActivity.belongsTo(models.Activity);
+          models.SessionActivity.hasOne(models.Session);
+          models.SessionActivity.hasOne(models.Activity);
         }
       }
-    }, */
+    },
     Activity: {
       owner: DataTypes.STRING,
       name: {
@@ -55,16 +57,22 @@ module.exports = (DataTypes) => ({
         classMethods: {
           getQuery(query, models) {
             if (!query) query = {};
-            // query.attributes = ['uuid', 'name', 'owner', 'Activity.createdAt', 'Activity.updatedAt'];
-            // query.include = [{ model: models.SessionActivity, attributes: [], required: false }];
-            query.include = [{ model: models.Session, attributes: [], required: false }];
-            query.attributes = ['uuid', 'name', 'owner', 'Activity.createdAt', 'Activity.updatedAt', [DataTypes.fn('COUNT', DataTypes.col('Sessions.ActivityUuid')), 'SessionsCount']];
-            query.group = ['Activity.uuid'];
+            if (MULTI_ACTIVITY) {
+              // query.attributes = ['uuid', 'name', 'owner', 'Activity.createdAt', 'Activity.updatedAt'];
+              // query.include = [{ model: models.Session, through: models.SessionActivity, required: false }];
+            } else {
+              query.include = [{ model: models.Session, attributes: [], required: false }];
+              query.attributes = ['uuid', 'name', 'owner', 'Activity.createdAt', 'Activity.updatedAt', [DataTypes.fn('COUNT', DataTypes.col('Sessions.ActivityUuid')), 'SessionsCount']];
+              query.group = ['Activity.uuid'];
+            }
             return query;
           },
           makeAssociations(models) {
-            models.Activity.hasMany(models.Session);
-            // models.Activity.belongsToMany(models.Session, { through: models.SessionActivity });
+            if (MULTI_ACTIVITY) {
+              models.Activity.belongsToMany(models.Session, { through: models.SessionActivity });
+            } else {
+              models.Activity.hasMany(models.Session);
+            }
           }
         }
       }
@@ -197,7 +205,7 @@ module.exports = (DataTypes) => ({
               actions.push('edit');
               actions.push('duplicate');
               actions.push('delete');
-              // actions.push('setActivitiesAction');
+              actions.push('setActivitiesAction');
             }
             return actions;
           },
@@ -220,19 +228,19 @@ module.exports = (DataTypes) => ({
               <p style="padding:.5em;white-space:pre;background:#FFF;">${message.body}</p>
             `, { '-title-': 'Organizer communication' });
           },
-          setActivitiesAction(req, models) {
+          setActivitiesAction(req) {
             let { uuids } = req.body;
-            uuids = uuids.map(uuid => ((typeof uuid === 'string') ? uuid : uuid.uuid));
-            if (uuids) {
-              return models.Activity.findAll({ where: { uuid: { $in: uuids } } }).then(activities => this.setActivities(activities));
-            }
-            return this.setActivities(null);
+            uuids = uuids.filter(uuid => uuid !== null).map(uuid => (typeof uuid === 'object' ? uuid.uuid : uuid));
+            return this.setActivities(uuids.length ? uuids : null).then(() => ({ uuids }));
           }
         },
         classMethods: {
           getQuery(query, models, user) {
-            // query.include = [models.Organizer, { model: models.Activity, through: models.SessionActivity }];
-            query.include = [models.Organizer, models.Activity];
+            if (MULTI_ACTIVITY) {
+              query.include = [models.Organizer, { model: models.Activity, through: models.SessionActivity }];
+            } else {
+              query.include = [models.Organizer, models.Activity];
+            }
             query.where = { $and: query.where ? [query.where] : [] };
             if (user) {
               query.where.$and.push({
@@ -258,8 +266,11 @@ module.exports = (DataTypes) => ({
           },
           makeAssociations(models) {
             models.Session.belongsTo(models.Organizer);
-            models.Session.belongsTo(models.Activity);
-            // models.Session.belongsToMany(models.Activity, { through: models.SessionActivity });
+            if (MULTI_ACTIVITY) {
+              models.Session.belongsToMany(models.Activity, { through: models.SessionActivity });
+            } else {
+              models.Session.belongsTo(models.Activity);
+            }
           }
         },
         hooks: {

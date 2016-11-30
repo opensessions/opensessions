@@ -21,4 +21,22 @@
   &.inline {
     padding: 1em;
   }
+  & .text {
+    animation-duration: 1.5s;
+    animation-name: glow;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease;
+  }
+}
+
+@keyframes glow {
+  0% {
+    opacity: .4;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: .4;
+  }
 }

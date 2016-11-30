@@ -13,8 +13,10 @@ export default class RelationField extends React.Component { // eslint-disable-l
   static propTypes = {
     value: PropTypes.string,
     onChange: PropTypes.func,
+    autoFocus: PropTypes.bool,
     relation: PropTypes.object,
     className: PropTypes.string,
+    size: PropTypes.string,
     props: PropTypes.object,
   }
   componentDidMount() {
@@ -52,12 +54,12 @@ export default class RelationField extends React.Component { // eslint-disable-l
   }
   render() {
     const state = this.state || {};
-    const { className, props } = this.props;
+    const { className, props, size, autoFocus } = this.props;
     let { value } = this.props;
     if (value && typeof value === 'object') value = value.uuid;
     const options = 'options' in state ? state.options : [];
-    const searchableAttrs = { options, value, className };
-    return (<div className={styles.relationWrap}>
+    const searchableAttrs = { options, value, className, autoFocus };
+    return (<div className={[styles.relationWrap, size ? styles[size] : ''].join(' ')}>
       <SearchableSelect {...searchableAttrs} {...props} dispatchRefresh={this.fetchRelation} onChange={this.handleValueChange} addItem={this.newRelation} />
     </div>);
   }
