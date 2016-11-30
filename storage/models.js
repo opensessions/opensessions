@@ -55,7 +55,7 @@ module.exports = (DataTypes) => ({
           }
         },
         classMethods: {
-          getQuery(query, models) {
+          getQuery(query/*, models*/) {
             if (!query) query = {};
             // query.attributes = ['uuid', 'name', 'owner', 'Activity.createdAt', 'Activity.updatedAt'];
             // query.include = [{ model: models.Session, through: models.SessionActivity, required: false }];

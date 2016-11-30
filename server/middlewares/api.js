@@ -26,7 +26,7 @@ module.exports = (database) => {
   const getUser = req => (req.user ? req.user.sub : null);
 
   const rdpeConfig = { timezone: process.env.LOCALE_TIMEZONE, URL: process.env.SERVICE_LOCATION };
-  api.use('/rdpe', RDPE(database, rdpeConfig));
+  api.use('/rdpe', RDPE(database, Object.assign({ baseURL: '/api/rdpe' }, rdpeConfig)));
   api.use('/rdpe-legacy', RDPE(database, Object.assign({}, rdpeConfig, { preserveLatLng: true, baseURL: '/api/rdpe-legacy' })));
 
   const requireLogin = jwt({

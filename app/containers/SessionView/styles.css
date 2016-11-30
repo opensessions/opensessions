@@ -465,6 +465,11 @@ a.organizerLink {
   }
 }
 
+.freeTag {
+  background: var(--defaultColor);
+  color: #FFF;
+}
+
 .activitiesList {
   display: flex;
   display: none;
