@@ -139,13 +139,15 @@
     }
     & .detailPrice {
       padding: .5em 0;
-      color: #888;
+      color: var(--defaultColor);
+      & .from {
+        &::before {
+          color: #888;
+          content: 'from ';
+        }
+      }
       & img {
         margin-right: .5em;
-      }
-      & b {
-        font-weight: normal;
-        color: var(--defaultColor);
       }
     }
     & .contactButton {
@@ -315,17 +317,32 @@
   }
   &.pricing {
     display: flex;
-    flex-wrap: wrap;
     flex-direction: column;
-    & .price {
-      display: flex;
-      & > span {
-        flex-grow: 1;
-        &.amount {
-          text-align: right;
-          white-space: nowrap;
-          & > img {
-            margin-right: .5em;
+    text-align: right;
+    align-items: flex-end;
+    & strong {
+      padding: 0 0 .5em;
+      display: block;
+    }
+    & div + strong {
+      padding-top: 1em;
+    }
+    & .prices {
+      display: table;
+      text-align: right;
+      line-height: 1.75;
+      & > li {
+        display: table-row;
+        & > span {
+          display: table-cell;
+          &.label {
+            padding-right: .5em;
+          }
+          &.amount {
+            white-space: nowrap;
+            & > img {
+              margin: 0 .5em;
+            }
           }
         }
       }
@@ -466,8 +483,12 @@ a.organizerLink {
 }
 
 .freeTag {
+  display: inline-block;
   background: var(--defaultColor);
   color: #FFF;
+  padding: .25em;
+  font-weight: bold;
+  line-height: 1;
 }
 
 .activitiesList {

@@ -1,3 +1,5 @@
+@import '../../containers/App/variables.css';
+
 .modal {
   position: fixed;
   top: 0;
@@ -42,7 +44,7 @@
       position: absolute;
       top: 0;
       right: 0;
-      padding: .5em;
+      padding: .25em;
       line-height: .75;
       font-size: 2em;
       text-decoration: none;
@@ -51,6 +53,16 @@
       transition: .2s ease all;
       &:hover {
         opacity: 1;
+      }
+    }
+  }
+}
+
+@media (--desktop) {
+  .modal {
+    & > .modalFG {
+      & .close {
+        padding: .5em;
       }
     }
   }

@@ -49,9 +49,12 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   getLowestPrice() {
     const sorted = this.getPrices().sort((p1, p2) => p1.price > p2.price);
     if (sorted.length && sorted[0].price) {
-      return sorted.length > 1 ? `from £${sorted[0].price}` : `£${sorted[0].price}`;
+      return sorted.length > 1 ? <span className={styles.from}>{sorted[0].price !== '0' ? `£${sorted[0].price}` : this.getFree()}</span> : `£${sorted[0].price}`;
     }
-    return 'Free';
+    return this.getFree();
+  }
+  getFree() {
+    return <span className={styles.freeTag}>FREE</span>;
   }
   getPrices() {
     const { pricing } = this.context.store.getState().get('session');
@@ -99,6 +102,10 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       this.setState({ isLoading: false });
     });
   }
+  formatPrice(priceText) {
+    const price = parseFloat(priceText) || 0;
+    return price ? `£${price.toFixed(2)}` : 'FREE';
+  }
   renderDate() {
     const session = this.context.store.getState().get('session');
     const { schedule } = session;
@@ -145,7 +152,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         {this.renderDate()}
         <div className={styles.detailPrice}>
           <img src="/images/tag.svg" role="presentation" />
-          <b>{this.getLowestPrice()}</b>
+          {session.pricing && session.pricing.firstFree ? <span>First session {this.getFree()}</span> : this.getLowestPrice()}
         </div>
         {organizerButton}
       </div>
@@ -178,6 +185,17 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     }
     return <span className={[styles.lastUpdated, freshStyles[freshness]].join(' ')} title={dayDelta <= 1 ? '' : `${dayDelta} days ago`}>last updated {updatedAt}</span>;
   }
+  renderPriceList(prices) {
+    return (<ol className={styles.prices}>
+      {(prices && prices.length ? prices : [{ type: '', price: 0 }]).map(band => (<li>
+        <span className={styles.label}>{band.type}</span>
+        <span className={styles.amount}>
+          <img src="/images/tag.svg" role="presentation" />
+          {this.formatPrice(band.price)}
+        </span>
+      </li>))}
+    </ol>);
+  }
   renderDescription() {
     const session = this.context.store.getState().get('session');
     let meetingPoint = null;
@@ -200,6 +218,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     }
     const activitiesList = session.Activities ? <ol className={styles.activitiesList}>{session.Activities.map(activity => <li>{activity.name}</li>)}</ol> : null;
     const prices = this.getPrices();
+    const { pricing } = session;
     return (<div className={styles.descriptionSection}>
       <div className={styles.mainCol}>
         <h2>Description</h2>
@@ -212,17 +231,19 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         {/* this.renderLastUpdated(session) */}
       </div>
       <div className={styles.sideCol}>
-        {prices && prices.length ? (<div className={styles.info}>
+        <div className={styles.info}>
           <h3>Pricing</h3>
           <div className={`${styles.floatingInfo} ${styles.pricing}`}>
-            {prices.map(band => (<div className={styles.price}>
-              <span className={styles.label}>{band.type}</span>
-              <span className={styles.amount}>
-                <img src="/images/tag.svg" role="presentation" /> £{band.price}
-              </span>
-            </div>))}
+            {pricing && pricing.firstFree ? (<div>
+              <strong>First Session</strong>
+              <div>
+                <span className={styles.amount}><img src="/images/tag.svg" role="presentation" /> FREE</span>
+              </div>
+              <strong>and then</strong>
+              {this.renderPriceList(prices)}
+            </div>) : (<div>{this.renderPriceList(prices)}</div>)}
           </div>
-        </div>) : null}
+        </div>
         {session.leader ? (<div className={styles.info}>
           <h3>Session Leader</h3>
           <div className={styles.floatingInfo}>

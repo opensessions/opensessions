@@ -290,9 +290,10 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   renderField = field => <Field key={field} {...this.state.copy.fields[field]}>{this.state.fields[field] ? this.state.fields[field]() : <TextField {...this.getAttr(field)} />}</Field>
   render() {
     const { session } = this.state;
+    const { headerText } = this.props;
     return (<div className={styles.form}>
       <Authenticated message="You must login before you can add a session">
-        <PublishHeader h2={this.props.headerText ? this.props.headerText : 'Add a session'} h3={session.title || <i>Untitled</i>} actions={this.getActions()} />
+        {headerText ? <PublishHeader h2={headerText} h3={session.title || <i>Untitled</i>} actions={this.getActions()} /> : null}
         <div className={styles.formBody}>
           {this.state.isLoading ? <LoadingMessage message="Loading" ellipsis /> : this.renderForm()}
         </div>

@@ -73,7 +73,7 @@ module.exports = (database) => {
     const { email } = req.body;
     if (isEmail(email)) {
       authClient.getUsers({ q: `email:"${email}"` }).then(users => {
-        res.json({ status: 'success', exists: users.length === 1 });
+        res.json({ status: 'success', exists: users.length >= 1 });
       }).catch(error => {
         res.status(500).json({ status: 'failure', error });
       });
