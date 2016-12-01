@@ -87,7 +87,7 @@ export default class SessionTileView extends React.Component { // eslint-disable
   }
   renderGALLink(session) {
     const { locationData, Activities, location } = session;
-    return <a target="blank" href={`https://beta.getactivelondon.com/results/list?activity=${Activities[0] ? Activities[0].name : ''}&location=${location}&lat=${locationData ? locationData.lat : ''}&lng=${locationData ? locationData.lng : ''}&radius=4&sortBy=distance`} className={styles.GALLink}>GAL</a>;
+    return <a target="blank" href={`https://beta.getactivelondon.com/results/list?activity=${Activities && Activities[0] ? Activities[0].name : ''}&location=${location}&lat=${locationData ? locationData.lat : ''}&lng=${locationData ? locationData.lng : ''}&radius=4&sortBy=distance`} className={styles.GALLink}>GAL</a>;
   }
   render() {
     if (this.state && this.state.isDeleted) return null;
