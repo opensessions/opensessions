@@ -30,6 +30,7 @@ const api = new ManagementClient({
 });
 
 const sendEngagementEmails = (sendEmail, models) => {
+  const outbox = [];
   const now = new Date();
   const MS_PER_DAY = 24 * 60 * 60 * 1000;
   const getExpirations = session => {
@@ -101,8 +102,14 @@ const sendEngagementEmails = (sendEmail, models) => {
         }
         if (email) {
           sendEmail.apply(sendEmail, email);
+          outbox.push(email);
         }
       });
+      sendEmail('Email Engagement Summary', 'hello@opensessions.io', `<p>We've just generated engagement emails for the week from ${process.env.SERVICE_LOCATION}.</p>
+        <p>Total sent: ${outbox.length}</p>
+        <ul>${outbox.map(email g> `<li><b>Subject:</b> ${email[0]} <b>User:</b> &lt;${email[1]}&gt;</li>`).join('')}</ul>
+        ${process.env.SERVICE_LOCATION}
+      `, { '-title-': 'Weekly engagement email summary' });
     });
   });
 };
