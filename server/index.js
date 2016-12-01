@@ -48,9 +48,9 @@ app.use('/api', apiMiddleware(database));
 
 const { sendEngagementEmails } = require('./middlewares/engagement');
 const { CronJob } = require('cron');
-const EVERY_MONDAY = '0 0 0 * * 1';
+const EVERY_SUNDAY_EVE = '0 0 21 * * 0';
 const { sendEmail } = require('./middlewares/email');
-const emailCron = new CronJob(EVERY_MONDAY, () => { // eslint-disable-line no-unused-vars
+const emailCron = new CronJob(EVERY_SUNDAY_EVE, () => { // eslint-disable-line no-unused-vars
   sendEngagementEmails(sendEmail, database.models);
 }, null, true, process.env.LOCALE_TIMEZONE);
 
