@@ -24,7 +24,7 @@ module.exports = (DataTypes) => ({
       name: {
         type: DataTypes.STRING,
         validate: {
-          not: ['[£$%/\\!?:;,.]', '']
+          not: /[£$%\\!?:;,.]/
         }
       },
       _options: {
