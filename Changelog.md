@@ -19,3 +19,12 @@
 
 #### 0.2.2
 - Complex pricing
+
+#### 0.3.0
+- Engagement emails
+- Custom Auth0 signin flow
+- Multiple activities
+- Mobile optimizations
+- Keyboard accessibility
+- Homepage amends
+- Notification auto-dismissal
