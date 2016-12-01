@@ -16,7 +16,7 @@ export default class FeatureModal extends React.Component { // eslint-disable-li
   static propTypes = {
     feature: PropTypes.string
   }
-  constructor(props) {
+  constructor() {
     super();
     this.state = { notify: false };
   }
