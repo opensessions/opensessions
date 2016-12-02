@@ -34,6 +34,20 @@ module.exports = (database) => {
     audience: process.env.AUTH0_CLIENT_ID,
   });
 
+  const requireAdmin = (req, res, next) => {
+    req.isAdmin = false;
+    requireLogin(req, res, () => {
+      if (req.user) {
+        authClient.getUsers({ q: 'email:"@imin.co"' }).then(users => {
+          req.isAdmin = users.some(user => user.user_id === req.user.sub);
+          next();
+        }).catch(() => next());
+      } else {
+        next();
+      }
+    });
+  };
+
   const resolveModel = (req, res, next) => {
     const modelName = capitalize(req.params.model);
     if (modelName in database.models) {
@@ -87,6 +101,16 @@ module.exports = (database) => {
       res.json({ sessions: { total: sessions.length, published: sessions.filter(session => session.state === 'published').length } });
     });
   });
+
+  const admin = express();
+
+  admin.get('/stats', requireAdmin, (req, res) => {
+    database.models.Session.findAll().then(sessions => {
+      res.json({ sessions: { total: sessions.length, published: sessions.filter(session => session.state === 'published').length } });
+    });
+  });
+
+  api.use('/admin', admin);
 
   api.get('/config.js', (req, res) => {
     const windowKeys = ['GOOGLE_MAPS_API_KEY', 'INTERCOM_APPID', 'AWS_S3_IMAGES_BASEURL', 'AUTH0_CLIENT_ID', 'AUTH0_CLIENT_DOMAIN', 'LOCALE_COUNTRY'];
@@ -142,6 +166,7 @@ module.exports = (database) => {
     const { Model } = req;
     const { uuid } = req.params;
     requireLogin(req, res, () => {
+      console.log('req.user', req.user);
       const query = Model.getQuery({ where: { uuid } }, database.models, getUser(req));
       if (query instanceof Error) {
         res.status(400).json({ status: 'failure', error: query.message });

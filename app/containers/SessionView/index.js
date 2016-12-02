@@ -156,7 +156,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         </div>
         {organizerButton}
       </div>
-      <Helmet meta={[{ property: 'og:image', content: session.image }, { property: 'og:title', content: session.title }, { property: 'og:description', content: (session.description || '').substr(0, 256) }]} />
+      <Helmet title={session.title} titleTemplate="%s - Open Sessions" meta={[{ property: 'og:image', content: session.image }, { property: 'og:title', content: session.title }, { property: 'og:description', content: (session.description || '').substr(0, 256) }]} />
     </div>);
   }
   renderLastUpdated(session) {

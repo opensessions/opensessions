@@ -29,6 +29,8 @@ import Authenticated from '../../components/Authenticated';
 import styles from './styles.css';
 import publishStyles from '../../components/PublishHeader/styles.css';
 
+import Button from '../../components/Button';
+
 import { apiModel } from '../../utils/api';
 
 import formCopy from './copy.json';
@@ -176,7 +178,8 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       if (isPendingSave) text = 'Saving...';
       const viewURL = `/session/${session.uuid}${params.tab ? `?tab=${params.tab}` : ''}`;
       actions.push(<Link key="view" to={viewURL} className={[publishStyles.previewButton, isPendingSave ? publishStyles.disabled : null].join(' ')}>{text}</Link>);
-      actions.push(<a key="publish" tabIndex={0} onKeyUp={event => event.keyCode === 13 && event.target.click()} onClick={isPublished ? this.unpublishSession : this.publishSession} className={[publishStyles[`action${isPublished ? 'Unpublish' : 'Publish'}`], isPendingSave ? publishStyles.disabled : null].join(' ')}>{isPublished ? 'Unpublish' : 'Publish'}</a>);
+      const publishStyle = isPublished ? 'draft' : 'live';
+      actions.push(<Button onClick={isPublished ? this.unpublishSession : this.publishSession} style={isPendingSave ? 'disabled' : publishStyle}>{isPublished ? 'Unpublish' : 'Publish'}</Button>);
     }
     return actions;
   }

@@ -97,7 +97,7 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
       newState.highlightIndex = [0, newState.highlightIndex, maxIndex].sort((a, b) => a - b)[1];
     }
     if (newState.search === '') {
-      input.value = '';
+      if (input) input.value = '';
     }
     if (Object.keys(newState).length) this.setState(newState);
   }

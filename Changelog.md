@@ -11,6 +11,7 @@
 - Added changelog! To adhere to [semver.org](http://semver.org/) versioning beyond this point.
 
 #### 0.2.1
+
 - Email functionality via sendgrid
 - Schedule display on session details page
 - Organiser messaging functionality
@@ -18,9 +19,11 @@
 - Locale config (Google map country and timezone) in env
 
 #### 0.2.2
+
 - Complex pricing
 
-#### 0.3.0
+### 0.3.0
+
 - Engagement emails
 - Custom Auth0 signin flow
 - Multiple activities

@@ -51,7 +51,7 @@ module.exports = (DataTypes) => ({
             return email.sendEmail('Someone has added a new activity on Open Sessions', 'hello+activity@opensessions.io', `
               <p>A new activity has been created on Open Sessions.</p>
               <p>It's called ${instance.name} and the session it is attached to may still be in draft mode.</p>
-            `, { '-title-': 'New activity' });
+            `, { substitutions: { '-title-': 'New activity' } });
           }
         },
         classMethods: {
@@ -218,7 +218,7 @@ module.exports = (DataTypes) => ({
               <p>Here's the message:</p>
               <p style="padding:.5em;white-space:pre;background:#FFF;">From: ${message.name} &lt;${message.from}&gt;</p>
               <p style="padding:.5em;white-space:pre;background:#FFF;">${message.body}</p>
-            `, { '-title-': 'Organizer communication' });
+            `, { substitutions: { '-title-': 'Organizer communication' } });
           },
           setActivitiesAction(req) {
             let { uuids } = req.body;

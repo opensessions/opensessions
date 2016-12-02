@@ -16,7 +16,7 @@ const hooks = () => {
     const EMAIL = 'hello@opensessions.io';
     sendEmail('A user is interested in a feature', EMAIL, `
       <p>The user ${name} &lt;${email}&gt; is interested in the '${feature}' feature. Please let them know when it's ready!</p>
-    `, { '-title-': 'Feature request' }).then(() => {
+    `, { substitutions: { '-title-': 'Feature request' } }).then(() => {
       res.json({ status: 'success' });
     });
   });
@@ -26,7 +26,7 @@ const hooks = () => {
     const EMAIL = 'hello@opensessions.io';
     sendEmail('A user has opened a feature dialog', EMAIL, `
       <p>A user (${name} &lt;${email}&gt;) has opened a dialog box for the '${feature}' feature on ${SERVICE_LOCATION}.</p>
-    `, { '-title-': 'Dialog box opened' }).then(() => {
+    `, { substitutions: { '-title-': 'Dialog box opened' } }).then(() => {
       res.json({ status: 'success' });
     });
   });

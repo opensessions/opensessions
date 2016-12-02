@@ -81,7 +81,7 @@ const sendEngagementEmails = (sendEmail, models) => {
             email = ['Your sessions have just expired', user.email, `<p>Dear ${user.given_name || user.name},</p>
             <p>Thanks for being one of the first providers to use the Open Sessions uploader. However, we’ve noticed you’ve been a little inactive lately.</p>
             <p>Login <a href="https://app.opensessions.io/">here</a> and upload more sessions on Open Sessions to ensure they are are visible to thousands of people on Get Active London every month.</p>
-            <p>Happy uploading!</p>`, { '-title-': 'Just checking in...' }];
+            <p>Happy uploading!</p>`, { substitutions: { '-title-': 'Just checking in...' }, categories: ['engagement', 'engagement-expiring'] }];
           } else if (analysis.totals.expire.future) {
             email = ['Good news from Open Sessions', user.email, `<p>Dear ${user.given_name || user.name},</p>
             <p>Thanks for being one of the first providers to use the Open Sessions uploader. We wanted to let you know that your session information is live <b>right now</b> on Get Active London!</p>
@@ -93,7 +93,7 @@ const sendEngagementEmails = (sendEmail, models) => {
               }
               return '';
             }).join('')}</ul>
-            <p>Happy uploading!</p>`, { '-title-': 'All systems go...' }];
+            <p>Happy uploading!</p>`, { substitutions: { '-title-': 'All systems go...' }, categories: ['engagement', 'engagement-live'] }];
           }
         } else if (analysis.sessions.drafts.length) {
           // No sessions published yet
@@ -109,7 +109,7 @@ const sendEngagementEmails = (sendEmail, models) => {
         <p>Total sent: ${outbox.length}</p>
         <ul>${outbox.map(email => `<li><b>Subject:</b> ${email[0]} <b>User:</b> &lt;${email[1]}&gt;</li>`).join('')}</ul>
         ${process.env.SERVICE_LOCATION}
-      `, { '-title-': 'Weekly engagement email summary' });
+      `, { substitutions: { '-title-': 'Weekly engagement email summary' } });
     });
   });
 };
