@@ -30,10 +30,10 @@ export default class ListActivities extends React.Component { // eslint-disable-
   }
   sortActivities() {
     const activities = this.context.store.getState().get('activityList');
-    return activities.sort((a, b) => {
+    return activities ? activities.sort((a, b) => {
       const [name1, name2] = [a, b].map(activity => activity.name.toLowerCase());
       return name1 > name2 ? 1 : -1;
-    });
+    }) : [];
   }
   render() {
     const isLoading = this.state ? this.state.isLoading : false;

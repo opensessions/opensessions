@@ -79,8 +79,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
         OrganizerUuid: () => <Relation {...this.getAttr('OrganizerUuid')} props={{ placeholder: 'E.g. Richmond Volleyball' }} relation={{ model: 'organizer', query: { owner: this.context.user ? this.context.user.user_id : null } }} />,
         description: () => <TextField multi size="XL" {...this.getAttr('description')} validation={{ maxLength: 2000 }} />,
         Activities: () => <JSONList
-          value={this.state.session.Activities}
-          onChange={activities => this.setActivities(activities)}
+          {...this.getAttrRelation('Activities')}
           onAddEmpty={() => ({})}
           addText="Add category"
           deleteText="Delete category"
@@ -111,7 +110,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
         socialHashtag: () => <TextField placeholder="#UseYourRun" {...this.getAttr('socialHashtag')} />,
         image: () => <ImageUpload preview {...this.getAttr('image')} upload={{ URL: `/api/session/${this.state.session.uuid}/image`, name: 'image' }} />,
         schedule: () => <JSONList
-          {...this.getAttr('schedule')}
+          {...this.getAttrRelation('schedule')}
           addText="Add another date"
           onAddEmpty={newRow => {
             if (newRow.startDate) {
@@ -164,6 +163,13 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     const { session } = this.state;
     return {
       value: session[name],
+      onChange: value => this.updateSession(name, value)
+    };
+  }
+  getAttrRelation = name => {
+    const { session } = this.state;
+    return {
+      value: session[name] && session[name].length ? session[name] : ([{}]),
       onChange: value => this.updateSession(name, value)
     };
   }
@@ -229,9 +235,12 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   updateSession = (name, value) => {
     const { session } = this.state;
     session[name] = value;
-    this.onChange(session);
-    this.setState({ status: '', session });
-    this.autosave(2000);
+    if (name === 'Activities') this.setActivities(value);
+    else {
+      this.onChange(session);
+      this.setState({ status: '', session });
+      this.autosave(2000);
+    }
   }
   errorClick = event => {
     const { target } = event;

@@ -44,8 +44,8 @@ export default class ListOrganizers extends React.Component { // eslint-disable-
   render() {
     const { params } = this.props;
     const isLoading = this.state ? this.state.isLoading : false;
-    const organizers = this.context.store.getState().get('organizerList');
-    const limit = 32;
+    const organizers = this.context.store.getState().get('organizerList') || [];
+    const limit = 64;
     const total = organizers ? organizers.length : 0;
     const page = (params && params.page) ? parseInt(params.page, 10) : 1;
     const maxPage = Math.ceil(total / limit);
@@ -56,7 +56,7 @@ export default class ListOrganizers extends React.Component { // eslint-disable-
         ? <LoadingMessage message="Loading organisers" ellipsis />
         : (<div>
           {organizers.slice(start, end).map(organizer => (<div>
-            {organizer.name}
+            <Link to={organizer.href}>{organizer.name}</Link>
           </div>))}
         </div>)
       }

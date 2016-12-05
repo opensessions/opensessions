@@ -50,13 +50,13 @@ export default function createRoutes() {
       path: '/organizers',
       name: 'organizers',
       getComponent: (nextState, cb) => {
-        System.import(`./containers/ListOrganizers`).then(loadModule(cb)).catch(errorLoading);
+        System.import('./containers/ListOrganizers').then(loadModule(cb)).catch(errorLoading);
       }
     }, {
       path: '/organizers/:page',
       name: 'organizers',
       getComponent: (nextState, cb) => {
-        System.import(`./containers/ListOrganizers`).then(loadModule(cb)).catch(errorLoading);
+        System.import('./containers/ListOrganizers').then(loadModule(cb)).catch(errorLoading);
       }
     }, {
       path: '/activities',

@@ -498,3 +498,8 @@ a.organizerLink {
     text-transform: uppercase;
   }
 }
+
+.noSchedule {
+  color: #888;
+  align-self: center;
+}
