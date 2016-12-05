@@ -20,105 +20,91 @@ export default function createRoutes() {
       path: '/',
       name: 'home',
       getComponent(nextState, cb) {
-        System.import('./containers/HomePage')
-          .then(loadModule(cb))
-          .catch(errorLoading);
+        System.import('./containers/HomePage').then(loadModule(cb)).catch(errorLoading);
       },
     }, {
       path: '/terms',
       name: 'terms',
       getComponent(nextState, cb) {
-        System.import('./containers/TermsPage')
-          .then(loadModule(cb))
-          .catch(errorLoading);
+        System.import('./containers/TermsPage').then(loadModule(cb)).catch(errorLoading);
       },
     }, {
       path: '/partner',
       name: 'partner',
       getComponent(nextState, cb) {
-        System.import('./containers/PartnerPage')
-          .then(loadModule(cb))
-          .catch(errorLoading);
+        System.import('./containers/PartnerPage').then(loadModule(cb)).catch(errorLoading);
       }
     }, {
       path: '/sessions',
       name: 'sessions',
       getComponent(nextState, cb) {
-        System.import('./containers/ListSessions')
-          .then(loadModule(cb))
-          .catch(errorLoading);
+        System.import('./containers/ListSessions').then(loadModule(cb)).catch(errorLoading);
       }
     }, {
       path: '/sessions/:page',
       name: 'sessions',
       getComponent(nextState, cb) {
-        System.import('./containers/ListSessions')
-          .then(loadModule(cb))
-          .catch(errorLoading);
+        System.import('./containers/ListSessions').then(loadModule(cb)).catch(errorLoading);
+      }
+    }, {
+      path: '/organizers',
+      name: 'organizers',
+      getComponent: (nextState, cb) => {
+        System.import(`./containers/ListOrganizers`).then(loadModule(cb)).catch(errorLoading);
+      }
+    }, {
+      path: '/organizers/:page',
+      name: 'organizers',
+      getComponent: (nextState, cb) => {
+        System.import(`./containers/ListOrganizers`).then(loadModule(cb)).catch(errorLoading);
       }
     }, {
       path: '/activities',
       name: 'activities',
       getComponent(nextState, cb) {
-        System.import('./containers/ListActivities')
-          .then(loadModule(cb))
-          .catch(errorLoading);
+        System.import('./containers/ListActivities').then(loadModule(cb)).catch(errorLoading);
       }
     }, {
       path: '/profile',
       name: 'My profile',
       getComponent(nextState, cb) {
-        System.import('./containers/MyProfile')
-          .then(loadModule(cb))
-          .catch(errorLoading);
+        System.import('./containers/MyProfile').then(loadModule(cb)).catch(errorLoading);
       },
     }, {
       path: '/organizer/:uuid',
       name: 'Organizer view',
       getComponent(nextState, cb) {
-        System.import('./containers/OrganizerView')
-          .then(loadModule(cb))
-          .catch(errorLoading);
+        System.import('./containers/OrganizerView').then(loadModule(cb)).catch(errorLoading);
       },
     }, {
       path: '/session/add',
       name: 'add session',
       getComponent(nextState, cb) {
-        System.import('./containers/SessionForm')
-          .then(loadModule(cb))
-          .catch(errorLoading);
+        System.import('./containers/SessionForm').then(loadModule(cb)).catch(errorLoading);
       },
     }, {
       path: '/session/:uuid',
       name: 'View session',
       getComponent(nextState, cb) {
-        System.import('./containers/SessionView')
-          .then(loadModule(cb))
-          .catch(errorLoading);
+        System.import('./containers/SessionView').then(loadModule(cb)).catch(errorLoading);
       },
     }, {
       path: '/session/:uuid/edit',
       name: 'Edit session',
       getComponent(nextState, cb) {
-        System.import('./containers/SessionEdit')
-          .then(loadModule(cb))
-          .catch(errorLoading);
+        System.import('./containers/SessionEdit').then(loadModule(cb)).catch(errorLoading);
       },
     }, {
       path: '/session/:uuid/edit/:tab',
       name: 'Edit session',
       getComponent(nextState, cb) {
-        System.import('./containers/SessionEdit')
-          .then(loadModule(cb))
-          .catch(errorLoading);
+        System.import('./containers/SessionEdit').then(loadModule(cb)).catch(errorLoading);
       },
     }, {
       path: '*',
       name: 'notfound',
       getComponent(nextState, cb) {
-        System.import('./containers/NotFoundPage')
-          .then(loadModule(cb))
-          .catch(errorLoading);
+        System.import('./containers/NotFoundPage').then(loadModule(cb)).catch(errorLoading);
       },
     },
   ];

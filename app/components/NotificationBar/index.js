@@ -39,7 +39,7 @@ export default class NotificationBar extends React.Component { // eslint-disable
     return items;
   }
   dismiss = id => {
-    this.props.notifications.find(msg => msg.id == id).onDismiss(); // eslint-disable-line eqeqeq
+    this.props.notifications.filter(msg => msg.id == id).forEach(msg => msg.onDismiss()); // eslint-disable-line eqeqeq
   }
   unhideMessages() {
     setTimeout(() => {

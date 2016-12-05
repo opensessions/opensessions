@@ -166,7 +166,6 @@ module.exports = (database) => {
     const { Model } = req;
     const { uuid } = req.params;
     requireLogin(req, res, () => {
-      console.log('req.user', req.user);
       const query = Model.getQuery({ where: { uuid } }, database.models, getUser(req));
       if (query instanceof Error) {
         res.status(400).json({ status: 'failure', error: query.message });

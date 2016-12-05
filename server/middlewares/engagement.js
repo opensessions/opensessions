@@ -66,15 +66,21 @@ const sendEngagementEmails = (sendEmail, models) => {
             published: sessions.filter(session => session.state === 'published'),
             drafts: sessions.filter(session => session.state !== 'published')
           },
-          totals: {}
-        };
-        analysis.totals.expire = analysis.sessions.published.map(getExpirations).reduce((next, total) => ({
-          future: total.future + next.future,
-          past: {
-            week: total.past.week + next.past.week,
-            all: total.past.all + next.past.all
+          totals: {
+            expire: {
+              future: 0,
+              past: {
+                week: 0,
+                all: 0
+              }
+            }
           }
-        }));
+        };
+        analysis.sessions.published.map(getExpirations).forEach(expiration => {
+          analysis.totals.expire.future += expiration.future;
+          analysis.totals.expire.past.week += expiration.past.week;
+          analysis.totals.expire.past.all += expiration.past.all;
+        });
         let email = false;
         if (analysis.sessions.published.length) {
           if (analysis.totals.expire.past.week && !analysis.totals.expire.future) {

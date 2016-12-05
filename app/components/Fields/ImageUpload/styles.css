@@ -23,10 +23,12 @@
     margin: .25em;
     padding: .25em .5em;
     cursor: pointer;
+    transition: .2s ease all;
     &:hover,
     &:focus {
       background: #FFF;
       color: #444;
+      border-color: #FFF;
     }
     & .text {
       padding: .25em 1em;

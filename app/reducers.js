@@ -57,6 +57,17 @@ function sessionListViewReducer(state = sessionListInitialState, action) {
   }
 }
 
+const organizerListInitialState = fromJS(null);
+
+function organizerListViewReducer(state = organizerListInitialState, action) {
+  switch (action.type) {
+    case 'ORGANIZER_LIST_LOADED':
+      return action.payload;
+    default:
+      return state;
+  }
+}
+
 const activityListInitialState = fromJS(null);
 
 function activityListViewReducer(state = activityListInitialState, action) {
@@ -76,6 +87,7 @@ export default function createReducer(asyncReducers) {
     route: routeReducer,
     session: sessionViewReducer,
     sessionList: sessionListViewReducer,
+    organizerList: organizerListViewReducer,
     activityList: activityListViewReducer,
     ...asyncReducers,
   });

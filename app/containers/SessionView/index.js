@@ -13,6 +13,7 @@ import LoadingMessage from '../../components/LoadingMessage';
 import PublishHeader from '../../components/PublishHeader';
 import PaymentSVG from '../../components/SVGs/PaymentMethod';
 import PriceSVG from '../../components/SVGs/Price';
+import Button from '../../components/Button';
 
 import { parseSchedule, sortSchedule } from '../../utils/calendar';
 import { apiModel } from '../../utils/api';
@@ -129,6 +130,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     let organizerButton = null;
     if (session.Organizer) {
       organizerButton = <div className={styles.contactButton}><Link to={session.Organizer.href}>View organiser</Link></div>;
+      organizerButton = <div className={styles.contactButton}><Button to={session.Organizer.href}>View organiser</Button></div>;
     }
     let locationDetail = null;
     if (session.location) {

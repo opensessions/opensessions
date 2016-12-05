@@ -152,11 +152,8 @@
     }
     & .contactButton {
       & a {
-        display: inline-block;
-        padding: .4em 1em;
-        background: var(--actionColor);
-        color: #FFF;
-        text-align: center;
+        margin: 0;
+        font-size: 1.1em;
       }
     }
   }

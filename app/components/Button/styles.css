@@ -22,7 +22,7 @@
   &.draft {
     background-color: var(--draftColor);
     &:hover {
-      filter: brightness(.8);
+      background-color: color(var(--draftColor) lightness(-12%));
     }
   }
   &.live {
