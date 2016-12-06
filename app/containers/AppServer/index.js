@@ -1,8 +1,5 @@
 import React, { PropTypes } from 'react';
 
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
-
 import styles from '../App/styles.css';
 
 export default class AppServer extends React.Component { // eslint-disable-line react/prefer-stateless-function
@@ -20,15 +17,7 @@ export default class AppServer extends React.Component { // eslint-disable-line 
       </head>
       <body>
         <div id="app">
-          <div className={styles.root}>
-            <Header />
-            <div className={styles.appBody}>
-              <div className={styles.container}>
-                <div dangerouslySetInnerHTML={{ __html: this.props.html }} />
-              </div>
-              <Footer />
-            </div>
-          </div>
+          <div className={styles.root} dangerouslySetInnerHTML={{ __html: this.props.html }} />
         </div>
       </body>
     </html>);

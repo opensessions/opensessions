@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { renderToString, renderToStaticMarkup } from 'react-dom/server';
 import { match, RouterContext, browserHistory } from 'react-router';
 import { Provider } from 'react-redux';
 import configureStore from '../../app/store';
@@ -12,8 +12,9 @@ import createRoutes from '../../app/routes';
 
 const getRenderedPage = req => new Promise((resolve, reject) => {
   const store = configureStore({}, browserHistory);
-  const routes = { root: App, childRoutes: createRoutes(store) };
-  match({ routes, location: req.url }, (error, redirectLocation, renderProps) => {
+  const routes = { component: App, children: createRoutes(store), childRoutes: createRoutes(store) };
+  const location = req.url;
+  match({ routes, location }, (error, redirectLocation, renderProps) => {
     if (error) {
       reject(error);
     } else if (redirectLocation) {
@@ -25,7 +26,7 @@ const getRenderedPage = req => new Promise((resolve, reject) => {
       Promise
         .all(readyOnAllActions)
         .then(() => {
-          const appHTML = renderToStaticMarkup(<Provider store={store}><RouterContext {...renderProps} /></Provider>);
+          const appHTML = renderToString(<Provider store={store}><RouterContext {...renderProps} /></Provider>);
           const head = Helmet.rewind();
           resolve(renderToStaticMarkup(<AppServer html={appHTML} meta={head.meta ? head.meta.toComponent() : null} />));
         })

@@ -74,8 +74,10 @@ export default class App extends React.Component { // eslint-disable-line react/
       status,
       actions
     };
-    if (status === 'success') {
+    if (status === 'success' || status === 'draft') {
       notification.timeout = 2500;
+    } else if (status === 'error') {
+      notification.timeout = 10000;
     }
     notification.onDismiss = () => {
       this.setState({ notifications: this.state.notifications.filter(msg => msg.id !== notification.id) });

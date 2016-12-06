@@ -50,13 +50,13 @@ export default class ListOrganizers extends React.Component { // eslint-disable-
     const page = (params && params.page) ? parseInt(params.page, 10) : 1;
     const maxPage = Math.ceil(total / limit);
     const [start, end] = [-1, 0].map(index => page + index).map(index => index * limit);
-    return (<div>
+    return (<div className={styles.list}>
       {this.renderPagination(page, start, end, maxPage)}
       {isLoading
         ? <LoadingMessage message="Loading organisers" ellipsis />
         : (<div>
           {organizers.slice(start, end).map(organizer => (<div>
-            <Link to={organizer.href}>{organizer.name}</Link>
+            <Link to={organizer.href}>{organizer.name}</Link> <span className={styles.createdAt}>created {(new Date(organizer.createdAt)).toDateString()}</span>
           </div>))}
         </div>)
       }

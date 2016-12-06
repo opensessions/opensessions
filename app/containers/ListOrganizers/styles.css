@@ -1,5 +1,10 @@
 @import '../App/variables.css';
 
+.list {
+  margin: auto;
+  padding: 0 1em;
+}
+
 a.page {
   padding: .5em;
   color: #FFF;
@@ -10,4 +15,8 @@ a.page {
 .pagination {
   text-align: center;
   padding: 1em;
+}
+
+.createdAt {
+  color: #888;
 }
