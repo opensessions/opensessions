@@ -75,7 +75,7 @@ export default class HomePage extends React.Component { // eslint-disable-line r
       <Banner>
         <h1>The free way to promote your sessions</h1>
         <h2>We upload your sessions to different activity finders&#8212;so you don't have to</h2>
-        <Authenticated button={[<span><b>+</b> Add a session</span>]}>
+        <Authenticated out={<LoginButton redirect="/session/add"><b>+</b> Add a session</LoginButton>}>
           <p><Link to="/session/add"><b>+</b> Add a session</Link></p>
         </Authenticated>
         <ol className={styles.steps}>

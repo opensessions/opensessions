@@ -31,7 +31,7 @@ import publishStyles from '../../components/PublishHeader/styles.css';
 
 import Button from '../../components/Button';
 
-import { apiModel } from '../../utils/api';
+import { apiModel, apiFetch } from '../../utils/api';
 
 import formCopy from './copy.json';
 
@@ -90,7 +90,8 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
         />,
         ActivityUuid: () => <Relation {...this.getAttr('ActivityUuid')} relation={{ model: 'activity', query: { } }} props={{ lazyLoad: true, maxOptions: 5 }} />,
         preparation: () => <TextField multi validation={{ maxLength: 500 }} {...this.getAttr('preparation')} />,
-        leader: () => <TextField {...this.getAttr('leader')} />,
+        // leader: () => <TextField {...this.getAttr('leader')} />,
+        leader: () => <SearchableSelect {...this.getAttr('leader')} onChange={value => this.updateSession('leader', value || '')} options={this.getNames()} addItem={this.addName('leader')} lazyLoad />,
         hasCoaching: () => <BoolRadio {...this.getAttr('hasCoaching')} options={[{ text: 'No, the session is unlead' }, { text: 'Yes, the session is coached' }]} />,
         location: () => <Location {...this.getAttr('location')} dataValue={this.state.session.locationData} onDataChange={value => this.updateSession('locationData', value)} />,
         meetingPoint: () => <TextField multi validation={{ maxLength: 500 }} {...this.getAttr('meetingPoint')} />,
@@ -100,7 +101,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
         minAgeRestriction: () => <Optional {...this.getAttr('minAgeRestriction')} component={{ type: NumberField, props: { validation: { min: 0, max: this.state.session.maxAgeRestriction || MAX_AGE }, format: ': years old' } }} null="0" />,
         maxAgeRestriction: () => <Optional {...this.getAttr('maxAgeRestriction')} component={{ type: NumberField, props: { validation: { min: this.state.session.minAgeRestriction || 0, max: MAX_AGE }, format: ': years old' } }} null="0" />,
         abilityRestriction: () => <MultiBool options={DISABILITIES} {...this.getAttr('abilityRestriction')} />,
-        contactName: () => <SearchableSelect {...this.getAttr('contactName')} onChange={value => this.updateSession('contactName', value || '')} options={this.getNames()} addItem={this.addName} lazyLoad />,
+        contactName: () => <SearchableSelect {...this.getAttr('contactName')} onChange={value => this.updateSession('contactName', value || '')} options={this.getNames()} addItem={this.addName('contactName')} lazyLoad />,
         contactEmail: () => <SearchableSelect {...this.getAttr('contactEmail')} onChange={value => this.updateSession('contactEmail', value || '')} options={this.getEmails()} addItem={this.addEmail} lazyLoad />,
         contactPhone: () => <TextField {...this.getAttr('contactPhone')} />,
         socialWebsite: () => <TextField placeholder="https://" {...this.getAttr('socialWebsite')} />,
@@ -190,21 +191,18 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     return actions;
   }
   getNames() {
-    const { session, customNames } = this.state;
+    const { session, customNames, personList } = this.state;
     const { user } = this.context;
     let options = [];
     if (session) {
       const { contactName, leader } = session;
-      if (leader && options.indexOf(leader) === -1) {
-        options.push(leader);
-      }
-      if (contactName && options.indexOf(contactName) === -1) {
-        options.push(contactName);
-      }
+      if (leader) options.push(leader);
+      if (contactName) options.push(contactName);
     }
+    if (personList) options = options.concat(personList);
     if (user && user.nickname[0] === user.nickname[0].toUpperCase()) options.push(user.nickname);
     if (customNames) options = options.concat(customNames);
-    return options.map(option => ({ uuid: option, name: option }));
+    return options.filter((name, key) => options.indexOf(name) === key).map(option => ({ uuid: option, name: option }));
   }
   getEmails() {
     const { session, customEmails } = this.state;
@@ -226,9 +224,12 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       ? apiModel.get('session', uuid).then(res => {
         this.onChange(res.instance);
         this.setState({ session: res.instance, isSaving: false, isLoading: false });
+        apiFetch('/api/leader-list').then(result => {
+          this.setState({ personList: result.list });
+        });
       })
       : apiModel.new('session', location.query).then(res => {
-        if (!(location.hash && location.hash === '#welcome')) this.context.notify('You have created a new session', 'success');
+        if (!(location.hash && location.hash === '#welcome')) this.notify('You have created a new session', 'success');
         this.context.router.replace(`${res.instance.href}/edit`);
       });
   }
@@ -249,6 +250,11 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     if (!tab) return;
     this.context.router.push(`${session.href}/edit/${tab}#${field}`);
   }
+  notify(...args) {
+    if (this.notification) this.notification.redact();
+    this.notification = this.context.notify.apply(this.context.notify, args);
+    return this.notification;
+  }
   changeSessionState = state => {
     const { session } = this.state;
     const oldState = session.state;
@@ -259,16 +265,18 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
         resolve(res);
       }).catch(res => {
         session.state = oldState;
-        this.context.notify(<p onClick={this.errorClick} dangerouslySetInnerHTML={{ __html: res.error }} />, 'error');
+        this.notify(<p onClick={this.errorClick} dangerouslySetInnerHTML={{ __html: res.error }} />, 'error');
         reject(res.error);
       });
     });
   }
-  publishSession = () => this.changeSessionState('published').then(() => this.context.notify('Your session has been published!', 'success')).then(() => this.context.router.push(this.state.session.href))
-  unpublishSession = () => this.changeSessionState('unpublished').then(() => this.context.notify('Your session has been unpublished!', 'warn'))
-  addName = name => {
-    this.setState({ customNames: [name] });
-    this.updateSession('contactName', name);
+  publishSession = () => this.changeSessionState('published').then(() => this.notify('Your session has been published!', 'success')).then(() => this.context.router.push(this.state.session.href))
+  unpublishSession = () => this.changeSessionState('unpublished').then(() => this.notify('Your session has been unpublished!', 'warn'))
+  addName = key => name => {
+    const names = [name].concat(this.state.customNames || []);
+    this.setState({ customNames: names.filter((n, k) => names.indexOf(n) === k) });
+    this.updateSession(key, name);
+    return Promise.resolve();
   }
   addEmail = email => {
     this.setState({ customEmails: [email] });
@@ -292,7 +300,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       }).catch(result => {
         this.setState({ status: 'Failed saving', isPendingSave: false, isSaving: false, saveState: 'error' });
         console.error(result.error);
-        this.context.notify('Autosave failed', 'error');
+        this.notify('Autosave failed', 'error');
       });
     }, ms);
   }

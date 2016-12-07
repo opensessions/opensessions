@@ -9,7 +9,8 @@ export default class Authenticated extends React.Component { // eslint-disable-l
   static propTypes = {
     children: PropTypes.node,
     message: PropTypes.string,
-    button: PropTypes.any
+    button: PropTypes.any,
+    out: PropTypes.node
   };
   static contextTypes = {
     user: PropTypes.object,
@@ -21,7 +22,8 @@ export default class Authenticated extends React.Component { // eslint-disable-l
     return button.map((text, key) => <span key={key}><LoginButton lock={key === 0 ? 'signup' : 'login'}>{text}</LoginButton></span>);
   }
   renderOut() {
-    const { message, button } = this.props;
+    const { message, button, out } = this.props;
+    if (out) return out;
     if (this.context.isLoadingUser) return (<div className={styles.noAuth}><LoadingMessage inline message="Loading" ellipsis /></div>);
     return (<div className={styles.noAuth}>
       {message ? <p>{message}</p> : null}

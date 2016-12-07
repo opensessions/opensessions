@@ -132,7 +132,7 @@ export default class AuthModal extends React.Component { // eslint-disable-line 
         <h2>Sign in to your account</h2>
         {error ? <p className={styles.error}>{error}</p> : null}
         <GenericForm>
-          {this.renderQuestion('Email', { name: 'email', props: { value: email } })}
+          {this.renderQuestion('Email', { name: 'email', props: { value: email, type: 'email' } })}
           {this.renderQuestion('Password', { name: 'password', props: { autoFocus: true, type: showPass ? 'text' : 'password' } })}
           <p className={styles.question}><Checkbox label="Show password" checked={showPass} onChange={() => this.setState({ showPass: !showPass })} /></p>
           <Button onClick={() => this.signIn()}>Sign in</Button>
@@ -151,7 +151,7 @@ export default class AuthModal extends React.Component { // eslint-disable-line 
         <h2>Create your Open Sessions Account</h2>
         <GenericForm>
           {error ? <p className={styles.error}>{error}</p> : null}
-          {this.renderQuestion('Email', { name: 'email', props: { value: email, autoFocus: !email } })}
+          {this.renderQuestion('Email', { name: 'email', props: { value: email, autoFocus: !email, type: 'email' } })}
           {this.renderQuestion('Choose a password', { name: 'password', props: { autoFocus: email, type: 'password' } })}
           {this.renderQuestion('Re-type password', { name: 'password2', props: { type: 'password' } })}
           <Button onClick={() => this.signUp()}>Create Account</Button>
@@ -175,7 +175,7 @@ export default class AuthModal extends React.Component { // eslint-disable-line 
         <h2>Continue with email</h2>
         <GenericForm>
           {error ? <p className={styles.error}>{error}</p> : null}
-          {this.renderQuestion('Email', { name: 'email', props: { autoFocus: true, name: 'email', autoComplete: 'off' } })}
+          {this.renderQuestion('Email', { name: 'email', props: { autoFocus: true, name: 'email', autoComplete: 'off', type: 'email' } })}
           <Button style={this.state.form.email ? null : 'disabled'} onClick={() => this.emailCheck()}>Continue</Button>
         </GenericForm>
         {this.renderLink('Create an account', () => this.context.modal.dispatch({ component: <AuthModal stage="create" /> }))}

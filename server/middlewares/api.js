@@ -24,6 +24,10 @@ dotenv.load();
 module.exports = (database) => {
   const api = express();
   const getUser = req => (req.user ? req.user.sub : null);
+  const logRequests = (req, res, next) => {
+    console.log(':: /api', req.path);
+    next();
+  }; // eslint-disable-line no-unused-vars
 
   const rdpeConfig = { timezone: process.env.LOCALE_TIMEZONE, URL: process.env.SERVICE_LOCATION };
   api.use('/rdpe', RDPE(database, Object.assign({ baseURL: '/api/rdpe' }, rdpeConfig)));
@@ -31,7 +35,7 @@ module.exports = (database) => {
 
   const requireLogin = jwt({
     secret: new Buffer(process.env.AUTH0_CLIENT_SECRET, 'base64'),
-    audience: process.env.AUTH0_CLIENT_ID,
+    audience: process.env.AUTH0_CLIENT_ID
   });
 
   const requireAdmin = (req, res, next) => {
@@ -128,6 +132,14 @@ module.exports = (database) => {
       }
       addScript("https://maps.googleapis.com/maps/api/js?key=" + window.GOOGLE_MAPS_API_KEY + "&libraries=places");
     `);
+  });
+
+  api.get('/leader-list', requireLogin, (req, res) => {
+    const { Session } = database.models;
+    Session.findAll(Session.getQuery({ where: { owner: getUser(req) } }, database.models, getUser(req))).then(instances => {
+      const list = instances.map(s => s.leader).concat(instances.map(s => s.contactName)).filter(name => name);
+      res.json({ list: list.filter((name, key) => list.indexOf(name) === key) });
+    });
   });
 
   api.get('/:model', resolveModel, (req, res) => {

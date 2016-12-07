@@ -85,13 +85,20 @@ export default class App extends React.Component { // eslint-disable-line react/
     this.setState({
       notifications: [notification].concat(this.state.notifications)
     });
+    return { redact: () => notification.onDismiss() };
   }
   modal = options => {
     this.setState({ modal: options.component });
   }
   createAuth() {
     const { Auth0, AUTH0_CLIENT_ID, AUTH0_CLIENT_DOMAIN } = window;
-    const auth = new Auth0({ clientID: AUTH0_CLIENT_ID, domain: AUTH0_CLIENT_DOMAIN });
+    const auth = new Auth0({
+      clientID: AUTH0_CLIENT_ID,
+      domain: AUTH0_CLIENT_DOMAIN,
+      auth: {
+        params: { scope: 'openid email' }
+      }
+    });
     this.setState({ auth });
     auth.getProfile(getUserToken(), (err, profile) => {
       if (err) {
