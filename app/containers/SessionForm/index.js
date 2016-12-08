@@ -200,9 +200,10 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       if (contactName) options.push(contactName);
     }
     if (personList) options = options.concat(personList);
-    if (user && user.nickname[0] === user.nickname[0].toUpperCase()) options.push(user.nickname);
+    if (user && user.nickname.match(/^[A-Z]/)) options.push(user.nickname);
     if (customNames) options = options.concat(customNames);
-    return options.filter((name, key) => options.indexOf(name) === key).map(option => ({ uuid: option, name: option }));
+    console.log('getNames', options, options.filter((name, key) => options.indexOf(name) === key));
+    return options.filter((name, key) => options.indexOf(name) === key).map(name => ({ uuid: name, name }));
   }
   getEmails() {
     const { session, customEmails } = this.state;
@@ -273,8 +274,8 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   publishSession = () => this.changeSessionState('published').then(() => this.notify('Your session has been published!', 'success')).then(() => this.context.router.push(this.state.session.href))
   unpublishSession = () => this.changeSessionState('unpublished').then(() => this.notify('Your session has been unpublished!', 'warn'))
   addName = key => name => {
-    const names = [name].concat(this.state.customNames || []);
-    this.setState({ customNames: names.filter((n, k) => names.indexOf(n) === k) });
+    // const names = [name].concat(this.state.customNames || []);
+    // this.setState({ customNames: names.filter((n, k) => names.indexOf(n) === k) });
     this.updateSession(key, name);
     return Promise.resolve();
   }

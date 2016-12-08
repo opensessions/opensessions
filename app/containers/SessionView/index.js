@@ -48,9 +48,10 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     this.fetchDataClient(this.context.store.dispatch, this.props.params);
   }
   getLowestPrice() {
-    const sorted = this.getPrices().sort((p1, p2) => p1.price > p2.price);
-    if (sorted.length && sorted[0].price) {
-      return sorted.length > 1 ? <span className={styles.from}>{sorted[0].price !== '0' ? `£${sorted[0].price}` : this.getFree()}</span> : `£${sorted[0].price}`;
+    const prices = this.getPrices().sort((p1, p2) => p1.price > p2.price).map(band => parseFloat(band.price));
+    if (prices.length && prices[0].price) {
+      const price = prices[0];
+      return prices.length > 1 ? <span className={styles.from}>{price === 0 ? this.getFree() : `£${price.toFixed(2)}`}</span> : `£${price.toFixed(2)}`;
     }
     return this.getFree();
   }

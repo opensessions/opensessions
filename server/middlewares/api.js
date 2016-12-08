@@ -24,10 +24,10 @@ dotenv.load();
 module.exports = (database) => {
   const api = express();
   const getUser = req => (req.user ? req.user.sub : null);
-  const logRequests = (req, res, next) => {
+  const logRequests = (req, res, next) => { // eslint-disable-line no-unused-vars
     console.log(':: /api', req.path);
     next();
-  }; // eslint-disable-line no-unused-vars
+  };
 
   const rdpeConfig = { timezone: process.env.LOCALE_TIMEZONE, URL: process.env.SERVICE_LOCATION };
   api.use('/rdpe', RDPE(database, Object.assign({ baseURL: '/api/rdpe' }, rdpeConfig)));
@@ -72,12 +72,12 @@ module.exports = (database) => {
     return query;
   };
 
-  const instanceToJSON = (instance, user) => {
+  const instanceToJSON = (instance, req) => {
     const json = Object.assign(instance.get(), {
-      actions: instance.getActions ? instance.getActions(database.models, user) : null
+      actions: instance.getActions ? instance.getActions(database.models, req) : null
     });
     ['Sessions'].filter(type => json[type]).forEach(type => {
-      json[type] = json[type].map(child => instanceToJSON(child, user));
+      json[type] = json[type].map(child => instanceToJSON(child, req));
     });
     return json;
   };
@@ -151,7 +151,7 @@ module.exports = (database) => {
         return;
       }
       Model.findAll(query).then(instances => {
-        res.json({ instances: instances.map(instance => instanceToJSON(instance, getUser(req))) });
+        res.json({ instances: instances.map(instance => instanceToJSON(instance, req)) });
       }).catch(error => {
         res.status(404).json({ error: error.message });
       });
@@ -167,7 +167,7 @@ module.exports = (database) => {
       });
       data.owner = getUser(req);
       Model.create(data).then(instance => {
-        res.json({ instance: instanceToJSON(instance, getUser(req)) });
+        res.json({ instance: instanceToJSON(instance, req) });
       }).catch(error => {
         res.status(404).json({ error: error.message });
       });
@@ -184,7 +184,7 @@ module.exports = (database) => {
       } else {
         Model.findOne(query).then(instance => {
           if (!instance) throw new Error('Instance could not be retrieved');
-          res.json({ instance: instanceToJSON(instance, getUser(req)) });
+          res.json({ instance: instanceToJSON(instance, req) });
         }).catch(error => {
           res.status(404).json({ error: error.message, isLoggedIn: !!req.user });
         });
@@ -211,7 +211,7 @@ module.exports = (database) => {
           });
         }
         return instance.update(req.body, { returning: true }).then(savedInstance => {
-          res.json({ instance: instanceToJSON(savedInstance, getUser(req)) });
+          res.json({ instance: instanceToJSON(savedInstance, req) });
         });
       }).catch(error => {
         res.status(404).json({ error: error.message });
@@ -229,7 +229,7 @@ module.exports = (database) => {
         res.status(400).json({ status: 'failure', error: query.message });
       } else {
         Model.findOne(query).then(instance => {
-          const actions = instance.getActions(database.models, user);
+          const actions = instance.getActions(database.models, req);
           if (actions.indexOf(action) !== -1) {
             instance[action](req, database.models)
               .then(result => res.json(Object.assign({ status: 'success' }, result)))

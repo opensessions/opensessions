@@ -20,11 +20,11 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
   constructor(props) {
     super();
     const { autoFocus } = props;
-    this.state = { search: '', filteredOptions: [], highlightIndex: 0, visible: !!autoFocus, ignoreBlur: false, autoFocus };
+    this.state = { search: '', filteredOptions: [], highlightIndex: 0, visible: !!autoFocus, autoFocus };
   }
   setValue = value => {
     this.props.onChange(value);
-    this.setState({ visible: false, search: '', ignoreBlur: false });
+    this.setState({ visible: false, search: '' });
     this.refs.input.blur();
   }
   resetValue = () => this.setValue(null)
@@ -43,7 +43,7 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
     const { type, target } = event;
     const { input } = this.refs;
     const { filteredOptions, highlightIndex } = this.state;
-    let newState = {};
+    const newState = {};
     let action;
     if (type === 'focus') {
       newState.visible = true;
@@ -59,7 +59,7 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
       const deltas = { 38: -1, 40: 1, 33: -3, 34: 3, 35: Infinity, 36: -Infinity };
       if (keyCode in deltas) {
         newState.highlightIndex = highlightIndex + deltas[keyCode];
-        this.refs.searchResults.scrollTop = Math.max(0, 32 * (newState.highlightIndex - 3));
+        this.refs.search.scrollTop = Math.max(0, 32 * (newState.highlightIndex - 3));
         event.preventDefault();
         event.stopPropagation();
       } else if (keyCode === 13) {
@@ -67,13 +67,11 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
         else input.blur();
       }
     } else if (type === 'blur') {
-      if (!this.state.ignoreBlur) {
-        if (this.state.search) {
-          action = 'chooseSelected';
-        } else {
-          newState.visible = false;
-          newState.search = '';
-        }
+      if (this.state.search) {
+        action = 'chooseSelected';
+      } else {
+        newState.visible = false;
+        newState.search = '';
       }
     }
     if (action === 'chooseSelected') {
@@ -82,14 +80,11 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
       const { key } = selected.props;
       newState.search = '';
       newState.visible = false;
-      newState.ignoreBlur = true;
       if (key === 'none') {
         this.addItem();
       } else {
         this.setValue(key);
       }
-      this.setState(newState);
-      newState = {};
       input.blur();
     }
     if (newState.highlightIndex) {
@@ -119,15 +114,10 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
   }
   addItem = () => {
     const { search } = this.state;
-    if (!search) return;
-    this.props.addItem(search).then(() => {
-      this.setState({ visible: false, search: '', ignoreBlur: false });
+    if (!search) return Promise.resolve();
+    return this.props.addItem(search).then(() => {
+      this.setState({ visible: false, search: '' });
     });
-  }
-  dropdownEvent = event => {
-    const { type } = event;
-    if (type === 'mouseover') this.setState({ ignoreBlur: true });
-    else if (type === 'mouseout') this.setState({ ignoreBlur: false });
   }
   render() {
     const { value, placeholder, options, className, lazyLoad } = this.props;
@@ -143,11 +133,10 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
     const valueDisplay = selected ? selected.name : '';
     let searchResults = null;
     if (visible && (lazyLoad ? search : true)) {
-      // const actionTypeIcons = { delete: <IconGarbage size={20} /> };
-      searchResults = (<ol className={styles.searchResults} onMouseOver={this.dropdownEvent} onMouseOut={this.dropdownEvent} ref="searchResults">
+      searchResults = (<ol className={styles.searchResults} ref="search">
         {filteredOptions.map((opt, index) => <li {...opt.props} className={index === highlightIndex ? styles.highlight : null} onMouseOver={this.itemHover}>
           <span className={styles.text} dangerouslySetInnerHTML={{ __html: opt.html }} data-index={index} onMouseUp={() => this.setValue(opt.props.key)} data-key={opt.props.key} />
-          {/* opt.actions ? opt.actions.map(action => <span key={action.type} className={styles.action} onClick={this.actionClick} data-action={JSON.stringify(action)}>{actionTypeIcons[action.type] || action.type}</span>) : null*/}
+          {/* opt.actions ? opt.actions.map(action => <span key={action.type} className={styles.action} onClick={this.actionClick} data-action={JSON.stringify(action)}>{action.type}</span>) : null*/}
         </li>)}
       </ol>);
     }

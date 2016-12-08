@@ -37,11 +37,12 @@ module.exports = (DataTypes) => ({
           delete() {
             return this.destroy();
           },
-          getActions(models, user) {
+          getActions(models, req) {
             const actions = [];
             // if (user && user === this.owner && this.get('SessionsCount') === '0') {
-            if (user && user === this.owner) {
-              actions.push('delete');
+            if (req.user) {
+              // if (user === this.owner) actions.push('delete');
+              if (req.isAdmin) actions.push('delete');
             }
             return actions;
           }
@@ -86,8 +87,9 @@ module.exports = (DataTypes) => ({
           delete() {
             return this.destroy();
           },
-          getActions(models, user) {
+          getActions(models, req) {
             const actions = [];
+            const user = req.user ? req.user.sub : null;
             if (user && user === this.owner && (!this.Sessions || this.Sessions.length === 0)) {
               actions.push('delete');
             }
@@ -190,8 +192,9 @@ module.exports = (DataTypes) => ({
             if (errors.length) throw new Error(`<b>We can't publish this yet!</b> ${errors.join('. ')}`);
             return true;
           },
-          getActions(models, user) {
+          getActions(models, req) {
             const actions = [];
+            const user = req.user ? req.user.sub : null;
             actions.push('message');
             if (user && user === this.owner) {
               actions.push('edit');

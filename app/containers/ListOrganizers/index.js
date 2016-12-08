@@ -19,7 +19,7 @@ export default class ListOrganizers extends React.Component { // eslint-disable-
     return apiModel.search('organizer').then(result => {
       const { instances, error } = result;
       if (error) throw error;
-      dispatch({ type: 'ORGANIZER_LIST_LOADED', payload: instances });
+      dispatch({ type: 'ORGANIZER_LIST_LOADED', payload: instances.sort((i1, i2) => (i1.createdAt > i2.createdAt ? 1 : -1)) });
     });
   }
   constructor() {
@@ -45,7 +45,7 @@ export default class ListOrganizers extends React.Component { // eslint-disable-
     const { params } = this.props;
     const isLoading = this.state ? this.state.isLoading : false;
     const organizers = this.context.store.getState().get('organizerList') || [];
-    const limit = 64;
+    const limit = 256;
     const total = organizers ? organizers.length : 0;
     const page = (params && params.page) ? parseInt(params.page, 10) : 1;
     const maxPage = Math.ceil(total / limit);
