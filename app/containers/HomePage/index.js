@@ -42,7 +42,7 @@ export default class HomePage extends React.Component { // eslint-disable-line r
           <h1>What is open sessions?</h1>
           <p>Open Sessions provides you with one place to easily upload and update your session details, and makes them visible to thousands of potential participants across the best sports, fitness and health-focussed websites on the web.</p>
           <p>And it's free. Forever.</p>
-          <LoginButton button>Start uploading today</LoginButton>
+          <LoginButton button redirect="/session/add">Start uploading today</LoginButton>
           {stats ? <p><span className={styles.stats}>{stats.sessions.published}</span> sessions published and counting!</p> : null}
         </div>
       </section>
@@ -89,11 +89,10 @@ export default class HomePage extends React.Component { // eslint-disable-line r
         <ol>
           {[steps.map((step, key) => (<li>
             <img src={step.img} role="presentation" />
-            {/*<p><span className={styles.num}>{key + 1}.</span><span className={styles.step}>{step.text}</span></p>*/}
-            <p className={styles.step}><span className={styles.num}>{key + 1}.</span> {step.text}</p>
+            <p><span className={styles.num}>{key + 1}.</span> {step.text}</p>
           </li>))]}
         </ol>
-        <p><LoginButton button>Get started</LoginButton></p>
+        <p><LoginButton button redirect="/session/add">Get started</LoginButton></p>
       </div>
       {this.context.user ? null : this.renderMarketingSections()}
     </div>);

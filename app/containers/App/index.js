@@ -18,6 +18,7 @@ import Footer from '../../components/Footer';
 import Modal from '../../components/Modal';
 
 import getUserToken from './getUserToken';
+import cookie from '../../utils/cookie';
 
 import styles from './styles.css';
 
@@ -54,8 +55,8 @@ export default class App extends React.Component { // eslint-disable-line react/
     };
   }
   componentDidMount() {
-    if (document.cookie.indexOf('cookieconsent_dismissed') === -1) {
-      this.notify('This website uses cookies to ensure you get the best experience', null, [{ text: 'OK!', dispatch: () => (document.cookie = 'cookieconsent_dismissed=yes') }]);
+    if (!cookie.has('cookieconsent_dismissed')) {
+      this.notify('This website uses cookies to ensure you get the best experience', null, [{ text: 'OK!', dispatch: () => cookie.set('cookieconsent_dismissed', 'yes') }]);
     }
     this.createAuth();
     const { userAgent } = navigator;
@@ -100,6 +101,7 @@ export default class App extends React.Component { // eslint-disable-line react/
       }
       const { email, nickname } = profile;
       const createdAt = new Date(profile.created_at);
+      const updatedAt = new Date(profile.updated_at);
       profile.logout = () => {
         localStorage.removeItem('userToken');
         this.context.router.push('/');
@@ -123,6 +125,10 @@ export default class App extends React.Component { // eslint-disable-line react/
       }
 
       if (email.match(/@imin\.co$/i)) document.body.classList.add('admin');
+
+      if (Date.now() - updatedAt.getTime() <= 60000 && cookie.has('postlogin_redirect')) {
+        this.context.router.push(cookie.one('postlogin_redirect'));
+      }
 
       return true;
     });

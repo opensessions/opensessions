@@ -116,13 +116,13 @@
       & .num {
         color: var(--actionColor);
       }
-      & .step {
-        color: #333;
-      }
       & > p {
+        color: #333;
         max-width: 14em;
         margin: 0 auto;
         text-indent: -1em;
+        font-size: 1.1em;
+        line-height: 1.25;
       }
       &:nth-child(2) {
         animation-delay: .4s;
