@@ -25,7 +25,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     user: PropTypes.object,
     router: PropTypes.object,
     notify: PropTypes.func,
-    notifications: PropTypes.array,
+    store: PropTypes.object,
   }
   constructor(props) {
     super(props);
@@ -169,7 +169,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
   render() {
     const { organizer } = this.state;
     return (<div className={styles.organizerView}>
-      <NotificationBar notifications={this.context.notifications} zIndex={3} />
+      <NotificationBar zIndex={3} />
       {organizer ? this.renderOrganizer(organizer) : <LoadingMessage message="Loading organiser" ellipsis />}
       <div className={styles.container}>
         {this.renderSessions()}

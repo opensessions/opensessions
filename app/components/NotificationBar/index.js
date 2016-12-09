@@ -8,18 +8,20 @@ const ANIMATION_TIMEOUT = 200;
 
 export default class NotificationBar extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
-    notifications: PropTypes.arrayOf(PropTypes.shape({
-      text: PropTypes.node,
-      onDismiss: PropTypes.func,
-      status: PropTypes.oneOf(['success', 'error', 'warn', 'standard'])
-    })),
     zIndex: PropTypes.number
+  };
+  static contextTypes = {
+    store: PropTypes.object
   }
   componentDidMount() {
     this.unhideMessages();
+    this.unsubscribe = this.context.store.subscribe(() => this.forceUpdate());
   }
   componentDidUpdate() {
     this.unhideMessages();
+  }
+  componentWillUnmount() {
+    this.unsubscribe();
   }
   onDismiss = event => {
     const { target } = event;
@@ -39,7 +41,7 @@ export default class NotificationBar extends React.Component { // eslint-disable
     return items;
   }
   dismiss = id => {
-    this.props.notifications.filter(msg => msg.id == id).forEach(msg => msg.onDismiss()); // eslint-disable-line eqeqeq
+    this.context.store.getState().get('notifications').filter(msg => msg.id == id).forEach(msg => msg.onDismiss()); // eslint-disable-line eqeqeq
   }
   unhideMessages() {
     setTimeout(() => {
@@ -47,7 +49,7 @@ export default class NotificationBar extends React.Component { // eslint-disable
         li.classList.remove(styles.hidden);
       });
     }, 30);
-    this.props.notifications.forEach(notification => {
+    this.context.store.getState().get('notifications').forEach(notification => {
       if (notification.timeout) {
         const targets = this.getItems().filter(item => item.dataset.id == notification.id); // eslint-disable-line eqeqeq
         setTimeout(() => {
@@ -60,7 +62,9 @@ export default class NotificationBar extends React.Component { // eslint-disable
     });
   }
   render() {
-    const { notifications, zIndex } = this.props;
+    const { zIndex } = this.props;
+    const notifications = this.context.store.getState().get('notifications');
+    // const { notifications } = this.props;
     return (<Sticky zIndex={zIndex || 2}>
       <ol className={styles.messages}>
         {notifications ? notifications.map(message => (<li key={message.id} data-id={message.id} className={[styles.hidden, styles[message.status || 'standard']].join(' ')}>

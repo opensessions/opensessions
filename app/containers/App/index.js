@@ -27,16 +27,12 @@ export default class App extends React.Component { // eslint-disable-line react/
   };
   static contextTypes = {
     router: PropTypes.object,
+    store: PropTypes.object,
   };
   static childContextTypes = {
     user: PropTypes.object,
     auth: PropTypes.object,
     router: PropTypes.object,
-    notifications: PropTypes.arrayOf(PropTypes.shape({
-      text: PropTypes.string,
-      onDismiss: PropTypes.func,
-      status: PropTypes.oneOf(['success', 'warn', 'error'])
-    })),
     notify: PropTypes.func,
     modal: PropTypes.object,
     isLoadingUser: PropTypes.bool
@@ -45,7 +41,6 @@ export default class App extends React.Component { // eslint-disable-line react/
     super();
     this.state = {
       profile: null,
-      notifications: [],
       isLoadingUser: true
     };
   }
@@ -53,7 +48,6 @@ export default class App extends React.Component { // eslint-disable-line react/
     return {
       user: this.state.profile,
       auth: this.state.auth ? this.state.auth : { },
-      notifications: this.state.notifications,
       notify: this.notify,
       modal: { dispatch: this.modal, close: () => this.setState({ modal: null }) },
       isLoadingUser: this.state.isLoadingUser
@@ -74,17 +68,15 @@ export default class App extends React.Component { // eslint-disable-line react/
       status,
       actions
     };
-    if (status === 'success' || status === 'draft') {
-      notification.timeout = 2500;
-    } else if (status === 'error') {
-      notification.timeout = 10000;
+    if (!actions) {
+      if (status === 'success' || status === 'warn') {
+        notification.timeout = 2500;
+      } else if (status === 'error') {
+        notification.timeout = 10000;
+      }
     }
-    notification.onDismiss = () => {
-      this.setState({ notifications: this.state.notifications.filter(msg => msg.id !== notification.id) });
-    };
-    this.setState({
-      notifications: [notification].concat(this.state.notifications)
-    });
+    notification.onDismiss = () => this.context.store.dispatch({ type: 'NOTIFICATION_DISMISS', payload: notification.id });
+    this.context.store.dispatch({ type: 'NOTIFICATION_PUSH', payload: notification });
     return { redact: () => notification.onDismiss() };
   }
   modal = options => {

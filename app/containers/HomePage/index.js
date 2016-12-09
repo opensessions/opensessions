@@ -18,7 +18,6 @@ import { apiFetch } from '../../utils/api';
 export default class HomePage extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
     user: PropTypes.object,
-    notifications: PropTypes.array,
   }
   constructor() {
     super();
@@ -95,7 +94,7 @@ export default class HomePage extends React.Component { // eslint-disable-line r
   render() {
     return (<div>
       <Helmet meta={[{ property: 'og:title', content: 'Open Sessions' }, { property: 'description', content: 'Open Sessions is your gateway to the most popular physical activity finders on the web.' }]} />
-      <NotificationBar notifications={this.context.notifications} zIndex={4} />
+      <NotificationBar zIndex={4} />
       {this.renderLandingPage()}
       <Authenticated>
         <div className={styles.container}>

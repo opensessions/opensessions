@@ -54,11 +54,13 @@ export default class ListOrganizers extends React.Component { // eslint-disable-
       {this.renderPagination(page, start, end, maxPage)}
       {isLoading
         ? <LoadingMessage message="Loading organisers" ellipsis />
-        : (<div>
-          {organizers.slice(start, end).map(organizer => (<div>
-            <Link to={organizer.href}>{organizer.name}</Link> <span className={styles.createdAt}>created {(new Date(organizer.createdAt)).toDateString()}</span>
-          </div>))}
-        </div>)
+        : (<ol>
+          {organizers.slice(start, end).map(organizer => (<li>
+            <Link to={organizer.href}>{organizer.name}</Link>
+            {organizer.Sessions.length ? <span>{organizer.Sessions.length} sessions</span> : null}
+            <span className={styles.createdAt}>created {(new Date(organizer.createdAt)).toDateString()}</span>
+          </li>))}
+        </ol>)
       }
       {this.renderPagination(page, start, end, maxPage)}
     </div>);

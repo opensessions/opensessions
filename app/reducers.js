@@ -35,6 +35,20 @@ function routeReducer(state = routeInitialState, action) {
   }
 }
 
+const notificationsInitialState = [];
+
+function notificationsReducer(state = notificationsInitialState, action) {
+  console.log('notificationsReducer', action, state);
+  switch (action.type) {
+    case 'NOTIFICATION_PUSH':
+      return [...state, action.payload];
+    case 'NOTIFICATION_DISMISS':
+      return [...state.filter(note => note.id !== action.payload)];
+    default:
+      return state;
+  }
+}
+
 const sessionInitialState = fromJS(null);
 
 function sessionViewReducer(state = sessionInitialState, action) {
@@ -85,6 +99,7 @@ function activityListViewReducer(state = activityListInitialState, action) {
 export default function createReducer(asyncReducers) {
   return combineReducers({
     route: routeReducer,
+    notifications: notificationsReducer,
     session: sessionViewReducer,
     sessionList: sessionListViewReducer,
     organizerList: organizerListViewReducer,

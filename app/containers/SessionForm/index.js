@@ -45,7 +45,6 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   static contextTypes = {
     user: PropTypes.object,
     router: PropTypes.object,
-    notifications: PropTypes.array,
     notify: PropTypes.func
   }
   constructor(props) {
@@ -305,7 +304,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       });
     }, ms);
   }
-  renderForm = () => <Form fieldsets={this.state.fieldsets} onPublish={this.publishSession} pendingSteps={this.state.pendingSteps} status={this.state.status} saveState={this.state.saveState} tab={this.props.params.tab} activeField={this.props.location.hash.slice(1)} notifications={this.context.notifications}>{this.renderFieldsets()}</Form>
+  renderForm = () => <Form fieldsets={this.state.fieldsets} onPublish={this.publishSession} pendingSteps={this.state.pendingSteps} status={this.state.status} saveState={this.state.saveState} tab={this.props.params.tab} activeField={this.props.location.hash.slice(1)}>{this.renderFieldsets()}</Form>
   renderFieldsets = () => this.state.fieldsets.map((fieldset, key) => <Fieldset key={key} {...fieldset.props} {...this.state.copy.fieldsets[fieldset.slug]}>{this.renderFieldset(fieldset)}</Fieldset>)
   renderFieldset = fieldset => <div>{fieldset.fields.map(this.renderField)}</div>
   renderField = field => <Field key={field} {...this.state.copy.fields[field]}>{this.state.fields[field] ? this.state.fields[field]() : <TextField {...this.getAttr(field)} />}</Field>

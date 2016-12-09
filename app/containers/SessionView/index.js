@@ -26,7 +26,6 @@ const { google } = window;
 export default class SessionView extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
     user: PropTypes.object,
-    notifications: PropTypes.array,
     notify: PropTypes.func,
     modal: PropTypes.object,
     store: PropTypes.object
@@ -418,7 +417,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     if (isLoading) return <LoadingMessage message="Loading session" ellipsis />;
     return (<div className={styles.sessionView}>
       {this.canEdit() ? <PublishHeader h2={session && session.state === 'published' ? 'Published session' : 'Preview'} actions={this.getActions()} /> : null}
-      <NotificationBar notifications={this.context.notifications} />
+      <NotificationBar />
       {session ? this.renderSession() : <LoadingMessage message="Session not found" />}
     </div>);
   }
