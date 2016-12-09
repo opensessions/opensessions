@@ -201,7 +201,6 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     if (personList) options = options.concat(personList);
     if (user && user.nickname.match(/^[A-Z]/)) options.push(user.nickname);
     if (customNames) options = options.concat(customNames);
-    console.log('getNames', options, options.filter((name, key) => options.indexOf(name) === key));
     return options.filter((name, key) => options.indexOf(name) === key).map(name => ({ uuid: name, name }));
   }
   getEmails() {

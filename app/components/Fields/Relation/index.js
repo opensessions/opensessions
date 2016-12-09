@@ -17,7 +17,7 @@ export default class RelationField extends React.Component { // eslint-disable-l
     relation: PropTypes.object,
     className: PropTypes.string,
     size: PropTypes.string,
-    props: PropTypes.object,
+    props: PropTypes.object
   }
   componentDidMount() {
     this.fetchRelation();

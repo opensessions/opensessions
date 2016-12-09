@@ -38,7 +38,6 @@ function routeReducer(state = routeInitialState, action) {
 const notificationsInitialState = [];
 
 function notificationsReducer(state = notificationsInitialState, action) {
-  console.log('notificationsReducer', action, state);
   switch (action.type) {
     case 'NOTIFICATION_PUSH':
       return [...state, action.payload];

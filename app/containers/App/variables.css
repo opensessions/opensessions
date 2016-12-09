@@ -30,3 +30,4 @@
 
 @custom-media --mobile (max-width: 576px), (max-width: 1152px) and (min-device-pixel-ratio: 2);
 @custom-media --desktop (min-width: 576px), (min-width: 1152px) and (min-device-pixel-ratio: 2);
+@custom-media --largeDesktop (min-width: 1360px), (min-width: 2720px) and (min-device-pixel-ratio: 2);

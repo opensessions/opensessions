@@ -35,7 +35,7 @@ section.heading {
   & h2 {
     font-weight: normal;
     color: inherit;
-    margin: 1.5rem auto;
+    margin: .5em auto;
     padding: 0;
     line-height: 1.2;
     text-shadow: 0 0 .1em rgba(0, 0, 0, .5);
@@ -48,7 +48,6 @@ section.heading {
   }
   & h2 {
     font-size: 1.4em;
-    max-width: 60rem;
     font-weight: 400;
   }
   & p {
@@ -58,14 +57,12 @@ section.heading {
   & a {
     display: inline-block;
     font-family: Belgrano, sans-serif;
-    padding: .5em 1em;
     color: #FFF;
     background: none;
     margin: .5em 0;
     padding: .75em 2em;
-    border: .2em solid;
-    font-size: 1.2em;
-    font-family: Belgrano, sans-serif;
+    border: .15em solid;
+    font-size: 1.5em;
     line-height: 1;
     text-decoration: none;
     transition: .2s ease all;
@@ -92,10 +89,10 @@ section.heading {
     padding: 4em 0;
     font-size: 1.1em;
     & h1 {
-      font-size: 2em;
+      font-size: 2.4em;
     }
     & h2 {
-      font-size: 1.6em;
+      font-size: 1.5em;
     }
   }
 }

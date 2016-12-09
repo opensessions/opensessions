@@ -70,24 +70,31 @@ export default class HomePage extends React.Component { // eslint-disable-line r
     </div>);
   }
   renderLandingPage() {
+    const steps = [
+      { text: 'You tell us about the sessions you run', img: '/images/landing-step1.png' },
+      { text: 'We publish them on the web\'s activity finders', img: '/images/landing-step2.png' },
+      { text: '100s more people can find out about them', img: '/images/landing-step3.png' }
+    ];
     return (<div className={styles.landing}>
       <Banner>
-        <h1>The free way to promote your sessions</h1>
-        <h2>We upload your sessions to different activity finders&#8212;so you don't have to</h2>
+        <h1>Get your sessions found</h1>
+        <h2>The free way to promote your physical activity sessions</h2>
+        <br /><br />
         <Authenticated out={<LoginButton redirect="/session/add"><b>+</b> Add a session</LoginButton>}>
           <p><Link to="/session/add"><b>+</b> Add a session</Link></p>
         </Authenticated>
-        <ol className={styles.steps}>
-          <li className={styles.step}>
-            Upload <b className={styles.yourSessions}>your sessions</b> here
-          </li>
-          <li className={styles.arrow} />
-          <li className={styles.step}>
-            <b>Live</b> across numerous activity finders <i>(many more to come!)</i></li>
-          <li className={styles.arrow} />
-          <li className={styles.step}>100s more people see <b className={styles.yourSessions}>your activities</b> every day</li>
-        </ol>
       </Banner>
+      <div className={styles.steps}>
+        <h1>How Open Sessions works</h1>
+        <ol>
+          {[steps.map((step, key) => (<li>
+            <img src={step.img} role="presentation" />
+            {/*<p><span className={styles.num}>{key + 1}.</span><span className={styles.step}>{step.text}</span></p>*/}
+            <p className={styles.step}><span className={styles.num}>{key + 1}.</span> {step.text}</p>
+          </li>))]}
+        </ol>
+        <p><LoginButton button>Get started</LoginButton></p>
+      </div>
       {this.context.user ? null : this.renderMarketingSections()}
     </div>);
   }
