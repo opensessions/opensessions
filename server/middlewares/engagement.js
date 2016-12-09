@@ -90,7 +90,7 @@ const sendEngagementEmails = (sendEmail, models) => {
             <p>Happy uploading!</p>`, { substitutions: { '-title-': 'Just checking in...' }, categories: ['engagement', 'engagement-expiring'] }];
           } else if (analysis.totals.expire.future) {
             email = ['Good news from Open Sessions', user.email, `<p>Dear ${user.given_name || user.name},</p>
-            <p>Thanks for being one of the first providers to use the Open Sessions uploader. We wanted to let you know that your session information is live <b>right now</b> on Get Active!</p>
+            <p>Thanks for being one of the first providers to use the Open Sessions uploader. We wanted to let you know that your session information is now <b>live</b> on activity finders like Get Active!</p>
             <p>If your session information is up to date, please simply reply YES to this email. Otherwise, please visit Open Sessions and update them.</p>
             <ul>${analysis.sessions.published.map(session => {
               const expiration = getExpirations(session);

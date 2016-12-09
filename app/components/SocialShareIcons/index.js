@@ -20,7 +20,7 @@ export default class SocialShareIcons extends React.Component { // eslint-disabl
       { id: 'email', url: `mailto:?subject=${title}&body=${message}%0A%0A${link}`, img: '/images/email.png' }
     ];
     return (<ol className={styles.socialIcons}>
-      {icons.map(icon => <li key={icon.img}><a onClick={() => trackPage(window.location.href, `${this.props.link}/share:${icon.id}`)} href={icon.url} target="blank"><img src={icon.img} role="presentation" /></a></li>)}
+      {icons.map(icon => <li key={icon.img}><a onClick={() => trackPage(window.location.href, `/special:share/${icon.id}?url=${link}`)} href={icon.url} target="blank"><img src={icon.img} role="presentation" /></a></li>)}
     </ol>);
   }
 }

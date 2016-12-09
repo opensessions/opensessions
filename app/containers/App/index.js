@@ -126,7 +126,7 @@ export default class App extends React.Component { // eslint-disable-line react/
 
       if (email.match(/@imin\.co$/i)) document.body.classList.add('admin');
 
-      if (Date.now() - updatedAt.getTime() <= 60000 && cookie.has('postlogin_redirect')) {
+      if (Date.now() - updatedAt.getTime() <= 10000 && cookie.has('postlogin_redirect')) {
         this.context.router.push(cookie.one('postlogin_redirect'));
       }
 
@@ -138,18 +138,16 @@ export default class App extends React.Component { // eslint-disable-line react/
     const { INTERCOM_APPID } = window;
     const intercomProps = profile ? { user_id: profile.user_id, email: profile.email, name: profile.nickname } : {};
     intercomProps.appID = INTERCOM_APPID;
-    return (
-      <div className={styles.root}>
-        <Header />
-        <div className={styles.appBody}>
-          <div className={styles.container}>
-            {this.props.children}
-          </div>
-          <Footer />
+    return (<div className={styles.root}>
+      <Header />
+      <div className={styles.appBody}>
+        <div className={styles.container}>
+          {this.props.children}
         </div>
-        <Intercom {...intercomProps} />
-        <Modal modal={modal} />
+        <Footer />
       </div>
-    );
+      <Intercom {...intercomProps} />
+      <Modal modal={modal} />
+    </div>);
   }
 }

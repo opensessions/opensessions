@@ -1,8 +1,11 @@
 import React, { PropTypes } from 'react';
 
 import LoadingMessage from '../../components/LoadingMessage';
+import Button from '../../components/Button';
 
 import { apiModel } from '../../utils/api';
+
+import styles from './styles.css';
 
 export default class ListActivities extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
@@ -35,12 +38,28 @@ export default class ListActivities extends React.Component { // eslint-disable-
       return name1 > name2 ? 1 : -1;
     }) : [];
   }
+  actionClick = (activity, action) => {
+    if (confirm(`Are you sure you want to delete ${activity.name}? This CANNOT be undone!`)) {
+      apiModel.action('activity', activity.uuid, action).then(() => {
+        this.setState({ isLoading: true });
+        this.constructor.fetchData(this.context.store.dispatch).then(() => {
+          this.setState({ isLoading: false });
+        });
+      });
+    }
+  }
+  renderActivity(activity) {
+    return (<li>
+      <span className={styles.name}>{activity.name}</span>
+      <span className={styles.actions}>{activity.actions.map(action => <Button onClick={() => this.actionClick(activity, action)}>{action}</Button>)}</span>
+    </li>);
+  }
   render() {
     const isLoading = this.state ? this.state.isLoading : false;
     const activities = this.sortActivities();
-    return (<div>
+    return (<div className={styles.list}>
       <h1>List of activities</h1>
-      {isLoading ? <LoadingMessage message="Loading activities" ellipsis /> : <ol>{activities.map(activity => <li>{activity.name} ({activity.SessionsCount})</li>)}</ol>}
+      {isLoading ? <LoadingMessage message="Loading activities" ellipsis /> : <ol>{activities.map(activity => this.renderActivity(activity))}</ol>}
     </div>);
   }
 }

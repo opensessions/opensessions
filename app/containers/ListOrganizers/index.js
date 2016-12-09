@@ -56,8 +56,10 @@ export default class ListOrganizers extends React.Component { // eslint-disable-
         ? <LoadingMessage message="Loading organisers" ellipsis />
         : (<ol>
           {organizers.slice(start, end).map(organizer => (<li>
-            <Link to={organizer.href}>{organizer.name}</Link>
-            {organizer.Sessions.length ? <span>{organizer.Sessions.length} sessions</span> : null}
+            <span>
+              <Link to={organizer.href}>{organizer.name}</Link>
+              {organizer.Sessions.length ? <span className={styles.nSessions}>{organizer.Sessions.length} sessions</span> : null}
+            </span>
             <span className={styles.createdAt}>created {(new Date(organizer.createdAt)).toDateString()}</span>
           </li>))}
         </ol>)

@@ -32,10 +32,9 @@ export default class HomePage extends React.Component { // eslint-disable-line r
   renderSessionList() {
     const { user } = this.context;
     if (!user) return <LoadingMessage message="Loading user" ellipsis />;
-    return <SessionList query={{ owner: user.user_id }} />;
+    return <SessionList query={{ owner: user.user_id }} heading={<h1>Your Sessions:</h1>} />;
   }
   renderMarketingSections() {
-    const { stats } = this.state;
     return (<div className={styles.sections}>
       <section>
         <div className={styles.container}>
@@ -43,7 +42,6 @@ export default class HomePage extends React.Component { // eslint-disable-line r
           <p>Open Sessions provides you with one place to easily upload and update your session details, and makes them visible to thousands of potential participants across the best sports, fitness and health-focussed websites on the web.</p>
           <p>And it's free. Forever.</p>
           <LoginButton button redirect="/session/add">Start uploading today</LoginButton>
-          {stats ? <p><span className={styles.stats}>{stats.sessions.published}</span> sessions published and counting!</p> : null}
         </div>
       </section>
       <section className={styles.featured}>
@@ -75,6 +73,7 @@ export default class HomePage extends React.Component { // eslint-disable-line r
       { text: 'We publish them on the web\'s activity finders', img: '/images/landing-step2.png' },
       { text: '100s more people can find out about them', img: '/images/landing-step3.png' }
     ];
+    const { stats } = this.state;
     return (<div className={styles.landing}>
       <Banner>
         <h1>Get your sessions found</h1>
@@ -93,6 +92,7 @@ export default class HomePage extends React.Component { // eslint-disable-line r
           </li>))]}
         </ol>
         <p><LoginButton button redirect="/session/add">Get started</LoginButton></p>
+        {stats ? <p><span className={styles.stats}>{stats.sessions.published}</span> sessions published and counting!</p> : null}
       </div>
       {this.context.user ? null : this.renderMarketingSections()}
     </div>);

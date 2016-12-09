@@ -38,12 +38,29 @@ module.exports = (database) => {
     audience: process.env.AUTH0_CLIENT_ID
   });
 
-  const requireAdmin = (req, res, next) => {
+  let admins;
+  let adminsRefreshed;
+  const isAdmin = user => {
+    const [nowHours, adminHours] = [new Date(), adminsRefreshed || new Date(0)].map(d => (d.getTime() / (1000 * 60 * 60)));
+    return new Promise((resolve, reject) => {
+      if (admins && nowHours - adminHours > 1) {
+        resolve(admins.some(admin => admin.user_id === user.sub));
+      } else {
+        authClient.getUsers({ q: 'email:"@imin.co"' }).then(users => {
+          admins = users;
+          adminsRefreshed = new Date();
+          resolve(admins.some(admin => admin.user_id === user.sub));
+        }).catch(reject);
+      }
+    });
+  };
+
+  const processUser = (req, res, next) => {
     req.isAdmin = false;
     requireLogin(req, res, () => {
       if (req.user) {
-        authClient.getUsers({ q: 'email:"@imin.co"' }).then(users => {
-          req.isAdmin = users.some(user => user.user_id === req.user.sub);
+        isAdmin(req.user).then(admin => {
+          req.isAdmin = admin;
           next();
         }).catch(() => next());
       } else {
@@ -108,7 +125,7 @@ module.exports = (database) => {
 
   const admin = express();
 
-  admin.get('/stats', requireAdmin, (req, res) => {
+  admin.get('/stats', (req, res) => {
     database.models.Session.findAll().then(sessions => {
       res.json({ sessions: { total: sessions.length, published: sessions.filter(session => session.state === 'published').length } });
     });
@@ -144,7 +161,7 @@ module.exports = (database) => {
 
   api.get('/:model', resolveModel, (req, res) => {
     const { Model } = req;
-    requireLogin(req, res, () => {
+    processUser(req, res, () => {
       const query = Model.getQuery({ where: queryParse(req) }, database.models, getUser(req));
       if (query instanceof Error) {
         res.status(400).json({ status: 'failure', error: query.message });
@@ -177,7 +194,7 @@ module.exports = (database) => {
   api.get('/:model/:uuid', resolveModel, (req, res) => {
     const { Model } = req;
     const { uuid } = req.params;
-    requireLogin(req, res, () => {
+    processUser(req, res, () => {
       const query = Model.getQuery({ where: { uuid } }, database.models, getUser(req));
       if (query instanceof Error) {
         res.status(400).json({ status: 'failure', error: query.message });
@@ -222,7 +239,7 @@ module.exports = (database) => {
   api.all('/:model/:uuid/action/:action', resolveModel, (req, res) => {
     const { Model } = req;
     const { uuid, action } = req.params;
-    requireLogin(req, res, () => {
+    processUser(req, res, () => {
       const user = getUser(req);
       const query = Model.getQuery({ where: { uuid } }, database.models, user);
       if (query instanceof Error) {

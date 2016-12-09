@@ -1,6 +1,14 @@
 @import '../App/variables.css';
 
 .sessionList {
+  & > h1 {
+    font-family: Belgrano, sans-serif;
+    font-size: 1.75em;
+    font-weight: normal;
+    margin: .75em auto;
+    max-width: 96rem;
+    text-align: left;
+  }
   & p.intro {
     text-align: center;
     margin: 1em auto;

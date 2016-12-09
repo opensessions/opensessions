@@ -1,0 +1,16 @@
+.list {
+  margin: 1em auto;
+  padding: .5em;
+  max-width: 60em;
+  & ol {
+    & > li {
+      list-style: none;
+    }
+  }
+}
+
+.actions {
+  & > a {
+    padding: .25em;
+  }
+}
