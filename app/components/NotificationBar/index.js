@@ -5,10 +5,13 @@ import Sticky from '../Sticky';
 import styles from './styles.css';
 
 const ANIMATION_TIMEOUT = 200;
+const ENTER_CLICK = { tabIndex: 0, onKeyUp: event => event.keyCode === 13 && event.target.click() };
 
 export default class NotificationBar extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
-    zIndex: PropTypes.number
+    zIndex: PropTypes.number,
+    storeName: PropTypes.string,
+    orientation: PropTypes.string
   };
   static contextTypes = {
     store: PropTypes.object
@@ -33,6 +36,9 @@ export default class NotificationBar extends React.Component { // eslint-disable
       }, ANIMATION_TIMEOUT);
     }
   }
+  getNotifications() {
+    return this.context.store.getState().get(this.props.storeName || 'notifications');
+  }
   getItems() {
     let items = [];
     Array.map(document.getElementsByClassName(styles.messages), list => {
@@ -41,7 +47,7 @@ export default class NotificationBar extends React.Component { // eslint-disable
     return items;
   }
   dismiss = id => {
-    this.context.store.getState().get('notifications').filter(msg => msg.id == id).forEach(msg => msg.onDismiss()); // eslint-disable-line eqeqeq
+    this.getNotifications().filter(msg => msg.id == id).forEach(msg => msg.onDismiss()); // eslint-disable-line eqeqeq
   }
   unhideMessages() {
     setTimeout(() => {
@@ -49,7 +55,7 @@ export default class NotificationBar extends React.Component { // eslint-disable
         li.classList.remove(styles.hidden);
       });
     }, 30);
-    this.context.store.getState().get('notifications').forEach(notification => {
+    this.getNotifications().forEach(notification => {
       if (notification.timeout) {
         const targets = this.getItems().filter(item => item.dataset.id == notification.id); // eslint-disable-line eqeqeq
         setTimeout(() => {
@@ -61,19 +67,31 @@ export default class NotificationBar extends React.Component { // eslint-disable
       }
     });
   }
+  renderNotification(message) {
+    const { id, status, text, actions } = message;
+    const fullActions = actions.filter(action => action.type === 'full');
+    const clickFull = () => {
+      fullActions.forEach(action => action.dispatch());
+      this.dismiss(id);
+    };
+    const tooltip = fullActions.length ? fullActions[0].tooltip : null;
+    return (<li key={id} data-id={id} className={[styles.hidden, styles[status || 'standard']].join(' ')} onClick={actions && actions.some(action => action.type === 'full') ? (event => event.target.tagName !== 'A' && clickFull()) : null}>
+      <div className={styles.inner}>
+        {typeof text === 'object' ? <span className={styles.text}>{text}</span> : <span className={styles.text} dangerouslySetInnerHTML={{ __html: text }} />}
+        {actions && actions.some(action => action.type !== 'full')
+          ? <span className={styles.actions}>{actions.map((action, key) => <a key={key} {...ENTER_CLICK} onClick={() => action.dispatch() && this.dismiss(id)} autoFocus>{action.text}</a>)}</span>
+          : null}
+        <a {...ENTER_CLICK} onClick={this.onDismiss} data-id={id} className={styles.dismiss}>&times;</a>
+      </div>
+      {tooltip ? <div className={styles.tooltip}><div className={styles.tip}>{tooltip}</div></div> : null}
+    </li>);
+  }
   render() {
-    const { zIndex } = this.props;
-    const notifications = this.context.store.getState().get('notifications');
-    // const { notifications } = this.props;
+    const { zIndex, orientation } = this.props;
+    const notifications = this.getNotifications();
     return (<Sticky zIndex={zIndex || 2}>
-      <ol className={styles.messages}>
-        {notifications ? notifications.map(message => (<li key={message.id} data-id={message.id} className={[styles.hidden, styles[message.status || 'standard']].join(' ')}>
-          <div className={styles.inner}>
-            {typeof message.text === 'object' ? <span className={styles.text}>{message.text}</span> : <span className={styles.text} dangerouslySetInnerHTML={{ __html: message.text }} />}
-            {message.actions ? <span className={styles.actions}>{message.actions.map((action, key) => <a key={key} tabIndex={0} onKeyUp={event => event.keyCode === 13 && event.target.click()} onClick={() => action.dispatch() && this.dismiss(message.id)} autoFocus>{action.text}</a>)}</span> : null}
-            <a tabIndex={0} onKeyUp={event => event.keyCode === 13 && event.target.click()} onClick={this.onDismiss} data-id={message.id} className={styles.dismiss}>&times;</a>
-          </div>
-        </li>)) : null}
+      <ol className={styles.messages} data-orientation={orientation || 'top'}>
+        {notifications ? notifications.map(message => this.renderNotification(message)) : null}
       </ol>
     </Sticky>);
   }

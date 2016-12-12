@@ -11,10 +11,12 @@
  */
 
 import React, { PropTypes } from 'react';
+import { Link } from 'react-router';
 import Intercom from 'react-intercom';
 
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import NotificationBar from '../../components/NotificationBar';
 import Modal from '../../components/Modal';
 
 import getUserToken from './getUserToken';
@@ -56,13 +58,13 @@ export default class App extends React.Component { // eslint-disable-line react/
   }
   componentDidMount() {
     if (!cookie.has('cookieconsent_dismissed')) {
-      this.notify('This website uses cookies to ensure you get the best experience', null, [{ text: 'OK!', dispatch: () => cookie.set('cookieconsent_dismissed', 'yes') }]);
+      this.notify(<span>This website uses cookies to ensure you get the best experience. <Link to="/terms">Find out more</Link></span>, 'cookie', [{ type: 'full', dispatch: () => cookie.set('cookieconsent_dismissed', 'yes'), tooltip: 'Click to close & accept' }], 'COOKIE_NOTIFICATION');
     }
     this.createAuth();
     const { userAgent } = navigator;
     if (userAgent.indexOf('MSIE') >= 0 || (userAgent.indexOf('Trident') >= 0 && !userAgent.indexOf('x64') >= 0)) this.notify('Internet Explorer is not well-supported. Consider using an up-to-date browser for the best experience', 'warn');
   }
-  notify = (text, status, actions) => {
+  notify = (text, status, actions, storeType) => {
     const notification = {
       id: Date.now(),
       text,
@@ -76,8 +78,8 @@ export default class App extends React.Component { // eslint-disable-line react/
         notification.timeout = 10000;
       }
     }
-    notification.onDismiss = () => this.context.store.dispatch({ type: 'NOTIFICATION_DISMISS', payload: notification.id });
-    this.context.store.dispatch({ type: 'NOTIFICATION_PUSH', payload: notification });
+    notification.onDismiss = () => this.context.store.dispatch({ type: `${storeType || 'NOTIFICATION'}_DISMISS`, payload: notification.id });
+    this.context.store.dispatch({ type: `${storeType || 'NOTIFICATION'}_PUSH`, payload: notification });
     return { redact: () => notification.onDismiss() };
   }
   modal = options => {
@@ -144,6 +146,7 @@ export default class App extends React.Component { // eslint-disable-line react/
         <div className={styles.container}>
           {this.props.children}
         </div>
+        <NotificationBar storeName="cookieNotifications" orientation="bottom" />
         <Footer />
       </div>
       <Intercom {...intercomProps} />

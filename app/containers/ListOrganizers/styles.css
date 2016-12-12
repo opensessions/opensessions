@@ -14,6 +14,11 @@
   }
 }
 
+.icon {
+  max-width: 4em;
+  margin-right: .5em;
+}
+
 .nSessions {
   color: #777;
   padding: .25em;

@@ -57,6 +57,7 @@ export default class ListOrganizers extends React.Component { // eslint-disable-
         : (<ol>
           {organizers.slice(start, end).map(organizer => (<li>
             <span>
+              {organizer.image ? <img src={organizer.image} role="presentation" className={styles.icon} /> : null}
               <Link to={organizer.href}>{organizer.name}</Link>
               {organizer.Sessions.length ? <span className={styles.nSessions}>{organizer.Sessions.length} sessions</span> : null}
             </span>

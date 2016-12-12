@@ -1,17 +1,59 @@
 @import '../../containers/App/variables.css';
 
+.tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  margin-bottom: .25em;
+  pointer-events: none;
+  & .tip {
+    opacity: 0;
+    display: inline-block;
+    transition: .2s all ease;
+    background-color: #F3F3F3;
+    padding: .25em 1em;
+    border: 1px solid #BBB;
+    box-shadow: 0 .25em .5em rgba(0, 0, 0, .4);
+    transform: scale(.9) translateY(-1em);
+    &::after {
+      content: '▼';
+      text-shadow: 0 .3em .3em rgba(0, 0, 0, .4);
+      line-height: 0;
+      color: #F3F3F3;
+      display: block;
+      margin: auto;
+      left: 0;
+      top: 100%;
+      right: 0;
+      transform: scaleX(3);
+      position: absolute;
+    }
+  }
+}
+
 ol.messages {
   position: fixed;
   z-index: 12;
   top: 0;
   left: 0;
   right: 0;
+  &[data-orientation='bottom'] {
+    top: auto;
+    bottom: 0;
+    position: fixed;
+  }
   & > li {
     list-style: none;
-    color: #FFF;
     font-size: 1.1em;
     transition: .2s all ease;
     opacity: 1;
+    &:hover {
+      & .tip {
+        opacity: 1;
+        transform: none;
+      }
+    }
     &.hidden,
     &.dismissed {
       opacity: 0;
@@ -20,6 +62,20 @@ ol.messages {
       background-color: grey;
       & a:hover {
         color: grey;
+      }
+    }
+    &.cookie {
+      background-color: rgba(46, 60, 84, .95);
+      text-align: center;
+      & > .inner {
+        & > span.text {
+          padding: 1.5em 2em;
+          flex-grow: 1;
+        }
+      }
+      & a:hover {
+        color: #B6E7A5;
+        background-color: transparent !important;
       }
     }
     &.success {
@@ -42,6 +98,7 @@ ol.messages {
     }
     & > .inner {
       max-width: var(--pagewidth);
+      color: #FFF;
       margin: auto;
       display: flex;
       align-items: center;

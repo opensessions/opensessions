@@ -155,6 +155,26 @@ module.exports = (DataTypes) => ({
         getterMethods: {
           href() {
             return `/${this.Model.name.toLowerCase()}/${this.uuid}`;
+          },
+          region() {
+            // figure out which Get Active location
+            const { locationData } = this;
+            const regions = [
+              { name: 'London', lng: .1278, lat: 51.5074, radius: .5640 },
+              { name: 'Essex', lng: .4691, lat: 51.7343, radius: .5 }
+            ];
+            let regionMatches;
+            if (locationData) {
+              const { lat, lng } = locationData;
+              if (lat && lng) {
+                regionMatches = regions.map(region => {
+                  const distance = Math.sqrt(Math.pow(lat - region.lat, 2) + Math.pow(lng - region.lng, 2));
+                  return { match: region.radius / distance, name: region.name };
+                }).sort((a, b) => b.match - a.match);
+                return regionMatches.filter(region => region.match >= .75).map(region => region.name);
+              }
+            }
+            return undefined;
           }
         },
         instanceMethods: {

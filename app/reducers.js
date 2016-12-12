@@ -35,6 +35,19 @@ function routeReducer(state = routeInitialState, action) {
   }
 }
 
+const cookieNotificationsInitialState = [];
+
+function cookieNotificationsReducer(state = cookieNotificationsInitialState, action) {
+  switch (action.type) {
+    case 'COOKIE_NOTIFICATION_PUSH':
+      return [...state, action.payload];
+    case 'COOKIE_NOTIFICATION_DISMISS':
+      return [...state.filter(note => note.id !== action.payload)];
+    default:
+      return state;
+  }
+}
+
 const notificationsInitialState = [];
 
 function notificationsReducer(state = notificationsInitialState, action) {
@@ -99,6 +112,7 @@ export default function createReducer(asyncReducers) {
   return combineReducers({
     route: routeReducer,
     notifications: notificationsReducer,
+    cookieNotifications: cookieNotificationsReducer,
     session: sessionViewReducer,
     sessionList: sessionListViewReducer,
     organizerList: organizerListViewReducer,

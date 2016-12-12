@@ -121,7 +121,7 @@
   background-size: cover;
   background-repeat: no-repeat;
   background-position: 50% 50%;
-  animation: appear 1.2s ease-in-out;
+  animation: appear .4s ease-in-out;
   transition: 1.5s ease opacity;
   & > .container {
     height: 100%;

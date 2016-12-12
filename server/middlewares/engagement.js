@@ -113,8 +113,7 @@ const sendEngagementEmails = (sendEmail, models) => {
       });
       sendEmail('Email Engagement Summary', 'hello@opensessions.io', `<p>We've just generated engagement emails for the week from ${process.env.SERVICE_LOCATION}.</p>
         <p>Total sent: ${outbox.length}</p>
-        <ul>${outbox.map(email => `<li><b>Subject:</b> ${email[0]} <b>User:</b> &lt;${email[1]}&gt;</li>`).join('')}</ul>
-        ${process.env.SERVICE_LOCATION}
+        <ul>${outbox.map(email => `<li><b>Subject:</b> ${email[0]}<br /><b>User:</b> &lt;${email[1]}&gt;</li>`).join('')}</ul>
       `, { substitutions: { '-title-': 'Weekly engagement email summary' } });
     });
   });
