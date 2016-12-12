@@ -155,7 +155,7 @@
     "node-fetch": "^1.6.3",
     "node-uuid": "^1.4.7",
     "passport": "^0.3.2",
-    "passport-auth0": "^0.5.2",
+    "passport-auth0": "^0.6.0",
     "pg": "^5.1.0",
     "pg-hstore": "^2.3.2",
     "postcss-custom-media": "^5.0.1",
