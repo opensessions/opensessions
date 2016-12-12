@@ -160,7 +160,7 @@
     "pg-hstore": "^2.3.2",
     "postcss-custom-media": "^5.0.1",
     "react": "^15.3.2",
-    "react-css-modules": "^3.7.6",
+    "react-css-modules": "^4.1.0",
     "react-datepicker": "^0.28.1",
     "react-dom": "^15.3.2",
     "react-google-maps": "^4.11.0",
