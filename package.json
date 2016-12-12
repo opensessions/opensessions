@@ -177,7 +177,7 @@
     "reselect": "^2.5.1",
     "s3-uploader": "^2.0.1",
     "sanitize.css": "^3.3.0",
-    "sendgrid": "^4.5.0",
+    "sendgrid": "^4.7.1",
     "sequelize": "^3.23.3",
     "sequelize-cli": "^2.4.0",
     "transform-loader": "^0.2.3",
