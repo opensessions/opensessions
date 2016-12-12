@@ -144,7 +144,7 @@
     "express-session": "^1.13.0",
     "extend": "^3.0.0",
     "file-loader": "^0.8.5",
-    "fontfaceobserver": "^1.7.1",
+    "fontfaceobserver": "^2.0.2",
     "history": "^2.1.0",
     "immutable": "^3.8.1",
     "ip": "^1.1.2",
