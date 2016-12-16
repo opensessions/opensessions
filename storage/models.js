@@ -348,7 +348,7 @@ module.exports = (DataTypes) => ({
                 <p>Here's the message:</p>
                 <p style="padding:.5em;white-space:pre;background:#FFF;">From: ${message.name}</p>
                 <p style="padding:.5em;white-space:pre;background:#FFF;">${message.body}</p>
-              `, { substitutions: { '-title-': 'Organizer communication' }, reply_to: `${thread.uuid}@${EMAILS_INBOUND_URL}`, bcc: SERVICE_EMAIL }));
+              `, { substitutions: { '-title-': 'Organizer communication' }, replyTo: `${thread.uuid}@${EMAILS_INBOUND_URL}`, bcc: SERVICE_EMAIL }));
           },
           setActivitiesAction(req) {
             let { uuids } = req.body;

@@ -5,20 +5,22 @@ const { SENDGRID_SECRET, SERVICE_EMAIL, SENDGRID_TEMPLATE } = process.env;
 
 const sendEmail = (subject, to, body, opts) => {
   opts = opts || {};
-  const { categories, attachments, substitutions, reply_to, bcc, NO_TEMPLATE } = opts;
+  const { categories, attachments, substitutions, replyTo, bcc, NO_TEMPLATE } = opts;
   const sg = sendgrid(SENDGRID_SECRET);
   let templateId = opts.template_id || SENDGRID_TEMPLATE;
   if (NO_TEMPLATE) templateId = null;
+  console.log(`sendEmail(${subject}, ${to}, body, ${JSON.stringify(opts)})`);
   const options = {
     personalizations: [{
       to: [{ email: to }],
       bcc: bcc ? [{ email: bcc }] : null,
       substitutions
     }],
+    bcc: bcc ? [{ email: bcc }] : null,
     from: {
       email: SERVICE_EMAIL
     },
-    reply_to: reply_to ? { email: reply_to } : null,
+    reply_to: replyTo ? { email: replyTo } : null,
     subject,
     content: [{
       type: 'text/html',
@@ -43,9 +45,4 @@ const sendStoredEmail = (type, to, name) => {
   return sendEmail(subject, to, body, { substitutions: { '-title-': title } });
 };
 
-const parseEmailRequest = req => {
-  const { email } = req;
-  return { body: req.body.split('<!--Reply-->').pop(), email };
-};
-
-module.exports = { sendEmail, sendStoredEmail, parseEmailRequest };
+module.exports = { sendEmail, sendStoredEmail };
