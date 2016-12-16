@@ -11,14 +11,7 @@ module.exports = (DataTypes) => ({
   },
   tables: {
     SessionActivity: {
-      _options: {
-        classMethods: {
-          makeAssociations(models) {
-            models.SessionActivity.hasOne(models.Session);
-            models.SessionActivity.hasOne(models.Activity);
-          }
-        }
-      }
+      _options: {}
     },
     Threads: {
       originEmail: DataTypes.STRING(256),

@@ -18,7 +18,7 @@ const sendEmail = (subject, to, body, opts) => {
     from: {
       email: SERVICE_EMAIL
     },
-    reply_to,
+    reply_to: reply_to ? { email: reply_to } : null,
     subject,
     content: [{
       type: 'text/html',
