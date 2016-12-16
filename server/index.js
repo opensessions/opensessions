@@ -73,7 +73,7 @@ app.use((req, res, done) => {
 
 // Webhooks
 const hooks = require('./middlewares/hooks');
-app.use('/hooks', hooks());
+app.use('/hooks', hooks(database));
 
 // Webpack frontend (hot reloading etc for dev)
 app.use(frontend(webpackConfig));

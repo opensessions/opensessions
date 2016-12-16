@@ -14,10 +14,11 @@ export default class ListSessions extends React.Component { // eslint-disable-li
     store: PropTypes.object
   };
   static propTypes = {
+    location: PropTypes.object,
     params: PropTypes.object
   };
-  static fetchData(dispatch) {
-    return apiModel.search('session', { state: 'published' }).then(result => {
+  static fetchData(dispatch, query) {
+    return apiModel.search('session', { ...query, state: 'published' }).then(result => {
       const { instances, error } = result;
       if (error) throw error;
       dispatch({ type: 'SESSION_LIST_LOADED', payload: instances });
@@ -29,7 +30,7 @@ export default class ListSessions extends React.Component { // eslint-disable-li
   }
   componentDidMount() {
     this.setState({ isLoading: true }); // eslint-disable-line react/no-did-mount-set-state
-    this.constructor.fetchData(this.context.store.dispatch).then(() => {
+    this.constructor.fetchData(this.context.store.dispatch, this.props.location.query).then(() => {
       this.setState({ isLoading: false });
     }).catch(error => {
       this.context.notify(error, 'error');

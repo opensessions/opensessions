@@ -1,32 +1,38 @@
 const sendgrid = require('sendgrid');
 const emailCopy = require('./email-copy.json');
 
+const { SENDGRID_SECRET, SERVICE_EMAIL, SENDGRID_TEMPLATE } = process.env;
+
 const sendEmail = (subject, to, body, opts) => {
   opts = opts || {};
-  const { categories, attachments, substitutions } = opts;
-  const sg = sendgrid(process.env.SENDGRID_SECRET);
+  const { categories, attachments, substitutions, reply_to, bcc, NO_TEMPLATE } = opts;
+  const sg = sendgrid(SENDGRID_SECRET);
+  let templateId = opts.template_id || SENDGRID_TEMPLATE;
+  if (NO_TEMPLATE) templateId = null;
   const options = {
+    personalizations: [{
+      to: [{ email: to }],
+      bcc: bcc ? [{ email: bcc }] : null,
+      substitutions
+    }],
+    from: {
+      email: SERVICE_EMAIL
+    },
+    reply_to,
+    subject,
+    content: [{
+      type: 'text/html',
+      value: body
+    }],
+    attachments: attachments || null,
+    template_id: templateId
+  };
+  if (categories) options.categories = categories;
+  const request = sg.emptyRequest({
     method: 'POST',
     path: '/v3/mail/send',
-    body: {
-      personalizations: [{
-        to: [{ email: to }],
-        substitutions
-      }],
-      from: {
-        email: 'hello@opensessions.io'
-      },
-      subject,
-      content: [{
-        type: 'text/html',
-        value: body
-      }],
-      attachments: attachments || null,
-      template_id: '30f00508-77fd-4447-a609-8d8950adfeb7'
-    }
-  };
-  if (categories) options.body.categories = categories;
-  const request = sg.emptyRequest(options);
+    body: options
+  });
   return sg.API(request);
 };
 
@@ -37,4 +43,9 @@ const sendStoredEmail = (type, to, name) => {
   return sendEmail(subject, to, body, { substitutions: { '-title-': title } });
 };
 
-module.exports = { sendEmail, sendStoredEmail };
+const parseEmailRequest = req => {
+  const { email } = req;
+  return { body: req.body.split('<!--Reply-->').pop(), email };
+};
+
+module.exports = { sendEmail, sendStoredEmail, parseEmailRequest };

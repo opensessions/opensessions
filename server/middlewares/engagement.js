@@ -23,6 +23,8 @@
   logins_count: 12
 } */
 
+const { SERVICE_LOCATION, SERVICE_EMAIL } = process.env;
+
 const { ManagementClient } = require('auth0');
 const api = new ManagementClient({
   token: process.env.AUTH0_CLIENT_TOKEN,
@@ -56,7 +58,7 @@ const sendEngagementEmails = (sendEmail, models) => {
     }
     return expiration;
   };
-  const sessionHref = session => `${process.env.SERVICE_LOCATION}${session.href}`;
+  const sessionHref = session => `${SERVICE_LOCATION}${session.href}`;
   models.Session.findAll({ state: { $not: 'deleted' } }).then(allSessions => {
     api.getUsers().then(users => {
       users.forEach(user => {
@@ -111,7 +113,7 @@ const sendEngagementEmails = (sendEmail, models) => {
           outbox.push(email);
         }
       });
-      sendEmail('Email Engagement Summary', 'hello@opensessions.io', `<p>We've just generated engagement emails for the week from ${process.env.SERVICE_LOCATION}.</p>
+      sendEmail('Email Engagement Summary', SERVICE_EMAIL, `<p>We've just generated engagement emails for the week from ${SERVICE_LOCATION}.</p>
         <p>Total sent: ${outbox.length}</p>
         <ul>${outbox.map(email => `<li><b>Subject:</b> ${email[0]}<br /><b>User:</b> &lt;${email[1]}&gt;</li>`).join('')}</ul>
       `, { substitutions: { '-title-': 'Weekly engagement email summary' } });

@@ -105,6 +105,28 @@ function activityListViewReducer(state = activityListInitialState, action) {
   }
 }
 
+const profileOrganizersInitialState = fromJS(null);
+
+function profileOrganizersViewReducer(state = profileOrganizersInitialState, action) {
+  switch (action.type) {
+    case 'PROFILE_ORGANIZERS_LOADED':
+      return action.payload;
+    default:
+      return state;
+  }
+}
+
+const profileSessionsInitialState = fromJS(null);
+
+function profileSessionsViewReducer(state = profileSessionsInitialState, action) {
+  switch (action.type) {
+    case 'PROFILE_SESSIONS_LOADED':
+      return action.payload;
+    default:
+      return state;
+  }
+}
+
 /**
  * Creates the main reducer with the asynchronously loaded ones
  */
@@ -117,6 +139,8 @@ export default function createReducer(asyncReducers) {
     sessionList: sessionListViewReducer,
     organizerList: organizerListViewReducer,
     activityList: activityListViewReducer,
+    profileOrganizersList: profileOrganizersViewReducer,
+    profileSessionsList: profileSessionsViewReducer,
     ...asyncReducers,
   });
 }

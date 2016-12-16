@@ -1,6 +1,5 @@
-const email = require('../server/middlewares/email');
-
-const MULTI_ACTIVITY = true;
+const { sendEmail } = require('../server/middlewares/email');
+const { SERVICE_LOCATION, SERVICE_EMAIL, EMAILS_INBOUND_URL } = process.env;
 
 module.exports = (DataTypes) => ({
   tablePrototype: {
@@ -13,12 +12,72 @@ module.exports = (DataTypes) => ({
   tables: {
     SessionActivity: {
       _options: {
-        makeAssociations(models) {
-          models.SessionActivity.hasOne(models.Session);
-          models.SessionActivity.hasOne(models.Activity);
+        classMethods: {
+          makeAssociations(models) {
+            models.SessionActivity.hasOne(models.Session);
+            models.SessionActivity.hasOne(models.Activity);
+          }
         }
       }
     },
+    Threads: {
+      originEmail: DataTypes.STRING(256),
+      metadata: DataTypes.JSON,
+      _options: {}
+    },
+    /* Messages: {
+      from: DataTypes.STRING(256),
+      to: DataTypes.STRING(256),
+      body: DataTypes.STRING(4096),
+      metadata: DataTypes.JSON,
+      _options: {
+        classMethods: {
+          makeAssociations(models) {
+            models.Messages.hasOne(models.Messages, { as: 'previous' });
+          }
+        },
+        instanceMethods: {
+          reply(req) {
+            const email = parseEmailRequest(req);
+            return this.models.Message.create({
+              to: this.from,
+              from: this.to,
+              body: email.body,
+              previous: this
+            });
+          },
+          view(req) {
+            const { user } = req;
+            if (user) {
+              this.metadata = { ...this.metadata, seen: true };
+              return this.save();
+            }
+            return Promise.reject('Must be user');
+          },
+          getActions(models, req) {
+            const actions = [];
+            const email = parseEmailRequest(req);
+            if (email.from === this.from && email.uuid === this.uuid) {
+              actions.push('view');
+              actions.push('reply');
+            }
+            return actions;
+          }
+        },
+        hooks: {
+          afterCreate(instance) {
+            const { SERVICE_LOCATION } = process.env;
+            const { session } = this.metadata;
+            return sendEmail(`${instance.from} has submitted a question on Open Sessions`, SERVICE_EMAIL, `
+              <p>Hey, ${session.contactName}! A message has been sent on <a href="${SERVICE_LOCATION}">Open Sessions</a>.</p>
+              <p>Here's the message:</p>
+              <p style="padding:.5em;white-space:pre;background:#FFF;">From: ${this.from}</p>
+              <p style="padding:.5em;white-space:pre;background:#FFF;">${this.body}</p>
+            `, { substitutions: { '-title-': 'Organizer communication' } });
+          }
+        }
+      }
+    }, */
     Activity: {
       owner: DataTypes.STRING,
       name: {
@@ -48,10 +107,10 @@ module.exports = (DataTypes) => ({
           }
         },
         hooks: {
-          afterCreate(instance) {
-            return email.sendEmail('Someone has added a new activity on Open Sessions', 'hello+activity@opensessions.io', `
+          afterCreate(activity) {
+            return sendEmail('Someone has added a new activity on Open Sessions', SERVICE_EMAIL, `
               <p>A new activity has been created on Open Sessions.</p>
-              <p>It's called ${instance.name} and the session it is attached to may still be in draft mode.</p>
+              <p>It's called ${activity.name} and the session it is attached to may still be in draft mode.</p>
             `, { substitutions: { '-title-': 'New activity' } });
           }
         },
@@ -224,6 +283,59 @@ module.exports = (DataTypes) => ({
             }
             return actions;
           },
+          sendPublishedEmail() {
+            const session = this;
+            const nextSchedule = null;
+            const aggregators = {
+              GetActiveLondon: {
+                name: 'Get Active London',
+                img: ''
+              },
+              GetActiveEssex: {
+                name: 'Get Active Essex',
+                img: ''
+              },
+              GirlsMove: {
+                name: 'Girls Move',
+                img: ''
+              }
+            };
+            if (session.contactEmail) {
+              sendEmail('Your session has been published!', session.contactEmail, `
+                <p>Dear ${session.contactName}</p>
+                <p>Great news!</p>
+                <p>You have successfully listed your session on Open Sessions.</p>
+                <div class="session">
+                  <h1>${session.title}</h1>
+                  <table>
+                    <tr>
+                      <td><img src="${session.image}" /></td>
+                      <td><a href=""><img src="${SERVICE_LOCATION}/images/fake-map.png" /></a></td>
+                    </tr>
+                    <tr>
+                      <td>Next session: ${nextSchedule}</td>
+                      <td><a href=""><img src="${SERVICE_LOCATION}/images/fake-map.png" /></a></td>
+                    </tr>
+                  </table>
+                </div>
+                <h1>Where does my session appear?</h1>
+                <ol class="aggregators">
+                  ${session.aggregators.map(name => aggregators[name]).map(aggregator => `<li>
+                    <img src="${aggregator.img}" />
+                    <div class="info">
+                      <h2>${aggregator.name}</h2>
+                      <p>${aggregator.description}</p>
+                    </div>
+                  </li>`)}
+                  <li class="info">
+                    Your session appears on ${session.aggregators.length} activity finders.
+                  </li>
+                </ol>
+                <h1>What next?</h1>
+                <p>Lorem ipsum dolor sit amet, vocent alienum cu vis, et vix justo detracto.</p>
+              `, { substitutions: { '-title-': 'Your session was published!' } });
+            }
+          },
           delete() {
             return this.state === 'draft' ? this.destroy() : this.update({ state: 'deleted' }).then(() => Promise.resolve({ message: 'delete success' }));
           },
@@ -233,15 +345,17 @@ module.exports = (DataTypes) => ({
             data.title = data.title.match(/\(duplicated\)$/g) ? data.title : `${data.title} (duplicated)`;
             return req.Model.create(data).then(instance => ({ instance }));
           },
-          message(req) {
+          message(req, models) {
             const message = req.body;
-            if (['name', 'from', 'body'].filter(name => message[name]).length < 3) return Promise.reject('Incomplete form');
-            return email.sendEmail('Someone has submitted a question on Open Sessions', 'hello+organizer@opensessions.io', `
-              <p>Hey, ${this.contactName} &lt;${this.contactEmail}&gt;! A message has been sent on Open Sessions.</p>
-              <p>Here's the message:</p>
-              <p style="padding:.5em;white-space:pre;background:#FFF;">From: ${message.name} &lt;${message.from}&gt;</p>
-              <p style="padding:.5em;white-space:pre;background:#FFF;">${message.body}</p>
-            `, { substitutions: { '-title-': 'Organizer communication' } });
+            const session = this;
+            if (['name', 'from', 'body'].some(name => !message[name])) return Promise.reject('Incomplete form');
+            return models.Threads.create({ originEmail: message.from, metadata: { SessionUuid: session.uuid } })
+              .then(thread => sendEmail('Someone has submitted a question on Open Sessions', session.contactEmail, `
+                <p>Hey, ${session.contactName}! A message has been sent on Open Sessions.</p>
+                <p>Here's the message:</p>
+                <p style="padding:.5em;white-space:pre;background:#FFF;">From: ${message.name}</p>
+                <p style="padding:.5em;white-space:pre;background:#FFF;">${message.body}</p>
+              `, { substitutions: { '-title-': 'Organizer communication' }, reply_to: `${thread.uuid}@${EMAILS_INBOUND_URL}`, bcc: SERVICE_EMAIL }));
           },
           setActivitiesAction(req) {
             let { uuids } = req.body;
@@ -277,11 +391,7 @@ module.exports = (DataTypes) => ({
           },
           makeAssociations(models) {
             models.Session.belongsTo(models.Organizer);
-            if (MULTI_ACTIVITY) {
-              models.Session.belongsToMany(models.Activity, { through: models.SessionActivity });
-            } else {
-              models.Session.belongsTo(models.Activity);
-            }
+            models.Session.belongsToMany(models.Activity, { through: models.SessionActivity });
           }
         },
         hooks: {
@@ -308,7 +418,7 @@ module.exports = (DataTypes) => ({
               const val = instance[type];
               let prepend = socialPrepend[type];
               if (!(prepend instanceof Array)) prepend = [prepend];
-              if (prepend.map(pre => val.indexOf(pre)).indexOf(0) === -1) instance[type] = `${prepend[0]}${val}`;
+              if (!(prepend.some(pre => val.indexOf(pre) === 0))) instance[type] = `${prepend[0]}${val}`;
             });
           }
         }

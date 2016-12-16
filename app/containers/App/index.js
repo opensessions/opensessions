@@ -58,7 +58,7 @@ export default class App extends React.Component { // eslint-disable-line react/
   }
   componentDidMount() {
     if (!cookie.has('cookieconsent_dismissed')) {
-      this.notify(<span>This website uses cookies to ensure you get the best experience. <Link to="/terms">Find out more</Link></span>, 'cookie', [{ type: 'full', dispatch: () => cookie.set('cookieconsent_dismissed', 'yes'), tooltip: 'Click to close & accept' }], 'COOKIE_NOTIFICATION');
+      this.notify(<span>This site uses cookies to give you the best experience. <Link to="/terms">Find out more</Link></span>, 'cookie', [{ type: 'full', dispatch: () => cookie.set('cookieconsent_dismissed', 'yes'), tooltip: 'Click to close & accept' }], 'COOKIE_NOTIFICATION');
     }
     this.createAuth();
     const { userAgent } = navigator;

@@ -10,23 +10,28 @@ import { apiModel } from '../../utils/api';
 
 export default class MyProfile extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
+    store: PropTypes.object,
     user: PropTypes.object,
-    router: PropTypes.object,
     notify: PropTypes.func
-  }
-  constructor(props) {
-    super(props);
-    this.state = {
-      organizers: [],
-      sessions: []
-    };
+  };
+  static fetchData = (dispatch, user) => apiModel.search('organizer', { owner: user.user_id }).then(result => {
+    dispatch({ type: 'PROFILE_ORGANIZERS_LOADED', payload: result.instances });
+    return apiModel.search('session', { owner: user.user_id, OrganizerUuid: 'null' }).then(sessionResult => {
+      const { instances, error } = sessionResult;
+      if (error) throw Error(error);
+      dispatch({ type: 'PROFILE_SESSIONS_LOADED', payload: instances });
+    });
+  })
+  constructor() {
+    super();
+    this.state = {};
   }
   componentDidMount() {
     if (this.context.user) {
-      this.fetchData();
+      this.fetchDataClient();
     } else {
       setTimeout(() => {
-        this.fetchData();
+        this.fetchDataClient();
       }, 1000);
     }
   }
@@ -34,28 +39,31 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
     const { value } = event.target;
     this.setState({ selectedOrganizer: value });
   }
-  getOrganizer() {
-    const { organizers, selectedOrganizer } = this.state;
-    return organizers.filter(item => item.uuid === selectedOrganizer)[0];
+  getSessions() {
+    return this.context.store.getState().get('profileSessionsList') || [];
   }
-  fetchData = () => {
-    const { user } = this.context;
+  getOrganizers() {
+    return this.context.store.getState().get('profileOrganizersList') || [];
+  }
+  getOrganizer() {
+    const { selectedOrganizer } = this.state;
+    const organizers = this.getOrganizers();
+    return (selectedOrganizer ? organizers.filter(item => item.uuid === selectedOrganizer) : organizers)[0];
+  }
+  fetchDataClient() {
     this.setState({ isLoading: true });
-    return apiModel.search('organizer', { owner: user.user_id }).then(result => {
-      const organizers = result.instances;
-      const selectedOrganizer = organizers.length ? organizers[0].uuid : 0;
-      this.setState({ selectedOrganizer, organizers, isLoading: true });
-      return apiModel.search('session', { owner: user.user_id, OrganizerUuid: 'null' }).then(sessionResult => {
-        const { instances, error } = sessionResult;
-        if (error) this.context.notify(error, 'error');
-        this.setState({ sessions: instances, isLoading: false });
-      });
+    this.constructor.fetchData(this.context.store.dispatch, this.context.user).then(() => {
+      this.setState({ isLoading: false });
+    }).catch(error => {
+      this.context.notify(error, 'error');
     });
   }
   renderOrganizers() {
-    const { sessions, organizers, isLoading } = this.state;
-    if (isLoading) return <LoadingMessage message="Loading organisers" ellipsis />;
+    const { isLoading } = this.state;
+    const sessions = this.getSessions();
+    const organizers = this.getOrganizers();
     if (organizers && organizers.length) return <OrganizerView organizer={this.getOrganizer()} unassignedSessions={sessions} organizerList={organizers} onOrganizerChange={this.onOrganizerChange} />;
+    if (isLoading) return <LoadingMessage message="Loading organisers" ellipsis />;
     return <SessionList sessions={sessions} />;
   }
   render() {

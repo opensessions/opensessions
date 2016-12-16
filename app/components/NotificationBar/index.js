@@ -37,7 +37,7 @@ export default class NotificationBar extends React.Component { // eslint-disable
     }
   }
   getNotifications() {
-    return this.context.store.getState().get(this.props.storeName || 'notifications');
+    return this.context.store.getState().get(this.props.storeName || 'notifications') || [];
   }
   getItems() {
     let items = [];
@@ -69,7 +69,7 @@ export default class NotificationBar extends React.Component { // eslint-disable
   }
   renderNotification(message) {
     const { id, status, text, actions } = message;
-    const fullActions = actions.filter(action => action.type === 'full');
+    const fullActions = actions ? actions.filter(action => action.type === 'full') : [];
     const clickFull = () => {
       fullActions.forEach(action => action.dispatch());
       this.dismiss(id);
