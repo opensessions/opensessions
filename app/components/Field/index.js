@@ -23,7 +23,6 @@ export default class Field extends React.Component { // eslint-disable-line reac
     };
   }
   onFocusChange = event => {
-    console.log('onFocusChange', this.props.index);
     this.context.store.dispatch({ type: 'FORM_FOCUS', payload: this.props.index });
     this.setState({ hasFocus: event.type === 'focus' });
   }

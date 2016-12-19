@@ -89,7 +89,7 @@ const sendEngagementEmails = (sendEmail, models) => {
             email = ['Your sessions have just expired', user.email, `<p>Dear ${user.given_name || user.name},</p>
             <p>Thanks for being one of the first providers to use the Open Sessions uploader. However, we’ve noticed you’ve been a little inactive lately.</p>
             <p>Login <a href="https://app.opensessions.io/">here</a> and upload more sessions on Open Sessions to ensure they are are visible to thousands of people on Get Active every month.</p>
-            <p>Happy uploading!</p>`, { substitutions: { '-title-': 'Just checking in...' }, categories: ['engagement', 'engagement-expiring'] }];
+            <p>Happy uploading!</p>`, { substitutions: { '-title-': 'Just checking in...', '-titleClass-': 'large' }, categories: ['engagement', 'engagement-expiring'] }];
           } else if (analysis.totals.expire.future) {
             email = ['Good news from Open Sessions', user.email, `<p>Dear ${user.given_name || user.name},</p>
             <p>Thanks for being one of the first providers to use the Open Sessions uploader. We wanted to let you know that your session information is now <b>live</b> on activity finders like Get Active!</p>
@@ -101,7 +101,7 @@ const sendEngagementEmails = (sendEmail, models) => {
               }
               return '';
             }).join('')}</ul>
-            <p>Happy uploading!</p>`, { substitutions: { '-title-': 'All systems go...' }, categories: ['engagement', 'engagement-live'] }];
+            <p>Happy uploading!</p>`, { substitutions: { '-title-': 'All systems go...', '-titleClass-': 'large' }, categories: ['engagement', 'engagement-live'] }];
           }
         } else if (analysis.sessions.drafts.length) {
           // No sessions published yet

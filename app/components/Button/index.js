@@ -24,7 +24,7 @@ export default class Button extends React.PureComponent {
     }
   }
   render() {
-    return (<a className={[styles.button, this.props.className, styles[this.props.style]].join(' ')} onKeyUp={event => event.keyCode === 13 && this.onClick()} onClick={this.onClick} tabIndex={0} href={this.props.to}>
+    return (<a className={[styles.button, this.props.className, styles[this.props.style]].join(' ')} onKeyUp={event => event.keyCode === 13 && this.onClick(event)} onClick={this.onClick} tabIndex={0} href={this.props.to}>
       {this.props.children}
     </a>);
   }

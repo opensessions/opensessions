@@ -1,5 +1,6 @@
 const { sendEmail } = require('../server/middlewares/email');
 const { SERVICE_LOCATION, SERVICE_EMAIL, EMAILS_INBOUND_URL } = process.env;
+const { parseSchedule, nextSchedule } = require('../utils/calendar');
 
 module.exports = (DataTypes) => ({
   tablePrototype: {
@@ -104,7 +105,7 @@ module.exports = (DataTypes) => ({
             return sendEmail('Someone has added a new activity on Open Sessions', SERVICE_EMAIL, `
               <p>A new activity has been created on Open Sessions.</p>
               <p>It's called ${activity.name} and the session it is attached to may still be in draft mode.</p>
-            `, { substitutions: { '-title-': 'New activity' } });
+            `, { substitutions: { '-title-': 'New activity', '-titleClass-': 'large' } });
           }
         },
         classMethods: {
@@ -329,7 +330,7 @@ module.exports = (DataTypes) => ({
                 </ol>
                 <h1>What next?</h1>
                 <p>Lorem ipsum dolor sit amet, vocent alienum cu vis, et vix justo detracto.</p>
-              `, { substitutions: { '-title-': 'Your session was published!' } });
+              `, { substitutions: { '-title-': 'Your session was published!', '-titleClass-': 'large' } });
             }
           },
           delete() {
@@ -345,14 +346,30 @@ module.exports = (DataTypes) => ({
             const message = req.body;
             const session = this;
             if (['name', 'from', 'body'].some(name => !message[name])) return Promise.reject('Incomplete form');
+            const nextDate = parseSchedule(nextSchedule(session.schedule));
             return models.Threads.create({ originEmail: message.from, metadata: { SessionUuid: session.uuid } })
-              .then(thread => sendEmail('Someone has submitted a question on Open Sessions', session.contactEmail, `
-                <p>Hey, ${session.contactName}! A message has been sent on Open Sessions.</p>
-                <p>Here's the message:</p>
-                <p style="padding:.5em;white-space:pre;background:#FFF;">From: ${message.name}</p>
-                <p style="padding:.5em;white-space:pre;background:#FFF;">${message.body}</p>
-                <p style="padding:.5em;white-space:pre;background:#FFF;">Session: <a href="${session.absoluteURL}">${session.title}</a></p>
-              `, { substitutions: { '-title-': 'Organizer communication' }, replyTo: `${thread.uuid}@${EMAILS_INBOUND_URL}`, bcc: SERVICE_EMAIL }));
+              .then(thread => sendEmail(`Open Sessions - New question from ${message.name}`, session.contactEmail, `
+                <div class="message">
+                  <div class="msgBody">${message.body}</div>
+                  <div class="from">${message.name}</div>
+                </div>
+                <br />
+                <div class="session">
+                  <img src="${session.image}" />
+                  <h1><a href="${session.absoluteURL}">${session.title}</a></h1>
+                  <table><tr>
+                    <td>
+                      <img src="${SERVICE_LOCATION}/images/map-pin.svg" />
+                      <p>${session.location.replace(/,/, '<br>')}</p>
+                    </td>
+                    <td>
+                      <img src="${SERVICE_LOCATION}/images/calendar.svg" />
+                      <p>Next occuring: <br />${nextDate.date} <b>at ${nextDate.time}</b></p>
+                    </td>
+                  </tr></table>
+                </div>
+                <p class="session-link"><a href="${session.absoluteURL}">View or edit your session on Open Sessions</a></p>
+              `, { substitutions: { '-title-': `Reply to ${message.name} by replying to this email` }, replyTo: `${thread.uuid}@${EMAILS_INBOUND_URL}`, bcc: SERVICE_EMAIL }));
           },
           setActivitiesAction(req) {
             let { uuids } = req.body;
