@@ -130,7 +130,7 @@ function profileSessionsViewReducer(state = profileSessionsInitialState, action)
 const formFocusIndexInitialState = fromJS(0);
 
 function formFocusIndexReducer(state = formFocusIndexInitialState, action) {
-  switch(action.type) {
+  switch (action.type) {
     case 'FORM_FOCUS':
       return action.payload;
     default:

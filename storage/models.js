@@ -282,7 +282,7 @@ module.exports = (DataTypes) => ({
           },
           sendPublishedEmail() {
             const session = this;
-            const nextSchedule = null;
+            const nextSlot = parseSchedule(nextSchedule(session.schedule));
             const aggregators = {
               GetActiveLondon: {
                 name: 'Get Active London',
@@ -310,7 +310,7 @@ module.exports = (DataTypes) => ({
                       <td><a href=""><img src="${SERVICE_LOCATION}/images/fake-map.png" /></a></td>
                     </tr>
                     <tr>
-                      <td>Next session: ${nextSchedule}</td>
+                      <td>Next session: ${nextSlot.date} at ${nextSlot.time}</td>
                       <td><a href=""><img src="${SERVICE_LOCATION}/images/fake-map.png" /></a></td>
                     </tr>
                   </table>
@@ -359,11 +359,11 @@ module.exports = (DataTypes) => ({
                   <h1><a href="${session.absoluteURL}">${session.title}</a></h1>
                   <table><tr>
                     <td>
-                      <img src="${SERVICE_LOCATION}/images/map-pin.svg" />
+                      <img src="${SERVICE_LOCATION}/images/map-pin.png" />
                       <p>${session.location.replace(/,/, '<br>')}</p>
                     </td>
                     <td>
-                      <img src="${SERVICE_LOCATION}/images/calendar.svg" />
+                      <img src="${SERVICE_LOCATION}/images/calendar.png" />
                       <p>Next occuring: <br />${nextDate.date} <b>at ${nextDate.time}</b></p>
                     </td>
                   </tr></table>
