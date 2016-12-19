@@ -8,7 +8,7 @@ const sendEmail = (subject, to, body, opts) => {
   const { categories, attachments, substitutions, replyTo, bcc, NO_TEMPLATE } = opts;
   const sg = sendgrid(SENDGRID_SECRET);
   let templateId = opts.template_id || SENDGRID_TEMPLATE;
-  if (NO_TEMPLATE) templateId = null;
+  if (NO_TEMPLATE) templateId = undefined;
   console.log(`sendEmail(${subject}, ${to}, body, ${JSON.stringify(opts)})`);
   const options = {
     personalizations: [{
@@ -27,8 +27,8 @@ const sendEmail = (subject, to, body, opts) => {
       value: body
     }],
     attachments: attachments || null,
-    template_id: templateId
   };
+  if (templateId) options.template_id = templateId;
   if (categories) options.categories = categories;
   const request = sg.emptyRequest({
     method: 'POST',

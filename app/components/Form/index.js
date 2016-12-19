@@ -19,6 +19,9 @@ export default class Form extends React.Component { // eslint-disable-line react
     fieldsets: PropTypes.array,
     status: PropTypes.string,
     saveState: PropTypes.string
+  };
+  static contextTypes = {
+    store: PropTypes.object
   }
   constructor(props) {
     super(props);
@@ -58,15 +61,19 @@ export default class Form extends React.Component { // eslint-disable-line react
   getFieldsets() {
     return this.props.children instanceof Array ? this.props.children : [this.props.children];
   }
+  getFocusIndex = () => {
+    const index = this.context.store.getState().get('formFocusIndex');
+    return index || 0;
+  }
   handlePublish = event => {
     const { type, keyCode } = event;
     if (type === 'click' || (type === 'keyup' && keyCode === 13)) this.props.onPublish();
   }
   refocus = () => {
     try {
-      const firstFields = Array.filter(this.refs.form.querySelectorAll('fieldset'), e => e.parentNode.className.search(styles.hiddenTab) === -1)[0].getElementsByClassName(fieldStyles.field);
+      const fields = Array.filter(this.refs.form.querySelectorAll('fieldset'), e => e.parentNode.className.search(styles.hiddenTab) === -1)[0].getElementsByClassName(fieldStyles.field);
       const { activeField } = this.props;
-      const fieldToFocus = activeField ? Array.find(firstFields, field => field.getElementsByTagName('label')[0].textContent.match(new RegExp(activeField, 'i'))) : firstFields[0];
+      const fieldToFocus = activeField ? Array.find(fields, field => field.getElementsByTagName('label')[0].textContent.match(new RegExp(activeField, 'i'))) : fields[Math.min(this.getFocusIndex(), fields.length - 1)];
       requestAnimationFrame(() => {
         fieldToFocus.querySelectorAll('[tabIndex], input, textarea, select')[0].focus();
       });

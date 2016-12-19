@@ -10,7 +10,11 @@ export default class Field extends React.Component { // eslint-disable-line reac
     tipTitle: PropTypes.string,
     example: PropTypes.string,
     fullSize: PropTypes.bool,
-    children: PropTypes.node
+    children: PropTypes.node,
+    index: PropTypes.number
+  };
+  static contextTypes = {
+    store: PropTypes.object
   }
   constructor(props) {
     super(props);
@@ -18,7 +22,11 @@ export default class Field extends React.Component { // eslint-disable-line reac
       hasFocus: false
     };
   }
-  onFocusChange = event => this.setState({ hasFocus: event.type === 'focus' })
+  onFocusChange = event => {
+    console.log('onFocusChange', this.props.index);
+    this.context.store.dispatch({ type: 'FORM_FOCUS', payload: this.props.index });
+    this.setState({ hasFocus: event.type === 'focus' });
+  }
   renderTooltip() {
     const { label, tipType, tip, tipTitle, example } = this.props;
     return (<div className={[styles.tip, tipType ? styles[tipType] : styles.tipFloat].join(' ')}>

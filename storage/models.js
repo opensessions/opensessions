@@ -208,6 +208,9 @@ module.exports = (DataTypes) => ({
           href() {
             return `/${this.Model.name.toLowerCase()}/${this.uuid}`;
           },
+          absoluteURL() {
+            return `${SERVICE_LOCATION}/${this.Model.name.toLowerCase()}/${this.uuid}`;
+          },
           region() {
             // figure out which Get Active location
             const { locationData } = this;
@@ -348,6 +351,7 @@ module.exports = (DataTypes) => ({
                 <p>Here's the message:</p>
                 <p style="padding:.5em;white-space:pre;background:#FFF;">From: ${message.name}</p>
                 <p style="padding:.5em;white-space:pre;background:#FFF;">${message.body}</p>
+                <p style="padding:.5em;white-space:pre;background:#FFF;">Session: <a href="${session.absoluteURL}">${session.title}</a></p>
               `, { substitutions: { '-title-': 'Organizer communication' }, replyTo: `${thread.uuid}@${EMAILS_INBOUND_URL}`, bcc: SERVICE_EMAIL }));
           },
           setActivitiesAction(req) {

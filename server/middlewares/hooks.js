@@ -2,6 +2,9 @@ const express = require('express');
 const { sendEmail } = require('./email');
 const jwt = require('express-jwt');
 
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
+
 const requireLogin = jwt({
   secret: new Buffer(process.env.AUTH0_CLIENT_SECRET, 'base64'),
   audience: process.env.AUTH0_CLIENT_ID,
@@ -9,17 +12,24 @@ const requireLogin = jwt({
 
 const emailsRoute = (models) => {
   const route = express();
+  const { SERVICE_EMAIL, EMAILS_INBOUND_URL } = process.env;
 
-  route.post('/inbound', (req, res) => {
-    const { payload } = req;
-    const [uuid] = payload.to.split('@');
-    const { html, subject } = payload;
+  route.post('/inbound', upload.none(), (req, res) => {
+    const { body } = req;
+    const [uuid] = body.to.split('@');
+    const { html, subject } = body;
+    const bodyFrom = body.from;
+    console.log(':: receiving inbound email ::', uuid);
     models.Threads.findOne({ where: { uuid } }).then(thread => {
       const { originEmail, metadata } = thread;
-      models.Session.findOne({ where: { uuid: metadata.SessionUuid } }).then(session => {
+      return models.Session.findOne({ where: { uuid: metadata.SessionUuid } }).then(session => {
         const { contactEmail } = session;
-        sendEmail(payload.from !== originEmail ? originEmail : contactEmail, subject, html, { NO_TEMPLATE: true }).then(() => res.send('OK'));
+        console.log(':: :: retrieved Thread + Session ::', originEmail, metadata, contactEmail, session.title);
+        return sendEmail(subject, bodyFrom.indexOf(originEmail) === -1 ? originEmail : contactEmail, html, { bcc: SERVICE_EMAIL, replyTo: `${thread.uuid}@${EMAILS_INBOUND_URL}`, NO_TEMPLATE: true }).then(() => res.send('OK'));
       });
+    }).catch(error => {
+      console.error(error);
+      res.status(400).send('REQUEST FAILED');
     });
   });
 

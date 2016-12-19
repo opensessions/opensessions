@@ -127,6 +127,17 @@ function profileSessionsViewReducer(state = profileSessionsInitialState, action)
   }
 }
 
+const formFocusIndexInitialState = fromJS(0);
+
+function formFocusIndexReducer(state = formFocusIndexInitialState, action) {
+  switch(action.type) {
+    case 'FORM_FOCUS':
+      return action.payload;
+    default:
+      return state;
+  }
+}
+
 /**
  * Creates the main reducer with the asynchronously loaded ones
  */
@@ -141,6 +152,7 @@ export default function createReducer(asyncReducers) {
     activityList: activityListViewReducer,
     profileOrganizersList: profileOrganizersViewReducer,
     profileSessionsList: profileSessionsViewReducer,
+    formFocusIndex: formFocusIndexReducer,
     ...asyncReducers,
   });
 }
