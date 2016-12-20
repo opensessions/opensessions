@@ -217,20 +217,20 @@ module.exports = (DataTypes) => ({
             const info = {
               GetActiveLondon: {
                 name: 'Get Active London',
-                img: 'https://beta.getactivelondon.com/images/logo.png',
+                img: [SERVICE_LOCATION, 'images/aggregators/getactivelondon.png'].join('/'),
                 description: 'The Get Active physical activity finder for the London area',
                 href: 'https://beta.getactivelondon.com/results/?...'
               },
               GetActiveEssex: {
                 name: 'Get Active Essex',
-                img: '',
+                img: [SERVICE_LOCATION, 'images/aggregators/getactiveessex.png'].join('/'),
                 description: 'The Get Active physical activity finder for the Essex area',
                 href: 'https://getactiveessex.com/results/?...'
               },
               GirlsMove: {
                 name: 'Girls Move',
-                img: '',
-                description: 'The girls only physical activity finder for the Essex area',
+                img: [SERVICE_LOCATION, 'images/aggregators/girlsmovelondon.png'].join('/'),
+                description: 'The girls only physical activity finder for London',
                 href: 'https://girlsmove.com/results/?...'
               }
             };
@@ -312,7 +312,7 @@ module.exports = (DataTypes) => ({
             const { contactEmail, pricing, schedule } = session;
             const nextSlot = parseSchedule(nextSchedule(schedule));
             if (contactEmail) {
-              const prices = pricing && pricing.prices ? pricing.prices.map(band => band.price).sort((a, b) => a > b ? 1 : -1) : [0];
+              const prices = pricing && pricing.prices ? pricing.prices.map(band => parseFloat(band.price)).sort((a, b) => (a > b ? 1 : -1)) : [0];
               const { lat, lng } = session.locationData;
               sendEmail(subject, session.contactEmail, `
                 <p>Dear ${session.contactName || 'Open Sessions user'},</p>
@@ -322,20 +322,20 @@ module.exports = (DataTypes) => ({
                   <h1>${session.title}</h1>
                   <table>
                     <tr>
-                      <td>${session.image ? `<img src="${session.image}" />` : '(no image)'}</td>
-                      <td><img src="https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lng}&zoom=13&size=420x280&key=${GOOGLE_MAPS_API_STATICIMAGES_KEY}" /></td>
+                      <td>${session.image ? `<img src="${session.image}" />` : `<img src="${SERVICE_LOCATION}/images/placeholder.png" />`}</td>
+                      <td><img src="https://maps.googleapis.com/maps/api/staticmap?center=${[lat, lng].join(',')}&zoom=12&size=360x240&key=${GOOGLE_MAPS_API_STATICIMAGES_KEY}" /></td>
                     </tr>
                     <tr>
-                      <td>
+                      <td style="border-right:1px solid #EEE;">
                         <img src="${SERVICE_LOCATION}/images/calendar.png" />
                         <p class="label">Next session:</p>
                         <p>${nextSlot.date} <b>at ${nextSlot.time}</b></p>
                       </td>
-                      <td style="border-left:2px solid #EEE;">
+                      <td style="border-left:1px solid #EEE;">
                         <p class="label">Address:</p>
                         <p>${session.location.split(',').join('<br />')}</p>
                         <p class="label">Price:</p>
-                        <p>from <b>${prices[0] ? `£${prices[0]}` : '<span class="is-free">FREE</span>'}</b></p>
+                        <p>from <b>${prices[0] ? `£${prices[0].toFixed(2)}` : '<span class="is-free">FREE</span>'}</b></p>
                       </td>
                     </tr>
                   </table>
@@ -343,16 +343,16 @@ module.exports = (DataTypes) => ({
                 </div>
                 <h1>Where does my session appear?</h1>
                 <ol class="aggregators">
-                  ${session.aggregators.length ? session.aggregators.map(aggregator => `<li>
+                  ${session.aggregators.map(aggregator => `<li>
                     <img src="${aggregator.img}" />
                     <div class="info">
                       <h2>${aggregator.name}</h2>
                       <p>${aggregator.description}</p>
                       <a href="${aggregator.href}">View your session on ${aggregator.name}</a>
                     </div>
-                  </li>`).join('') : '<li>We couldn\'t work out where your session appears yet, but ask us for more information</li>'}
+                  </li>`).join('')}
                   <li class="meta-info">
-                    Your session appears on ${session.aggregators.length} activity finders
+                    ${session.aggregators.length ? `Your session appears on ${session.aggregators.length} activity finders` : 'We couldn\'t work out where your session appears yet'}
                   </li>
                 </ol>
                 <h1>What next?</h1>
