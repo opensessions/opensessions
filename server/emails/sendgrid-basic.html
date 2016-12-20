@@ -11,20 +11,31 @@
 	section.footer {text-align:center;padding: 1em; border-top: 1px solid #AAA;}
 	section.footer a {color: inherit;}
 	div.body {margin: 1em auto;padding: 2em 1em;}
-	div.body h2 {font-size: 1em;}
+	div.body h1 {font-size:1.2em;margin:1em auto;}
+	div.body h2 {font-size:1em;}
 	a.button {font-family: 'Belgrano', serif;padding: .5em; background: #1b91cd; text-align: center;margin: .5em 1em; display: block; width: auto; color: #fff; text-decoration: none; font-size: 1.5em; }
-	.session {text-align:center;padding:1em;background:#FFF;}
+	.session {text-align:center;padding:1em;background:#FFF;margin:1em auto;}
+	.session.compact {padding:0;}
 	.session img {width:20em;max-width:100%;}
 	.session h1 {font-size:1.4em;}
 	.session a {color:inherit;text-decoration:none;}
 	.session table {width:100%;}
 	.session table td {width:50%;}
 	.session table img {width:auto;}
+	.session table p {margin:.25em auto;}
+	.session p.label {color:#999;}
+	.session .view-link {display:block;padding:1em;background:#EEE;text-decoration:underline;text-align:center;}
 	.message {background:#FFF;}
 	.message .msgBody {font-size:1.2em;padding:1em;white-space:pre;}
 	.message .from {font-weight:bold;padding:1em;background:#EEE;}
 	.session-link {text-align:center;color:#666;}
 	.session-link a {color:#555;}
+	.signoff.hide {display:none;}
+	ol.aggregators {background:#FFF;padding:0;margin:1em auto;text-align:center;}
+	ol.aggregators li {border-bottom:1px solid #DDD;padding:.5em;list-style:none;margin:0;}
+	ol.aggregators li > img {border-radius:50%;border:1px solid #CCC;padding:.5em;}
+	ol.aggregators li .info {display:inline-block;width:80%;vertical-align:middle;text-align:left;}
+	ol.aggregators li .info h2 {font-size:1.2em;font-weight:bold;}
 	</style>
 </head>
 <body>
@@ -40,11 +51,13 @@
 <div class="body">
 <div>&lt;%body%&gt;</div>
 
-<p>Best,<br />
-<strong>The Open Sessions team</strong></p>
+<div class="signoff -signoffClass-">
+	<p>Best,<br />
+	<strong>The Open Sessions team</strong></p>
+</div>
 </div>
 
-<section class="footer"><a href="https://app.opensessions.io/">Go to Open Sessions</a> | <a href="https://app.opensessions.io/terms">Terms</a></section>
+<section class="footer"><a href="https://app.opensessions.io/">Go to Open Sessions</a> | <a href="https://app.opensessions.io/terms">Terms</a> | <a href="mailto:-contactUs-">Contact us</a></section>
 </div>
 </body>
 </html>

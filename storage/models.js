@@ -212,25 +212,30 @@ module.exports = (DataTypes) => ({
           absoluteURL() {
             return `${SERVICE_LOCATION}/${this.Model.name.toLowerCase()}/${this.uuid}`;
           },
-          region() {
+          aggregators() {
             // figure out which Get Active location
-            const { locationData } = this;
+            let aggregators = [];
+            const { locationData, genderRestriction } = this;
             const regions = [
-              { name: 'London', lng: .1278, lat: 51.5074, radius: .5640 },
-              { name: 'Essex', lng: .4691, lat: 51.7343, radius: .5 }
+              { name: 'GetActiveLondon', lng: .1278, lat: 51.5074, radius: .5640 },
+              { name: 'GetActiveEssex', lng: .4691, lat: 51.7343, radius: .5 }
             ];
-            let regionMatches;
             if (locationData) {
               const { lat, lng } = locationData;
               if (lat && lng) {
-                regionMatches = regions.map(region => {
+                const matches = regions.map(region => {
                   const distance = Math.sqrt(Math.pow(lat - region.lat, 2) + Math.pow(lng - region.lng, 2));
                   return { match: region.radius / distance, name: region.name };
-                }).sort((a, b) => b.match - a.match);
-                return regionMatches.filter(region => region.match >= .75).map(region => region.name);
+                }).sort((a, b) => b.match - a.match).filter(region => region.match >= .75);
+                aggregators = aggregators.concat(matches.map(region => region.name));
               }
             }
-            return undefined;
+            if (genderRestriction) {
+              if (aggregators.indexOf('GetActiveLondon') !== -1 && genderRestriction === 'female') {
+                aggregators.push('GirlsMove');
+              }
+            }
+            return aggregators;
           }
         },
         instanceMethods: {
@@ -286,23 +291,26 @@ module.exports = (DataTypes) => ({
             const aggregators = {
               GetActiveLondon: {
                 name: 'Get Active London',
-                img: ''
+                img: '',
+                description: 'The Get Active physical activity finder for the London area'
               },
               GetActiveEssex: {
                 name: 'Get Active Essex',
-                img: ''
+                img: '',
+                description: 'The Get Active physical activity finder for the Essex area'
               },
               GirlsMove: {
                 name: 'Girls Move',
-                img: ''
+                img: '',
+                description: 'The girls only physical activity finder for the Essex area'
               }
             };
             if (session.contactEmail) {
               sendEmail('Your session has been published!', session.contactEmail, `
-                <p>Dear ${session.contactName}</p>
+                <p>Dear ${session.contactName || 'Open Sessions user'},</p>
                 <p>Great news!</p>
                 <p>You have successfully listed your session on Open Sessions.</p>
-                <div class="session">
+                <div class="session compact">
                   <h1>${session.title}</h1>
                   <table>
                     <tr>
@@ -310,10 +318,17 @@ module.exports = (DataTypes) => ({
                       <td><a href=""><img src="${SERVICE_LOCATION}/images/fake-map.png" /></a></td>
                     </tr>
                     <tr>
-                      <td>Next session: ${nextSlot.date} at ${nextSlot.time}</td>
-                      <td><a href=""><img src="${SERVICE_LOCATION}/images/fake-map.png" /></a></td>
+                      <td>
+                        <p class="label">Next session:</p>
+                        <p>${nextSlot.date} <b>at ${nextSlot.time}</b></p>
+                      </td>
+                      <td>
+                        <p class="label">Address:</p>
+                        <p>${session.location.split(',').join('<br />')}</p>
+                      </td>
                     </tr>
                   </table>
+                  <a class="view-link" href="${session.absoluteURL}">View or edit your session on Open Sessions</a>
                 </div>
                 <h1>Where does my session appear?</h1>
                 <ol class="aggregators">
@@ -322,6 +337,7 @@ module.exports = (DataTypes) => ({
                     <div class="info">
                       <h2>${aggregator.name}</h2>
                       <p>${aggregator.description}</p>
+                      <a>View your session on ${aggregator.name}</a>
                     </div>
                   </li>`)}
                   <li class="info">
@@ -369,7 +385,7 @@ module.exports = (DataTypes) => ({
                   </tr></table>
                 </div>
                 <p class="session-link"><a href="${session.absoluteURL}">View or edit your session on Open Sessions</a></p>
-              `, { substitutions: { '-title-': `Reply to ${message.name} by replying to this email` }, replyTo: `${thread.uuid}@${EMAILS_INBOUND_URL}`, bcc: SERVICE_EMAIL }));
+              `, { substitutions: { '-title-': `Reply to ${message.name} by replying to this email`, '-signoffClass-': 'hide' }, replyTo: `${thread.uuid}@${EMAILS_INBOUND_URL}`, bcc: SERVICE_EMAIL }));
           },
           setActivitiesAction(req) {
             let { uuids } = req.body;
@@ -416,6 +432,9 @@ module.exports = (DataTypes) => ({
                   instance.canPublish();
                 } catch (err) {
                   throw err;
+                }
+                if (instance.previous('state') === 'draft' && instance.state === 'published') {
+                  instance.sendPublishedEmail();
                 }
               } else if (instance.state === 'draft') {
                 if (instance.previous('state') === 'published') instance.state = 'unpublished';
