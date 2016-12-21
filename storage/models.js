@@ -336,7 +336,7 @@ module.exports = (DataTypes) => ({
                 <div class="session compact">
                   <h1>${session.title}</h1>
                   <table>
-                    <tr>
+                    <tr class="images">
                       <td>${session.image ? `<img src="${session.image}" />` : `<img src="${SERVICE_LOCATION}/images/placeholder.png" />`}</td>
                       <td><img src="https://maps.googleapis.com/maps/api/staticmap?center=${[lat, lng].join(',')}&zoom=12&size=360x240&key=${GOOGLE_MAPS_API_STATICIMAGES_KEY}" /></td>
                     </tr>
