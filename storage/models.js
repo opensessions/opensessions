@@ -2,21 +2,19 @@ const { sendEmail } = require('../server/middlewares/email');
 const { SERVICE_LOCATION, SERVICE_EMAIL, EMAILS_INBOUND_URL, GOOGLE_MAPS_API_STATICIMAGES_KEY } = process.env;
 const { parseSchedule, nextSchedule } = require('../utils/calendar');
 
+const deg2rad = deg => deg * (Math.PI / 180);
+
 function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
-  const R = 6371; // Radius of the earth in km
-  const dLat = deg2rad(lat2-lat1);  // deg2rad below
-  const dLon = deg2rad(lon2-lon1); 
-  const a = 
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
-    Math.sin(dLon / 2) * Math.sin(dLon / 2)
-    ;
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-  const d = R * c; // Distance in km
+  const EARTH_RADIUS_KM = 6371; // Radius of the earth in km
+  const dLat = deg2rad(lat2 - lat1); // deg2rad below
+  const dLon = deg2rad(lon2 - lon1);
+  const a =
+    (Math.sin(dLat / 2) * Math.sin(dLat / 2)) +
+    (Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2));
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const d = EARTH_RADIUS_KM * c; // Distance in km
   return d;
 }
-
-const deg2rad = deg => deg * (Math.PI / 180);
 
 module.exports = (DataTypes) => ({
   tablePrototype: {
@@ -230,6 +228,7 @@ module.exports = (DataTypes) => ({
           },
           aggregators() {
             // figure out which Get Active location
+            const { locationData, location, genderRestriction } = this;
             const getActivePath = `/results/list?activity=&location=${location}&lat=${locationData ? locationData.lat : ''}&lng=${locationData ? locationData.lng : ''}&radius=4&sortBy=distance`;
             const info = {
               GetActiveLondon: {
@@ -252,7 +251,6 @@ module.exports = (DataTypes) => ({
               }
             };
             let aggregators = [];
-            const { locationData, genderRestriction } = this;
             const regions = [
               { name: 'GetActiveLondon', lng: .1278, lat: 51.5074, radius: 35.4 },
               { name: 'GetActiveEssex', lng: .4691, lat: 51.7343, radius: 45 }
