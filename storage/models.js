@@ -5,7 +5,7 @@ const { parseSchedule, nextSchedule } = require('../utils/calendar');
 const deg2rad = deg => deg * (Math.PI / 180);
 
 function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
-  const EARTH_RADIUS_KM = 6371; // Radius of the earth in km
+  const EARTH_RADIUS_KM = 6371;
   const dLat = deg2rad(lat2 - lat1); // deg2rad below
   const dLon = deg2rad(lon2 - lon1);
   const a =
@@ -252,7 +252,7 @@ module.exports = (DataTypes) => ({
             };
             let aggregators = [];
             const regions = [
-              { name: 'GetActiveLondon', lng: .1278, lat: 51.5074, radius: 35.4 },
+              { name: 'GetActiveLondon', lng: -.1278, lat: 51.5074, radius: 35.4 },
               { name: 'GetActiveEssex', lng: .4691, lat: 51.7343, radius: 45 }
             ];
             if (locationData) {
