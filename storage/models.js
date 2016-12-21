@@ -261,7 +261,7 @@ module.exports = (DataTypes) => ({
                 const matches = regions.map(region => {
                   const distance = getDistanceFromLatLonInKm(lat, lng, region.lat, region.lng);
                   return { match: region.radius / distance, name: region.name };
-                }).sort((a, b) => b.match - a.match).filter(region => region.match >= .75);
+                }).sort((a, b) => b.match - a.match).filter(region => region.match >= .9);
                 aggregators = aggregators.concat(matches.map(region => region.name));
               }
             }
