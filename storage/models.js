@@ -253,7 +253,7 @@ module.exports = (DataTypes) => ({
             let aggregators = [];
             const regions = [
               { name: 'GetActiveLondon', lng: -.1278, lat: 51.5074, radius: 35.4 },
-              { name: 'GetActiveEssex', lng: .4691, lat: 51.7343, radius: 45 }
+              { name: 'GetActiveEssex', lng: .4691, lat: 51.7343, radius: 38 }
             ];
             if (locationData) {
               const { lat, lng } = locationData;
@@ -325,7 +325,8 @@ module.exports = (DataTypes) => ({
           sendPublishedEmail(subject) {
             const session = this;
             const { contactEmail, pricing, schedule } = session;
-            const nextSlot = parseSchedule(nextSchedule(schedule));
+            const nextSlot = nextSchedule(schedule);
+            const parsedSlot = nextSlot ? parseSchedule(nextSlot) : false;
             if (contactEmail) {
               const prices = pricing && pricing.prices ? pricing.prices.map(band => parseFloat(band.price)).sort((a, b) => (a > b ? 1 : -1)) : [0];
               const { lat, lng } = session.locationData;
@@ -338,13 +339,13 @@ module.exports = (DataTypes) => ({
                   <table>
                     <tr class="images">
                       <td>${session.image ? `<img src="${session.image}" />` : `<img src="${SERVICE_LOCATION}/images/placeholder.png" />`}</td>
-                      <td><img src="https://maps.googleapis.com/maps/api/staticmap?center=${[lat, lng].join(',')}&zoom=12&size=360x240&key=${GOOGLE_MAPS_API_STATICIMAGES_KEY}" /></td>
+                      <td><img src="https://maps.googleapis.com/maps/api/staticmap?center=${[lat, lng].join(',')}&zoom=13&size=360x240&key=${GOOGLE_MAPS_API_STATICIMAGES_KEY}" /></td>
                     </tr>
                     <tr>
                       <td style="border-right:1px solid #EEE;">
                         <img src="${SERVICE_LOCATION}/images/calendar.png" width="42" height="42" />
                         <p class="label">Next session:</p>
-                        <p>${nextSlot.date} <b>at ${nextSlot.time}</b></p>
+                        <p>${parsedSlot ? `${parsedSlot.date} <b>at ${parsedSlot.time}</b>` : 'No upcoming session'}</p>
                       </td>
                       <td style="border-left:1px solid #EEE;">
                         <p class="label">Address:</p>

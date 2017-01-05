@@ -2,12 +2,14 @@ const moment = require('moment');
 
 const pgTimeToDate = time => new Date(`2000-01-01 ${time}`);
 
-function parseSchedule(instance) {
-  const { startDate, startTime, endTime } = instance;
+const dateTime = (date, time) => new Date([date, time].join('T'));
+
+function parseSchedule(slot) {
+  const { startDate, startTime, endTime } = slot;
   const data = {};
   const now = new Date();
   if (startDate) {
-    const date = new Date(startTime ? [startDate, startTime].join('T') : startDate);
+    const date = dateTime(startDate, startTime || '00:00:00');
     data.date = moment(date).format(date.getFullYear() === now.getFullYear() ? 'dddd D MMM' : 'dddd D MMM YYYY');
     data.hasOccurred = date.getTime() <= now.getTime();
   }
@@ -24,24 +26,24 @@ function parseSchedule(instance) {
   return data;
 }
 
+function sortSchedule(slots) {
+  if (!(slots && slots.length)) return [];
+  return slots.map(slot => Object.assign({}, {
+    start: dateTime(slot.startDate, slot.startTime),
+    end: dateTime(slot.startDate, slot.endTime)
+  }, slot)).sort((a, b) => a.start - b.start);
+}
+
+function nextSchedule(slots) {
+  return sortSchedule(slots).find(slot => slot.start > Date.now());
+}
+
 function calendarLinks(schedule, title, description, location) {
   const { startDate, startTime, endTime } = schedule;
   const dates = [startTime, endTime].map(time => [startDate, time].join('T').replace(/-|:|\.\d\d\d/g, ''));
   return {
     googleCalendar: `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates.join('/')}&details=${description}&location=${location}&sprop=&sprop=name:`
   };
-}
-
-function sortSchedule(schedules) {
-  if (!(schedules && schedules.length)) return [];
-  return schedules.map(slot => Object.assign({}, {
-    start: new Date([slot.startDate, slot.startTime].join('T')),
-    end: new Date([slot.startDate, slot.endTime].join('T'))
-  }, slot)).sort((a, b) => a.start - b.start);
-}
-
-function nextSchedule(schedules) {
-  return sortSchedule(schedules).find(schedule => schedule.start > Date.now());
 }
 
 module.exports = { parseSchedule, calendarLinks, sortSchedule, nextSchedule };
