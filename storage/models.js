@@ -389,7 +389,8 @@ module.exports = (DataTypes) => ({
             const message = req.body;
             const session = this;
             if (['name', 'from', 'body'].some(name => !message[name])) return Promise.reject('Incomplete form');
-            const nextDate = parseSchedule(nextSchedule(session.schedule));
+            const nextSlot = nextSchedule(session.schedule);
+            const nextDate = nextSlot ? parseSchedule(nextSlot) : false;
             return models.Threads.create({ originEmail: message.from, metadata: { SessionUuid: session.uuid } })
               .then(thread => sendEmail(`Open Sessions - New question from ${message.name}`, session.contactEmail, `
                 <div class="message">
@@ -407,7 +408,7 @@ module.exports = (DataTypes) => ({
                     </td>
                     <td>
                       <img src="${SERVICE_LOCATION}/images/calendar.png" />
-                      <p>Next occuring: <br />${nextDate.date} <b>at ${nextDate.time}</b></p>
+                      <p>${nextDate ? `Next occuring: <br />${nextDate.date} <b>at ${nextDate.time}</b>` : 'No upcoming sessions'}</p>
                     </td>
                   </tr></table>
                 </div>

@@ -14,14 +14,12 @@ export default class MultiField extends React.Component { // eslint-disable-line
   }
   onChange(value, key) {
     let list = this.props.value || [];
-    console.log({ list, key, value });
     if (value === null) {
       list = list.slice(0, key).concat(list.slice(key + 1));
     } else {
       list[key] = value;
     }
     apiFetch(`/api${this.props.path}/action/setActivitiesAction`, { body: { uuids: list } }).then(instance => {
-      console.log(instance);
       this.props.onChange(list);
     }).catch(error => {
       console.error(error);
