@@ -2,6 +2,18 @@ const { sendEmail } = require('../server/middlewares/email');
 const { SERVICE_LOCATION, SERVICE_EMAIL, EMAILS_INBOUND_URL, GOOGLE_MAPS_API_STATICIMAGES_KEY } = process.env;
 const { parseSchedule, nextSchedule } = require('../utils/calendar');
 
+function getStaticMapUrl(center, zoom, size, marker) {
+  const [lat, lng] = center;
+  const opts = {
+    center: center.join(','),
+    zoom,
+    size,
+    markers: Object.keys(marker).map(key => [key, marker[key]].join(':')).concat([lat, lng].join(',')).join('%7C'),
+    key: GOOGLE_MAPS_API_STATICIMAGES_KEY
+  };
+  return `https://maps.googleapis.com/maps/api/staticmap?${Object.keys(opts).map(key => [key, opts[key]].join('=')).join('&')}`;
+}
+
 const deg2rad = deg => deg * (Math.PI / 180);
 
 function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
@@ -339,7 +351,7 @@ module.exports = (DataTypes) => ({
                   <table>
                     <tr class="images">
                       <td>${session.image ? `<img src="${session.image}" />` : `<img src="${SERVICE_LOCATION}/images/placeholder.png" />`}</td>
-                      <td><img src="https://maps.googleapis.com/maps/api/staticmap?center=${[lat, lng].join(',')}&zoom=13&size=360x240&key=${GOOGLE_MAPS_API_STATICIMAGES_KEY}" /></td>
+                      <td><img src="${getStaticMapUrl([lat, lng], 13, '360x240', { color: 'blue', label: 'S', icon: `${SERVICE_LOCATION}/images/map-pin-active.png` })}" /></td>
                     </tr>
                     <tr>
                       <td style="border-right:1px solid #EEE;">
