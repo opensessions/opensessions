@@ -126,6 +126,7 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
     const searchAttrs = {
       type: 'text',
       placeholder: selected ? selected.name : placeholder,
+      autoComplete: 'off',
       className,
       onChange: this.searchEvent,
       onKeyDown: this.searchEvent
