@@ -1,10 +1,16 @@
 import React, { PropTypes } from 'react';
 
-import GoogleMapLoader from 'react-google-maps/lib/GoogleMapLoader';
+import { withGoogleMap } from 'react-google-maps';
 import GoogleMap from 'react-google-maps/lib/GoogleMap';
 import Marker from 'react-google-maps/lib/Marker';
 
 import styles from './styles.css';
+
+const GoogleMapLoader = withGoogleMap(props => (
+  <GoogleMap {...props.mapProps}>
+    <Marker {...props.marker} />
+  </GoogleMap>
+));
 
 export default class LocationField extends React.Component {
   static contextTypes = {
@@ -69,7 +75,7 @@ export default class LocationField extends React.Component {
   }
   changeCenter = locationData => {
     if (this.refs.component) {
-      this.refs.component.panTo(locationData);
+      this.refs.component.state.map.panTo(locationData);
     }
   }
   render() {
@@ -96,7 +102,7 @@ export default class LocationField extends React.Component {
         defaultAnimation: 2,
         draggable: true,
         cursor: '-webkit-grab, move',
-        onDragend: drag => {
+        onDragEnd: drag => {
           this.latLngChange(drag.latLng);
         }
       };
@@ -104,15 +110,15 @@ export default class LocationField extends React.Component {
         defaultZoom: 15,
         defaultCenter: locationData,
         center: locationData,
-        ref: 'component',
         draggableCursor: '-webkit-grab, move',
         options: { streetViewControl: false, scrollwheel: false, mapTypeControl: false }
       };
       map = (<GoogleMapLoader
         containerElement={<div className={styles.mapView} />}
-        googleMapElement={<GoogleMap {...mapProps} draggableCursor={mapProps.draggableCursor}>
-          <Marker {...marker} />
-        </GoogleMap>}
+        mapElement={<div style={{ height: '100%' }} />}
+        mapProps={mapProps}
+        marker={marker}
+        ref="component"
       />);
       mapHelp = <p className={styles.dragHelp}>Drag map pin to refine location</p>;
     }

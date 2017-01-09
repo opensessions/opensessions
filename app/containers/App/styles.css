@@ -92,3 +92,11 @@ img {
     display: none;
   }
 }
+
+:global .gm-style {
+  & *,
+  & *::before,
+  & *::after {
+    border-style: initial;
+  }
+}

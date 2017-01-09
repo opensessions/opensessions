@@ -20,7 +20,7 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
   constructor(props) {
     super();
     const { autoFocus } = props;
-    this.state = { search: '', filteredOptions: [], highlightIndex: 0, visible: !!autoFocus, autoFocus };
+    this.state = { search: '', filteredOptions: [], highlightIndex: -1, visible: !!autoFocus, autoFocus };
   }
   setValue = value => {
     this.props.onChange(value);
@@ -49,7 +49,7 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
       newState.visible = true;
       newState.search = '';
       newState.filteredOptions = this.filterOptions(newState.search);
-      newState.highlightIndex = 0;
+      newState.highlightIndex = -1;
     } else if (type === 'change') {
       newState.search = target.value || '';
       newState.filteredOptions = this.filterOptions(newState.search);
@@ -63,8 +63,8 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
         event.preventDefault();
         event.stopPropagation();
       } else if (keyCode === 13) {
-        if (filteredOptions.length) action = 'chooseSelected';
-        else input.blur();
+        // if (filteredOptions.length) action = 'chooseSelected'; else
+        input.blur();
       }
     } else if (type === 'blur') {
       if (this.state.search) {
@@ -89,15 +89,15 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
     }
     if (newState.highlightIndex) {
       const maxIndex = (newState.filteredOptions || filteredOptions).length - 1;
-      newState.highlightIndex = [0, newState.highlightIndex, maxIndex].sort((a, b) => a - b)[1];
+      newState.highlightIndex = [-1, newState.highlightIndex, maxIndex].sort((a, b) => a - b)[1];
     }
     if (newState.search === '') {
       if (input) input.value = '';
     }
     if (Object.keys(newState).length) this.setState(newState);
   }
-  itemHover = event => {
-    this.setState({ highlightIndex: parseInt(event.target.parentNode.getElementsByClassName(styles.text)[0].dataset.index, 10) });
+  itemHover = element => {
+    this.setState({ highlightIndex: parseInt(element.dataset.index, 10) });
   }
   actionClick = event => {
     event.stopPropagation();
@@ -135,7 +135,7 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
     let searchResults = null;
     if (visible && (lazyLoad ? search : true)) {
       searchResults = (<ol className={styles.searchResults} ref="search">
-        {filteredOptions.map((opt, index) => <li {...opt.props} className={index === highlightIndex ? styles.highlight : null} onMouseOver={this.itemHover}>
+        {filteredOptions.map((opt, index) => <li {...opt.props} className={index === highlightIndex ? styles.highlight : null} onMouseOver={event => this.itemHover(event.target.parentNode.getElementsByClassName(styles.text)[0])}>
           <span className={styles.text} dangerouslySetInnerHTML={{ __html: opt.html }} data-index={index} onMouseUp={() => this.setValue(opt.props.key)} data-key={opt.props.key} />
           {/* opt.actions ? opt.actions.map(action => <span key={action.type} className={styles.action} onClick={this.actionClick} data-action={JSON.stringify(action)}>{action.type}</span>) : null*/}
         </li>)}

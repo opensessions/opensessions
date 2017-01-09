@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 
-import GoogleMapLoader from 'react-google-maps/lib/GoogleMapLoader';
+import { withGoogleMap } from 'react-google-maps';
 import GoogleMap from 'react-google-maps/lib/GoogleMap';
 import Marker from 'react-google-maps/lib/Marker';
 import Helmet from 'react-helmet';
@@ -22,6 +22,12 @@ import styles from './styles.css';
 import publishStyles from '../../components/PublishHeader/styles.css';
 
 const { google } = window;
+
+const GoogleMapLoader = withGoogleMap(props => (
+  <GoogleMap {...props.mapProps}>
+    <Marker {...props.marker} />
+  </GoogleMap>
+));
 
 export default class SessionView extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
@@ -217,7 +223,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         </div>
       </div>);
     }
-    const activitiesList = session.Activities ? <ol className={styles.activitiesList}>{session.Activities.map(activity => <li>{activity.name}</li>)}</ol> : null;
+    const activitiesList = session.Activities ? <ol className={styles.activitiesList}>{session.Activities.map(activity => <li key={activity.name}>{activity.name}</li>)}</ol> : null;
     const prices = this.getPrices();
     const { pricing } = session;
     return (<div className={styles.descriptionSection}>
@@ -348,17 +354,15 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     if (locationData) {
       const locData = typeof locationData === 'object' ? locationData : JSON.parse(locationData);
       const defaultCenter = { lat: locData.lat, lng: locData.lng };
-      const onMapClick = () => true;
       const marker = {
         position: defaultCenter,
         icon: { url: '/images/map-pin-active.svg' },
         defaultAnimation: 2
       };
-      const googleMap = {
-        ref: 'map',
+      const mapProps = {
         defaultZoom: 16,
         defaultCenter,
-        onClick: onMapClick,
+        onClick: () => true,
         options: {
           streetViewControl: false,
           scrollwheel: false,
@@ -369,14 +373,12 @@ export default class SessionView extends React.Component { // eslint-disable-lin
           mapTypeControl: false
         }
       };
-      map = (<div className={styles.mapFrame}>
-        <GoogleMapLoader
-          containerElement={<div style={{ height: '100%' }} />}
-          googleMapElement={<GoogleMap {...googleMap}>
-            <Marker {...marker} />
-          </GoogleMap>}
-        />
-      </div>);
+      map = (<GoogleMapLoader
+        containerElement={<div className={styles.mapFrame} />}
+        mapElement={<div style={{ height: '100%' }} />}
+        marker={marker}
+        mapProps={mapProps}
+      />);
       address = <div className={styles.address}>{session.location.split(',').map(line => <p key={line}>{line}</p>)}<br /><p><a href={`https://maps.google.com/maps?saddr=My+Location&daddr=${session.location}`} target="blank">Get directions</a></p></div>;
     } else {
       map = (<div className={styles.noLocation}>

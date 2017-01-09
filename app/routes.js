@@ -41,6 +41,12 @@ export default function createRoutes() {
         System.import('./containers/ListSessions').then(loadModule(cb)).catch(errorLoading);
       }
     }, {
+      path: '/sessions/map',
+      name: 'sessions map',
+      getComponent(nextState, cb) {
+        System.import('./containers/SessionMap').then(loadModule(cb)).catch(errorLoading);
+      }
+    }, {
       path: '/sessions/:page',
       name: 'sessions',
       getComponent(nextState, cb) {

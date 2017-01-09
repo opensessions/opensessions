@@ -11,7 +11,7 @@ import styles from './styles.css';
 export default class SessionList extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
     sessions: PropTypes.array,
-    heading: PropTypes.string,
+    heading: PropTypes.node,
     hideButton: PropTypes.bool,
     query: PropTypes.object
   };
