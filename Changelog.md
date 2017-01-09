@@ -31,3 +31,17 @@
 - Keyboard accessibility
 - Homepage amends
 - Notification auto-dismissal
+
+### 0.4.0
+
+- Session published email
+- Updated home page with new copy and design
+- Improved address lookup for location field
+- "Message the organiser" contact form now goes directly through to users, with an opensessions bcc
+- "Message the organiser" emails include session details
+- New cookie banner design
+- Published sessions map
+
+#### Bugfixes
+
+- SearchableSelect field can be added to (fix bug where subsets of existing items couldn't be added)

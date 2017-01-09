@@ -2,9 +2,11 @@ import React, { PropTypes } from 'react';
 
 import SessionTileView from '../SessionTileView';
 import LoadingMessage from '../../components/LoadingMessage';
+import Checkbox from '../../components/Fields/Checkbox';
 
 import { withGoogleMap } from 'react-google-maps';
 import GoogleMap from 'react-google-maps/lib/GoogleMap';
+import MarkerClusterer from 'react-google-maps/lib/addons/MarkerClusterer';
 import Marker from 'react-google-maps/lib/Marker';
 import InfoWindow from 'react-google-maps/lib/InfoWindow';
 
@@ -19,6 +21,15 @@ const GoogleMapLoader = withGoogleMap(props => (
     {props.markers}
   </GoogleMap>
 ));
+
+const GoogleMapLoaderCluster = withGoogleMap(props => (
+  <GoogleMap {...props.mapProps}>
+    <MarkerClusterer>{props.markers}</MarkerClusterer>
+  </GoogleMap>
+));
+
+const ACTIVE_ICON = { url: '/images/map-pin-active.svg' };
+const INACTIVE_ICON = { url: '/images/map-pin.svg' };
 
 export default class SessionMap extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
@@ -37,7 +48,7 @@ export default class SessionMap extends React.Component { // eslint-disable-line
   }
   constructor() {
     super();
-    this.state = { isLoading: false, showInfo: null };
+    this.state = { isLoading: false, showInfo: null, isClustered: false };
   }
   componentDidMount() {
     this.setState({ isLoading: true }); // eslint-disable-line react/no-did-mount-set-state
@@ -47,10 +58,15 @@ export default class SessionMap extends React.Component { // eslint-disable-line
       this.context.notify(error, 'error');
     });
   }
+  isActive(session) {
+    if (session.schedule) {
+      return session.schedule.some(slot => (new Date([slot.startDate, slot.startTime].join('T'))).getTime() > Date.now());
+    }
+    return false;
+  }
   renderMap(sessions) {
     const { google } = window;
     const marker = {
-      icon: { url: '/images/map-pin-active.svg' },
       defaultAnimation: 2
     };
     const googleMap = {
@@ -67,19 +83,28 @@ export default class SessionMap extends React.Component { // eslint-disable-line
         mapTypeControl: false
       }
     };
-    const { showInfo } = this.state;
-    return (<GoogleMapLoader
+    const { showInfo, isClustered } = this.state;
+    const Loader = isClustered ? GoogleMapLoaderCluster : GoogleMapLoader;
+    return (<Loader
       mapElement={<div style={{ height: '100%' }} />}
-      containerElement={<div className={styles.mapFrame} style={{ height: '80rem', width: '100%' }} />}
+      containerElement={<div className={styles.mapFrame} style={{ height: '80vh', width: '100%' }} />}
       mapProps={googleMap}
-      markers={sessions ? sessions.filter(session => session.locationData && session.locationData.lat).map(session => <Marker key={session.uuid} position={session.locationData} onClick={() => this.setState({ showInfo: session.uuid })} {...marker}>{showInfo === session.uuid ? <InfoWindow onCloseClick={() => this.setState({ showInfo: null })}><SessionTileView session={session} /></InfoWindow> : null}</Marker>) : null}
+      markers={sessions ? sessions.filter(session => session.locationData && session.locationData.lat).map(session => {
+        const isActive = this.isActive(session);
+        return (<Marker {...marker} icon={isActive ? ACTIVE_ICON : INACTIVE_ICON} key={session.uuid} position={session.locationData} onClick={() => this.setState({ showInfo: session.uuid })}>
+          {showInfo === session.uuid ? <InfoWindow onCloseClick={() => this.setState({ showInfo: null })}><SessionTileView session={session} /></InfoWindow> : null}
+        </Marker>);
+      }) : null}
     />);
   }
   render() {
-    const isLoading = this.state ? this.state.isLoading : false;
+    const { isLoading, isClustered } = this.state;
     const sessions = this.context.store.getState().get('sessionList');
     return (<div>
       {isLoading ? <LoadingMessage message="Loading sessions" ellipsis /> : this.renderMap(sessions)}
+      <div className={styles.options}>
+        <p><Checkbox checked={isClustered} onChange={val => this.setState({ isClustered: val })} label="Toggle clustering" /></p>
+      </div>
     </div>);
   }
 }
