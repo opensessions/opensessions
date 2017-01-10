@@ -83,11 +83,14 @@ export default class LocationField extends React.Component {
       this.refs.component.state.map.panTo(locationData);
     }
   }
-  render() {
-    const { value, dataValue, className } = this.props;
+  generateManual(value) {
+    return value ? value.split(', ') : [];
+  }
+  renderSearch() {
+    const { value, className } = this.props;
+    const { isManual } = this.state;
     const attrs = {
       type: 'text',
-      name,
       className,
       ref: 'input',
       onFocus: this.onFocus,
@@ -96,11 +99,58 @@ export default class LocationField extends React.Component {
       placeholder: value,
       defaultValue: value
     };
+    return (<span style={{ display: isManual ? 'none' : 'block' }}>
+      <input {...attrs} />
+      <a className={styles.toggle} onClick={() => this.setState({ isManual: true })}>Can't find the location you're looking for in the dropdown?</a>
+    </span>);
+  }
+  renderManual() {
+    const { dataValue, className, value } = this.props;
+    const attrs = {
+      type: 'text',
+      className,
+    };
+    const manual = dataValue.manual || this.generateManual(value);
+    const getAttrs = index => ({
+      ...attrs,
+      onChange: event => {
+        if (!dataValue.manual) dataValue.manual = [];
+        dataValue.manual[index] = event.target.value;
+        this.props.onDataChange(dataValue);
+      },
+      value: manual[index]
+    });
+    return (<span className={styles.manual}>
+      <p className={styles.help}>Please enter an address then position the map pin manually</p>
+      <label>Venue name and street</label>
+      <input {...getAttrs(0)} />
+      <input {...getAttrs(1)} />
+      <label>Town or city</label>
+      <input {...getAttrs(2)} />
+      <label>County (optional)</label>
+      <input {...getAttrs(3)} />
+      <label>Postcode</label>
+      <input {...getAttrs(4)} />
+      <a
+        className={styles.toggle}
+        onClick={() => {
+          const data = this.props.dataValue;
+          delete data.manual;
+          this.props.onDataChange(data);
+          this.setState({ isManual: false });
+        }}
+      >Return to location search</a>
+    </span>);
+  }
+  render() {
+    const { dataValue } = this.props;
+    let { isManual } = this.state;
     let map = null;
     let mapHelp = null;
     let locationData = dataValue;
     if (locationData) {
       if (typeof locationData === 'string') locationData = JSON.parse(locationData);
+      if (locationData.manual) isManual = true;
       const marker = {
         position: locationData,
         icon: { url: '/images/map-pin-active.svg' },
@@ -128,7 +178,8 @@ export default class LocationField extends React.Component {
       mapHelp = <p className={styles.dragHelp}>Drag map pin to refine location</p>;
     }
     return (<div>
-      <input {...attrs} />
+      {isManual ? this.renderManual() : null}
+      {this.renderSearch()}
       {map}
       {mapHelp}
     </div>);

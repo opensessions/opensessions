@@ -139,11 +139,11 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     }
     let locationDetail = null;
     if (session.location) {
-      const locationPieces = session.location.split(',');
+      const locationPieces = session.locationData && session.locationData.manual ? session.locationData.manual : session.location.split(', ');
       const firstLine = locationPieces.shift();
       locationDetail = (<div className={styles.locationDetail}>
         <img src="/images/map-pin.svg" role="presentation" />
-        <span className={styles.detailText}>{firstLine}{locationPieces.length ? <br /> : null}{locationPieces.join(',')}</span>
+        <span className={styles.detailText}>{firstLine}{locationPieces.length ? <br /> : null}{locationPieces.join(', ')}</span>
       </div>);
     }
     return (<div className={styles.detailsSection}>

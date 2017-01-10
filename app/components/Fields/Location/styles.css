@@ -2,10 +2,6 @@
   margin: 1em 0 0;
   border: 1px solid #C2C2C2;
   height: 16em;
-  & :global .gmnoprint {
-    cursor: move;
-    cursor: -webkit-grab;
-  }
 }
 
 .mapView,
@@ -18,4 +14,29 @@
   text-align: center;
   display: block;
   background: #FFF;
+}
+
+.toggle {
+  font-size: .8em;
+  display: block;
+  padding: .5em 0;
+}
+
+.manual {
+  width: 26em;
+  display: block;
+  margin-top: -1.5em;
+  background: #E6E6E6;
+  position: relative;
+  & label {
+    margin: .25em 0;
+    display: block;
+  }
+  & input {
+    margin-bottom: .25em;
+  }
+  & .help {
+    font-size: .8em;
+    font-weight: bold;
+  }
 }

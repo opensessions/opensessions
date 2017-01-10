@@ -92,7 +92,7 @@ export default class SessionMap extends React.Component { // eslint-disable-line
       markers={sessions ? sessions.filter(session => session.locationData && session.locationData.lat).map(session => {
         const isActive = this.isActive(session);
         return (<Marker {...marker} icon={isActive ? ACTIVE_ICON : INACTIVE_ICON} key={session.uuid} position={session.locationData} onClick={() => this.setState({ showInfo: session.uuid })}>
-          {showInfo === session.uuid ? <InfoWindow onCloseClick={() => this.setState({ showInfo: null })}><SessionTileView session={session} /></InfoWindow> : null}
+          {showInfo === session.uuid ? <InfoWindow onCloseClick={() => this.setState({ showInfo: null })}><div style={{ maxWidth: '20em' }}><SessionTileView session={session} style="slim" /></div></InfoWindow> : null}
         </Marker>);
       }) : null}
     />);

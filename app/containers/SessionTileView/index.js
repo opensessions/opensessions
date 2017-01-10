@@ -11,6 +11,7 @@ import styles from './styles.css';
 export default class SessionTileView extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
     session: PropTypes.object,
+    style: PropTypes.string
   };
   static contextTypes = {
     user: PropTypes.object,
@@ -91,18 +92,18 @@ export default class SessionTileView extends React.Component { // eslint-disable
   }
   render() {
     if (this.state && this.state.isDeleted) return null;
-    const { session } = this.props;
+    const { session, style } = this.props;
     let { state } = session;
     if (state === 'unpublished') state = 'draft';
     const schedules = sortSchedule(session.schedule).map(this.renderSchedule);
-    return (<article className={styles.tile}>
+    return (<article className={[styles.tile, style ? styles[style] : ''].join(' ')}>
       <div className={styles.imgCol}>
         <img src={session.image ? session.image : '/images/placeholder.png'} role="presentation" className={!session.image ? styles.noImage : null} />
       </div>
       <div className={styles.textCol}>
         <div className={styles.info}>
           <h1><Link to={session.href}>{this.getTitle()}</Link> {this.renderGALLink(session)}</h1>
-          <div className={styles.location}>{session.location}</div>
+          <div className={styles.location}>{session.locationData && session.locationData.manual ? session.locationData.manual.join(', ') : session.location}</div>
           {session.Activities ? <ol className={styles.activities}>{session.Activities.map(activity => <li>{activity.name}</li>)}</ol> : null}
         </div>
         <div className={styles.meta}>

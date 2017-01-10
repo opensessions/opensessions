@@ -61,6 +61,7 @@ module.exports = (database, opts) => {
               delete locationData.lat;
               delete locationData.lng;
             }
+            if (locationData.manual) item.data.location = locationData.manual.join(', ');
             item.data.locationData = locationData;
           }
           const { schedule } = item.data;

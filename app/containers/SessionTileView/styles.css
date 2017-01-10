@@ -39,6 +39,18 @@
   animation-timing-function: ease;
   animation-fill-mode: forwards;
   animation-duration: .4s;
+  &.slim {
+    padding: 0;
+    & .schedules {
+      & ol {
+        & > li {
+          &.occurred {
+            display: none;
+          }
+        }
+      }
+    }
+  }
   & .imgCol {
     padding: .25em;
     text-align: center;
