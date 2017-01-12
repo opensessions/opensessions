@@ -86,9 +86,8 @@ export default class SessionTileView extends React.Component { // eslint-disable
       <span>{date.hasOccurred ? ' (Past)' : ''}</span>
     </li>);
   }
-  renderGALLink(session) {
-    const { locationData, Activities, location } = session;
-    return <a target="blank" href={`https://beta.getactivelondon.com/results/list?activity=${Activities && Activities[0] ? Activities[0].name : ''}&location=${location}&lat=${locationData ? locationData.lat : ''}&lng=${locationData ? locationData.lng : ''}&radius=4&sortBy=distance`} className={styles.GALLink}>GAL</a>;
+  renderAggregatorLinks(session) {
+    return session.aggregators ? session.aggregators.map(agg => <a target="blank" href={agg.href} className={styles.GALLink}>{agg.name}</a>) : null;
   }
   render() {
     if (this.state && this.state.isDeleted) return null;
@@ -102,7 +101,7 @@ export default class SessionTileView extends React.Component { // eslint-disable
       </div>
       <div className={styles.textCol}>
         <div className={styles.info}>
-          <h1><Link to={session.href}>{this.getTitle()}</Link> {this.renderGALLink(session)}</h1>
+          <h1><Link to={session.href}>{this.getTitle()}</Link> {this.renderAggregatorLinks(session)}</h1>
           <div className={styles.location}>{session.locationData && session.locationData.manual ? session.locationData.manual.join(', ') : session.location}</div>
           {session.Activities ? <ol className={styles.activities}>{session.Activities.map(activity => <li>{activity.name}</li>)}</ol> : null}
         </div>

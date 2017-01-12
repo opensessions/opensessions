@@ -13,12 +13,14 @@
 
 .GALLink {
   display: none;
+  font-size: .8em;
+  color: var(--actionColor);
+  margin: 0 .25em;
 }
 
 :global .admin {
-  & .GALLink {
+  & :local .GALLink {
     display: inline-block;
-    opacity: .5;
   }
 }
 
@@ -41,11 +43,21 @@
   animation-duration: .4s;
   &.slim {
     padding: 0;
+    max-width: 36em;
+    & .imgCol {
+      padding: 0;
+      & img {
+        max-width: 16rem;
+      }
+    }
     & .schedules {
+      padding: 0;
       & ol {
-        & > li {
-          &.occurred {
-            display: none;
+        line-height: 1.1;
+        & > li.schedule {
+          padding: .25em;
+          & > svg {
+            margin: 0 .25em;
           }
         }
       }

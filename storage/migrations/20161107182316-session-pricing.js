@@ -3,5 +3,5 @@
 
 module.exports = {
   up: (migration, Sequelize) => migration.addColumn('Sessions', 'pricing', { type: Sequelize.JSON }),
-  down: (migration) => migration.removeColumn('pricing')
+  down: (migration) => migration.removeColumn('Sessions', 'pricing')
 };

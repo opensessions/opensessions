@@ -20,11 +20,11 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
   constructor(props) {
     super();
     const { autoFocus } = props;
-    this.state = { search: '', filteredOptions: [], highlightIndex: -1, visible: !!autoFocus, autoFocus };
+    this.state = { search: this.emptySearch(), filteredOptions: [], highlightIndex: -1, visible: !!autoFocus, autoFocus };
   }
   setValue = value => {
     this.props.onChange(value);
-    this.setState({ visible: false, search: '' });
+    this.setState({ visible: false, search: this.emptySearch() });
     this.refs.input.blur();
   }
   resetValue = () => this.setValue(null)
@@ -32,6 +32,9 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
     const types = { start: ['^', ''], notStart: ['^.+(', ')'], any: ['(', ')'] };
     const [pre, post] = types[type];
     return name.match(new RegExp(`${pre}${search}${post}`, 'ig'));
+  }
+  emptySearch() {
+    return '';
   }
   filterOptions = search => {
     let { options, maxOptions } = this.props; // eslint-disable-line prefer-const
@@ -47,11 +50,11 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
     let action;
     if (type === 'focus') {
       newState.visible = true;
-      newState.search = '';
+      newState.search = this.emptySearch();
       newState.filteredOptions = this.filterOptions(newState.search);
       newState.highlightIndex = -1;
     } else if (type === 'change') {
-      newState.search = target.value || '';
+      newState.search = target.value || this.emptySearch();
       newState.filteredOptions = this.filterOptions(newState.search);
       newState.highlightIndex = highlightIndex;
     } else if (type === 'keydown') {
@@ -70,14 +73,14 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
         action = 'chooseSelected';
       } else {
         newState.visible = false;
-        newState.search = '';
+        newState.search = this.emptySearch();
       }
     }
     if (action === 'chooseSelected') {
       let selected = filteredOptions[highlightIndex];
       if (!selected) selected = { props: { key: 'none' } };
       const { key } = selected.props;
-      newState.search = '';
+      newState.search = this.emptySearch();
       newState.visible = false;
       if (key === 'none') {
         this.addItem();
@@ -115,7 +118,7 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
     const { search } = this.state;
     if (!search) return Promise.resolve();
     return this.props.addItem(search).then(() => {
-      this.setState({ visible: false, search: '' });
+      this.setState({ visible: false, search: this.emptySearch() });
     });
   }
   render() {

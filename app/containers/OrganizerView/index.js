@@ -43,8 +43,9 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
   }
   fetchData = () => {
     const { params } = this.props;
+    const uuid = params ? params.uuid : this.state.organizer.uuid;
     this.setState({ isLoading: true });
-    return apiModel.get('organizer', params.uuid).then(res => {
+    return apiModel.get('organizer', uuid).then(res => {
       this.setState({ organizer: res.instance, isLoading: false });
     }).catch(() => {
       this.setState({ isLoading: false });
@@ -59,10 +60,9 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
       this.context.notify('Couldn\'t change the image', 'error');
     });
   }
-  isOwner() {
-    const { user } = this.context;
+  canAct(action) {
     const { organizer } = this.state;
-    return user && organizer && organizer.owner === user.user_id;
+    return organizer && organizer.actions.some(name => name === action);
   }
   toggleSessions = () => {
     this.setState({ showSessions: !this.state.showSessions });
@@ -130,20 +130,20 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     const { organizer } = this.state;
     if (!organizer) return null;
     const sessions = organizer.Sessions || [];
-    let sessionsDisplay = <li>No sessions yet {this.isOwner() ? <a onClick={this.deleteOrganizer}>delete this organiser</a> : null}</li>;
+    let sessionsDisplay = <li>No sessions yet {this.canAct('edit') ? <a onClick={this.deleteOrganizer}>delete this organiser</a> : null}</li>;
     if (sessions.length) sessionsDisplay = sessions.map(session => <li key={session.uuid}><SessionTileView session={session} /></li>);
     return (<div className={styles.sessions}>
       <h2>{organizer.name}&rsquo;{organizer.name[organizer.name.length - 1] !== 's' ? 's' : ''} Sessions</h2>
       <ol className={styles.sessionsList}>
         {sessionsDisplay}
-        {this.isOwner() ? <li className={styles.new}><Button to={`/session/add?OrganizerUuid=${organizer.uuid}`}><b>+</b> Add {sessions.length ? 'another' : 'a'} session</Button></li> : null}
+        {this.canAct('edit') ? <li className={styles.new}><Button to={`/session/add?OrganizerUuid=${organizer.uuid}`}><b>+</b> Add {sessions.length ? 'another' : 'a'} session</Button></li> : null}
       </ol>
-      {this.isOwner() ? this.renderUnassignedSessions() : null}
+      {this.canAct('edit') ? this.renderUnassignedSessions() : null}
     </div>);
   }
   renderName(organizer) {
     if (this.state.actionState && this.state.actionState === 'rename') return <input defaultValue={organizer.name} onKeyDown={this.renameEvents} onBlur={this.renameEvents} autoFocus />;
-    return (<span><Link to={organizer.href}>{organizer.name}</Link> {this.isOwner() ? <a onClick={this.renameOrganizer} onKeyUp={event => event.keyCode === 13 && this.renameOrganizer()} className={styles.rename} tabIndex={0}><img src="/images/change.png" alt="edit" /></a> : null}</span>);
+    return (<span><Link to={organizer.href}>{organizer.name}</Link> {this.canAct('edit') ? <a onClick={this.renameOrganizer} onKeyUp={event => event.keyCode === 13 && this.renameOrganizer()} className={styles.rename} tabIndex={0}><img src="/images/change.png" alt="edit" /></a> : null}</span>);
   }
   renderUploadPhoto() {
     const { organizer } = this.state;
@@ -155,7 +155,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     return (<div className={styles.banner}>
       <div className={styles.bannerImage} style={{ backgroundImage: `url(${imageUrl})` }}>
         <div className={styles.container}>
-          {this.isOwner() ? this.renderUploadPhoto() : null}
+          {this.canAct('edit') ? this.renderUploadPhoto() : null}
         </div>
       </div>
       <div className={styles.name}>
@@ -166,6 +166,31 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
       </div>
     </div>);
   }
+  renderMembers(organizer) {
+    if (!organizer) return null;
+    const { uuid, members, actions } = organizer;
+    const removeMember = member => apiModel.action('Organizer', uuid, 'removeMember', { user_id: member.user_id }).then(() => {
+      this.context.notify('Member removed', 'success');
+      this.fetchData();
+    }).catch(() => alert('Could not remove member'));
+    const addMember = () => {
+      const email = prompt('Enter an email');
+      if (email) {
+        apiModel.action('Organizer', uuid, 'addMember', { email }).then(() => {
+          this.context.notify('Member added', 'success');
+          this.fetchData();
+        }).catch(() => alert('User does not exist'));
+      }
+    };
+    return (<div className={styles.members}>
+      <h2>Members</h2>
+      <p><i>Other Open Sessions users who can edit <b>{organizer.name}</b>'s sessions</i></p>
+      <ol>
+        {members && members.length ? members.map(member => <li>{member.picture ? <img src={member.picture} role="presentation" /> : null} {member.name || member.email} {actions.some(action => action === 'removeMember') ? <Button onClick={() => removeMember(member)} style="danger">remove</Button> : null}</li>) : <li><i>No other members currently</i></li>}
+      </ol>
+      <p>{actions.some(action => action === 'addMember') ? <Button onClick={() => addMember()}>Add a member</Button> : null}</p>
+    </div>);
+  }
   render() {
     const { organizer } = this.state;
     return (<div className={styles.organizerView}>
@@ -174,6 +199,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
       <div className={styles.container}>
         {this.renderSessions()}
       </div>
+      {organizer.actions.some(action => action === 'edit') ? this.renderMembers(organizer) : null}
     </div>);
   }
 }

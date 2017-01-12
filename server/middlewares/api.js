@@ -161,6 +161,8 @@ module.exports = (database) => {
 
   api.get('/:model', resolveModel, (req, res) => {
     const { Model } = req;
+    const { canAct } = req.query;
+    delete req.query.canAct;
     processUser(req, res, () => {
       const query = Model.getQuery({ where: queryParse(req) }, database.models, getUser(req));
       if (query instanceof Error) {
@@ -168,7 +170,7 @@ module.exports = (database) => {
         return;
       }
       Model.findAll(query).then(instances => {
-        res.json({ instances: instances.map(instance => instanceToJSON(instance, req)) });
+        res.json({ instances: instances.map(instance => instanceToJSON(instance, req)).filter(instance => (canAct ? instance.actions.some(action => action === canAct) : true)) });
       }).catch(error => {
         res.status(404).json({ error: error.message });
       });
@@ -217,7 +219,8 @@ module.exports = (database) => {
       res.status(400).json({ status: 'failure', error: query.message });
     } else {
       Model.findOne(query).then(instance => {
-        if (instance.owner !== getUser(req)) throw new Error(`Must be owner to modify ${Model.name}`);
+        const actions = instance.getActions(database.models, req);
+        if (!actions.some(action => action === 'edit')) throw new Error(`Must be owner to modify ${Model.name}`);
         const fields = Object.keys(req.body);
         fields.filter(key => key.slice(-4) === 'Uuid').filter(key => req.body[key] === null).map(key => `set${key.replace(/Uuid$/, '')}`).forEach(setter => {
           if (instance[setter]) instance[setter](null);
@@ -248,7 +251,7 @@ module.exports = (database) => {
         Model.findOne(query).then(instance => {
           const actions = instance.getActions(database.models, req);
           if (actions.indexOf(action) !== -1) {
-            instance[action](req, database.models)
+            instance[action](req, database.models, authClient)
               .then(result => res.json(Object.assign({ status: 'success' }, result)))
               .catch(error => console.log(error) || res.status(404).json({ status: 'failure', error }));
           } else {

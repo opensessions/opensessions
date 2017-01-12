@@ -8,8 +8,8 @@ module.exports = {
     });
   },
   down: (migration) => {
-    return migration.removeColumn('createdAt').then(() => {
-      return migration.removeColumn('updatedAt');
+    return migration.removeColumn('Activities', 'createdAt').then(() => {
+      return migration.removeColumn('Activities', 'updatedAt');
     });
   }
 };

@@ -31,6 +31,12 @@
       background-color: #6FA72D;
     }
   }
+  &.danger {
+    background-color: var(--dangerColor);
+    &:hover {
+      background-color: color(var(--dangerColor) lightness(-12%));
+    }
+  }
   &.disabled {
     background-color: #AAA;
     pointer-events: none;

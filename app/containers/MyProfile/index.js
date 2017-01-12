@@ -14,7 +14,7 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
     user: PropTypes.object,
     notify: PropTypes.func
   };
-  static fetchData = (dispatch, user) => apiModel.search('organizer', { owner: user.user_id }).then(result => {
+  static fetchData = (dispatch, user) => apiModel.search('organizer', { canAct: 'edit' }).then(result => {
     dispatch({ type: 'PROFILE_ORGANIZERS_LOADED', payload: result.instances });
     return apiModel.search('session', { owner: user.user_id, OrganizerUuid: 'null' }).then(sessionResult => {
       const { instances, error } = sessionResult;

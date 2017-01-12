@@ -119,6 +119,7 @@ module.exports = (DataTypes) => ({
           getActions(models, req) {
             const actions = [];
             // if (user && user === this.owner && this.get('SessionsCount') === '0') {
+            actions.push('view');
             if (req.user) {
               // if (user === this.owner) actions.push('delete');
               if (req.isAdmin) actions.push('delete');
@@ -156,6 +157,7 @@ module.exports = (DataTypes) => ({
         }
       },
       image: DataTypes.STRING(512),
+      members: DataTypes.JSON,
       _options: {
         getterMethods: {
           href() {
@@ -166,11 +168,30 @@ module.exports = (DataTypes) => ({
           delete() {
             return this.destroy();
           },
+          addMember(req, models, authClient) {
+            console.log('addMember', this, req.body);
+            return authClient.getUsers({ q: `email:"${req.body.email}"` })
+              .then(users => users[0])
+              .then(user => this.update({ members: (this.members || []).concat({ email: user.email, user_id: user.user_id, picture: user.picture, name: user.name }) }))
+              .then(() => ({}));
+          },
+          removeMember(req) {
+            return this.update({ members: (this.members || []).filter(member => member.user_id !== req.body.user_id) }).then(() => ({}));
+          },
+          getOwners() {
+            return [this.owner].concat(this.members ? this.members.map(user => user.user_id) : []).filter(v => v);
+          },
           getActions(models, req) {
-            const actions = [];
+            const actions = ['view'];
             const user = req.user ? req.user.sub : null;
-            if (user && user === this.owner && (!this.Sessions || this.Sessions.length === 0)) {
-              actions.push('delete');
+            const isOwner = user && this.getOwners().some(id => id === user);
+            if (isOwner) {
+              actions.push('edit');
+              actions.push('addMember');
+              actions.push('removeMember');
+              if (!this.Sessions || this.Sessions.length === 0) {
+                actions.push('delete');
+              }
             }
             return actions;
           }
@@ -322,11 +343,16 @@ module.exports = (DataTypes) => ({
             if (errors.length) throw new Error(`<b>We can't publish this yet!</b> ${errors.join('. ')}`);
             return true;
           },
+          getOwners() {
+            return [this.owner].concat(this.Organizer && this.Organizer.members ? this.Organizer.members.map(user => user.user_id) : []);
+          },
           getActions(models, req) {
             const actions = [];
             const user = req.user ? req.user.sub : null;
+            const isOwner = user && this.getOwners().some(id => id === user);
             actions.push('message');
-            if (user && user === this.owner) {
+            if ((isOwner && this.state !== 'deleted') || this.state === 'published') actions.push('view');
+            if (isOwner) {
               actions.push('edit');
               actions.push('duplicate');
               actions.push('delete');
@@ -482,18 +508,17 @@ module.exports = (DataTypes) => ({
                 if (instance.previous('state') === 'published') instance.state = 'unpublished';
               }
             }
-            const socialPrepend = {
+            const prefixTypes = {
               socialWebsite: ['http://', 'https://'],
-              socialFacebook: 'https://facebook.com/',
-              socialInstagram: '@',
-              socialTwitter: '@',
-              socialHashtag: '#'
+              socialFacebook: ['https://facebook.com/'],
+              socialInstagram: ['@'],
+              socialTwitter: ['@'],
+              socialHashtag: ['#']
             };
-            Object.keys(socialPrepend).filter(type => instance.changed(type) && instance[type]).forEach(type => {
+            Object.keys(prefixTypes).filter(type => instance.changed(type) && instance[type]).forEach(type => {
               const val = instance[type];
-              let prepend = socialPrepend[type];
-              if (!(prepend instanceof Array)) prepend = [prepend];
-              if (!(prepend.some(pre => val.indexOf(pre) === 0))) instance[type] = `${prepend[0]}${val}`;
+              const prefixes = prefixTypes[type];
+              if (!prefixes.some(prefix => val.indexOf(prefix) === 0)) instance[type] = `${prefixes[0]}${val}`;
             });
           }
         }

@@ -37,7 +37,8 @@ export default class SessionMap extends React.Component { // eslint-disable-line
     store: PropTypes.object
   };
   static propTypes = {
-    location: PropTypes.object
+    location: PropTypes.object,
+    sessions: PropTypes.array
   };
   static fetchData(dispatch, query) {
     return apiModel.search('session', { ...query, state: 'published' }).then(result => {
@@ -51,12 +52,14 @@ export default class SessionMap extends React.Component { // eslint-disable-line
     this.state = { isLoading: false, showInfo: null, isClustered: false };
   }
   componentDidMount() {
-    this.setState({ isLoading: true }); // eslint-disable-line react/no-did-mount-set-state
-    this.constructor.fetchData(this.context.store.dispatch, this.props.location.query).then(() => {
-      this.setState({ isLoading: false });
-    }).catch(error => {
-      this.context.notify(error, 'error');
-    });
+    if (!this.props.sessions) {
+      this.setState({ isLoading: true }); // eslint-disable-line react/no-did-mount-set-state
+      this.constructor.fetchData(this.context.store.dispatch, this.props.location.query).then(() => {
+        this.setState({ isLoading: false });
+      }).catch(error => {
+        this.context.notify(error, 'error');
+      });
+    }
   }
   isActive(session) {
     if (session.schedule) {
@@ -92,14 +95,14 @@ export default class SessionMap extends React.Component { // eslint-disable-line
       markers={sessions ? sessions.filter(session => session.locationData && session.locationData.lat).map(session => {
         const isActive = this.isActive(session);
         return (<Marker {...marker} icon={isActive ? ACTIVE_ICON : INACTIVE_ICON} key={session.uuid} position={session.locationData} onClick={() => this.setState({ showInfo: session.uuid })}>
-          {showInfo === session.uuid ? <InfoWindow onCloseClick={() => this.setState({ showInfo: null })}><div style={{ maxWidth: '20em' }}><SessionTileView session={session} style="slim" /></div></InfoWindow> : null}
+          {showInfo === session.uuid ? <InfoWindow onCloseClick={() => this.setState({ showInfo: null })}><SessionTileView session={session} style="slim" /></InfoWindow> : null}
         </Marker>);
       }) : null}
     />);
   }
   render() {
     const { isLoading, isClustered } = this.state;
-    const sessions = this.context.store.getState().get('sessionList');
+    const sessions = this.props.sessions || this.context.store.getState().get('sessionList');
     return (<div>
       {isLoading ? <LoadingMessage message="Loading sessions" ellipsis /> : this.renderMap(sessions)}
       <div className={styles.options}>

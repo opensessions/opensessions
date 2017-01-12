@@ -134,6 +134,21 @@
   }
 }
 
+.members {
+  max-width: var(--tileWidth);
+  margin: 4em auto;
+  & > ol {
+    padding: 1em 0;
+    & > li {
+      list-style: none;
+      & img {
+        border-radius: 50%;
+        max-width: 2.5em;
+      }
+    }
+  }
+}
+
 @media (--desktop) {
   .bannerImage {
     font-size: 1.1em;
