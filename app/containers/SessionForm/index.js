@@ -75,7 +75,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       ],
       fields: {
         title: () => <TextField validation={{ maxLength: 50 }} {...this.getAttr('title')} />,
-        OrganizerUuid: () => <Relation {...this.getAttr('OrganizerUuid')} props={{ placeholder: 'E.g. Richmond Volleyball' }} relation={{ model: 'organizer', query: { owner: this.context.user ? this.context.user.user_id : null } }} />,
+        OrganizerUuid: () => <Relation {...this.getAttr('OrganizerUuid')} props={{ placeholder: 'E.g. Richmond Volleyball' }} relation={{ model: 'organizer', query: { canAct: 'edit' } }} />,
         description: () => <TextField multi size="XL" {...this.getAttr('description')} validation={{ maxLength: 2000 }} />,
         Activities: () => <JSONList
           {...this.getAttrRelation('Activities')}

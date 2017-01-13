@@ -104,6 +104,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       if (error) throw error;
       dispatch({ type: 'SESSION_LOADED', payload: instance });
       this.setState({ isLoading: false });
+      if (instance.actions.some(action => action === 'trackView')) apiModel.action('session', params.uuid, 'trackView');
     }).catch(() => {
       this.context.notify('Failed to load session', 'error');
       this.setState({ isLoading: false });

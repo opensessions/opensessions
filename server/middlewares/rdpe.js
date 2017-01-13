@@ -20,7 +20,7 @@ module.exports = (database, opts) => {
     });
   });
 
-  const hiddenFields = ['activityType', 'startDate', 'startTime', 'endTime', 'contactEmail'];
+  const hiddenFields = ['activityType', 'startDate', 'startTime', 'endTime', 'contactEmail', 'analytics'];
 
   rdpe.get('/sessions', (req, res) => {
     const fromTS = req.query.from || 0;

@@ -251,6 +251,7 @@ module.exports = (DataTypes) => ({
       socialInstagram: DataTypes.STRING(64),
       socialTwitter: DataTypes.STRING(64),
       socialHashtag: DataTypes.STRING(64),
+      analytics: DataTypes.JSON,
       _options: {
         getterMethods: {
           href() {
@@ -357,8 +358,15 @@ module.exports = (DataTypes) => ({
               actions.push('duplicate');
               actions.push('delete');
               actions.push('setActivitiesAction');
+            } else {
+              actions.push('trackView');
             }
             return actions;
+          },
+          trackView() {
+            const analytics = this.analytics || {};
+            analytics.views = (analytics.views || 0) + 1;
+            return this.update({ analytics }).then(() => ({}));
           },
           sendPublishedEmail(subject) {
             const session = this;

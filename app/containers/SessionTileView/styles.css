@@ -59,6 +59,13 @@
           & > svg {
             margin: 0 .25em;
           }
+          &.occurred {
+            position: relative;
+            margin-top: -1.5em;
+            &:first-child {
+              margin-top: 0;
+            }
+          }
         }
       }
     }
@@ -154,7 +161,8 @@
           padding: .25em .5em;
           box-shadow: 0 .1em .75em 0 rgba(0, 0, 0, .5);
           &.occurred {
-            opacity: .5;
+            background-color: #BBB; 
+            box-shadow: 0 .1em .75em 0 rgba(0, 0, 0, .25);
             text-decoration: line-through;
           }
           & > svg {

@@ -130,7 +130,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     const { organizer } = this.state;
     if (!organizer) return null;
     const sessions = organizer.Sessions || [];
-    let sessionsDisplay = <li>No sessions yet {this.canAct('edit') ? <a onClick={this.deleteOrganizer}>delete this organiser</a> : null}</li>;
+    let sessionsDisplay = <li>No sessions yet {this.canAct('delete') ? <Button style="danger" onClick={this.deleteOrganizer}>delete this organiser</Button> : null}</li>;
     if (sessions.length) sessionsDisplay = sessions.map(session => <li key={session.uuid}><SessionTileView session={session} /></li>);
     return (<div className={styles.sessions}>
       <h2>{organizer.name}&rsquo;{organizer.name[organizer.name.length - 1] !== 's' ? 's' : ''} Sessions</h2>
@@ -172,14 +172,14 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     const removeMember = member => apiModel.action('Organizer', uuid, 'removeMember', { user_id: member.user_id }).then(() => {
       this.context.notify('Member removed', 'success');
       this.fetchData();
-    }).catch(() => alert('Could not remove member'));
+    }).catch(() => this.context.notify('Could not remove member', 'error'));
     const addMember = () => {
       const email = prompt('Enter an email');
       if (email) {
         apiModel.action('Organizer', uuid, 'addMember', { email }).then(() => {
           this.context.notify('Member added', 'success');
           this.fetchData();
-        }).catch(() => alert('User does not exist'));
+        }).catch(() => this.context.notify('User does not exist', 'error'));
       }
     };
     return (<div className={styles.members}>

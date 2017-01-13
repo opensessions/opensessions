@@ -32,7 +32,7 @@ export default class HomePage extends React.Component { // eslint-disable-line r
   renderSessionList() {
     const { user } = this.context;
     if (!user) return <LoadingMessage message="Loading user" ellipsis />;
-    return <SessionList query={{ owner: user.user_id }} heading={<h1>Your Sessions:</h1>} />;
+    return <SessionList query={{ canAct: 'edit' }} heading={<h1>Your Sessions:</h1>} />;
   }
   renderMarketingSections() {
     return (<div className={styles.sections}>
