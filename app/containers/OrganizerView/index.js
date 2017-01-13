@@ -199,7 +199,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
       <div className={styles.container}>
         {this.renderSessions()}
       </div>
-      {organizer.actions.some(action => action === 'edit') ? this.renderMembers(organizer) : null}
+      {organizer && organizer.actions.some(action => action === 'edit') ? this.renderMembers(organizer) : null}
     </div>);
   }
 }
