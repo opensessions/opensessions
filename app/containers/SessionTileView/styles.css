@@ -1,3 +1,4 @@
+/* stylelint-disable selector-pseudo-class-no-unknown */
 @import '../App/variables.css';
 
 @keyframes appear {
@@ -19,7 +20,7 @@
 }
 
 :global .admin {
-  & :local .GALLink {
+  & .GALLink:local {
     display: inline-block;
   }
 }
@@ -161,7 +162,7 @@
           padding: .25em .5em;
           box-shadow: 0 .1em .75em 0 rgba(0, 0, 0, .5);
           &.occurred {
-            background-color: #BBB; 
+            background-color: #BBB;
             box-shadow: 0 .1em .75em 0 rgba(0, 0, 0, .25);
             text-decoration: line-through;
           }
