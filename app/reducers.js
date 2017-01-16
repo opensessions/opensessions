@@ -94,6 +94,17 @@ function userListViewReducer(state = userListInitialState, action) {
   }
 }
 
+const emailListInitialState = fromJS(null);
+
+function emailListViewReducer(state = emailListInitialState, action) {
+  switch (action.type) {
+    case 'EMAIL_LIST_LOADED':
+      return action.payload;
+    default:
+      return state;
+  }
+}
+
 const organizerListInitialState = fromJS(null);
 
 function organizerListViewReducer(state = organizerListInitialState, action) {
@@ -138,7 +149,7 @@ function profileSessionsViewReducer(state = profileSessionsInitialState, action)
   }
 }
 
-const formFocusIndexInitialState = fromJS(0);
+const formFocusIndexInitialState = 0;
 
 function formFocusIndexReducer(state = formFocusIndexInitialState, action) {
   switch (action.type) {
@@ -160,6 +171,7 @@ export default function createReducer(asyncReducers) {
     session: sessionViewReducer,
     sessionList: sessionListViewReducer,
     userList: userListViewReducer,
+    emailList: emailListViewReducer,
     organizerList: organizerListViewReducer,
     activityList: activityListViewReducer,
     profileOrganizersList: profileOrganizersViewReducer,

@@ -2,6 +2,7 @@ const express = require('express');
 const jwt = require('express-jwt');
 const dotenv = require('dotenv');
 const fs = require('fs');
+const sendgrid = require('sendgrid');
 
 const RDPE = require('./rdpe.js');
 const s3 = require('./s3.js');
@@ -139,6 +140,29 @@ module.exports = (database) => {
   admin.get('/users', (req, res) => {
     authClient.getUsers().then(users => {
       res.json({ users });
+    });
+  });
+
+  const twoSF = number => (number > 9 ? number : `0${number}`);
+  const dateFormat = date => `${date.getFullYear()}-${twoSF(date.getMonth() + 1)}-${twoSF(date.getDate())}`;
+
+  admin.get('/emails', (req, res) => {
+    const { SENDGRID_SECRET } = process.env;
+    const sg = sendgrid(SENDGRID_SECRET);
+    const request = sg.emptyRequest();
+    request.queryParams.aggregated_by = 'day';
+    request.queryParams.limit = '1';
+    const now = new Date();
+    const DAY = 1000 * 60 * 60 * 24;
+    request.queryParams.start_date = dateFormat(new Date(now.getTime() - (DAY * 28)));
+    request.queryParams.end_date = dateFormat(now);
+    request.queryParams.offset = '1';
+    request.method = 'GET';
+    request.path = '/v3/stats';
+    sg.API(request).then(response => JSON.parse(response.body)).then(emails => {
+      res.json({ emails });
+    }).catch(err => {
+      res.status(400).json({ message: 'Failed to load emails', error: err });
     });
   });
 

@@ -25,6 +25,9 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
       dispatch({ type: 'SESSION_LIST_LOADED', payload: instances });
       return apiFetch('/api/admin/users').then(userResult => {
         dispatch({ type: 'USER_LIST_LOADED', payload: userResult.users });
+        return apiFetch('/api/admin/emails').then(emailResult => {
+          dispatch({ type: 'EMAIL_LIST_LOADED', payload: emailResult.emails });
+        });
       });
     });
   }
@@ -50,7 +53,7 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
   }
   renderSessionAnalytics() {
     const sessions = this.context.store.getState().get('sessionList');
-    if (!sessions) return <div>Failed to load session information</div>;
+    if (!sessions) return <div>No session information</div>;
     return (<div className={styles.chart}>
       <h1>Session Publishing Analytics</h1>
       <p>Total sessions: {sessions.length}</p>
@@ -60,7 +63,7 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
   }
   renderUserAnalytics() {
     const users = this.context.store.getState().get('userList');
-    if (!users) return <div>Failed to load user information</div>;
+    if (!users) return <div>No user information</div>;
     return (<div className={styles.chart}>
       <h1>User Analytics</h1>
       <p>Total users: {users.length}</p>
@@ -92,12 +95,32 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
       {uncounted ? <p>({uncounted} {name}s not plotted)</p> : null}
     </div>);
   }
+  renderEmailAnalytics() {
+    const emails = this.context.store.getState().get('emailList');
+    if (!emails) return <div>No email information</div>;
+    return (<div className={styles.chart}>
+      <h1>Email Analytics</h1>
+      <LineChart
+        width={960}
+        height={320}
+        data={emails.map(day => ({ date: day.date, delivered: day.stats[0].metrics.delivered, unique_opens: day.stats[0].metrics.unique_opens, clicks: day.stats[0].metrics.clicks }))}
+        x={email => new Date(email.date)}
+        xScale="time"
+        chartSeries={[
+          { field: 'delivered', name: 'Delivered', color: '#1b9fde' },
+          { field: 'unique_opens', name: 'Opens', color: '#aee25b' },
+          { field: 'clicks', name: 'Clicks', color: '#e6c419' }
+        ]}
+      />
+    </div>);
+  }
   render() {
     const { isLoading } = this.state;
     return (<div>
-      {isLoading ? <LoadingMessage message="Loading sessions" ellipsis /> : null}
+      {isLoading ? <LoadingMessage message="Loading data" ellipsis /> : null}
       {this.renderSessionAnalytics()}
       {this.renderUserAnalytics()}
+      {this.renderEmailAnalytics()}
     </div>);
   }
 }
