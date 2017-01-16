@@ -55,6 +55,11 @@ module.exports = (database) => {
     });
   };
 
+  const checkIsAdmin = (req, res, next) => {
+    if (req.isAdmin) next();
+    else res.status(401).json({ status: 'failure', message: 'Admin only path' });
+  };
+
   const processUser = (req, res, next) => {
     req.isAdmin = false;
     requireLogin(req, res, () => {
@@ -131,7 +136,13 @@ module.exports = (database) => {
     });
   });
 
-  api.use('/admin', admin);
+  admin.get('/users', (req, res) => {
+    authClient.getUsers().then(users => {
+      res.json({ users });
+    });
+  });
+
+  api.use('/admin', processUser, checkIsAdmin, admin);
 
   api.get('/config.js', (req, res) => {
     const windowKeys = ['GOOGLE_MAPS_API_KEY', 'INTERCOM_APPID', 'AWS_S3_IMAGES_BASEURL', 'AUTH0_CLIENT_ID', 'AUTH0_CLIENT_DOMAIN', 'LOCALE_COUNTRY'];

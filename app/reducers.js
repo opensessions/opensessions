@@ -83,6 +83,17 @@ function sessionListViewReducer(state = sessionListInitialState, action) {
   }
 }
 
+const userListInitialState = fromJS(null);
+
+function userListViewReducer(state = userListInitialState, action) {
+  switch (action.type) {
+    case 'USER_LIST_LOADED':
+      return action.payload;
+    default:
+      return state;
+  }
+}
+
 const organizerListInitialState = fromJS(null);
 
 function organizerListViewReducer(state = organizerListInitialState, action) {
@@ -148,6 +159,7 @@ export default function createReducer(asyncReducers) {
     cookieNotifications: cookieNotificationsReducer,
     session: sessionViewReducer,
     sessionList: sessionListViewReducer,
+    userList: userListViewReducer,
     organizerList: organizerListViewReducer,
     activityList: activityListViewReducer,
     profileOrganizersList: profileOrganizersViewReducer,

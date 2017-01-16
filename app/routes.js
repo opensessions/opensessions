@@ -35,6 +35,12 @@ export default function createRoutes() {
         System.import('./containers/PartnerPage').then(loadModule(cb)).catch(errorLoading);
       }
     }, {
+      path: '/dashboard',
+      name: 'dashboard',
+      getComponent(nextState, cb) {
+        System.import('./containers/Dashboard').then(loadModule(cb)).catch(errorLoading);
+      }
+    }, {
       path: '/sessions',
       name: 'sessions',
       getComponent(nextState, cb) {

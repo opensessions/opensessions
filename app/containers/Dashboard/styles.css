@@ -1,0 +1,9 @@
+.chart {
+  text-align: center;
+  margin: 1em auto;
+  padding: 1em;
+  background-color: #FFF;
+  & svg {
+    margin: auto;
+  }
+}

@@ -161,6 +161,7 @@
     "postcss-custom-media": "^5.0.1",
     "react": "^15.3.2",
     "react-css-modules": "^3.7.6",
+    "react-d3-basic": "^1.6.11",
     "react-datepicker": "^0.28.1",
     "react-dom": "^15.3.2",
     "react-google-maps": "^6.0.1",
