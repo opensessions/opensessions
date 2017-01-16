@@ -162,7 +162,7 @@ module.exports = (database) => {
     sg.API(request).then(response => JSON.parse(response.body)).then(emails => {
       res.json({ emails });
     }).catch(err => {
-      res.status(400).json({ message: 'Failed to load emails', error: err });
+      res.status(400).json({ message: 'Failed to load emails', error: err, message: err ? err.message : '' });
     });
   });
 

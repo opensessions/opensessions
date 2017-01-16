@@ -68,6 +68,7 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
       <h1>User Analytics</h1>
       <p>Total users: {users.length}</p>
       <p>Active users (online in last 28 days): {users.filter(user => intervalsAgo(new Date(user.last_login), 1) > 28).length}</p>
+      <h2>New sign-ups</h2>
       {this.renderTimeChartFromCreatedObjects(users, 'created_at', 26, 7, 'user')}
     </div>);
   }
@@ -117,10 +118,10 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
   render() {
     const { isLoading } = this.state;
     return (<div>
-      {isLoading ? <LoadingMessage message="Loading data" ellipsis /> : null}
       {this.renderSessionAnalytics()}
       {this.renderUserAnalytics()}
       {this.renderEmailAnalytics()}
+      {isLoading ? <LoadingMessage message="Loading data" ellipsis /> : null}
     </div>);
   }
 }
