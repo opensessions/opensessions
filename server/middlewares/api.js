@@ -159,10 +159,10 @@ module.exports = (database) => {
     request.queryParams.offset = '1';
     request.method = 'GET';
     request.path = '/v3/stats';
-    sg.API(request).then(response => JSON.parse(response.body)).then(emails => {
-      res.json({ emails });
+    sg.API(request).then(response => {
+      res.json({ emails: response.body });
     }).catch(err => {
-      res.status(400).json({ message: 'Failed to load emails', error: err, message: err ? err.message : '' });
+      res.status(400).json({ message: 'Failed to load emails', error: err, content: err ? err.message : '' });
     });
   });
 
