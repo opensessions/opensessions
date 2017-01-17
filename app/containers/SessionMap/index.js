@@ -49,7 +49,7 @@ export default class SessionMap extends React.Component { // eslint-disable-line
   }
   constructor() {
     super();
-    this.state = { isLoading: false, showInfo: null, isClustered: false };
+    this.state = { isLoading: false, showInfo: null, isClustered: false, showExpired: true };
   }
   componentDidMount() {
     if (!this.props.sessions) {
@@ -86,7 +86,7 @@ export default class SessionMap extends React.Component { // eslint-disable-line
         mapTypeControl: false
       }
     };
-    const { showInfo, isClustered } = this.state;
+    const { showInfo, isClustered, showExpired } = this.state;
     const Loader = isClustered ? GoogleMapLoaderCluster : GoogleMapLoader;
     return (<Loader
       mapElement={<div style={{ height: '100%' }} />}
@@ -94,19 +94,21 @@ export default class SessionMap extends React.Component { // eslint-disable-line
       mapProps={googleMap}
       markers={sessions ? sessions.filter(session => session.locationData && session.locationData.lat).map(session => {
         const isActive = this.isActive(session);
+        if (!isActive && !showExpired) return false;
         return (<Marker {...marker} icon={isActive ? ACTIVE_ICON : INACTIVE_ICON} key={session.uuid} position={session.locationData} onClick={() => this.setState({ showInfo: session.uuid })}>
           {showInfo === session.uuid ? <InfoWindow onCloseClick={() => this.setState({ showInfo: null })}><SessionTileView session={session} style="slim" /></InfoWindow> : null}
         </Marker>);
-      }) : null}
+      }).filter(pin => pin) : null}
     />);
   }
   render() {
-    const { isLoading, isClustered } = this.state;
+    const { isLoading, isClustered, showExpired } = this.state;
     const sessions = this.props.sessions || this.context.store.getState().get('sessionList');
     return (<div>
       {isLoading ? <LoadingMessage message="Loading sessions" ellipsis /> : this.renderMap(sessions)}
       <div className={styles.options}>
         <p><Checkbox checked={isClustered} onChange={val => this.setState({ isClustered: val })} label="Toggle clustering" /></p>
+        <p><Checkbox checked={showExpired} onChange={val => this.setState({ showExpired: val })} label="Show expired sessions" /></p>
       </div>
     </div>);
   }

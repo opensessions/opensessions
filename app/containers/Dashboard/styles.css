@@ -13,3 +13,14 @@
     font-size: 1.25em;
   }
 }
+
+.blocks {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  & > li {
+    list-style: none;
+    max-width: 56em;
+    overflow: auto;
+  }
+}

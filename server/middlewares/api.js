@@ -142,6 +142,7 @@ module.exports = (database) => {
   const dateFormat = date => `${date.getFullYear()}-${twoSF(date.getMonth() + 1)}-${twoSF(date.getDate())}`;
 
   admin.get('/emails', (req, res) => {
+    const { days, categories } = req.query;
     const { SENDGRID_SECRET } = process.env;
     const sg = sendgrid(SENDGRID_SECRET);
     const request = sg.emptyRequest();
@@ -149,12 +150,12 @@ module.exports = (database) => {
     request.queryParams.limit = '1';
     const now = new Date();
     const DAY = 1000 * 60 * 60 * 24;
-    request.queryParams.start_date = dateFormat(new Date(now.getTime() - (DAY * 28)));
+    request.queryParams.start_date = dateFormat(new Date(now.getTime() - (DAY * days)));
     request.queryParams.end_date = dateFormat(now);
     request.queryParams.offset = '1';
-    request.queryParams.categories = ['engagement-expiring', 'engagement-live'];
+    if (categories) request.queryParams.categories = categories.split(',');
     request.method = 'GET';
-    request.path = '/v3/stats';
+    request.path = '/v3/categories/stats';
     sg.API(request).then(response => {
       res.json({ emails: response.body });
     }).catch(err => {

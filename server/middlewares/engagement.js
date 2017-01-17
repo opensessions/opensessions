@@ -32,14 +32,11 @@ const sessionHref = session => `${SERVICE_LOCATION}${session.href}`;
 
 const sendFinishListingEmails = (models) => {
   models.Session.findAll({ state: 'draft' }).then(drafts => {
-    console.log('drafts', drafts.length);
     getAllUsers().then(users => {
-      console.log('users', users.length);
       const now = new Date();
       now.setDate(now.getDate() - 1);
       const yesterdayDateString = now.toDateString();
       const yesterdayDrafts = drafts.filter(draft => (new Date(draft.createdAt)).toDateString() === yesterdayDateString);
-      console.log('yesterdayDrafts', yesterdayDrafts.length);
       yesterdayDrafts.forEach(draft => {
         const user = users.find(u => u.user_id === draft.owner);
         sendEmail('Finish your Open Sessions listing', user.email, `<p>Dear ${user.nickname || user.name},</p>
