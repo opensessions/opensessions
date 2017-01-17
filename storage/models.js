@@ -262,7 +262,8 @@ module.exports = (DataTypes) => ({
           },
           aggregators() {
             // figure out which Get Active location
-            const { locationData, location, genderRestriction } = this;
+            const { state, locationData, location, genderRestriction } = this;
+            if (state !== 'published') return [];
             const getActivePath = `/results/list?activity=&location=${location}&lat=${locationData ? locationData.lat : ''}&lng=${locationData ? locationData.lng : ''}&radius=4&sortBy=distance`;
             const info = {
               GetActiveLondon: {
@@ -300,7 +301,7 @@ module.exports = (DataTypes) => ({
               }
             }
             if (genderRestriction) {
-              if (aggregators.indexOf('GetActiveLondon') !== -1 && genderRestriction === 'female') {
+              if (aggregators.some(agg => agg === 'GetActiveLondon') && genderRestriction === 'female') {
                 aggregators.push('GirlsMove');
               }
             }

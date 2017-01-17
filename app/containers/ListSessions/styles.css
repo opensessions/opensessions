@@ -1,5 +1,13 @@
 @import '../App/variables.css';
 
+.list {
+  max-width: 80em;
+  margin: auto;
+  & > p {
+    margin: .5em 1em;
+  }
+}
+
 a.page {
   padding: .5em;
   color: #FFF;

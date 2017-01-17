@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { LineChart, BarStackChart } from 'react-d3-basic';
+import { LineChart, BarStackChart, PieChart } from 'react-d3-basic';
 
 import LoadingMessage from '../../components/LoadingMessage';
 import Checkbox from '../../components/Fields/Checkbox';
@@ -64,6 +64,7 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
         aggregators[agg.name] = (aggregators[agg.name] || 0) + 1;
       });
     });
+    const aggStats = Object.keys(aggregators).map(name => ({ name, total: aggregators[name] }));
     return (<div className={styles.chart}>
       <h1>Session Publishing Analytics</h1>
       <p>Total sessions: {sessions.length}</p>
@@ -75,7 +76,15 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
         </li>
         <li>
           <h2>Aggregators</h2>
-          <ol>{Object.keys(aggregators).map(name => <li>{name}: {aggregators[name]}</li>)}</ol>
+          <ol>{aggStats.map(agg => <li>{agg.name}: {agg.total}</li>)}</ol>
+          <PieChart
+            width={240}
+            height={400}
+            data={aggStats}
+            name={item => item.name}
+            value={item => item.total}
+            chartSeries={aggStats.map(agg => ({ field: agg.name, name: agg.name, value: agg.total }))}
+          />
         </li>
       </ol>
     </div>);

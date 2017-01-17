@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 
 import LoadingMessage from '../../components/LoadingMessage';
 import SessionList from '../SessionList';
+import Button from '../../components/Button';
 
 import { apiModel } from '../../utils/api';
 
@@ -29,8 +30,16 @@ export default class ListSessions extends React.Component { // eslint-disable-li
     this.state = { isLoading: false };
   }
   componentDidMount() {
+    this.fetchData(this.context.store.dispatch, this.props.location.query);
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.location.search !== this.props.location.search) {
+      this.fetchData(this.context.store.dispatch, nextProps.location.query);
+    }
+  }
+  fetchData(dispatch, query) {
     this.setState({ isLoading: true }); // eslint-disable-line react/no-did-mount-set-state
-    this.constructor.fetchData(this.context.store.dispatch, this.props.location.query).then(() => {
+    this.constructor.fetchData(dispatch, query).then(() => {
       this.setState({ isLoading: false });
     }).catch(error => {
       this.context.notify(error, 'error');
@@ -38,9 +47,9 @@ export default class ListSessions extends React.Component { // eslint-disable-li
   }
   renderPagination(page, start, end, maxPage) {
     return (<div className={styles.pagination}>
-      {page > 1 ? <Link className={styles.page} to={`/sessions/${page - 1}`}>Previous page</Link> : null}
+      {page > 1 ? <Link className={styles.page} to={`/sessions/${page - 1}${this.props.location.search}`}>Previous page</Link> : null}
       <span> Page {page} of {maxPage} </span>
-      {page < maxPage ? <Link className={styles.page} to={`/sessions/${page + 1}`}>Next page</Link> : null}
+      {page < maxPage ? <Link className={styles.page} to={`/sessions/${page + 1}${this.props.location.search}`}>Next page</Link> : null}
     </div>);
   }
   render() {
@@ -52,10 +61,19 @@ export default class ListSessions extends React.Component { // eslint-disable-li
     const page = (params && params.page) ? parseInt(params.page, 10) : 1;
     const maxPage = Math.ceil(total / limit);
     const [start, end] = [-1, 0].map(index => page + index).map(index => index * limit);
-    return (<div>
-      {this.renderPagination(page, start, end, maxPage)}
-      {isLoading ? <LoadingMessage message="Loading sessions" ellipsis /> : <SessionList heading="Here is a list of all published sessions:" sessions={sessions ? sessions.slice(start, end) : []} />}
-      {this.renderPagination(page, start, end, maxPage)}
+    const now = new Date();
+    return (<div className={styles.list}>
+      {total ? (<div>
+        {this.renderPagination(page, start, end, maxPage)}
+        {isLoading ? <LoadingMessage message="Loading sessions" ellipsis /> : <SessionList heading="Here is a list of all published sessions:" sessions={sessions ? sessions.slice(start, end) : []} />}
+        {this.renderPagination(page, start, end, maxPage)}
+      </div>) : <p>No sessions {this.props.location.search ? 'for this search' : null}</p>}
+      <p>
+        Popular searches:
+        <Button to="/sessions">All</Button>
+        <Button to={`/sessions?updatedAt=${now.toISOString().substr(0, 10)}`}>Updated today</Button>
+        <Button to={`/sessions?updatedAt=${new Date((new Date()).setDate((new Date()).getDate() - 1)).toISOString().substr(0, 10)}`}>Updated yesterday</Button>
+      </p>
     </div>);
   }
 }

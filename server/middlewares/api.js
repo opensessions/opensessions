@@ -80,11 +80,29 @@ module.exports = (database) => {
     }
   };
 
+  const timeFields = ['createdAt', 'updatedAt'];
+
   const queryParse = req => {
     const query = req.query || {};
     if (query) {
       Object.keys(query).filter(key => key[0] === key[0].toUpperCase() && query[key] === 'null').forEach(key => {
         query[key] = null;
+      });
+      Object.keys(query).filter(key => timeFields.some(field => field === key)).forEach(key => {
+        const date = new Date(query[key]);
+        switch (query[key].length) {
+          case 4:
+            query[key] = { $gte: date, $lt: new Date(new Date(date).setFullYear(date.getFullYear() + 1)) };
+            break;
+          case 7:
+            query[key] = { $gte: date, $lt: new Date(new Date(date).setMonth(date.getMonth() + 1)) };
+            break;
+          case 10:
+            query[key] = { $gte: date, $lt: new Date(new Date(date).setDate(date.getDate() + 1)) };
+            break;
+          default:
+            break;
+        }
       });
     }
     return query;
