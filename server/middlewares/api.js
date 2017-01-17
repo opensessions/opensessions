@@ -10,12 +10,7 @@ const s3 = require('./s3.js');
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 
-const { ManagementClient } = require('auth0');
-
-const authClient = new ManagementClient({
-  token: process.env.AUTH0_CLIENT_TOKEN,
-  domain: process.env.AUTH0_CLIENT_DOMAIN
-});
+const { authClient, getAllUsers } = require('../../storage/users');
 
 const capitalize = string => `${string[0].toUpperCase()}${string.substr(1)}`;
 
@@ -138,7 +133,7 @@ module.exports = (database) => {
   });
 
   admin.get('/users', (req, res) => {
-    authClient.getUsers().then(users => {
+    getAllUsers().then(users => {
       res.json({ users });
     });
   });
@@ -157,6 +152,7 @@ module.exports = (database) => {
     request.queryParams.start_date = dateFormat(new Date(now.getTime() - (DAY * 28)));
     request.queryParams.end_date = dateFormat(now);
     request.queryParams.offset = '1';
+    request.queryParams.categories = ['engagement-expiring', 'engagement-live'];
     request.method = 'GET';
     request.path = '/v3/stats';
     sg.API(request).then(response => {

@@ -13,16 +13,10 @@
 }
 
 .GALLink {
-  display: none;
+  display: inline-block;
   font-size: .8em;
   color: var(--actionColor);
   margin: 0 .25em;
-}
-
-:global .admin {
-  & .GALLink:local {
-    display: inline-block;
-  }
 }
 
 .activities {

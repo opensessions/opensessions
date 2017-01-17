@@ -31,7 +31,7 @@ Postgres is currently the only storage option configured to run directly with th
 When you need to alter the database, create a migration file like this:
 
     npm run db:migration:make
-    git add storage/migrations/{ timestamp }-{ migration-name }-migration.js
+    git add storage/migrations/{ timestamp }-{ descriptive migration name }.js
 
 Then modify the `up`/`down` functions inside the migration file to modify the database.
 

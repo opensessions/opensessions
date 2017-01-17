@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
-import { LineChart } from 'react-d3-basic';
+import { LineChart, BarStackChart } from 'react-d3-basic';
 
 import LoadingMessage from '../../components/LoadingMessage';
+import Checkbox from '../../components/Fields/Checkbox';
 
 import { apiFetch, apiModel } from '../../utils/api';
 
@@ -47,29 +48,65 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
   renderChart(sessions, period, interval) {
     if (!sessions) return null;
     return (<div className={styles.chart}>
-      <h2>Published sessions per {interval > 1 ? `${interval}-day period` : 'day'}</h2>
+      <h2>Published sessions</h2>
       {this.renderTimeChartFromCreatedObjects(sessions, 'updatedAt', period, interval, 'session')}
     </div>);
   }
   renderSessionAnalytics() {
+    const { isLoading } = this.state;
+    if (isLoading) return <LoadingMessage message="Loading sessions" ellipsis />;
     const sessions = this.context.store.getState().get('sessionList');
     if (!sessions) return <div>No session information</div>;
+    const { sessionWeekly, sessionLength } = this.state;
+    const periodLength = sessionWeekly ? 7 : 1;
+    const aggregators = {};
+    sessions.map(session => session.aggregators).forEach(aggList => {
+      aggList.forEach(agg => {
+        aggregators[agg.name] = (aggregators[agg.name] || 0) + 1;
+      });
+    });
     return (<div className={styles.chart}>
       <h1>Session Publishing Analytics</h1>
       <p>Total sessions: {sessions.length}</p>
-      {this.renderChart(sessions, 42, 1)}
-      {this.renderChart(sessions, 26, 7)}
+      {this.renderChart(sessions, sessionLength || 8, periodLength)}
+      <p><Checkbox checked={sessionWeekly} onChange={() => this.setState({ sessionWeekly: !sessionWeekly })} label="Per week" /></p>
+      <p><label>Zoom</label> <input type="range" min={8} max={64} step={8} onChange={event => this.setState({ sessionLength: parseInt(event.target.value, 10) })} /></p>
+      <h2>Aggregators</h2>
+      <ol>{Object.keys(aggregators).map(name => <li>{name}: {aggregators[name]}</li>)}</ol>
     </div>);
   }
   renderUserAnalytics() {
+    const { isLoading } = this.state;
+    if (isLoading) return <LoadingMessage message="Loading users" ellipsis />;
     const users = this.context.store.getState().get('userList');
-    if (!users) return <div>No user information</div>;
+    const sessions = this.context.store.getState().get('sessionList');
+    if (!users || !sessions) return <div>No user information</div>;
+    const sessionOwners = sessions.map(session => session.owner);
+    const totalUsers = users.length;
+    const activeUsers = users.filter(user => intervalsAgo(new Date(user.last_login), 1) > 28).length;
+    const publishedUsers = users.filter(user => sessionOwners.some(owner => owner === user.user_id)).length;
+    const activePC = activeUsers / totalUsers;
+    const publishedPC = publishedUsers / activeUsers;
     return (<div className={styles.chart}>
       <h1>User Analytics</h1>
-      <p>Total users: {users.length}</p>
-      <p>Active users (online in last 28 days): {users.filter(user => intervalsAgo(new Date(user.last_login), 1) > 28).length}</p>
+      <p>Total users: {totalUsers} | Active users (online in last 28 days): {activeUsers} | Published users: {publishedUsers}</p>
       <h2>New sign-ups</h2>
       {this.renderTimeChartFromCreatedObjects(users, 'created_at', 26, 7, 'user')}
+      <h2>User totals</h2>
+      <BarStackChart
+        width={320}
+        height={400}
+        data={[{ first: Math.min(activePC, publishedPC), second: Math.max(activePC, publishedPC) - Math.min(activePC, publishedPC), total: 1 - Math.max(activePC, publishedPC) }]}
+        chartSeries={[
+          { field: 'first', name: activePC < publishedPC ? 'Active users' : 'Published users', color: '#88c540' },
+          { field: 'second', name: activePC >= publishedPC ? 'Active users' : 'Published users', color: '#1b91cd' },
+          { field: 'total', name: 'All users', color: '#AAA' }
+        ]}
+        showXGrid={false}
+        showYGrid={false}
+        x={() => 'Users'}
+        xScale="ordinal"
+      />
     </div>);
   }
   renderTimeChartFromCreatedObjects(objects, timeField, intervalCount, interval, name) {
@@ -89,7 +126,7 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
         data={data}
         showXGrid
         showYGrid
-        chartSeries={[{ field: 'total', name: 'total', color: '#88C540', style: { 'stroke-width': 2 } }]}
+        chartSeries={[{ field: 'total', name: 'total', color: '#88C540', style: { strokeWidth: 2 } }]}
         x={period => period.time}
         xScale="time"
       />
@@ -97,6 +134,8 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
     </div>);
   }
   renderEmailAnalytics() {
+    const { isLoading } = this.state;
+    if (isLoading) return <LoadingMessage message="Loading email data" ellipsis />;
     const emails = this.context.store.getState().get('emailList');
     if (!emails) return <div>No email information</div>;
     return (<div className={styles.chart}>
@@ -104,24 +143,22 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
       <LineChart
         width={960}
         height={320}
-        data={emails.map(day => ({ date: day.date, delivered: day.stats[0].metrics.delivered, unique_opens: day.stats[0].metrics.unique_opens, clicks: day.stats[0].metrics.clicks }))}
-        x={email => new Date(email.date)}
+        data={emails.map(day => ({ date: new Date(day.date), delivered: day.stats[0].metrics.delivered, unique_opens: day.stats[0].metrics.unique_opens, clicks: day.stats[0].metrics.clicks }))}
+        x={email => email.date}
         xScale="time"
         chartSeries={[
-          { field: 'delivered', name: 'Delivered', color: '#1b9fde' },
-          { field: 'unique_opens', name: 'Opens', color: '#aee25b' },
-          { field: 'clicks', name: 'Clicks', color: '#e6c419' }
+          { field: 'delivered', name: 'Delivered', color: '#1b9fde', style: { strokeWidth: 2 } },
+          { field: 'unique_opens', name: 'Opens', color: '#aee25b', style: { strokeWidth: 2 } },
+          { field: 'clicks', name: 'Clicks', color: '#e6c419', style: { strokeWidth: 2 } }
         ]}
       />
     </div>);
   }
   render() {
-    const { isLoading } = this.state;
     return (<div>
       {this.renderSessionAnalytics()}
       {this.renderUserAnalytics()}
       {this.renderEmailAnalytics()}
-      {isLoading ? <LoadingMessage message="Loading data" ellipsis /> : null}
     </div>);
   }
 }

@@ -46,12 +46,18 @@ const database = storage.getInstance();
 const apiMiddleware = require('./middlewares/api');
 app.use('/api', apiMiddleware(database));
 
-const { sendEngagementEmails } = require('./middlewares/engagement');
 const { CronJob } = require('cron');
+const { sendWeeklyEmails, sendDailyEmails } = require('./middlewares/engagement');
+
 const EVERY_MONDAY_MORNING = '0 0 7 * * 1';
-const { sendEmail } = require('./middlewares/email');
-const emailCron = new CronJob(EVERY_MONDAY_MORNING, () => { // eslint-disable-line no-unused-vars
-  sendEngagementEmails(sendEmail, database.models);
+const EVERY_MORNING = '0 0 8 * * *';
+
+const emailWeeklyCron = new CronJob(EVERY_MONDAY_MORNING, () => { // eslint-disable-line no-unused-vars
+  sendWeeklyEmails(database.models);
+}, null, true, process.env.LOCALE_TIMEZONE);
+
+const emailDailyCron = new CronJob(EVERY_MORNING, () => { // eslint-disable-line no-unused-vars
+  sendDailyEmails(database.models);
 }, null, true, process.env.LOCALE_TIMEZONE);
 
 // Initialize frontend middleware that will serve your JS app

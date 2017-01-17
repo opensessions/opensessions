@@ -25,13 +25,37 @@
 
 const { SERVICE_LOCATION, SERVICE_EMAIL } = process.env;
 
-const { ManagementClient } = require('auth0');
-const api = new ManagementClient({
-  token: process.env.AUTH0_CLIENT_TOKEN,
-  domain: process.env.AUTH0_CLIENT_DOMAIN
-});
+const { getAllUsers } = require('../../storage/users');
+const { sendEmail } = require('./email');
 
-const sendEngagementEmails = (sendEmail, models) => {
+const sessionHref = session => `${SERVICE_LOCATION}${session.href}`;
+
+const sendFinishListingEmails = (models) => {
+  models.Session.findAll({ state: 'draft' }).then(drafts => {
+    console.log('drafts', drafts.length);
+    getAllUsers().then(users => {
+      console.log('users', users.length);
+      const now = new Date();
+      now.setDate(now.getDate() - 1);
+      const yesterdayDateString = now.toDateString();
+      const yesterdayDrafts = drafts.filter(draft => (new Date(draft.createdAt)).toDateString() === yesterdayDateString);
+      console.log('yesterdayDrafts', yesterdayDrafts.length);
+      yesterdayDrafts.forEach(draft => {
+        const user = users.find(u => u.user_id === draft.owner);
+        sendEmail('Finish your Open Sessions listing', user.email, `<p>Dear ${user.nickname || user.name},</p>
+          <p>Congratulations on starting your listing ${draft.title ? `'${draft.title}'` : 'on Open Sessions'}.</p>
+          <p>You're just a few steps away from getting the word out about your session.</p>
+          <p><a class="button" href="${sessionHref(draft)}/edit">Finish your listing</a></p>
+          <h2>Why use Open Sessions?</h2>
+          <p>Open Sessions is the easy way to get the sessions you run discovered by the thousands of people across the country searching for physical activity via the web's activity finders.</p>
+          <p><a href="${sessionHref(draft)}/edit">Complete your session listing</a> and publish it to start letting people know about the great sessions you run.</p>
+        `, { substitutions: { '-title-': 'You\'re nearly there', '-titleClass-': 'large' } });
+      });
+    });
+  });
+};
+
+const sendEngagementEmails = (models) => {
   const outbox = [];
   const now = new Date();
   const MS_PER_DAY = 24 * 60 * 60 * 1000;
@@ -58,9 +82,8 @@ const sendEngagementEmails = (sendEmail, models) => {
     }
     return expiration;
   };
-  const sessionHref = session => `${SERVICE_LOCATION}${session.href}`;
   models.Session.findAll({ state: { $not: 'deleted' } }).then(allSessions => {
-    api.getUsers().then(users => {
+    getAllUsers().then(users => {
       users.forEach(user => {
         const sessions = allSessions.filter(session => session.owner === user.user_id);
         const analysis = {
@@ -121,4 +144,12 @@ const sendEngagementEmails = (sendEmail, models) => {
   });
 };
 
-module.exports = { sendEngagementEmails };
+const sendDailyEmails = (models) => {
+  sendFinishListingEmails(models);
+};
+
+const sendWeeklyEmails = (models) => {
+  sendEngagementEmails(models);
+};
+
+module.exports = { sendWeeklyEmails, sendDailyEmails };

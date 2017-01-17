@@ -9,7 +9,6 @@ const sendEmail = (subject, to, body, opts) => {
   const sg = sendgrid(SENDGRID_SECRET);
   let templateId = opts.template_id || SENDGRID_TEMPLATE;
   if (NO_TEMPLATE) templateId = undefined;
-  console.log(`sendEmail(${subject}, ${to}, body, ${JSON.stringify(opts)})`);
   if (substitutions) substitutions['-contactUs-'] = SERVICE_EMAIL;
   const options = {
     personalizations: [{

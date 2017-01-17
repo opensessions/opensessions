@@ -87,7 +87,7 @@ export default class SessionTileView extends React.Component { // eslint-disable
     </li>);
   }
   renderAggregatorLinks(session) {
-    return session.aggregators ? session.aggregators.map(agg => <a target="blank" href={agg.href} className={styles.GALLink}>{agg.name}</a>) : null;
+    return session.aggregators ? session.aggregators.map(agg => <a key={agg.name} target="blank" href={agg.href} className={styles.GALLink}>{agg.name}</a>) : null;
   }
   render() {
     if (this.state && this.state.isDeleted) return null;
@@ -95,13 +95,15 @@ export default class SessionTileView extends React.Component { // eslint-disable
     let { state } = session;
     if (state === 'unpublished') state = 'draft';
     const schedules = sortSchedule(session.schedule).map(this.renderSchedule);
+    const { user } = this.context;
+    const isAdmin = user && user.email && user.email.indexOf('@imin.co') !== -1;
     return (<article className={[styles.tile, style ? styles[style] : ''].join(' ')}>
       <div className={styles.imgCol}>
         <img src={session.image ? session.image : '/images/placeholder.png'} role="presentation" className={!session.image ? styles.noImage : null} />
       </div>
       <div className={styles.textCol}>
         <div className={styles.info}>
-          <h1><Link to={session.href}>{this.getTitle()}</Link> {this.renderAggregatorLinks(session)}</h1>
+          <h1><Link to={session.href}>{this.getTitle()}</Link> {isAdmin ? this.renderAggregatorLinks(session) : null}</h1>
           <div className={styles.location}>{session.locationData && session.locationData.manual ? session.locationData.manual.join(', ') : session.location}</div>
           {session.Activities ? <ol className={styles.activities}>{session.Activities.map(activity => <li>{activity.name}</li>)}</ol> : null}
         </div>
