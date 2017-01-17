@@ -382,10 +382,10 @@ module.exports = (DataTypes) => ({
                 <p>You have successfully listed your session on Open Sessions.</p>
                 <div class="session compact">
                   <h1>${session.title}</h1>
-                  <table>
+                  <table style="text-align:center;">
                     <tr class="images">
                       <td>${session.image ? `<img src="${session.image}" />` : `<img src="${SERVICE_LOCATION}/images/placeholder.png" />`}</td>
-                      <td><img src="${getStaticMapUrl([lat, lng], 13, '360x240', { color: 'blue', label: 'S', icon: `${SERVICE_LOCATION}/images/map-pin-active.png` })}" /></td>
+                      <td><img src="${getStaticMapUrl([lat, lng], 14, '360x240', { color: 'blue', label: 'S', icon: `${SERVICE_LOCATION}/images/map-pin-active.png` })}" /></td>
                     </tr>
                     <tr>
                       <td style="border-right:1px solid #EEE;">
@@ -414,11 +414,14 @@ module.exports = (DataTypes) => ({
                     </div>
                   </li>`).join('')}
                   <li class="meta-info">
-                    ${session.aggregators.length ? `Your session appears on ${session.aggregators.length} activity finders` : 'We couldn\'t work out where your session appears yet'}
+                    ${session.aggregators.length ? `Your session appears on ${session.aggregators.length} activity finder${session.aggregators.length > 1 ? 's' : ''}` : 'Your session doesn\'t appear anywhere yet. We\'ll be in touch'}
                   </li>
                 </ol>
                 <h1>What next?</h1>
-                <p>You can update your session at any time - just go to the edit page, update and click publish again. Share it with your friends and social networks to help people find your sessions.</p>
+                <p>We know that sometimes plans change. If you need to update your listing, click <a href="${session.absoluteURL}/edit">here</a>.</p>
+                <p>Why not share your sessions on your social media? Use the social links on your session page.</p>
+                <h1>Let us know what we can do better</h1>
+                <p>Open Sessions is still in beta testing - your feedback helps us improve it. What would have made things easier for you? Let us know by simply replying to this email.</p>
               `, { substitutions: { '-title-': 'Your session was published!', '-titleClass-': 'large' } });
             }
           },

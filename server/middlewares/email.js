@@ -17,9 +17,7 @@ const sendEmail = (subject, to, body, opts) => {
       substitutions
     }],
     bcc: bcc ? [{ email: bcc }] : null,
-    from: {
-      email: SERVICE_EMAIL
-    },
+    from: { name: 'Open Sessions', email: SERVICE_EMAIL },
     reply_to: replyTo ? { email: replyTo } : null,
     subject,
     content: [{
