@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import { Link } from 'react-router';
 
 import LoadingMessage from '../../components/LoadingMessage';
 import SessionList from '../SessionList';
@@ -47,10 +46,23 @@ export default class ListSessions extends React.Component { // eslint-disable-li
   }
   renderPagination(page, start, end, maxPage) {
     return (<div className={styles.pagination}>
-      {page > 1 ? <Link className={styles.page} to={`/sessions/${page - 1}${this.props.location.search}`}>Previous page</Link> : null}
+      {page > 1 ? <Button to={`/sessions/${page - 1}${this.props.location.search}`}>{page - 1}</Button> : null}
       <span> Page {page} of {maxPage} </span>
-      {page < maxPage ? <Link className={styles.page} to={`/sessions/${page + 1}${this.props.location.search}`}>Next page</Link> : null}
+      {page < maxPage ? <Button to={`/sessions/${page + 1}${this.props.location.search}`}>{page + 1}</Button> : null}
     </div>);
+  }
+  renderFilters() {
+    const now = new Date();
+    const filters = [
+      { search: '', name: 'All' },
+      { search: `?updatedAt=${now.toISOString().substr(0, 10)}`, name: 'Updated today' },
+      { search: `?updatedAt=${new Date((new Date()).setDate(now.getDate() - 1)).toISOString().substr(0, 10)}`, name: 'Updated yesterday' }
+    ];
+    const { search } = this.props.location;
+    return (<p>
+      Popular searches:
+      {filters.map(filter => <Button to={`/sessions${filter.search}`} style={search === filter.search ? 'live' : false}>{filter.name}</Button>)}
+    </p>);
   }
   render() {
     const { params } = this.props;
@@ -61,19 +73,13 @@ export default class ListSessions extends React.Component { // eslint-disable-li
     const page = (params && params.page) ? parseInt(params.page, 10) : 1;
     const maxPage = Math.ceil(total / limit);
     const [start, end] = [-1, 0].map(index => page + index).map(index => index * limit);
-    const now = new Date();
     return (<div className={styles.list}>
+      {this.renderFilters()}
       {total ? (<div>
         {this.renderPagination(page, start, end, maxPage)}
-        {isLoading ? <LoadingMessage message="Loading sessions" ellipsis /> : <SessionList heading="Here is a list of all published sessions:" sessions={sessions ? sessions.slice(start, end) : []} />}
+        {isLoading ? <LoadingMessage message="Loading sessions" ellipsis /> : <SessionList heading={<p>Here is a list of all published sessions:</p>} sessions={sessions ? sessions.slice(start, end) : []} />}
         {this.renderPagination(page, start, end, maxPage)}
       </div>) : <p>No sessions {this.props.location.search ? 'for this search' : null}</p>}
-      <p>
-        Popular searches:
-        <Button to="/sessions">All</Button>
-        <Button to={`/sessions?updatedAt=${now.toISOString().substr(0, 10)}`}>Updated today</Button>
-        <Button to={`/sessions?updatedAt=${new Date((new Date()).setDate((new Date()).getDate() - 1)).toISOString().substr(0, 10)}`}>Updated yesterday</Button>
-      </p>
     </div>);
   }
 }

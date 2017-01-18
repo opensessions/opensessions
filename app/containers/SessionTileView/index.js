@@ -17,6 +17,7 @@ export default class SessionTileView extends React.Component { // eslint-disable
     user: PropTypes.object,
     router: PropTypes.object,
     notify: PropTypes.func,
+    onExpire: PropTypes.func
   }
   getTitle() {
     const { session } = this.props;
@@ -33,8 +34,8 @@ export default class SessionTileView extends React.Component { // eslint-disable
       text: 'Delete',
       dispatch: () => apiModel.delete('session', session.uuid).then(response => {
         if (response.status === 'success') {
-          this.setState({ isDeleted: true });
           this.context.notify('Session deleted', 'success');
+          this.context.onExpire();
         } else {
           throw new Error('Failed to delete session');
         }
@@ -90,7 +91,6 @@ export default class SessionTileView extends React.Component { // eslint-disable
     return session.aggregators ? session.aggregators.map(agg => <a key={agg.name} target="blank" href={agg.href} className={styles.GALLink}>{agg.name}</a>) : null;
   }
   render() {
-    if (this.state && this.state.isDeleted) return null;
     const { session, style } = this.props;
     let { state } = session;
     if (state === 'unpublished') state = 'draft';

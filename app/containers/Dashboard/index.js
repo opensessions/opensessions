@@ -13,6 +13,12 @@ const intervalsAgo = (date, interval) => Math.floor((Date.now() - date.getTime()
 
 const emailCategories = [{ name: 'Expiry', id: 'engagement-expiring' }, { name: 'Live sessions', id: 'engagement-live' }];
 
+const layout = {
+  width: 860,
+  height: 320,
+  margins: { left: 32, right: 32, top: 20, bottom: 20 }
+};
+
 export default class Dashboard extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
     store: PropTypes.object,
@@ -141,8 +147,7 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
     const data = periods.map((val, key) => ({ time: new Date(Date.now() - (key * (MS_PER_DAY * interval))), total: val }));
     return (<div>
       <LineChart
-        width={960}
-        height={320}
+        {...layout}
         data={data}
         showXGrid
         showYGrid
@@ -164,8 +169,7 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
         {emailCategories.map((type, key) => (<li>
           <h2>{type.name} email</h2>
           <LineChart
-            width={960}
-            height={320}
+            {...layout}
             data={emails.map(day => ({ date: new Date(day.date), delivered: day.stats[key].metrics.delivered, unique_opens: day.stats[key].metrics.unique_opens, clicks: day.stats[key].metrics.clicks }))}
             x={email => email.date}
             xScale="time"

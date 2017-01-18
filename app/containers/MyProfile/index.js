@@ -14,6 +14,9 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
     user: PropTypes.object,
     notify: PropTypes.func
   };
+  static childContextTypes = {
+    onExpire: PropTypes.func
+  };
   static fetchData = (dispatch, user) => apiModel.search('organizer', { canAct: 'edit' }).then(result => {
     dispatch({ type: 'PROFILE_ORGANIZERS_LOADED', payload: result.instances });
     return apiModel.search('session', { owner: user.user_id, OrganizerUuid: 'null' }).then(sessionResult => {
@@ -26,12 +29,17 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
     super();
     this.state = {};
   }
+  getChildContext() {
+    return {
+      onExpire: () => this.fetchData()
+    };
+  }
   componentDidMount() {
     if (this.context.user) {
-      this.fetchDataClient();
+      this.fetchData();
     } else {
       setTimeout(() => {
-        this.fetchDataClient();
+        this.fetchData();
       }, 1000);
     }
   }
@@ -48,9 +56,9 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
   getOrganizer() {
     const { selectedOrganizer } = this.state;
     const organizers = this.getOrganizers();
-    return (selectedOrganizer ? organizers.filter(item => item.uuid === selectedOrganizer) : organizers)[0];
+    return organizers.find(org => org.uuid === selectedOrganizer) || organizers[0];
   }
-  fetchDataClient() {
+  fetchData() {
     this.setState({ isLoading: true });
     this.constructor.fetchData(this.context.store.dispatch, this.context.user).then(() => {
       this.setState({ isLoading: false });

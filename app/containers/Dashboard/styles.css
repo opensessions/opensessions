@@ -20,7 +20,7 @@
   justify-content: space-around;
   & > li {
     list-style: none;
-    max-width: 56em;
+    max-width: 52em;
     overflow: auto;
   }
 }

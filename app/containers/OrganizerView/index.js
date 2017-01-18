@@ -26,6 +26,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     router: PropTypes.object,
     notify: PropTypes.func,
     store: PropTypes.object,
+    onExpire: PropTypes.func
   }
   constructor(props) {
     super(props);
@@ -93,9 +94,10 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     return apiModel.delete('organizer', organizer.uuid).then(res => {
       if (res.status === 'success') {
         this.context.notify('Organiser deleted!', 'success');
-        this.context.router.push('/');
+        this.context.onExpire();
       }
-    }).catch(() => {
+    }).catch(err => {
+      console.log(err);
       this.context.notify('Couldn\'t delete organiser', 'error');
     });
   }
