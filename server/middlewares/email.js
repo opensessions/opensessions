@@ -1,7 +1,7 @@
 const sendgrid = require('sendgrid');
 const emailCopy = require('./email-copy.json');
 
-const { SENDGRID_SECRET, SERVICE_EMAIL, SENDGRID_TEMPLATE } = process.env;
+const { SENDGRID_SECRET, SERVICE_EMAIL, SENDGRID_TEMPLATE, SENDGRID_TRACKING } = process.env;
 
 const sendEmail = (subject, to, body, opts) => {
   opts = opts || {};
@@ -27,7 +27,7 @@ const sendEmail = (subject, to, body, opts) => {
     attachments: attachments || null,
   };
   if (templateId) options.template_id = templateId;
-  if (categories) options.categories = categories;
+  if (categories && SENDGRID_TRACKING) options.categories = categories;
   const request = sg.emptyRequest({
     method: 'POST',
     path: '/v3/mail/send',

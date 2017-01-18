@@ -83,9 +83,9 @@ export default class ListSessions extends React.Component { // eslint-disable-li
     return (<div className={styles.list}>
       {this.renderFilters()}
       {total ? (<div>
-        {this.renderPagination(page, start, end, maxPage)}
+        {isLoading ? null : this.renderPagination(page, start, end, maxPage)}
         {isLoading ? <LoadingMessage message="Loading sessions" ellipsis /> : <SessionList heading={<p>Here is a list of all published sessions:</p>} sessions={sessions ? sessions.slice(start, end) : []} />}
-        {this.renderPagination(page, start, end, maxPage)}
+        {isLoading ? null : this.renderPagination(page, start, end, maxPage)}
       </div>) : <p>No sessions {this.props.location.search ? 'for this search' : null}</p>}
     </div>);
   }

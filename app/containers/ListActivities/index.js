@@ -60,7 +60,7 @@ export default class ListActivities extends React.Component { // eslint-disable-
   }
   renderActivity(activity) {
     return (<li>
-      <span className={styles.name}>{activity.name} {activity.SessionsCount !== '0' ? <span className={styles.count}>{activity.SessionsCount}</span> : null}</span>
+      <span className={styles.name}>{activity.name} {activity.Sessions.length ? <span className={styles.count}>{activity.Sessions.length}</span> : null}</span>
       <span className={styles.actions}>{activity.actions.map(action => <Button onClick={() => this.actionClick(activity, action)}>{action}</Button>)}</span>
     </li>);
   }

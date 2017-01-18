@@ -82,7 +82,7 @@ module.exports = (database) => {
 
   const timeFields = ['createdAt', 'updatedAt'];
 
-  const queryParse = req => {
+  const queryParse = (req, Model) => {
     const query = req.query || {};
     if (query) {
       Object.keys(query).filter(key => key[0] === key[0].toUpperCase() && query[key] === 'null').forEach(key => {
@@ -110,6 +110,7 @@ module.exports = (database) => {
         }
       });
     }
+    if (Model && Model.queryParse) return Model.queryParse(query);
     return query;
   };
 
@@ -219,7 +220,7 @@ module.exports = (database) => {
     const { canAct } = req.query;
     delete req.query.canAct;
     processUser(req, res, () => {
-      const query = Model.getQuery({ where: queryParse(req) }, database.models, getUser(req));
+      const query = Model.getQuery({ where: queryParse(req, Model) }, database.models, getUser(req));
       if (query instanceof Error) {
         res.status(400).json({ status: 'failure', error: query.message });
         return;

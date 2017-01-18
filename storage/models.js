@@ -138,8 +138,6 @@ module.exports = (DataTypes) => ({
         classMethods: {
           getQuery(query, models) {
             if (!query) query = {};
-            // query.attributes = ['uuid', 'name', 'owner', 'Activity.createdAt', 'Activity.updatedAt'];
-            // query.include = [{ model: models.Session, through: models.SessionActivity, required: false }];
             query.attributes = ['uuid', 'name', 'owner', 'Activity.createdAt', 'Activity.updatedAt', [DataTypes.fn('COUNT', DataTypes.col('Sessions.uuid')), 'SessionsCount']];
             query.include = [{ model: models.Session, through: models.SessionActivity, required: false, where: { state: 'published' } }];
             query.group = ['Activity.uuid', 'Sessions.uuid', 'Sessions.SessionActivity.uuid'];

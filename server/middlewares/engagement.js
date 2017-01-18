@@ -46,7 +46,7 @@ const sendFinishListingEmails = (models) => {
           <h2>Why use Open Sessions?</h2>
           <p>Open Sessions is the easy way to get the sessions you run discovered by the thousands of people across the country searching for physical activity via the web's activity finders.</p>
           <p><a href="${sessionHref(draft)}/edit">Complete your session listing</a> and publish it to start letting people know about the great sessions you run.</p>
-        `, { substitutions: { '-title-': 'You\'re nearly there', '-titleClass-': 'large' } });
+        `, { substitutions: { '-title-': 'You\'re nearly there', '-titleClass-': 'large' }, categories: ['engagement', 'engagement-finishListing'] });
       });
     });
   });

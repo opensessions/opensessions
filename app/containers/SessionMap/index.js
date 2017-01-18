@@ -107,7 +107,7 @@ export default class SessionMap extends React.Component { // eslint-disable-line
     return (<div>
       {isLoading ? <LoadingMessage message="Loading sessions" ellipsis /> : this.renderMap(sessions)}
       <div className={styles.options}>
-        <p>Showing {sessions.filter(s => showExpired || this.isActive(s)).length} sessions</p>
+        <p>Showing {sessions ? sessions.filter(s => showExpired || this.isActive(s)).length : ''} sessions</p>
         <p><Checkbox checked={isClustered} onChange={val => this.setState({ isClustered: val })} label="Toggle clustering" /></p>
         <p><Checkbox checked={showExpired} onChange={val => this.setState({ showExpired: val })} label="Show expired sessions" /></p>
       </div>
