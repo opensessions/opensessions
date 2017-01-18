@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 
 import Authenticated from '../Authenticated';
@@ -7,6 +7,9 @@ import LogoutLink from '../LogoutLink';
 import styles from './styles.css';
 
 export default class Footer extends React.Component { // eslint-disable-line react/prefer-stateless-function
+  static contextTypes = {
+    isAdmin: PropTypes.bool
+  }
   render() {
     return (
       <footer className={styles.footer}>
@@ -23,6 +26,15 @@ export default class Footer extends React.Component { // eslint-disable-line rea
               <p><LogoutLink>Log out</LogoutLink></p>
             </Authenticated>
           </div>
+          {this.context.isAdmin ? (<div className={styles.column}>
+            <Authenticated>
+              <h2>Admin</h2>
+              <p><Link to="/dashboard">Analytics</Link></p>
+              <p><Link to="/sessions/map">Sessions Map</Link> - <Link to="/sessions">Sessions list</Link></p>
+              <p><Link to="/activities">Activity list</Link></p>
+              <p><Link to="/organizers">Organiser list</Link></p>
+            </Authenticated>
+          </div>) : null}
         </div>
       </footer>
     );

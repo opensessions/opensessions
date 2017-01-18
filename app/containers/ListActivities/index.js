@@ -10,7 +10,8 @@ import styles from './styles.css';
 export default class ListActivities extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
     notify: PropTypes.func,
-    store: PropTypes.object
+    store: PropTypes.object,
+    router: PropTypes.object
   };
   static fetchData(dispatch) {
     return apiModel.search('activity').then(result => {
@@ -39,18 +40,27 @@ export default class ListActivities extends React.Component { // eslint-disable-
     }) : [];
   }
   actionClick = (activity, action) => {
-    if (confirm(`Are you sure you want to delete ${activity.name}? This CANNOT be undone!`)) {
-      apiModel.action('activity', activity.uuid, action).then(() => {
-        this.setState({ isLoading: true });
-        this.constructor.fetchData(this.context.store.dispatch).then(() => {
-          this.setState({ isLoading: false });
-        });
-      });
+    switch (action) {
+      case 'view':
+        this.context.router.push(`/sessions?activityId=${activity.uuid}`);
+        break;
+      case 'delete':
+        if (confirm(`Are you sure you want to delete ${activity.name}? This CANNOT be undone!`)) {
+          apiModel.action('activity', activity.uuid, action).then(() => {
+            this.setState({ isLoading: true });
+            this.constructor.fetchData(this.context.store.dispatch).then(() => {
+              this.setState({ isLoading: false });
+            });
+          });
+        }
+        break;
+      default:
+        break;
     }
   }
   renderActivity(activity) {
     return (<li>
-      <span className={styles.name}>{activity.name}</span>
+      <span className={styles.name}>{activity.name} {activity.SessionsCount !== '0' ? <span className={styles.count}>{activity.SessionsCount}</span> : null}</span>
       <span className={styles.actions}>{activity.actions.map(action => <Button onClick={() => this.actionClick(activity, action)}>{action}</Button>)}</span>
     </li>);
   }

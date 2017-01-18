@@ -93,6 +93,10 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     const session = this.context.store.getState().get('session');
     return session && session.actions.indexOf('edit') !== -1;
   }
+  isAdmin() {
+    const { user } = this.context;
+    return user && user.email.indexOf('@imin.co') !== -1;
+  }
   dispatchMessageModal = () => {
     const session = this.context.store.getState().get('session');
     this.context.modal.dispatch({ component: <MessageModal to={session.contactEmail} title={<span>Ask <b>{session.contactName}</b> {session.Organizer ? <span>from <b>{session.Organizer.name}</b></span> : ''} a question</span>} url={`/api/session/${session.uuid}/action/message`} /> });
@@ -235,7 +239,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         </div>
         {meetingPoint}
         {preparation}
-        {activitiesList}
+        {this.isAdmin() ? activitiesList : null}
         {/* this.renderLastUpdated(session) */}
       </div>
       <div className={styles.sideCol}>

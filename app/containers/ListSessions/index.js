@@ -3,6 +3,7 @@ import React, { PropTypes } from 'react';
 import LoadingMessage from '../../components/LoadingMessage';
 import SessionList from '../SessionList';
 import Button from '../../components/Button';
+import Checkbox from '../../components/Fields/Checkbox';
 
 import { apiModel } from '../../utils/api';
 
@@ -26,7 +27,7 @@ export default class ListSessions extends React.Component { // eslint-disable-li
   }
   constructor() {
     super();
-    this.state = { isLoading: false };
+    this.state = { isLoading: false, showExpired: true };
   }
   componentDidMount() {
     this.fetchData(this.context.store.dispatch, this.props.location.query);
@@ -46,9 +47,9 @@ export default class ListSessions extends React.Component { // eslint-disable-li
   }
   renderPagination(page, start, end, maxPage) {
     return (<div className={styles.pagination}>
-      {page > 1 ? <Button to={`/sessions/${page - 1}${this.props.location.search}`}>{page - 1}</Button> : null}
+      {page > 1 ? <Button to={`/sessions/${page - 1}${this.props.location.search}`}>Previous</Button> : null}
       <span> Page {page} of {maxPage} </span>
-      {page < maxPage ? <Button to={`/sessions/${page + 1}${this.props.location.search}`}>{page + 1}</Button> : null}
+      {page < maxPage ? <Button to={`/sessions/${page + 1}${this.props.location.search}`}>Next</Button> : null}
     </div>);
   }
   renderFilters() {
@@ -59,15 +60,18 @@ export default class ListSessions extends React.Component { // eslint-disable-li
       { search: `?updatedAt=${new Date((new Date()).setDate(now.getDate() - 1)).toISOString().substr(0, 10)}`, name: 'Updated yesterday' }
     ];
     const { search } = this.props.location;
+    const { showExpired } = this.state;
     return (<p>
       Popular searches:
       {filters.map(filter => <Button to={`/sessions${filter.search}`} style={search === filter.search ? 'live' : false}>{filter.name}</Button>)}
+      <Checkbox checked={showExpired} onChange={() => this.setState({ showExpired: !showExpired })} label="Show expired sessions" />
     </p>);
   }
   render() {
     const { params } = this.props;
-    const isLoading = this.state ? this.state.isLoading : false;
-    const sessions = this.context.store.getState().get('sessionList');
+    const { isLoading, showExpired } = this.state;
+    let sessions = this.context.store.getState().get('sessionList');
+    if (!showExpired) sessions = sessions.filter(session => session.sortedSchedule.length && (new Date(session.sortedSchedule[session.sortedSchedule.length - 1].start)).getTime() > Date.now());
     const limit = 10;
     const total = sessions ? sessions.length : 0;
     const page = (params && params.page) ? parseInt(params.page, 10) : 1;

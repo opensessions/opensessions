@@ -5,6 +5,12 @@
   & ol {
     & > li {
       list-style: none;
+      & .count {
+        background: #FFF;
+        padding: .25em;
+        display: inline-block;
+        line-height: 1;
+      }
     }
   }
 }
@@ -12,5 +18,6 @@
 .actions {
   & > a {
     padding: .25em;
+    min-width: 3em;
   }
 }

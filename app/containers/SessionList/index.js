@@ -16,7 +16,11 @@ export default class SessionList extends React.Component { // eslint-disable-lin
     query: PropTypes.object
   };
   static contextTypes = {
-    notify: PropTypes.func
+    notify: PropTypes.func,
+    onExpire: PropTypes.func
+  };
+  static childContextTypes = {
+    onExpire: PropTypes.func
   }
   constructor(props) {
     super();
@@ -24,6 +28,11 @@ export default class SessionList extends React.Component { // eslint-disable-lin
     if (props.sessions) {
       this.state = { sessions: props.sessions, isLoading: false };
     }
+  }
+  getChildContext() {
+    return {
+      onExpire: () => (this.props.sessions ? this.context.onExpire() : this.fetchData())
+    };
   }
   componentDidMount() {
     if (!this.props.sessions) {

@@ -90,6 +90,7 @@ module.exports = (database) => {
       });
       Object.keys(query).filter(key => timeFields.some(field => field === key)).forEach(key => {
         const date = new Date(query[key]);
+        let dates;
         switch (query[key].length) {
           case 4:
             query[key] = { $gte: date, $lt: new Date(new Date(date).setFullYear(date.getFullYear() + 1)) };
@@ -99,6 +100,10 @@ module.exports = (database) => {
             break;
           case 10:
             query[key] = { $gte: date, $lt: new Date(new Date(date).setDate(date.getDate() + 1)) };
+            break;
+          case 21:
+            dates = query[key].split(':').map(d => new Date(d));
+            query[key] = { $gte: dates[0], $lt: dates[1] };
             break;
           default:
             break;

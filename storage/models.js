@@ -1,6 +1,6 @@
 const { sendEmail } = require('../server/middlewares/email');
 const { SERVICE_LOCATION, SERVICE_EMAIL, EMAILS_INBOUND_URL, GOOGLE_MAPS_API_STATICIMAGES_KEY } = process.env;
-const { parseSchedule, nextSchedule } = require('../utils/calendar');
+const { sortSchedule, parseSchedule, nextSchedule } = require('../utils/calendar');
 
 function getStaticMapUrl(center, zoom, size, marker) {
   const [lat, lng] = center;
@@ -136,10 +136,13 @@ module.exports = (DataTypes) => ({
           }
         },
         classMethods: {
-          getQuery(query) {
+          getQuery(query, models) {
             if (!query) query = {};
             // query.attributes = ['uuid', 'name', 'owner', 'Activity.createdAt', 'Activity.updatedAt'];
             // query.include = [{ model: models.Session, through: models.SessionActivity, required: false }];
+            query.attributes = ['uuid', 'name', 'owner', 'Activity.createdAt', 'Activity.updatedAt', [DataTypes.fn('COUNT', DataTypes.col('Sessions.uuid')), 'SessionsCount']];
+            query.include = [{ model: models.Session, through: models.SessionActivity, required: false, where: { state: 'published' } }];
+            query.group = ['Activity.uuid', 'Sessions.uuid', 'Sessions.SessionActivity.uuid'];
             return query;
           },
           makeAssociations(models) {
@@ -162,7 +165,7 @@ module.exports = (DataTypes) => ({
         getterMethods: {
           href() {
             return `/${this.Model.name.toLowerCase()}/${this.uuid}`;
-          },
+          }
         },
         instanceMethods: {
           delete() {
@@ -269,13 +272,13 @@ module.exports = (DataTypes) => ({
               GetActiveLondon: {
                 name: 'Get Active London',
                 img: [SERVICE_LOCATION, 'images/aggregators/getactivelondon.png'].join('/'),
-                description: 'The Get Active physical activity finder for the London area',
+                description: 'Get Active London is in its live beta testing phase, but already receives 100s of visits a week from people looking for ways to be more active',
                 href: ['https://beta.getactivelondon.com', getActivePath].join('')
               },
               GetActiveEssex: {
                 name: 'Get Active Essex',
                 img: [SERVICE_LOCATION, 'images/aggregators/getactiveessex.png'].join('/'),
-                description: 'The Get Active physical activity finder for the Essex area',
+                description: 'Get Active Essex is in its live beta testing phase, but already receives 100s of visits a week from people looking for ways to be more active',
                 href: ['https://www.getactiveessex.com', getActivePath].join('')
               },
               GirlsMove: {
@@ -306,6 +309,12 @@ module.exports = (DataTypes) => ({
               }
             }
             return aggregators.map(name => info[name]);
+          },
+          sortedSchedule() {
+            if (this.schedule && this.schedule.length) {
+              return sortSchedule(this.schedule);
+            }
+            return [];
           }
         },
         instanceMethods: {
@@ -474,6 +483,14 @@ module.exports = (DataTypes) => ({
         classMethods: {
           getQuery(query, models, user) {
             query.include = [models.Organizer, { model: models.Activity, through: models.SessionActivity }];
+            if (query.where) {
+              if (query.where.activityId) {
+                query.where = [`"Activities"."uuid" = '${query.where.activityId}'`];
+              }
+              if (query.where.activity) {
+                query.where = [`"Activities"."name" = '${query.where.activity}'`];
+              }
+            }
             query.where = { $and: query.where ? [query.where] : [] };
             if (user) {
               query.where.$and.push({

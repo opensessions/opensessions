@@ -38,7 +38,8 @@ export default class App extends React.Component { // eslint-disable-line react/
     router: PropTypes.object,
     notify: PropTypes.func,
     modal: PropTypes.object,
-    isLoadingUser: PropTypes.bool
+    isLoadingUser: PropTypes.bool,
+    isAdmin: PropTypes.bool
   }
   constructor() {
     super();
@@ -53,7 +54,8 @@ export default class App extends React.Component { // eslint-disable-line react/
       auth: this.state.auth ? this.state.auth : { },
       notify: this.notify,
       modal: { dispatch: this.modal, close: () => this.setState({ modal: null }) },
-      isLoadingUser: this.state.isLoadingUser
+      isLoadingUser: this.state.isLoadingUser,
+      isAdmin: this.state.profile && this.state.profile.email.indexOf('@imin.co') !== -1
     };
   }
   componentDidMount() {
