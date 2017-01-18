@@ -103,7 +103,7 @@ module.exports = (database) => {
             break;
           case 21:
             dates = query[key].split(':').map(d => new Date(d));
-            query[key] = { $gte: dates[0], $lt: dates[1] };
+            query[key] = { $gte: dates[0], $lt: new Date(dates[1].setDate(dates[1].getDate() + 1)) };
             break;
           default:
             break;

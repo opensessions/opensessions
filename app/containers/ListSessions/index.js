@@ -9,6 +9,8 @@ import { apiModel } from '../../utils/api';
 
 import styles from './styles.css';
 
+const toDate = date => date.toISOString().substr(0, 10);
+
 export default class ListSessions extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
     notify: PropTypes.func,
@@ -56,8 +58,9 @@ export default class ListSessions extends React.Component { // eslint-disable-li
     const now = new Date();
     const filters = [
       { search: '', name: 'All' },
-      { search: `?updatedAt=${now.toISOString().substr(0, 10)}`, name: 'Updated today' },
-      { search: `?updatedAt=${new Date((new Date()).setDate(now.getDate() - 1)).toISOString().substr(0, 10)}`, name: 'Updated yesterday' }
+      { search: `?updatedAt=${toDate(now)}`, name: 'Updated today' },
+      { search: `?updatedAt=${toDate(new Date((new Date()).setDate(now.getDate() - 1)))}`, name: 'Updated yesterday' },
+      { search: `?updatedAt=${toDate(new Date((new Date()).setDate(now.getDate() - 7)))}:${toDate(now)}`, name: 'Updated within last week' }
     ];
     const { search } = this.props.location;
     const { showExpired } = this.state;
