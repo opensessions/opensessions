@@ -3,6 +3,15 @@ const emailCopy = require('./email-copy.json');
 
 const { SENDGRID_SECRET, SERVICE_EMAIL, SENDGRID_TEMPLATE, SENDGRID_TRACKING } = process.env;
 
+const emailStyles = {
+  messageSrc: { padding: '.5em', background: '#f1f6f6', color: '#666', 'text-align': 'center' }
+};
+
+const getStyledElement = (styleName, html, tagName) => {
+  const style = emailStyles[styleName];
+  return `<${tagName || 'div'} style="${Object.keys(style).map(key => [key, style[key]].join(': ')).join(';')}">${html}</${tagName || 'div'}>`;
+};
+
 const sendEmail = (subject, to, body, opts) => {
   opts = opts || {};
   const { categories, attachments, substitutions, replyTo, bcc, NO_TEMPLATE } = opts;
@@ -44,4 +53,4 @@ const sendStoredEmail = (type, to, name) => {
   return sendEmail(subject, to, body, { substitutions: { '-title-': title } });
 };
 
-module.exports = { sendEmail, sendStoredEmail };
+module.exports = { sendEmail, sendStoredEmail, getStyledElement };

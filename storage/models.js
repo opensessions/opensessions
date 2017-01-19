@@ -1,4 +1,4 @@
-const { sendEmail } = require('../server/middlewares/email');
+const { sendEmail, getStyledElement } = require('../server/middlewares/email');
 const { SERVICE_LOCATION, SERVICE_EMAIL, EMAILS_INBOUND_URL, GOOGLE_MAPS_API_STATICIMAGES_KEY } = process.env;
 const { sortSchedule, parseSchedule, nextSchedule } = require('../utils/calendar');
 
@@ -458,7 +458,7 @@ module.exports = (DataTypes) => ({
             return models.Threads.create({ originEmail: message.from, metadata: { SessionUuid: session.uuid } })
               .then(thread => sendEmail(`Open Sessions - New question from ${message.name}`, session.contactEmail, `
                 <div class="message">
-                  <div style="padding: .5em; background: #f1f6f6; color: #666; text-align: center;">Message from Open Sessions user</div>
+                  ${getStyledElement('messageSrc', 'Message from Open Sessions user')}
                   <div class="msgBody">${message.body}</div>
                   <div class="from">${message.name}</div>
                 </div>
