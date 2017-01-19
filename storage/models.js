@@ -425,7 +425,7 @@ module.exports = (DataTypes) => ({
                     <div class="info">
                       <h2>${aggregator.name}</h2>
                       <p>${aggregator.description}</p>
-                      <a href="${aggregator.href}">View your session on ${aggregator.name}</a>
+                      <a href="${aggregator.href}" style="color: inherit;">View your session on ${aggregator.name}</a>
                     </div>
                   </li>`).join('')}
                   <li class="meta-info">
@@ -458,6 +458,7 @@ module.exports = (DataTypes) => ({
             return models.Threads.create({ originEmail: message.from, metadata: { SessionUuid: session.uuid } })
               .then(thread => sendEmail(`Open Sessions - New question from ${message.name}`, session.contactEmail, `
                 <div class="message">
+                  <div style="padding: .5em; background: #f1f6f6; color: #666; text-align: center;">Message from Open Sessions user</div>
                   <div class="msgBody">${message.body}</div>
                   <div class="from">${message.name}</div>
                 </div>
@@ -465,7 +466,7 @@ module.exports = (DataTypes) => ({
                 <div class="session">
                   <img src="${session.image}" />
                   <h1><a href="${session.absoluteURL}">${session.title}</a></h1>
-                  <table><tr>
+                  <table style="text-align: center;"><tr>
                     <td>
                       <img src="${SERVICE_LOCATION}/images/map-pin.png" />
                       <p>${session.location.replace(/,/, '<br>')}</p>

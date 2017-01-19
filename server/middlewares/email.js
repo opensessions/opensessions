@@ -33,6 +33,7 @@ const sendEmail = (subject, to, body, opts) => {
     path: '/v3/mail/send',
     body: options
   });
+  console.log(`sendEmail(${subject}, ${to})`);
   return sg.API(request);
 };
 
