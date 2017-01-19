@@ -9,7 +9,7 @@ export default class Button extends React.PureComponent {
   static propTypes = {
     children: PropTypes.node,
     className: PropTypes.string,
-    style: PropTypes.string,
+    style: PropTypes.any(PropTypes.string, PropTypes.array),
     to: PropTypes.string,
     onClick: PropTypes.func
   }
@@ -24,8 +24,9 @@ export default class Button extends React.PureComponent {
     }
   }
   render() {
-    return (<a className={[styles.button, this.props.className, styles[this.props.style]].join(' ')} onKeyUp={event => event.keyCode === 13 && this.onClick(event)} onClick={this.onClick} tabIndex={0} href={this.props.to}>
-      {this.props.children}
+    const { to, children, style } = this.props;
+    return (<a className={[styles.button, this.props.className, style instanceof Array ? style.map(s => styles[s]).join(' ') : styles[style]].join(' ')} onKeyUp={e => e.keyCode === 13 && this.onClick(event)} onClick={this.onClick} tabIndex={0} href={to}>
+      {children}
     </a>);
   }
 }

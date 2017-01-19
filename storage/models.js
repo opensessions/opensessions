@@ -284,12 +284,19 @@ module.exports = (DataTypes) => ({
                 img: [SERVICE_LOCATION, 'images/aggregators/girlsmovelondon.png'].join('/'),
                 description: 'The girls only physical activity finder for London',
                 href: ['https://girlsmove.london', getActivePath].join('')
+              },
+              GetActiveHampshire: {
+                name: 'Get Active Hampshire & Isle of Wight',
+                img: [SERVICE_LOCATION, 'images/aggregators/getactivehampshire.png'].join('/'),
+                description: 'Get Active Hampshire is in its live beta testing phase, but already receives 100s of visits a week from people looking for ways to be more active',
+                href: ['https://www.getactivehampshireiow.co.uk', getActivePath].join('')
               }
             };
             let aggregators = [];
             const regions = [
               { name: 'GetActiveLondon', lng: -.1278, lat: 51.5074, radius: 35.4 },
-              { name: 'GetActiveEssex', lng: .4691, lat: 51.7343, radius: 38 }
+              { name: 'GetActiveEssex', lng: .4691, lat: 51.7343, radius: 38 },
+              { name: 'GetActiveHampshire', lng: -1.2997, lat: 51.02721, radius: 50 }
             ];
             if (locationData) {
               const { lat, lng } = locationData;

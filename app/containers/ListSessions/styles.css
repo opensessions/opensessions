@@ -8,6 +8,12 @@
   }
 }
 
+.filters {
+  & p {
+    margin: .5em 1em;
+  }
+}
+
 a.page {
   padding: .5em;
   color: #FFF;

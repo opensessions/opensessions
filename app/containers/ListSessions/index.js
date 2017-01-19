@@ -14,7 +14,8 @@ const toDate = date => date.toISOString().substr(0, 10);
 export default class ListSessions extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
     notify: PropTypes.func,
-    store: PropTypes.object
+    store: PropTypes.object,
+    router: PropTypes.object
   };
   static propTypes = {
     location: PropTypes.object,
@@ -49,9 +50,11 @@ export default class ListSessions extends React.Component { // eslint-disable-li
   }
   renderPagination(page, start, end, maxPage) {
     return (<div className={styles.pagination}>
-      {page > 1 ? <Button to={`/sessions/${page - 1}${this.props.location.search}`}>Previous</Button> : null}
+      {page > 1 ? <Button to={`/sessions${this.props.location.search}`} style="slim">Start</Button> : null}
+      {page > 1 ? <Button to={`/sessions/${page - 1}${this.props.location.search}`} style="slim">🠜</Button> : null}
       <span> Page {page} of {maxPage} </span>
-      {page < maxPage ? <Button to={`/sessions/${page + 1}${this.props.location.search}`}>Next</Button> : null}
+      {page < maxPage ? <Button to={`/sessions/${page + 1}${this.props.location.search}`} style="slim">🠞</Button> : null}
+      {page < maxPage ? <Button to={`/sessions/${maxPage}${this.props.location.search}`} style="slim">End</Button> : null}
     </div>);
   }
   renderFilters() {
@@ -64,11 +67,19 @@ export default class ListSessions extends React.Component { // eslint-disable-li
     ];
     const { search } = this.props.location;
     const { showExpired } = this.state;
-    return (<p>
-      Popular searches:
-      {filters.map(filter => <Button to={`/sessions${filter.search}`} style={search === filter.search ? 'live' : false}>{filter.name}</Button>)}
-      <Checkbox checked={showExpired} onChange={() => this.setState({ showExpired: !showExpired })} label="Show expired sessions" />
-    </p>);
+    return (<div className={styles.filters}>
+      <p>Filters - {filters.map(filter => <Button to={`/sessions${filter.search}`} style={search === filter.search ? 'live' : false}>{filter.name}</Button>)}</p>
+      {filters.some(filter => filter.search === search) ? null : (<p>
+        Current filters - {search.slice(1).split('&').map(v => v.split('=')).map(([key, val]) => {
+          const changeVal = () => {
+            const newVal = prompt(`Change ${key}:`, val);
+            if (newVal) this.context.router.push(`/sessions${search.replace(`${key}=${val}`, `${key}=${newVal}`)}`);
+          };
+          return <span>{key}: <Button style={['slim', 'live']} onClick={() => changeVal()}>{val}</Button> <Button style={['slim', 'danger']} to={`/sessions${search.replace(new RegExp(`[\?&]?${key}=${val}`), '')}`}>x</Button></span>;
+        })}
+      </p>)}
+      <p><Checkbox checked={showExpired} onChange={() => this.setState({ showExpired: !showExpired })} label="Show expired sessions" /></p>
+    </div>);
   }
   render() {
     const { params } = this.props;
@@ -84,7 +95,7 @@ export default class ListSessions extends React.Component { // eslint-disable-li
       {this.renderFilters()}
       {total ? (<div>
         {isLoading ? null : this.renderPagination(page, start, end, maxPage)}
-        {isLoading ? <LoadingMessage message="Loading sessions" ellipsis /> : <SessionList heading={<p>Here is a list of all published sessions:</p>} sessions={sessions ? sessions.slice(start, end) : []} />}
+        {isLoading ? <LoadingMessage message="Loading sessions" ellipsis /> : <SessionList heading=" " sessions={sessions ? sessions.slice(start, end) : []} />}
         {isLoading ? null : this.renderPagination(page, start, end, maxPage)}
       </div>) : <p>No sessions {this.props.location.search ? 'for this search' : null}</p>}
     </div>);

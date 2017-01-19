@@ -42,7 +42,7 @@ export default class ListActivities extends React.Component { // eslint-disable-
   actionClick = (activity, action) => {
     switch (action) {
       case 'view':
-        this.context.router.push(`/sessions?activityId=${activity.uuid}`);
+        this.context.router.push(`/sessions?activity=${activity.name}`);
         break;
       case 'delete':
         if (confirm(`Are you sure you want to delete ${activity.name}? This CANNOT be undone!`)) {

@@ -30,7 +30,7 @@ export default class Footer extends React.Component { // eslint-disable-line rea
             <Authenticated>
               <h2>Admin</h2>
               <p><Link to="/dashboard">Analytics</Link></p>
-              <p><Link to="/sessions/map">Sessions Map</Link> - <Link to="/sessions">Sessions list</Link></p>
+              <p>View sessions - <Link to="/sessions/map">Map</Link> • <Link to="/sessions">List</Link></p>
               <p><Link to="/activities">Activity list</Link></p>
               <p><Link to="/organizers">Organiser list</Link></p>
             </Authenticated>

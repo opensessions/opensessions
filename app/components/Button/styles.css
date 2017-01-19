@@ -19,6 +19,10 @@
     text-decoration: none;
     background-color: #0B6898;
   }
+  &.slim {
+    min-width: 2em;
+    padding: .5em;
+  }
   &.draft {
     background-color: var(--draftColor);
     &:hover {

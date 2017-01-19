@@ -57,12 +57,11 @@ export default class SessionList extends React.Component { // eslint-disable-lin
   }
   render() {
     const { hideButton } = this.props;
-    let { heading } = this.props;
+    const { heading } = this.props;
     const { sessions, isLoading } = this.state;
-    if (!heading) heading = <p className={styles.intro}>{sessions.length ? 'These are the sessions you\'ve created so far:' : 'You haven\'t created any sessions yet! Click the button below to create a session.'}</p>;
     if (isLoading) return <div className={styles.sessionList}><LoadingMessage message="Loading sessions" ellipsis /></div>;
     return (<div className={styles.sessionList}>
-      {heading}
+      {heading || <p className={styles.intro}>{sessions.length ? 'These are the sessions you\'ve created so far:' : 'You haven\'t created any sessions yet! Click the button below to create a session.'}</p>}
       <ol className={styles.list}>
         {sessions.map(session => <li key={session.uuid}><SessionTileView session={session} /></li>)}
       </ol>
