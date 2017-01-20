@@ -1,27 +1,15 @@
 @import '../App/variables.css';
 
 .list {
-  max-width: 80em;
-  margin: auto;
   & > p {
     margin: .5em 1em;
   }
 }
 
 .filters {
+  max-width: 80em;
+  margin: auto;
   & p {
     margin: .5em 1em;
   }
-}
-
-a.page {
-  padding: .5em;
-  color: #FFF;
-  background-color: var(--actionColor);
-  text-decoration: none;
-}
-
-.pagination {
-  text-align: center;
-  padding: 1em;
 }

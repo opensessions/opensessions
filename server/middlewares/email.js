@@ -4,7 +4,7 @@ const emailCopy = require('./email-copy.json');
 const { SENDGRID_SECRET, SERVICE_EMAIL, SENDGRID_TEMPLATE, SENDGRID_TRACKING } = process.env;
 
 const emailStyles = {
-  messageSrc: { padding: '.5em', background: '#f1f6f6', color: '#666', 'text-align': 'center' }
+  messageSrc: { padding: '.5em', background: '#F6F1F1', color: '#666', 'text-align': 'center' }
 };
 
 const getStyledElement = (styleName, html, tagName) => {
@@ -42,7 +42,6 @@ const sendEmail = (subject, to, body, opts) => {
     path: '/v3/mail/send',
     body: options
   });
-  console.log(`sendEmail(${subject}, ${to})`);
   return sg.API(request);
 };
 

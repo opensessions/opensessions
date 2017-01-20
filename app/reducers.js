@@ -160,6 +160,17 @@ function formFocusIndexReducer(state = formFocusIndexInitialState, action) {
   }
 }
 
+const mapClusteredInitialState = false;
+
+function mapClusteredReducer(state = mapClusteredInitialState, action) {
+  switch (action.type) {
+    case 'MAP_OPTIONS_CLUSTER':
+      return action.payload;
+    default:
+      return state;
+  }
+}
+
 /**
  * Creates the main reducer with the asynchronously loaded ones
  */
@@ -177,6 +188,7 @@ export default function createReducer(asyncReducers) {
     profileOrganizersList: profileOrganizersViewReducer,
     profileSessionsList: profileSessionsViewReducer,
     formFocusIndex: formFocusIndexReducer,
+    mapClustered: mapClusteredReducer,
     ...asyncReducers,
   });
 }

@@ -29,9 +29,16 @@ const GoogleMapLoader = withGoogleMap(props => (
   </GoogleMap>
 ));
 
+const actionNext = (result, notify, router) => {
+  const { message, messageType, redirect } = result;
+  if (message) notify(message, messageType || 'success');
+  if (redirect) router.push(redirect);
+};
+
 export default class SessionView extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
     user: PropTypes.object,
+    router: PropTypes.object,
     notify: PropTypes.func,
     modal: PropTypes.object,
     store: PropTypes.object
@@ -82,16 +89,19 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     const session = this.context.store.getState().get('session');
     const actions = [];
     if (this.canEdit()) {
-      let editURL = `/session/${session.uuid}/edit`;
+      let editURL = `${session.href}/edit`;
       if (location && location.query && location.query.tab) editURL = [editURL, location.query.tab].join('/');
-      actions.push(<Link key="edit" to={editURL} className={publishStyles.previewButton}>{session.state === 'published' ? 'Unpublish and edit' : 'Continue editing'}</Link>);
+      if (session.actions.some(action => action === 'edit')) actions.push(<Link key="edit" to={editURL} className={publishStyles.previewButton}>Continue editing</Link>);
+      if (session.actions.some(action => action === 'unpublish')) {
+        actions.push(<Button key="unpublish" onClick={() => apiModel.action('session', session.uuid, 'unpublish').then(result => actionNext(result, this.context.notify, this.context.router))} className={publishStyles.previewButton}>Unpublish and edit</Button>);
+      }
     }
     if (!actions.length) return null;
     return actions;
   }
   canEdit() {
     const session = this.context.store.getState().get('session');
-    return session && session.actions.indexOf('edit') !== -1;
+    return session && session.actions.some(action => action === 'edit' || action === 'unpublish');
   }
   isAdmin() {
     const { user } = this.context;
@@ -228,7 +238,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         </div>
       </div>);
     }
-    const activitiesList = session.Activities ? <ol className={styles.activitiesList}>{session.Activities.map(activity => <li key={activity.name}>{activity.name}</li>)}</ol> : null;
+    const activitiesList = session.Activities ? <ol className={styles.activitiesList}>{session.Activities.map(activity => <li key={activity.name}><Link to={`/sessions?activity=${activity.name}`}>{activity.name}</Link></li>)}</ol> : null;
     const prices = this.getPrices();
     const { pricing } = session;
     return (<div className={styles.descriptionSection}>

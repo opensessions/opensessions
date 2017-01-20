@@ -1,0 +1,17 @@
+.list {
+  & > p {
+    text-align: center;
+    margin: auto;
+  }
+  & > ol {
+    & > li {
+      margin: 1em auto;
+      list-style: none;
+    }
+  }
+}
+
+.pagination {
+  text-align: center;
+  padding: 1em;
+}

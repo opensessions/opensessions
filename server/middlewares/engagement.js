@@ -9,14 +9,12 @@
   updated_at: '2016-06-28T11:00:51.488Z',
   user_id: 'google-oauth2|100229880746808785817',
   nickname: 'oli',
-  identities: [
-    {
-      user_id: '100229880746808785817',
-      provider: 'google-oauth2',
-      connection: 'google-oauth2',
-      isSocial: true
-    }
-  ],
+  identities: [{
+    user_id: '100229880746808785817',
+    provider: 'google-oauth2',
+    connection: 'google-oauth2',
+    isSocial: true
+  }],
   created_at: '2016-06-24T10:59:33.581Z',
   last_ip: '82.163.127.74',
   last_login: '2016-06-28T11:00:51.488Z',

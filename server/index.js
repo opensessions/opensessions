@@ -48,6 +48,7 @@ app.use('/api', apiMiddleware(database));
 
 const { CronJob } = require('cron');
 const { sendWeeklyEmails, sendDailyEmails } = require('./middlewares/engagement');
+const { makeAppAnalysis } = require('./middlewares/analysis');
 
 const EVERY_MONDAY_MORNING = '0 0 7 * * 1';
 const EVERY_MORNING = '0 0 8 * * *';
@@ -58,7 +59,10 @@ const emailWeeklyCron = new CronJob(EVERY_MONDAY_MORNING, () => { // eslint-disa
 
 const emailDailyCron = new CronJob(EVERY_MORNING, () => { // eslint-disable-line no-unused-vars
   sendDailyEmails(database.models);
+  makeAppAnalysis(database.models, { trigger: 'daily-cron' });
 }, null, true, process.env.LOCALE_TIMEZONE);
+
+makeAppAnalysis(database.models, { trigger: 'app-started' });
 
 // Initialize frontend middleware that will serve your JS app
 const webpackConfig = require(`../internals/webpack/webpack.${isDev ? 'dev' : 'prod'}.babel`);

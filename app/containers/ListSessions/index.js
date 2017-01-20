@@ -1,7 +1,10 @@
 import React, { PropTypes } from 'react';
 
+import SessionTileView from '../SessionTileView';
+
+import SessionMap from '../../components/SessionMap';
 import LoadingMessage from '../../components/LoadingMessage';
-import SessionList from '../SessionList';
+import PagedList from '../../components/PagedList';
 import Button from '../../components/Button';
 import Checkbox from '../../components/Fields/Checkbox';
 
@@ -28,9 +31,9 @@ export default class ListSessions extends React.Component { // eslint-disable-li
       dispatch({ type: 'SESSION_LIST_LOADED', payload: instances });
     });
   }
-  constructor() {
+  constructor(props) {
     super();
-    this.state = { isLoading: false, showExpired: true };
+    this.state = { isLoading: false, showExpired: true, isMap: props.location.pathname.indexOf('map') !== -1 };
   }
   componentDidMount() {
     this.fetchData(this.context.store.dispatch, this.props.location.query);
@@ -38,6 +41,9 @@ export default class ListSessions extends React.Component { // eslint-disable-li
   componentWillReceiveProps(nextProps) {
     if (nextProps.location.search !== this.props.location.search) {
       this.fetchData(this.context.store.dispatch, nextProps.location.query);
+    }
+    if (nextProps.location.pathname !== this.props.location.pathname) {
+      this.setState({ isMap: nextProps.location.pathname.indexOf('map') !== -1 });
     }
   }
   fetchData(dispatch, query) {
@@ -48,15 +54,6 @@ export default class ListSessions extends React.Component { // eslint-disable-li
       this.context.notify(error, 'error');
     });
   }
-  renderPagination(page, start, end, maxPage) {
-    return (<div className={styles.pagination}>
-      {page > 1 ? <Button to={`/sessions${this.props.location.search}`} style="slim">Start</Button> : null}
-      {page > 1 ? <Button to={`/sessions/${page - 1}${this.props.location.search}`} style="slim">🠜</Button> : null}
-      <span> Page {page} of {maxPage} </span>
-      {page < maxPage ? <Button to={`/sessions/${page + 1}${this.props.location.search}`} style="slim">🠞</Button> : null}
-      {page < maxPage ? <Button to={`/sessions/${maxPage}${this.props.location.search}`} style="slim">End</Button> : null}
-    </div>);
-  }
   renderFilters() {
     const now = new Date();
     const filters = [
@@ -66,7 +63,7 @@ export default class ListSessions extends React.Component { // eslint-disable-li
       { search: `?updatedAt=${toDate(new Date((new Date()).setDate(now.getDate() - 7)))}:${toDate(now)}`, name: 'Updated within last week' }
     ];
     const { search } = this.props.location;
-    const { showExpired } = this.state;
+    const { showExpired, isMap } = this.state;
     return (<div className={styles.filters}>
       <p>Filters - {filters.map(filter => <Button to={`/sessions${filter.search}`} style={search === filter.search ? 'live' : false}>{filter.name}</Button>)}</p>
       {filters.some(filter => filter.search === search) ? null : (<p>
@@ -78,26 +75,26 @@ export default class ListSessions extends React.Component { // eslint-disable-li
           return <span>{key}: <Button style={['slim', 'live']} onClick={() => changeVal()}>{val}</Button> <Button style={['slim', 'danger']} to={`/sessions${search.replace(new RegExp(`[\?&]?${key}=${val}`), '')}`}>x</Button></span>;
         })}
       </p>)}
-      <p><Checkbox checked={showExpired} onChange={() => this.setState({ showExpired: !showExpired })} label="Show expired sessions" /></p>
+      <p>
+        <Checkbox checked={showExpired} onChange={checked => this.setState({ showExpired: checked })} label="Show expired sessions" />
+        &nbsp;&nbsp;<Checkbox checked={isMap} onChange={checked => this.setState({ isMap: checked })} label="View on map" />
+      </p>
     </div>);
   }
-  render() {
+  renderView() {
     const { params } = this.props;
-    const { isLoading, showExpired } = this.state;
+    const { isLoading, isMap, showExpired } = this.state;
     let sessions = this.context.store.getState().get('sessionList');
     if (!showExpired) sessions = sessions.filter(session => session.sortedSchedule.length && (new Date(session.sortedSchedule[session.sortedSchedule.length - 1].start)).getTime() > Date.now());
-    const limit = 10;
-    const total = sessions ? sessions.length : 0;
     const page = (params && params.page) ? parseInt(params.page, 10) : 1;
-    const maxPage = Math.ceil(total / limit);
-    const [start, end] = [-1, 0].map(index => page + index).map(index => index * limit);
+    if (isLoading) return <LoadingMessage message="Loading sessions" ellipsis />;
+    if (isMap) return <SessionMap sessions={sessions} />;
+    return <PagedList items={sessions} page={page} newUrl={pg => `/sessions/${pg}${this.props.location.search}`} Component={SessionTileView} itemToProps={item => ({ session: item })} noneMessage={`No sessions ${this.props.location.search ? 'for this search' : ''}`} />;
+  }
+  render() {
     return (<div className={styles.list}>
       {this.renderFilters()}
-      {total ? (<div>
-        {isLoading ? null : this.renderPagination(page, start, end, maxPage)}
-        {isLoading ? <LoadingMessage message="Loading sessions" ellipsis /> : <SessionList heading=" " sessions={sessions ? sessions.slice(start, end) : []} />}
-        {isLoading ? null : this.renderPagination(page, start, end, maxPage)}
-      </div>) : <p>No sessions {this.props.location.search ? 'for this search' : null}</p>}
+      {this.renderView()}
     </div>);
   }
 }

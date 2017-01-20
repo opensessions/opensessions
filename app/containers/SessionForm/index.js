@@ -176,16 +176,28 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   getActions = () => {
     const { session, isSaving, isPendingSave } = this.state;
     const { params } = this.props;
-    const isPublished = session.state === 'published';
     const actions = [];
+    const visibleActions = ['view', 'publish', 'unpublish'];
     if (isSaving) actions.push(<LoadingIcon key="loading" />);
     if (session.state) {
-      let text = isPublished ? 'View' : 'Preview';
-      if (isPendingSave) text = 'Saving...';
       const viewURL = `/session/${session.uuid}${params.tab ? `?tab=${params.tab}` : ''}`;
-      actions.push(<Link key="view" to={viewURL} className={[publishStyles.previewButton, isPendingSave ? publishStyles.disabled : null].join(' ')}>{text}</Link>);
-      const publishStyle = isPublished ? 'draft' : 'live';
-      actions.push(<Button key="publish" onClick={isPublished ? this.unpublishSession : this.publishSession} style={isPendingSave ? 'disabled' : publishStyle}>{isPublished ? 'Unpublish' : 'Publish'}</Button>);
+      actions.push(<Link key="view" to={viewURL} className={[publishStyles.previewButton, isPendingSave ? publishStyles.disabled : null].join(' ')}>{isPendingSave ? 'Saving...' : 'Preview'}</Link>);
+    }
+    if (session.actions) {
+      const actionStyle = { publish: 'live', unpublish: 'draft' };
+      visibleActions.filter(action => session.actions.some(allowed => allowed === action)).forEach(action => {
+        actions.push(<Button
+          key={action}
+          onClick={() => apiModel.action('session', session.uuid, action)
+            .then(({ instance, redirect, message, messageType }) => {
+              if (message) this.notify(message, messageType);
+              if (redirect) this.context.router.push(redirect);
+              if (instance) this.setState({ session: instance });
+            })
+            .catch(res => this.notify(<p onClick={this.errorClick} dangerouslySetInnerHTML={{ __html: res.error }} />, 'error'))}
+          style={isPendingSave ? 'disabled' : actionStyle[action]}
+        >{action}</Button>);
+      });
     }
     return actions;
   }
@@ -254,23 +266,6 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     this.notification = this.context.notify.apply(this.context.notify, args);
     return this.notification;
   }
-  changeSessionState = state => {
-    const { session } = this.state;
-    const oldState = session.state;
-    session.state = state;
-    return new Promise((resolve, reject) => {
-      apiModel.edit('session', session.uuid, session).then(res => {
-        this.setState({ session: res.instance });
-        resolve(res);
-      }).catch(res => {
-        session.state = oldState;
-        this.notify(<p onClick={this.errorClick} dangerouslySetInnerHTML={{ __html: res.error }} />, 'error');
-        reject(res.error);
-      });
-    });
-  }
-  publishSession = () => this.changeSessionState('published').then(() => this.notify('Your session has been published!', 'success')).then(() => this.context.router.push(this.state.session.href))
-  unpublishSession = () => this.changeSessionState('unpublished').then(() => this.notify('Your session has been unpublished!', 'warn'))
   addName = key => name => {
     // const names = [name].concat(this.state.customNames || []);
     // this.setState({ customNames: names.filter((n, k) => names.indexOf(n) === k) });

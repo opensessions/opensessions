@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { LineChart, BarStackChart, PieChart } from 'react-d3-basic';
+import { LineChart, PieChart, BarGroupChart } from 'react-d3-basic';
 
 import LoadingMessage from '../../components/LoadingMessage';
 import Checkbox from '../../components/Fields/Checkbox';
@@ -14,9 +14,9 @@ const intervalsAgo = (date, interval) => Math.floor((Date.now() - date.getTime()
 const emailCategories = [{ name: 'Expiry', id: 'engagement-expiring' }, { name: 'Live sessions', id: 'engagement-live' }, { name: 'Finish your listing', id: 'engagement-finishListing' }];
 
 const layout = {
-  width: 860,
+  width: 816,
   height: 320,
-  margins: { left: 32, right: 32, top: 20, bottom: 20 }
+  margins: { left: 32, right: 24, top: 20, bottom: 20 }
 };
 
 export default class Dashboard extends React.Component { // eslint-disable-line react/prefer-stateless-function
@@ -82,14 +82,13 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
         </li>
         <li>
           <h2>Aggregators</h2>
-          <ol>{aggStats.map(agg => <li>{agg.name}: {agg.total}</li>)}</ol>
           <PieChart
-            width={240}
-            height={400}
+            width={280}
+            height={320}
             data={aggStats}
             name={item => item.name}
             value={item => item.total}
-            chartSeries={aggStats.map(agg => ({ field: agg.name, name: agg.name, value: agg.total }))}
+            chartSeries={aggStats.map(agg => ({ field: agg.name, name: `${agg.name}: ${agg.total}`, value: agg.total }))}
           />
         </li>
       </ol>
@@ -117,13 +116,13 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
         </li>
         <li>
           <h2>User totals</h2>
-          <BarStackChart
+          <BarGroupChart
             width={320}
             height={400}
-            data={[{ first: Math.min(activePC, publishedPC), second: Math.max(activePC, publishedPC) - Math.min(activePC, publishedPC), total: 1 - Math.max(activePC, publishedPC) }]}
+            data={[{ active: activeUsers, published: publishedUsers, total: totalUsers }]}
             chartSeries={[
-              { field: 'first', name: activePC < publishedPC ? 'Active users' : 'Published users', color: '#88c540' },
-              { field: 'second', name: activePC >= publishedPC ? 'Active users' : 'Published users', color: '#1b91cd' },
+              { field: 'active', name: 'Active users', color: '#88c540' },
+              { field: 'published', name: 'Published users', color: '#1b91cd' },
               { field: 'total', name: 'All users', color: '#AAA' }
             ]}
             showXGrid={false}
@@ -131,6 +130,8 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
             x={() => 'Users'}
             xScale="ordinal"
           />
+          <p>{(activePC * 100).toFixed(1)}% of users are "active" (have logged in within the last 28 days)</p>
+          <p>{(publishedPC * 100).toFixed(1)}% of users have published a session</p>
         </li>
       </ol>
     </div>);

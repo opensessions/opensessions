@@ -170,7 +170,6 @@ module.exports = (DataTypes) => ({
             return this.destroy();
           },
           addMember(req, models, authClient) {
-            console.log('addMember', this, req.body);
             return authClient.getUsers({ q: `email:"${req.body.email}"` })
               .then(users => users[0])
               .then(user => this.update({ members: (this.members || []).concat({ email: user.email, user_id: user.user_id, picture: user.picture, name: user.name }) }))
@@ -369,14 +368,25 @@ module.exports = (DataTypes) => ({
             actions.push('message');
             if ((isOwner && this.state !== 'deleted') || this.state === 'published') actions.push('view');
             if (isOwner) {
-              actions.push('edit');
               actions.push('duplicate');
               actions.push('delete');
-              actions.push('setActivitiesAction');
+              if (this.state === 'published') {
+                actions.push('unpublish');
+              } else {
+                actions.push('edit');
+                actions.push('publish');
+                actions.push('setActivitiesAction');
+              }
             } else {
               actions.push('trackView');
             }
             return actions;
+          },
+          publish() {
+            return this.update({ state: 'published' }, { returning: true }).then(instance => ({ message: 'Your session has been published!', messageType: 'success', redirect: instance.href, instance }));
+          },
+          unpublish() {
+            return this.update({ state: 'unpublished' }, { returning: true }).then(instance => ({ message: 'Your session has been unpublished!', messageType: 'warn', redirect: `${instance.href}/edit`, instance }));
           },
           trackView() {
             const analytics = this.analytics || {};

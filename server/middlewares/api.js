@@ -18,6 +18,7 @@ dotenv.config({ silent: true });
 dotenv.load();
 
 module.exports = (database) => {
+  const { LOCALE_TIMEZONE, SERVICE_LOCATION, ADMIN_DOMAIN, AUTH0_CLIENT_SECRET, AUTH0_CLIENT_ID } = process.env;
   const api = express();
   const getUser = req => (req.user ? req.user.sub : null);
   const logRequests = (req, res, next) => { // eslint-disable-line no-unused-vars
@@ -25,13 +26,13 @@ module.exports = (database) => {
     next();
   };
 
-  const rdpeConfig = { timezone: process.env.LOCALE_TIMEZONE, URL: process.env.SERVICE_LOCATION };
+  const rdpeConfig = { timezone: LOCALE_TIMEZONE, URL: SERVICE_LOCATION };
   api.use('/rdpe', RDPE(database, Object.assign({ baseURL: '/api/rdpe' }, rdpeConfig)));
   api.use('/rdpe-legacy', RDPE(database, Object.assign({}, rdpeConfig, { preserveLatLng: true, baseURL: '/api/rdpe-legacy' })));
 
   const requireLogin = jwt({
-    secret: new Buffer(process.env.AUTH0_CLIENT_SECRET, 'base64'),
-    audience: process.env.AUTH0_CLIENT_ID
+    secret: new Buffer(AUTH0_CLIENT_SECRET, 'base64'),
+    audience: AUTH0_CLIENT_ID
   });
 
   let admins;
@@ -42,7 +43,7 @@ module.exports = (database) => {
       if (admins && nowHours - adminHours > 1) {
         resolve(admins.some(admin => admin.user_id === user.sub));
       } else {
-        authClient.getUsers({ q: 'email:"@imin.co"' }).then(users => {
+        authClient.getUsers({ q: `email:"@${ADMIN_DOMAIN}"` }).then(users => {
           admins = users;
           adminsRefreshed = new Date();
           resolve(admins.some(admin => admin.user_id === user.sub));
@@ -309,7 +310,7 @@ module.exports = (database) => {
           if (actions.indexOf(action) !== -1) {
             instance[action](req, database.models, authClient)
               .then(result => res.json(Object.assign({ status: 'success' }, result)))
-              .catch(error => console.log(error) || res.status(404).json({ status: 'failure', error }));
+              .catch(error => console.log(error) || res.status(404).json({ status: 'failure', error: error.message }));
           } else {
             res.status(500).json({ status: 'failure', error: `'${action}' is an unavailable action` });
           }
