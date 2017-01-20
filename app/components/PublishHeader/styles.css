@@ -104,6 +104,7 @@
       & a {
         padding: .5em 1.5em;
         margin-left: 1em;
+        text-transform: capitalize;
       }
     }
     & .titleInner {

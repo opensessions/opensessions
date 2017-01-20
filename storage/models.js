@@ -374,8 +374,6 @@ module.exports = (DataTypes) => ({
             actions.push('message');
             if ((isOwner && this.state !== 'deleted') || this.state === 'published') actions.push('view');
             if (isOwner) {
-              actions.push('duplicate');
-              actions.push('delete');
               if (this.state === 'published') {
                 actions.push('unpublish');
               } else {
@@ -383,6 +381,8 @@ module.exports = (DataTypes) => ({
                 actions.push('publish');
                 actions.push('setActivitiesAction');
               }
+              actions.push('duplicate');
+              actions.push('delete');
             } else {
               actions.push('trackView');
             }
