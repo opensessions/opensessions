@@ -13,6 +13,7 @@ import { apiModel } from '../../utils/api';
 import styles from './styles.css';
 
 const toDate = date => date.toISOString().substr(0, 10);
+const dateDayDiff = (date, delta) => new Date((new Date()).setDate(date.getDate() + delta));
 
 export default class ListSessions extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
@@ -59,8 +60,8 @@ export default class ListSessions extends React.Component { // eslint-disable-li
     const filters = [
       { search: '', name: 'All' },
       { search: `?updatedAt=${toDate(now)}`, name: 'Updated today' },
-      { search: `?updatedAt=${toDate(new Date((new Date()).setDate(now.getDate() - 1)))}`, name: 'Updated yesterday' },
-      { search: `?updatedAt=${toDate(new Date((new Date()).setDate(now.getDate() - 7)))}:${toDate(now)}`, name: 'Updated within last week' }
+      { search: `?updatedAt=${toDate(dateDayDiff(now, -1))}`, name: 'Updated yesterday' },
+      { search: `?updatedAt=${toDate(dateDayDiff(now, -7))}:${toDate(now)}`, name: 'Updated within last week' }
     ];
     const { search } = this.props.location;
     const { showExpired, isMap } = this.state;

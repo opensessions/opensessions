@@ -45,6 +45,12 @@ module.exports = (DataTypes) => ({
       metadata: DataTypes.JSON,
       _options: {}
     },
+    Analysis: {
+      analysis: DataTypes.JSON,
+      _options: {
+        freezeTableName: true
+      }
+    },
     /* Messages: {
       from: DataTypes.STRING(256),
       to: DataTypes.STRING(256),

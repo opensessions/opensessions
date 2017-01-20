@@ -73,24 +73,23 @@ export default class SessionMap extends React.Component { // eslint-disable-line
       mapElement={<div style={{ height: '100%' }} />}
       containerElement={<div className={styles.mapFrame} style={{ height: '80vh', width: '100%' }} />}
       mapProps={googleMap}
-      markers={sessions ? sessions.filter(session => session.locationData && session.locationData.lat).map(session => {
-        const isActive = this.isActive(session);
-        return (<Marker {...marker} icon={isActive ? ACTIVE_ICON : INACTIVE_ICON} key={session.uuid} position={session.locationData} onClick={() => this.setState({ showInfo: session.uuid })}>
-          {showInfo === session.uuid ? <InfoWindow onCloseClick={() => this.setState({ showInfo: null })}><SessionTileView session={session} style="slim" /></InfoWindow> : null}
-        </Marker>);
-      }) : null}
+      markers={sessions ? sessions.filter(session => session.locationData && session.locationData.lat).map(session => (<Marker {...marker} icon={this.isActive(session) ? ACTIVE_ICON : INACTIVE_ICON} key={session.uuid} position={session.locationData} onClick={() => this.setState({ showInfo: session.uuid })}>
+        {showInfo === session.uuid ? <InfoWindow onCloseClick={() => this.setState({ showInfo: null })}><SessionTileView session={session} style="slim" /></InfoWindow> : null}
+      </Marker>)) : null}
     />);
   }
   render() {
     const storeState = this.context.store.getState();
     const sessions = this.props.sessions || storeState.get('sessionList');
     const isClustered = storeState.get('mapClustered');
-    return (<div>
+    return (<div className={styles.frame}>
+      <div className={styles.map}>
+        {this.renderMap(sessions, isClustered)}
+      </div>
       <div className={styles.options}>
         <p>Showing {sessions.length} sessions</p>
         <p><Checkbox checked={isClustered} onChange={val => this.context.store.dispatch({ type: 'MAP_OPTIONS_CLUSTER', payload: val }) && this.forceUpdate()} label="Toggle clustering" /></p>
       </div>
-      {this.renderMap(sessions, isClustered)}
     </div>);
   }
 }

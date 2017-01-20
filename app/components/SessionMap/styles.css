@@ -1,5 +1,16 @@
+@import '../../containers/App/variables.css';
+
 .options {
   padding: 1em;
   background: #182750;
   color: white;
+}
+
+@media (--desktop) {
+  .frame {
+    display: flex;
+  }
+  .map {
+    flex-grow: 1;
+  }
 }

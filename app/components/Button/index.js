@@ -17,7 +17,7 @@ export default class Button extends React.PureComponent {
     const { to, onClick } = this.props;
     event.stopPropagation();
     event.preventDefault();
-    if (to) {
+    if (to && event.type === 'click') {
       this.context.router.push(to);
     } else {
       onClick();
@@ -25,7 +25,7 @@ export default class Button extends React.PureComponent {
   }
   render() {
     const { to, children, className, style } = this.props;
-    return (<a className={[styles.button, className, style instanceof Array ? style.map(s => styles[s]).join(' ') : styles[style]].join(' ')} onKeyUp={e => e.keyCode === 13 && this.onClick(event)} onClick={this.onClick} tabIndex={0} href={to}>
+    return (<a tabIndex={0} href={to} onClick={this.onClick} onKeyDown={e => e.keyCode === 13 && this.onClick(event)} className={[styles.button, className, style instanceof Array ? style.map(s => styles[s]).join(' ') : styles[style]].join(' ')}>
       {children}
     </a>);
   }

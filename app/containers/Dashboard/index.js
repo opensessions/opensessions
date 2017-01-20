@@ -11,7 +11,7 @@ import styles from './styles.css';
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
 const intervalsAgo = (date, interval) => Math.floor((Date.now() - date.getTime()) / (MS_PER_DAY * interval));
 
-const emailCategories = [{ name: 'Expiry', id: 'engagement-expiring' }, { name: 'Live sessions', id: 'engagement-live' }, { name: 'Finish your listing', id: 'engagement-finishListing' }];
+const emailCategories = [{ name: 'Expiry', id: 'engagement-expiring' }, { name: 'Live sessions', id: 'engagement-live' }, { name: 'Finish your listing', id: 'engagement-finishlisting' }];
 
 const layout = {
   width: 816,
@@ -105,7 +105,7 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
     const activeUsers = users.filter(user => intervalsAgo(new Date(user.last_login), 1) > 28).length;
     const publishedUsers = users.filter(user => sessionOwners.some(owner => owner === user.user_id)).length;
     const activePC = activeUsers / totalUsers;
-    const publishedPC = publishedUsers / activeUsers;
+    const publishedPC = publishedUsers / totalUsers;
     return (<div className={styles.chart}>
       <h1>User Analytics</h1>
       <p>Total users: {totalUsers} | Active users (online in last 28 days): {activeUsers} | Published users: {publishedUsers}</p>
