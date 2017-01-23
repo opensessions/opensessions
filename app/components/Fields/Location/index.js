@@ -105,7 +105,9 @@ export default class LocationField extends React.Component {
     </span>);
   }
   renderManual() {
-    const { dataValue, className, value } = this.props;
+    const { className, value } = this.props;
+    let { dataValue } = this.props;
+    if (!dataValue) dataValue = {};
     const attrs = {
       type: 'text',
       className,

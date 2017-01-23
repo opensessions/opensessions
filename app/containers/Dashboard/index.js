@@ -39,7 +39,7 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
   }
   constructor() {
     super();
-    this.state = { isLoading: false };
+    this.state = { isLoading: false, sessionLength: 8 };
   }
   componentDidMount() {
     this.setState({ isLoading: true }); // eslint-disable-line react/no-did-mount-set-state
@@ -78,7 +78,7 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
         <li>
           {this.renderChart(sessions, sessionLength || 8, periodLength)}
           <p><Checkbox checked={sessionWeekly} onChange={() => this.setState({ sessionWeekly: !sessionWeekly })} label="Per week" /></p>
-          <p><label>Zoom</label> <input type="range" min={8} max={64} step={8} value={sessionLength} onChange={event => this.setState({ sessionLength: parseInt(event.target.value, 10) })} /></p>
+          <p><label>Zoom</label> + <input type="range" min={8} max={64} step={8} value={sessionLength} onChange={event => this.setState({ sessionLength: parseInt(event.target.value, 10) })} /> -</p>
         </li>
         <li>
           <h2>Aggregators</h2>

@@ -397,7 +397,7 @@ module.exports = (DataTypes) => ({
           trackView() {
             const analytics = this.analytics || {};
             analytics.views = (analytics.views || 0) + 1;
-            return this.update({ analytics }).then(() => ({}));
+            return this.update({ analytics }, { silent: true }).then(() => ({}));
           },
           sendPublishedEmail(subject) {
             const session = this;

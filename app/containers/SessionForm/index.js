@@ -190,8 +190,8 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
           key={action}
           onClick={() => apiModel.action('session', session.uuid, action)
             .then(({ instance, redirect, message, messageType }) => {
-              if (message) this.notify(message, messageType);
               if (redirect) this.context.router.push(redirect);
+              if (message) this.notify(message, messageType);
               if (instance) this.setState({ session: instance });
             })
             .catch(res => this.notify(<p onClick={this.errorClick} dangerouslySetInnerHTML={{ __html: res.error }} />, 'error'))}
