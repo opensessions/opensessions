@@ -27,7 +27,7 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
   })
   constructor() {
     super();
-    this.state = {};
+    this.state = { isLoading: false };
   }
   getChildContext() {
     return {

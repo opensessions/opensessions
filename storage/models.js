@@ -294,7 +294,7 @@ module.exports = (DataTypes) => ({
                 name: 'Get Active Hampshire & Isle of Wight',
                 img: [SERVICE_LOCATION, 'images/aggregators/getactivehampshire.png'].join('/'),
                 description: 'Get Active Hampshire is in its live beta testing phase, but already receives 100s of visits a week from people looking for ways to be more active',
-                href: ['https://www.getactivehampshireiow.co.uk', getActivePath].join('')
+                href: ['https://www.getactivehampshire.com', getActivePath].join('')
               }
             };
             let aggregators = [];
@@ -457,13 +457,13 @@ module.exports = (DataTypes) => ({
             }
           },
           delete() {
-            return this.state === 'draft' ? this.destroy() : this.update({ state: 'deleted' }).then(() => Promise.resolve({ message: 'delete success' }));
+            return (this.state === 'draft' ? this.destroy() : this.update({ state: 'deleted' })).then(() => ({ message: 'Deletion successful!' }));
           },
           duplicate(req) {
             const data = this.dataValues;
             delete data.uuid;
             data.title = data.title.match(/\(duplicated\)$/g) ? data.title : `${data.title} (duplicated)`;
-            return req.Model.create(data).then(instance => ({ instance }));
+            return req.Model.create(data).then(instance => ({ instance, message: 'Session duplicated!', redirect: instance.href }));
           },
           message(req, models) {
             const message = req.body;

@@ -56,8 +56,7 @@ export default class SessionList extends React.Component { // eslint-disable-lin
     });
   }
   render() {
-    const { hideButton } = this.props;
-    const { heading } = this.props;
+    const { hideButton, heading } = this.props;
     const { sessions, isLoading } = this.state;
     if (isLoading) return <div className={styles.sessionList}><LoadingMessage message="Loading sessions" ellipsis /></div>;
     return (<div className={styles.sessionList}>

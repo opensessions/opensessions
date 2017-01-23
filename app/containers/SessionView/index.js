@@ -21,7 +21,8 @@ import { apiModel } from '../../utils/api';
 import styles from './styles.css';
 import publishStyles from '../../components/PublishHeader/styles.css';
 
-const { google } = window;
+const { google, ADMIN_DOMAIN } = window;
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
 const GoogleMapLoader = withGoogleMap(props => (
   <GoogleMap {...props.mapProps}>
@@ -74,19 +75,12 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     const { pricing } = this.context.store.getState().get('session');
     return pricing && pricing.prices ? pricing.prices : [];
   }
-  getSessionImage() {
-    const { user } = this.context;
-    const session = this.context.store.getState().get('session');
-    if (user && user.user_id === session.owner) return `${session.image}?${this.state.imageExpire}`;
-    return session.image;
-  }
   getTitle() {
     const session = this.context.store.getState().get('session');
     return session.title || <i>Untitled</i>;
   }
-  getActions() {
+  getActions(session) {
     const { location } = this.props;
-    const session = this.context.store.getState().get('session');
     const actions = [];
     if (this.canEdit()) {
       let editURL = `${session.href}/edit`;
@@ -105,7 +99,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   }
   isAdmin() {
     const { user } = this.context;
-    return user && user.email.indexOf('@imin.co') !== -1;
+    return user && user.email.indexOf(`@${ADMIN_DOMAIN}`) !== -1;
   }
   dispatchMessageModal = () => {
     const session = this.context.store.getState().get('session');
@@ -145,25 +139,18 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       </ol>) : <span className={styles.noSchedule}>No upcoming sessions</span>}
     </div>);
   }
-  renderDetails() {
-    const session = this.context.store.getState().get('session');
-    let organizerButton = null;
-    if (session.Organizer) {
-      organizerButton = <div className={styles.contactButton}><Link to={session.Organizer.href}>View organiser</Link></div>;
-      organizerButton = <div className={styles.contactButton}><Button to={session.Organizer.href}>View organiser</Button></div>;
-    }
+  renderDetails(session) {
     let locationDetail = null;
     if (session.location) {
       const locationPieces = session.locationData && session.locationData.manual ? session.locationData.manual : session.location.split(', ');
-      const firstLine = locationPieces.shift();
       locationDetail = (<div className={styles.locationDetail}>
         <img src="/images/map-pin.svg" role="presentation" />
-        <span className={styles.detailText}>{firstLine}{locationPieces.length ? <br /> : null}{locationPieces.join(', ')}</span>
+        <span className={styles.detailText}>{locationPieces.map(line => <span className={styles.addrLine}>{line}</span>)}</span>
       </div>);
     }
     return (<div className={styles.detailsSection}>
       <div className={[styles.detailsImg, session.image ? '' : styles.noImg].join(' ')}>
-        <img src={session.image ? this.getSessionImage() : '/images/placeholder.png'} role="presentation" />
+        <img src={session.image ? `${session.image}${this.canEdit() ? `?${this.state.imageExpire}` : ''}` : '/images/placeholder.png'} role="presentation" />
       </div>
       <div className={styles.detailsText}>
         <h1>
@@ -176,7 +163,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
           <img src="/images/tag.svg" role="presentation" />
           {session.pricing && session.pricing.firstFree ? <span>First session {this.getFree()}</span> : this.getLowestPrice()}
         </div>
-        {organizerButton}
+        {session.Organizer ? <div className={styles.contactButton}><Button to={session.Organizer.href}>View organiser</Button></div> : null}
       </div>
       <Helmet title={session.title} titleTemplate="%s - Open Sessions" meta={[{ property: 'og:image', content: session.image }, { property: 'og:title', content: session.title }, { property: 'og:description', content: (session.description || '').substr(0, 256) }]} />
     </div>);
@@ -191,7 +178,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       1: styles.recent,
       2: styles.new
     };
-    const dayDelta = [today, updated].map(time => Math.floor(time.getTime() / (24 * 60 * 60 * 1000))).reduce((todayDay, updatedDay) => todayDay - updatedDay);
+    const dayDelta = [today, updated].map(time => Math.floor(time.getTime() / MS_PER_DAY)).reduce((todayDay, updatedDay) => todayDay - updatedDay);
     if (dayDelta === 0) {
       updatedAt = 'today';
     } else if (dayDelta < 7) {
@@ -218,8 +205,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       </li>))}
     </ol>);
   }
-  renderDescription() {
-    const session = this.context.store.getState().get('session');
+  renderDescription(session) {
     let meetingPoint = null;
     if (session.meetingPoint) {
       meetingPoint = (<div className={styles.infoSection}>
@@ -298,8 +284,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       </div>
     </div>);
   }
-  renderAbout() {
-    const session = this.context.store.getState().get('session');
+  renderAbout(session) {
     let features = [];
     const maps = {
       genderRestriction: {
@@ -361,8 +346,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       </div>
     </div>);
   }
-  renderMap() {
-    const session = this.context.store.getState().get('session');
+  renderMap(session) {
     const { locationData } = session;
     let map = null;
     let address = null;
@@ -406,8 +390,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       {map}
     </section>);
   }
-  renderShare() {
-    const session = this.context.store.getState().get('session');
+  renderShare(session) {
     const { title, href } = session;
     const link = `${process.env.SERVICE_LOCATION}${href}`;
     const disabled = session.state !== 'published';
@@ -419,13 +402,13 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       </div>
     </div>);
   }
-  renderSession() {
+  renderSession(session) {
     return (<div className={styles.content}>
-      {this.renderDetails()}
-      {this.renderShare()}
-      {this.renderDescription()}
-      {this.renderAbout()}
-      {this.renderMap()}
+      {this.renderDetails(session)}
+      {this.renderShare(session)}
+      {this.renderDescription(session)}
+      {this.renderAbout(session)}
+      {this.renderMap(session)}
     </div>);
   }
   render() {
@@ -433,9 +416,9 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     const session = this.context.store.getState().get('session');
     if (isLoading) return <LoadingMessage message="Loading session" ellipsis />;
     return (<div className={styles.sessionView}>
-      {this.canEdit() ? <PublishHeader h2={session && session.state === 'published' ? 'Published session' : 'Preview'} actions={this.getActions()} /> : null}
+      {this.canEdit() ? <PublishHeader h2={session && session.state === 'published' ? 'Published session' : 'Preview'} actions={this.getActions(session)} /> : null}
       <NotificationBar />
-      {session ? this.renderSession() : <LoadingMessage message="Session not found" />}
+      {session ? this.renderSession(session) : <LoadingMessage message="Session not found" />}
     </div>);
   }
 }

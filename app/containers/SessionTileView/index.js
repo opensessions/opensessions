@@ -8,116 +8,93 @@ import { apiModel } from '../../utils/api';
 
 import styles from './styles.css';
 
-export default class SessionTileView extends React.Component { // eslint-disable-line react/prefer-stateless-function
-  static propTypes = {
-    session: PropTypes.object,
-    style: PropTypes.string
+const { ADMIN_DOMAIN } = window;
+
+const capitalize = word => `${word.charAt(0).toUpperCase()}${word.slice(1)}`;
+
+const SessionTileView = function (props, context) {
+  const { session, style } = props;
+  const { notify, router, onExpire, user } = context;
+  const isOwner = user && session.owner === user.user_id;
+  const confirmAction = action => {
+    notify(`Are you sure you want to ${action} this session?`, action === 'delete' ? 'error' : null, [{
+      text: capitalize(action),
+      dispatch: () => apiModel.action('session', session.uuid, action).then(res => {
+        const { message, messageType, redirect } = res;
+        if (res.status === 'success') {
+          if (message) notify(message, messageType || 'success');
+          if (redirect) router.push(redirect);
+          onExpire();
+        } else {
+          throw new Error(`Failed to ${action} session`);
+        }
+      }).catch(() => {
+        notify(`Failed to ${action} session`, 'error');
+      })
+    }]);
   };
-  static contextTypes = {
-    user: PropTypes.object,
-    router: PropTypes.object,
-    notify: PropTypes.func,
-    onExpire: PropTypes.func
-  }
-  getTitle() {
-    const { session } = this.props;
-    return session.title || <i>Untitled</i>;
-  }
-  isOwner() {
-    const { session } = this.props;
-    const { user } = this.context;
-    return user && session.owner === user.user_id;
-  }
-  delete = () => {
-    const { session } = this.props;
-    this.context.notify('Are you sure you want to delete?', 'error', [{
-      text: 'Delete',
-      dispatch: () => apiModel.delete('session', session.uuid).then(response => {
-        if (response.status === 'success') {
-          this.context.notify('Session deleted', 'success');
-          this.context.onExpire();
-        } else {
-          throw new Error('Failed to delete session');
-        }
-      }).catch(() => {
-        this.context.notify('Failed to delete session', 'error');
-      })
-    }]);
-  }
-  duplicate = () => {
-    const { session } = this.props;
-    this.context.notify('Are you sure you want to duplicate this session?', null, [{
-      text: 'Duplicate',
-      dispatch: () => apiModel.action('session', session.uuid, 'duplicate').then(response => {
-        if (response.status === 'success') {
-          this.context.notify('Session duplicated', 'success');
-          this.context.router.push(response.instance.href);
-        } else {
-          throw new Error('Failed to duplicate session');
-        }
-      }).catch(() => {
-        this.context.notify('Failed to duplicate session', 'error');
-      })
-    }]);
-  }
-  renderActions() {
-    const { session } = this.props;
+  const renderActions = () => {
     const actionTypes = {
       edit: <Link to={`${session.href}/edit`}>Edit</Link>,
       view: <Link to={session.href}>View</Link>,
-      duplicate: <a onClick={this.duplicate} onKeyUp={({ keyCode, target }) => keyCode === 13 && target.click()} tabIndex={0}>Duplicate</a>,
-      delete: <a onClick={this.delete} onKeyUp={({ keyCode, target }) => keyCode === 13 && target.click()} tabIndex={0} className={styles.delete}>Delete</a>
+      duplicate: <a onClick={() => confirmAction('duplicate')} onKeyUp={({ keyCode, target }) => keyCode === 13 && target.click()} tabIndex={0}>Duplicate</a>,
+      delete: <a onClick={() => confirmAction('delete')} onKeyUp={({ keyCode, target }) => keyCode === 13 && target.click()} tabIndex={0} className={styles.delete}>Delete</a>
     };
-    const actions = session.actions.length ? session.actions : ['view'];
     return (<ol className={styles.actions}>
-      {actions.map(key => <li key={key}>{actionTypes[key]}</li>)}
+      {session.actions.filter(key => key in actionTypes).map(key => <li key={key}>{actionTypes[key]}</li>)}
     </ol>);
-  }
-  renderAddSchedule() {
-    if (!this.isOwner()) return (<li>No schedule yet</li>);
-    return (<li className={styles.addSchedule}>
-      <Link to={`${this.props.session.href}/edit/schedule`}><b>+</b> Add a schedule</Link>
-    </li>);
-  }
-  renderSchedule(occurrence, key) {
-    const date = parseSchedule(occurrence);
-    return (<li className={[styles.schedule, date.hasOccurred ? styles.occurred : null].join(' ')} key={key}>
-      <CalendarSVG />
-      <span>{date.date} {date.time ? <span className={styles.time}>at {date.time}</span> : null}</span>
-      <span>{date.hasOccurred ? ' (Past)' : ''}</span>
-    </li>);
-  }
-  renderAggregatorLinks(session) {
-    return session.aggregators ? session.aggregators.map(agg => <a key={agg.name} target="blank" href={agg.href} className={styles.GALLink}>{agg.name}</a>) : null;
-  }
-  render() {
-    const { session, style } = this.props;
-    let { state } = session;
-    if (state === 'unpublished') state = 'draft';
-    const schedules = sortSchedule(session.schedule).map(this.renderSchedule);
-    const { user } = this.context;
-    const isAdmin = user && user.email && user.email.indexOf('@imin.co') !== -1;
-    return (<article className={[styles.tile, style ? styles[style] : ''].join(' ')}>
-      <div className={styles.imgCol}>
-        <img src={session.image ? session.image : '/images/placeholder.png'} role="presentation" className={!session.image ? styles.noImage : null} />
+  };
+  const { title, image, aggregators } = session;
+  let { state } = session;
+  if (state === 'unpublished') state = 'draft';
+  const isAdmin = user && user.email && user.email.indexOf(`@${ADMIN_DOMAIN}`) !== -1;
+  return (<article className={[styles.tile, style ? styles[style] : ''].join(' ')}>
+    <div className={styles.imgCol}>
+      <img src={image || '/images/placeholder.png'} role="presentation" className={!image ? styles.noImage : null} />
+    </div>
+    <div className={styles.textCol}>
+      <div className={styles.info}>
+        <h1>
+          <Link to={session.href}>{title || <i>Untitled</i>}</Link>
+          {isAdmin && aggregators ? aggregators.map(agg => <a key={agg.name} target="blank" href={agg.href} className={styles.GALLink}>{agg.name}</a>) : null}
+        </h1>
+        <div className={styles.location}>{session.locationData && session.locationData.manual ? session.locationData.manual.join(', ') : session.location}</div>
+        {session.Activities ? <ol className={styles.activities}>{session.Activities.map(activity => <li>{activity.name}</li>)}</ol> : null}
       </div>
-      <div className={styles.textCol}>
-        <div className={styles.info}>
-          <h1><Link to={session.href}>{this.getTitle()}</Link> {isAdmin ? this.renderAggregatorLinks(session) : null}</h1>
-          <div className={styles.location}>{session.locationData && session.locationData.manual ? session.locationData.manual.join(', ') : session.location}</div>
-          {session.Activities ? <ol className={styles.activities}>{session.Activities.map(activity => <li>{activity.name}</li>)}</ol> : null}
-        </div>
-        <div className={styles.meta}>
-          {this.renderActions()}
-          <div className={[styles.state, state === 'published' ? styles.live : ''].join(' ')}>{state}</div>
-        </div>
+      <div className={styles.meta}>
+        {renderActions()}
+        {isOwner ? <div className={[styles.state, state === 'published' ? styles.live : ''].join(' ')}>{state}</div> : null}
       </div>
-      <div className={styles.schedules}>
-        <div>{schedules.length} SCHEDULED</div>
-        <ol>
-          {schedules.length ? schedules : this.renderAddSchedule()}
-        </ol>
-      </div>
-    </article>);
-  }
-}
+    </div>
+    <div className={styles.schedules}>
+      <div>{session.schedule ? session.schedule.length : 'NONE'} SCHEDULED</div>
+      <ol>
+        {session.schedule && session.schedule.length
+          ? sortSchedule(session.schedule).map(parseSchedule).map((date, key) => (<li className={[styles.schedule, date.hasOccurred ? styles.occurred : null].join(' ')} key={key}>
+            <CalendarSVG />
+            <span>{date.date} {date.time ? <span className={styles.time}>at {date.time}</span> : null}</span>
+            <span>{date.hasOccurred ? ' (Past)' : ''}</span>
+          </li>))
+          : (<li className={styles.addSchedule}>
+            {isOwner
+              ? <Link to={`${session.href}/edit/schedule`}><b>+</b> Add a schedule</Link>
+              : 'No schedule yet'
+            }
+          </li>)
+        }
+      </ol>
+    </div>
+  </article>);
+};
+SessionTileView.propTypes = {
+  session: PropTypes.object,
+  style: PropTypes.string
+};
+SessionTileView.contextTypes = {
+  user: PropTypes.object,
+  router: PropTypes.object,
+  notify: PropTypes.func,
+  onExpire: PropTypes.func
+};
+
+export default SessionTileView;

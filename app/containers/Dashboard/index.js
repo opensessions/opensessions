@@ -31,7 +31,7 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
       dispatch({ type: 'SESSION_LIST_LOADED', payload: instances });
       return apiFetch('/api/admin/users').then(userResult => {
         dispatch({ type: 'USER_LIST_LOADED', payload: userResult.users });
-        return apiFetch(`/api/admin/emails?days=42&categories=${emailCategories.map(cat => cat.id).join(',')}`).then(emailResult => {
+        return apiFetch(`/api/admin/emails?days=56&categories=${emailCategories.map(cat => cat.id).join(',')}`).then(emailResult => {
           dispatch({ type: 'EMAIL_LIST_LOADED', payload: emailResult.emails });
         });
       });
@@ -39,7 +39,7 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
   }
   constructor() {
     super();
-    this.state = { isLoading: false, users: null };
+    this.state = { isLoading: false };
   }
   componentDidMount() {
     this.setState({ isLoading: true }); // eslint-disable-line react/no-did-mount-set-state
@@ -167,11 +167,11 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
     return (<div className={styles.chart}>
       <h1>Email Analytics</h1>
       <ol className={styles.blocks}>
-        {emailCategories.map((type, key) => (<li>
+        {emailCategories.map(type => (<li>
           <h2>{type.name} email</h2>
           <LineChart
             {...layout}
-            data={emails.map(day => ({ date: new Date(day.date), delivered: day.stats[key].metrics.delivered, unique_opens: day.stats[key].metrics.unique_opens, clicks: day.stats[key].metrics.clicks }))}
+            data={emails.map(day => ({ date: new Date(day.date), stats: day.stats.find(cat => cat.name === type.id).metrics })).map(day => ({ ...day, ...day.stats }))}
             x={email => email.date}
             xScale="time"
             chartSeries={[

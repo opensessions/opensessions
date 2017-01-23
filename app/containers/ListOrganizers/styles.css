@@ -4,14 +4,12 @@
   margin: auto;
   padding: 0 1em;
   max-width: 96rem;
-  & ol {
-    & > li {
-      list-style: none;
-      display: flex;
-      align-items: justify;
-      justify-content: space-between;
-    }
-  }
+}
+
+.organizerTile {
+  display: flex;
+  align-items: justify;
+  justify-content: space-between;
 }
 
 .icon {

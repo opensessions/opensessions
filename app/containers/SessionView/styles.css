@@ -130,6 +130,21 @@
       & .detailText {
         display: inline-block;
         vertical-align: top;
+        & .addrLine {
+          display: inline-block;
+          &::after {
+            content: ', ';
+            display: inline-block;
+            margin-right: .25em;
+          }
+          &:first-child {
+            display: block;
+          }
+          &:first-child::after,
+          &:last-child::after {
+            display: none;
+          }
+        }
       }
     }
     & .detailPrice,

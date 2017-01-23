@@ -9,6 +9,13 @@
       list-style: none;
     }
   }
+  &.slim {
+    & > ol {
+      & > li {
+        margin: 0 auto;
+      }
+    }
+  }
 }
 
 .pagination {
