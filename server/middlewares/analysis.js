@@ -20,6 +20,7 @@ const makeAppAnalysis = (models, info) => {
     const analysis = {
       timestamp: new Date(),
       version: process.env.npm_package_version,
+      gitHead: process.env.npm_package_gitHead,
       info,
       stats: {
         user: {
