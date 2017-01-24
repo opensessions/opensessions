@@ -18,6 +18,7 @@ import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import NotificationBar from '../../components/NotificationBar';
 import Modal from '../../components/Modal';
+import AuthModal from '../../containers/Modals/Authorize';
 
 import getUserToken from './getUserToken';
 import cookie from '../../utils/cookie';
@@ -39,13 +40,16 @@ export default class App extends React.Component { // eslint-disable-line react/
     notify: PropTypes.func,
     modal: PropTypes.object,
     isLoadingUser: PropTypes.bool,
-    isAdmin: PropTypes.bool
+    isAdmin: PropTypes.bool,
+    firstLocation: PropTypes.object
   }
   constructor() {
     super();
+    const { location } = window;
     this.state = {
       profile: null,
-      isLoadingUser: true
+      isLoadingUser: true,
+      firstLocation: JSON.parse(JSON.stringify(location))
     };
   }
   getChildContext() {
@@ -55,7 +59,8 @@ export default class App extends React.Component { // eslint-disable-line react/
       notify: this.notify,
       modal: { dispatch: this.modal, close: () => this.setState({ modal: null }) },
       isLoadingUser: this.state.isLoadingUser,
-      isAdmin: this.state.profile && this.state.profile.email.indexOf('@imin.co') !== -1
+      isAdmin: this.state.profile && this.state.profile.email.indexOf('@imin.co') !== -1,
+      firstLocation: this.state.firstLocation
     };
   }
   componentDidMount() {
@@ -65,6 +70,11 @@ export default class App extends React.Component { // eslint-disable-line react/
     this.createAuth();
     const { userAgent } = navigator;
     if (userAgent.indexOf('MSIE') >= 0 || (userAgent.indexOf('Trident') >= 0 && !userAgent.indexOf('x64') >= 0)) this.notify('Internet Explorer is not well-supported. Consider using an up-to-date browser for the best experience', 'warn');
+    const loginRE = /^\?login=/;
+    if (loginRE.test(this.state.firstLocation.search) && !this.state.firstLocation.hash) {
+      cookie.set('postlogin_redirect', this.state.firstLocation.search.replace(loginRE, ''));
+      this.modal({ component: <AuthModal /> });
+    }
   }
   notify = (text, status, actions, storeType) => {
     const notification = {
@@ -141,7 +151,6 @@ export default class App extends React.Component { // eslint-disable-line react/
     const { profile, modal } = this.state;
     const { INTERCOM_APPID } = window;
     const intercomProps = profile ? { user_id: profile.user_id, email: profile.email, name: profile.nickname } : {};
-    intercomProps.appID = INTERCOM_APPID;
     return (<div className={styles.root}>
       <Header />
       <div className={styles.appBody}>
@@ -151,7 +160,7 @@ export default class App extends React.Component { // eslint-disable-line react/
         <NotificationBar storeName="cookieNotifications" orientation="bottom" />
         <Footer />
       </div>
-      <Intercom {...intercomProps} />
+      <Intercom {...intercomProps} appID={INTERCOM_APPID} />
       <Modal modal={modal} />
     </div>);
   }

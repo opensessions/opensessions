@@ -33,6 +33,9 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
         dispatch({ type: 'USER_LIST_LOADED', payload: userResult.users });
         return apiFetch(`/api/admin/emails?days=56&categories=${emailCategories.map(cat => cat.id).join(',')}`).then(emailResult => {
           dispatch({ type: 'EMAIL_LIST_LOADED', payload: emailResult.emails });
+          return apiFetch('/api/analysis').then(analysisResult => {
+            dispatch({ type: 'ANALYSIS_LIST_LOADED', payload: analysisResult.instances });
+          });
         });
       });
     });
@@ -184,11 +187,33 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
       </ol>
     </div>);
   }
+  renderAnalysisHistory() {
+    const { isLoading } = this.state;
+    if (isLoading) return <LoadingMessage message="Loading app analysis" ellipsis />;
+    const analysisList = this.context.store.getState().get('analysisList');
+    if (!analysisList) return <div>No analysis data</div>;
+    const versionChanges = [];
+    let lastVersion = null;
+    analysisList.forEach(data => {
+      if (lastVersion !== data.analysis.gitHead) versionChanges.push(data);
+      lastVersion = data.analysis.gitHead;
+    });
+    return (<div className={styles.chart}>
+      <h1>App Analysis</h1>
+      <h2>Small Version changes</h2>
+      {versionChanges.map(data => {
+        const { analysis } = data;
+        const created = new Date(data.createdAt);
+        return <div>{created.toDateString()} ({created.toTimeString().substr(0, 5)}): v{analysis.version} {analysis.gitHead ? <a href={`https://github.com/opensessions/opensessions/commit/${analysis.gitHead}`}>#{analysis.gitHead.slice(0, 6)}</a> : null}</div>;
+      })}
+    </div>);
+  }
   render() {
     return (<div>
       {this.renderSessionAnalytics()}
       {this.renderUserAnalytics()}
       {this.renderEmailAnalytics()}
+      {this.renderAnalysisHistory()}
     </div>);
   }
 }

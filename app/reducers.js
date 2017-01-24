@@ -171,6 +171,17 @@ function mapClusteredReducer(state = mapClusteredInitialState, action) {
   }
 }
 
+const analysisListInitialState = false;
+
+function analysisListReducer(state = analysisListInitialState, action) {
+  switch (action.type) {
+    case 'ANALYSIS_LIST_LOADED':
+      return action.payload;
+    default:
+      return state;
+  }
+}
+
 /**
  * Creates the main reducer with the asynchronously loaded ones
  */
@@ -189,6 +200,7 @@ export default function createReducer(asyncReducers) {
     profileSessionsList: profileSessionsViewReducer,
     formFocusIndex: formFocusIndexReducer,
     mapClustered: mapClusteredReducer,
+    analysisList: analysisListReducer,
     ...asyncReducers,
   });
 }

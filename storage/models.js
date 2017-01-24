@@ -48,7 +48,19 @@ module.exports = (DataTypes) => ({
     Analysis: {
       analysis: DataTypes.JSON,
       _options: {
-        freezeTableName: true
+        freezeTableName: true,
+        classMethods: {
+          getQuery(query) {
+            return query;
+          },
+          getActions(models, req) {
+            const actions = [];
+            if (req.isAdmin) {
+              actions.push('view');
+            }
+            return actions;
+          }
+        }
       }
     },
     /* Messages: {
