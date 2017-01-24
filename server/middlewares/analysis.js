@@ -17,6 +17,7 @@ const makeAppAnalysis = (models, info) => {
     const userSessions = users.map(user => ({ user, sessions: sessions.filter(session => session.owner === user.user_id) }));
     const viewStats = sessions.map(session => (session.analytics ? (session.analytics.views || 0) : 0));
     const totalViews = viewStats.reduce((a, b) => a + b);
+    const publishedSessions = userSessions.filter(data => data.sessions.some(session => session.state === 'published'));
     const analysis = {
       timestamp: new Date(),
       version: process.env.npm_package_version,
@@ -25,9 +26,14 @@ const makeAppAnalysis = (models, info) => {
       stats: {
         user: {
           total: users.length,
-          active: users.filter(user => daysAgo(user.last_login) > 28).length,
-          activityDistribution: getDistribution(users.map(user => daysAgo(user.last_login))),
-          published: userSessions.filter(data => data.sessions.length).length
+          active: {
+            total: users.filter(user => daysAgo(user.last_login) > 28).length,
+            distribution: getDistribution(users.map(user => daysAgo(user.last_login)))
+          },
+          published: {
+            total: publishedSessions.length,
+            live: publishedSessions.filter(data => data.sessions.some(session => session.sortedSchedule.some(slot => !slot.hasOccurred))).length
+          }
         },
         session: {
           total: sessions.length,
@@ -41,7 +47,7 @@ const makeAppAnalysis = (models, info) => {
       }
     };
     models.Analysis.create({ analysis });
-  });
+  }).catch(console.error);
 };
 
 module.exports = { makeAppAnalysis };

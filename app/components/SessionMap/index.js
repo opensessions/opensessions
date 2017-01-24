@@ -87,7 +87,7 @@ export default class SessionMap extends React.Component { // eslint-disable-line
         {this.renderMap(sessions, isClustered)}
       </div>
       <div className={styles.options}>
-        <p>Showing {sessions.length} sessions</p>
+        {sessions ? <p>Showing {sessions.length} sessions</p> : null}
         <p><Checkbox checked={isClustered} onChange={val => this.context.store.dispatch({ type: 'MAP_OPTIONS_CLUSTER', payload: val }) && this.forceUpdate()} label="Toggle clustering" /></p>
       </div>
     </div>);

@@ -13,19 +13,19 @@ export default class Button extends React.PureComponent {
     to: PropTypes.string,
     onClick: PropTypes.func
   }
-  onClick = event => {
+  act() {
     const { to, onClick } = this.props;
+    if (onClick) onClick();
+    if (to) this.context.router.push(to);
+  }
+  onClick = event => {
     event.stopPropagation();
     event.preventDefault();
-    if (to && event.type === 'click') {
-      this.context.router.push(to);
-    } else {
-      onClick();
-    }
+    this.act();
   }
   render() {
     const { to, children, className, style } = this.props;
-    return (<a tabIndex={0} href={to} onClick={this.onClick} onKeyDown={e => e.keyCode === 13 && this.onClick(event)} className={[styles.button, className, style instanceof Array ? style.map(s => styles[s]).join(' ') : styles[style]].join(' ')}>
+    return (<a tabIndex={0} href={to} onClick={this.onClick} onKeyDown={e => e.keyCode === 13 && this.onClick(event)} onKeyUp={console.log} className={[styles.button, className, style instanceof Array ? style.map(s => styles[s]).join(' ') : styles[style]].join(' ')}>
       {children}
     </a>);
   }

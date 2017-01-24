@@ -28,9 +28,11 @@ function parseSchedule(slot) {
 
 function sortSchedule(slots) {
   if (!(slots && slots.length)) return [];
+  const now = new Date();
   return slots.map(slot => Object.assign({}, {
     start: dateTime(slot.startDate, slot.startTime),
-    end: dateTime(slot.startDate, slot.endTime)
+    end: dateTime(slot.startDate, slot.endTime),
+    hasOccurred: dateTime(slot.startDate, slot.startTime || '00:00:00').getTime() <= now.getTime()
   }, slot)).sort((a, b) => a.start - b.start);
 }
 

@@ -104,11 +104,12 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
     const sessions = this.context.store.getState().get('sessionList');
     if (!users || !sessions) return <div>No user information</div>;
     const sessionOwners = sessions.map(session => session.owner);
+    const liveSessionOwners = sessions.filter(session => session.sortedSchedule.some(slot => !slot.hasOccurred)).map(session => session.owner);
     const totalUsers = users.length;
     const activeUsers = users.filter(user => intervalsAgo(new Date(user.last_login), 1) > 28).length;
     const publishedUsers = users.filter(user => sessionOwners.some(owner => owner === user.user_id)).length;
-    const activePC = activeUsers / totalUsers;
-    const publishedPC = publishedUsers / totalUsers;
+    const publishedActive = users.filter(user => liveSessionOwners.some(owner => owner === user.user_id)).length;
+    const percentDescriptions = ['are "active" (have logged in within the last 28 days)', 'have ever published a session', 'have published a session which has upcoming sessions'];
     return (<div className={styles.chart}>
       <h1>User Analytics</h1>
       <p>Total users: {totalUsers} | Active users (online in last 28 days): {activeUsers} | Published users: {publishedUsers}</p>
@@ -122,19 +123,19 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
           <BarGroupChart
             width={320}
             height={400}
-            data={[{ active: activeUsers, published: publishedUsers, total: totalUsers }]}
+            data={[{ activeUsers, publishedUsers, totalUsers, publishedActive }]}
             chartSeries={[
-              { field: 'active', name: 'Active users', color: '#88c540' },
-              { field: 'published', name: 'Published users', color: '#1b91cd' },
-              { field: 'total', name: 'All users', color: '#AAA' }
+              { field: 'activeUsers', name: 'Active users', color: '#88c540' },
+              { field: 'publishedUsers', name: 'Published users (all time)', color: '#1b91cd' },
+              { field: 'publishedActive', name: 'Published users (live)', color: '#eade37' },
+              { field: 'totalUsers', name: 'All users', color: '#AAA' }
             ]}
             showXGrid={false}
             showYGrid={false}
             x={() => 'Users'}
             xScale="ordinal"
           />
-          <p>{(activePC * 100).toFixed(1)}% of users are "active" (have logged in within the last 28 days)</p>
-          <p>{(publishedPC * 100).toFixed(1)}% of users have published a session</p>
+          {[activeUsers, publishedUsers, publishedActive].map((list, key) => <p>{((list / totalUsers) * 100).toFixed(1)}% of users {percentDescriptions[key]}</p>)}
         </li>
       </ol>
     </div>);
