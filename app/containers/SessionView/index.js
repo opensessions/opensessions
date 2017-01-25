@@ -30,10 +30,13 @@ const GoogleMapLoader = withGoogleMap(props => (
   </GoogleMap>
 ));
 
-const actionNext = (result, notify, router) => {
-  const { message, messageType, redirect } = result;
+const actionNext = (result, notify, router, refresh) => {
+  const { message, messageType, redirect, instance } = result;
   if (message) notify(message, messageType || 'success');
-  if (redirect) router.push(redirect);
+  if (redirect) {
+    if (redirect !== window.location.pathname) router.push(redirect);
+    else refresh(instance);
+  }
 };
 
 export default class SessionView extends React.Component { // eslint-disable-line react/prefer-stateless-function
@@ -58,7 +61,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     this.state = { imageExpire: Math.floor(Date.now() / (60 * 1000)) };
   }
   componentDidMount() {
-    this.fetchDataClient(this.context.store.dispatch, this.props.params);
+    this.fetchData();
   }
   getLowestPrice() {
     const prices = this.getPrices().sort((p1, p2) => p1.price > p2.price).map(band => parseFloat(band.price));
@@ -89,9 +92,15 @@ export default class SessionView extends React.Component { // eslint-disable-lin
       if (session.actions.some(action => action === 'unpublish')) {
         actions.push(<Button key="unpublish" onClick={() => apiModel.action('session', session.uuid, 'unpublish').then(result => actionNext(result, this.context.notify, this.context.router))} className={publishStyles.previewButton}>Unpublish and edit</Button>);
       }
+      if (session.actions.some(action => action === 'updateMySchedule')) {
+        actions.push(<Button key="updateMySchedule" onClick={() => confirm('This will automatically update your session so all dates are in the future. Are you sure you want to continue?') && apiModel.action('session', session.uuid, 'updateMySchedule').then(result => actionNext(result, this.context.notify, this.context.router, () => this.fetchData()))} className={publishStyles.previewButton}>Auto-update schedule</Button>);
+      }
     }
     if (!actions.length) return null;
     return actions;
+  }
+  fetchData() {
+    return this.fetchDataClient(this.context.store.dispatch, this.props.params);
   }
   canEdit() {
     const session = this.context.store.getState().get('session');

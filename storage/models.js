@@ -389,6 +389,9 @@ module.exports = (DataTypes) => ({
             if (isOwner) {
               if (this.state === 'published') {
                 actions.push('unpublish');
+                if (this.sortedSchedule.some(slot => slot.hasOccurred)) {
+                  actions.push('updateMySchedule');
+                }
               } else {
                 actions.push('edit');
                 actions.push('publish');
@@ -406,6 +409,14 @@ module.exports = (DataTypes) => ({
           },
           unpublish() {
             return this.update({ state: 'unpublished' }, { returning: true }).then(instance => ({ message: 'Your session has been unpublished!', messageType: 'warn', redirect: `${instance.href}/edit`, instance }));
+          },
+          updateMySchedule() {
+            const { sortedSchedule } = this;
+            const now = Date.now();
+            const diffWeeks = sortedSchedule.filter(slot => slot.hasOccurred).map(({ start }) => now - start.getTime()).map(ms => ms / (1000 * 60 * 60 * 24 * 7)).map(Math.ceil);
+            const maxDiff = Math.max.apply(undefined, diffWeeks) || 1;
+            const newSchedule = sortedSchedule.map(({ start, end }) => ({ start: new Date(start.setDate(start.getDate() + (maxDiff * 7))), end: new Date(end.setDate(end.getDate() + (maxDiff * 7))) })).map(({ start, end }) => ({ startDate: start.toISOString().substr(0, 10), startTime: start.toTimeString().substr(0, 8), endTime: end.toTimeString().substr(0, 8) }));
+            return this.update({ schedule: newSchedule }).then(() => ({ message: 'Your session schedule has been updated (all dates now in the future)', redirect: this.href }));
           },
           trackView() {
             const analytics = this.analytics || {};

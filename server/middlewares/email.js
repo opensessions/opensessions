@@ -36,7 +36,7 @@ const sendEmail = (subject, to, body, opts) => {
     attachments: attachments || null,
   };
   if (templateId) options.template_id = templateId;
-  if (categories && SENDGRID_TRACKING !== 'disabled') options.categories = categories;
+  if (categories && SENDGRID_TRACKING === 'enabled') options.categories = categories;
   const request = sg.emptyRequest({
     method: 'POST',
     path: '/v3/mail/send',
