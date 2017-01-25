@@ -1,6 +1,7 @@
 const { sendEmail, getStyledElement } = require('../server/middlewares/email');
 const { SERVICE_LOCATION, SERVICE_EMAIL, EMAILS_INBOUND_URL, GOOGLE_MAPS_API_STATICIMAGES_KEY } = process.env;
 const { sortSchedule, parseSchedule, nextSchedule } = require('../utils/calendar');
+const { sendTweet } = require('../server/middlewares/twitter');
 
 function getStaticMapUrl(center, zoom, size, marker) {
   const [lat, lng] = center;
@@ -564,6 +565,7 @@ module.exports = (DataTypes) => ({
                 }
                 if (instance.previous('state') === 'draft') {
                   instance.sendPublishedEmail('Your session has been published!');
+                  sendTweet(`New session "${instance.title}"${instance.socialTwitter ? ` from ${instance.socialTwitter}` : ''}! ${instance.absoluteURL}`);
                 } else if (instance.previous('state') === 'unpublished') {
                   instance.sendPublishedEmail('Your session has been updated!');
                 }
