@@ -49,7 +49,7 @@ export default class App extends React.Component { // eslint-disable-line react/
     this.state = {
       profile: null,
       isLoadingUser: true,
-      firstLocation: JSON.parse(JSON.stringify(location))
+      firstLocation: location ? JSON.parse(JSON.stringify(location)) : {}
     };
   }
   getChildContext() {
