@@ -48,6 +48,7 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
     this.setState({ isLoading: true }); // eslint-disable-line react/no-did-mount-set-state
     this.constructor.fetchData(this.context.store.dispatch).then(() => {
       this.setState({ isLoading: false });
+      fetch('https://api.github.com/repos/opensessions/opensessions/commits').then(json => json.json()).then(commits => this.setState({ commits }));
     }).catch(error => {
       this.context.notify(error, 'error');
       this.setState({ isLoading: false });
@@ -195,18 +196,45 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
     if (!analysisList) return <div>No analysis data</div>;
     const versionChanges = [];
     let lastVersion = null;
+    const cleanDate = date => {
+      const ranges = [7 * 24, 24, 1];
+      const period = Math.abs((date.getTime() - Date.now()) / (1000 * 60 * 60));
+      const [dW, dD, dH] = ranges.map((delta, key) => (period % (key ? ranges[key - 1] : 1000)) / delta).map(Math.floor);
+      return [[dW, 'w'], [dD, 'd'], [dH, 'h']].filter(([diff]) => diff).map(pair => pair.join('')).join(' ');
+    };
+    const getMessages = (since, current) => {
+      if (!this.state.commits || !current) return [];
+      const msgs = [];
+      let recordMsg = false;
+      this.state.commits.forEach(({ sha, commit }) => {
+        if (sha === current) recordMsg = true;
+        if (sha === since) recordMsg = false;
+        if (recordMsg) msgs.push(`${commit.message}, ${cleanDate(new Date(commit.author.date))} ago`);
+      });
+      return msgs;
+    };
     analysisList.forEach(data => {
-      if (lastVersion !== data.analysis.gitHead) versionChanges.push(data);
+      if (lastVersion !== data.analysis.gitHead) versionChanges.push({ ...data, messages: getMessages(lastVersion, data.analysis.gitHead) });
       lastVersion = data.analysis.gitHead;
     });
+    const now = new Date();
+    const formatTime = date => `${date.toDateString()} (${date.toTimeString().substr(0, 5)})`;
     return (<div className={styles.chart}>
       <h1>App Analysis</h1>
       <h2>Small Version changes</h2>
-      {versionChanges.map(data => {
-        const { analysis } = data;
-        const created = new Date(data.createdAt);
-        return <div>{created.toDateString()} ({created.toTimeString().substr(0, 5)}): v{analysis.version} {analysis.gitHead ? <a href={`https://github.com/opensessions/opensessions/commit/${analysis.gitHead}`}>#{analysis.gitHead.slice(0, 6)}</a> : null}</div>;
-      })}
+      <ol className={styles.versionChanges}>
+        {versionChanges.map(data => {
+          const { analysis, messages } = data;
+          const created = new Date(data.createdAt);
+          return (<li>
+            <span className={styles.time}>{formatTime(created)}</span>:
+            v{analysis.version}
+            {analysis.gitHead ? <a href={`https://github.com/opensessions/opensessions/commit/${analysis.gitHead}`} className={styles.tag}>#{analysis.gitHead.slice(0, 6)}</a> : null}
+            <span className={styles.changes}>{messages && messages.length ? messages.map(msg => `+ ${msg}`).reverse().join('\n') : 'No git messages this far back'}</span>
+          </li>);
+        })}
+        <li>{formatTime(now)}</li>
+      </ol>
     </div>);
   }
   render() {

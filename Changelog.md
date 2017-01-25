@@ -45,3 +45,12 @@
 #### Bugfixes
 
 - SearchableSelect field can be added to (fix bug where subsets of existing items couldn't be added)
+
+#### 0.4.1
+
+- Admin Dashboard
+- App analysis tracking
+- Email tracking
+- "Finish your listing" email
+- Session map view
+- Session list extended filter options
