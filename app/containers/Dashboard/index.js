@@ -42,7 +42,7 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
   }
   constructor() {
     super();
-    this.state = { isLoading: false, sessionLength: 8 };
+    this.state = { isLoading: false, sessionLength: 8, usersWeekly: true };
   }
   componentDidMount() {
     this.setState({ isLoading: true }); // eslint-disable-line react/no-did-mount-set-state
@@ -99,7 +99,7 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
     </div>);
   }
   renderUserAnalytics() {
-    const { isLoading } = this.state;
+    const { isLoading, usersWeekly } = this.state;
     if (isLoading) return <LoadingMessage message="Loading users" ellipsis />;
     const users = this.context.store.getState().get('userList');
     const sessions = this.context.store.getState().get('sessionList');
@@ -117,7 +117,8 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
       <ol className={styles.blocks}>
         <li>
           <h2>New sign-ups</h2>
-          {this.renderTimeChartFromCreatedObjects(users, 'created_at', 26, 7, 'user')}
+          {this.renderTimeChartFromCreatedObjects(users, 'created_at', 26, usersWeekly ? 7 : 1, 'user')}
+          <p><Checkbox checked={usersWeekly} onChange={checked => this.setState({ usersWeekly: checked })} label="Per week" /></p>
         </li>
         <li>
           <h2>User totals</h2>

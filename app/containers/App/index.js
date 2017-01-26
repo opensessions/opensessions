@@ -53,14 +53,15 @@ export default class App extends React.Component { // eslint-disable-line react/
     };
   }
   getChildContext() {
+    const { profile, isLoadingUser, firstLocation, auth } = this.state;
     return {
-      user: this.state.profile,
-      auth: this.state.auth ? this.state.auth : { },
+      user: profile,
+      auth: auth ? auth : { },
       notify: this.notify,
       modal: { dispatch: this.modal, close: () => this.setState({ modal: null }) },
-      isLoadingUser: this.state.isLoadingUser,
-      isAdmin: this.state.profile && this.state.profile.email.indexOf('@imin.co') !== -1,
-      firstLocation: this.state.firstLocation
+      isLoadingUser,
+      isAdmin: profile && profile.email && profile.email.indexOf('@imin.co') !== -1,
+      firstLocation
     };
   }
   componentDidMount() {

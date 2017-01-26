@@ -412,11 +412,12 @@ module.exports = (DataTypes) => ({
           },
           updateMySchedule() {
             const { sortedSchedule } = this;
+            const incDate = (date, inc) => new Date(start.setDate(start.getDate() + inc));
             const now = Date.now();
             const diffWeeks = sortedSchedule.filter(slot => slot.hasOccurred).map(({ start }) => now - start.getTime()).map(ms => ms / (1000 * 60 * 60 * 24 * 7)).map(Math.ceil);
             const maxDiff = Math.max.apply(undefined, diffWeeks) || 1;
-            const newSchedule = sortedSchedule.map(({ start, end }) => ({ start: new Date(start.setDate(start.getDate() + (maxDiff * 7))), end: new Date(end.setDate(end.getDate() + (maxDiff * 7))) })).map(({ start, end }) => ({ startDate: start.toISOString().substr(0, 10), startTime: start.toTimeString().substr(0, 8), endTime: end.toTimeString().substr(0, 8) }));
-            return this.update({ schedule: newSchedule }).then(() => ({ message: 'Your session schedule has been updated (all dates now in the future)', redirect: this.href }));
+            const newSchedule = sortedSchedule.map(({ start, end }) => ({ start: incDate(start, maxDiff * 7), end: incDate(end, maxDiff * 7) })).map(({ start, end }) => ({ startDate: start.toISOString().substr(0, 10), startTime: start.toTimeString().substr(0, 8), endTime: end.toTimeString().substr(0, 8) }));
+            return this.update({ schedule: newSchedule }, { returning: true }).then(instance => ({ message: 'Your session schedule has been updated (all dates now in the future)', redirect: this.href, instance }));
           },
           trackView() {
             const analytics = this.analytics || {};
@@ -576,7 +577,8 @@ module.exports = (DataTypes) => ({
                 }
                 if (instance.previous('state') === 'draft') {
                   instance.sendPublishedEmail('Your session has been published!');
-                  sendTweet(`New session "${instance.title}"${instance.socialTwitter ? ` from ${instance.socialTwitter}` : ''}! ${instance.absoluteURL}`);
+                  const { title, socialTwitter, socialHashtag, Organizer, absoluteURL } = instance;
+                  sendTweet([title, 'was just published', socialTwitter ? `by ${socialTwitter} (${Organizer.name})!` : `by ${Organizer.name}!`, socialHashtag, absoluteURL].filter(t => t).join(' '));
                 } else if (instance.previous('state') === 'unpublished') {
                   instance.sendPublishedEmail('Your session has been updated!');
                 }
