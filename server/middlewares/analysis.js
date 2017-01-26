@@ -1,3 +1,5 @@
+const { execSync } = require('child_process');
+
 const { getAllUsers } = require('../../storage/users');
 
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
@@ -7,6 +9,8 @@ const getDistribution = list => list.reduce((obj, stat) => {
   obj[stat] = (obj[stat] || 0) + 1;
   return obj;
 }, {});
+
+const getGitHash = () => execSync('git rev-parse HEAD').toString().trim();
 
 const makeAppAnalysis = (models, info) => {
   const getResources = Promise.all([
@@ -21,7 +25,7 @@ const makeAppAnalysis = (models, info) => {
     const analysis = {
       timestamp: new Date(),
       version: process.env.npm_package_version,
-      gitHead: process.env.npm_package_gitHead,
+      gitHead: getGitHash(),
       info,
       stats: {
         user: {

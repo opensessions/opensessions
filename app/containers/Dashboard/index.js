@@ -229,8 +229,12 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
           return (<li>
             <span className={styles.time}>{formatTime(created)}</span>:
             v{analysis.version}
-            {analysis.gitHead ? <a href={`https://github.com/opensessions/opensessions/commit/${analysis.gitHead}`} className={styles.tag}>#{analysis.gitHead.slice(0, 6)}</a> : null}
-            <span className={styles.changes}>{messages && messages.length ? messages.map(msg => `+ ${msg}`).reverse().join('\n') : 'No git messages this far back'}</span>
+            {analysis.gitHead
+              ? (<span>
+                <a href={`https://github.com/opensessions/opensessions/commit/${analysis.gitHead}`} className={styles.tag}>#{analysis.gitHead.slice(0, 7)}</a>
+                <span className={styles.changes}>{messages && messages.length ? messages.map(msg => `+ ${msg}`).reverse().join('\n') : 'No git messages this far back'}</span>
+              </span>)
+              : null}
           </li>);
         })}
         <li>{formatTime(now)}</li>

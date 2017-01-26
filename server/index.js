@@ -5,9 +5,7 @@ const logger = require('./logger');
 const frontend = require('./middlewares/frontend');
 const isDev = process.env.NODE_ENV !== 'production';
 
-const dotenv = require('dotenv');
-dotenv.config({ silent: true });
-dotenv.load();
+require('dotenv').config({ verbose: false });
 
 const passport = require('passport');
 const session = require('express-session');
