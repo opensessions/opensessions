@@ -25,6 +25,8 @@ import cookie from '../../utils/cookie';
 
 import styles from './styles.css';
 
+const originalLocation = window && window.location ? JSON.parse(JSON.stringify(window.location)) : {};
+
 export default class App extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
     children: PropTypes.node,
@@ -45,11 +47,10 @@ export default class App extends React.Component { // eslint-disable-line react/
   }
   constructor() {
     super();
-    const { location } = window;
     this.state = {
       profile: null,
       isLoadingUser: true,
-      firstLocation: location ? JSON.parse(JSON.stringify(location)) : {}
+      firstLocation: originalLocation
     };
   }
   getChildContext() {
@@ -72,8 +73,9 @@ export default class App extends React.Component { // eslint-disable-line react/
     const { userAgent } = navigator;
     if (userAgent.indexOf('MSIE') >= 0 || (userAgent.indexOf('Trident') >= 0 && !userAgent.indexOf('x64') >= 0)) this.notify('Internet Explorer is not well-supported. Consider using an up-to-date browser for the best experience', 'warn');
     const loginRE = /^\?login=/;
-    if (loginRE.test(this.state.firstLocation.search) && !this.state.firstLocation.hash) {
-      cookie.set('postlogin_redirect', this.state.firstLocation.search.replace(loginRE, ''));
+    const location = this.state.firstLocation;
+    if (loginRE.test(location.search) && !location.hash) {
+      cookie.set('postlogin_redirect', location.search.replace(loginRE, ''));
       this.modal({ component: <AuthModal /> });
     }
   }
