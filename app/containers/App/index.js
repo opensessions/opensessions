@@ -56,7 +56,7 @@ export default class App extends React.Component { // eslint-disable-line react/
     const { profile, isLoadingUser, firstLocation, auth } = this.state;
     return {
       user: profile,
-      auth: auth ? auth : { },
+      auth: auth || {},
       notify: this.notify,
       modal: { dispatch: this.modal, close: () => this.setState({ modal: null }) },
       isLoadingUser,

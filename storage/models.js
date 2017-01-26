@@ -412,7 +412,7 @@ module.exports = (DataTypes) => ({
           },
           updateMySchedule() {
             const { sortedSchedule } = this;
-            const incDate = (date, inc) => new Date(start.setDate(start.getDate() + inc));
+            const incDate = (date, inc) => new Date(date.setDate(date.getDate() + inc));
             const now = Date.now();
             const diffWeeks = sortedSchedule.filter(slot => slot.hasOccurred).map(({ start }) => now - start.getTime()).map(ms => ms / (1000 * 60 * 60 * 24 * 7)).map(Math.ceil);
             const maxDiff = Math.max.apply(undefined, diffWeeks) || 1;
