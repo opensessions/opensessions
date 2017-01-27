@@ -25,7 +25,7 @@ import cookie from '../../utils/cookie';
 
 import styles from './styles.css';
 
-const originalLocation = location ? JSON.parse(JSON.stringify(location)) : {};
+const originalLocation = window && window.location ? JSON.parse(JSON.stringify(window.location)) : {};
 
 export default class App extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
