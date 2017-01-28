@@ -67,7 +67,7 @@ const webpackConfig = require(`../internals/webpack/webpack.${isDev ? 'dev' : 'p
 
 // Catch bots and serve special rendered components
 app.use((req, res, done) => {
-  if ((req.query && req.query.ssr) || req.get('User-Agent').match(/bot|googlebot|facebookexternalhit|crawler|spider|robot|crawling/i)) {
+  if ((req.query && req.query.ssr) || req.get('User-Agent').match(/bot|googlebot|facebookexternalhit|twitterbot|crawler|spider|robot|crawling/i)) {
     getRenderedPage(req).then(page => {
       res.send(page);
     }).catch(error => {
