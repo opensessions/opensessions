@@ -24,7 +24,7 @@
 const { SERVICE_LOCATION, SERVICE_EMAIL } = process.env;
 
 const { getAllUsers } = require('../../storage/users');
-const { sendEmail } = require('./email');
+const { sendEmail, getStyledElement } = require('./email');
 
 const sessionHref = session => `${SERVICE_LOCATION}${session.href}`;
 
@@ -40,11 +40,11 @@ const sendFinishListingEmails = (models) => {
         sendEmail('Finish your Open Sessions listing', user.email, `<p>Dear ${user.nickname || user.name},</p>
           <p>Congratulations on starting your listing ${draft.title ? `'${draft.title}'` : 'on Open Sessions'}.</p>
           <p>You're just a few steps away from getting the word out about your session.</p>
-          <p><a class="button" href="${sessionHref(draft)}/edit">Finish your listing</a></p>
+          <p>${getStyledElement('button', 'Finish your listing', 'a', { href: sessionHref(draft) })}</p>
           <h2>Why use Open Sessions?</h2>
           <p>Open Sessions is the easy way to get the sessions you run discovered by the thousands of people across the country searching for physical activity via the web's activity finders.</p>
           <p><a href="${sessionHref(draft)}/edit">Complete your session listing</a> and publish it to start letting people know about the great sessions you run.</p>
-        `, { substitutions: { '-title-': 'You\'re nearly there', '-titleClass-': 'large' }, categories: ['engagement', 'engagement-finishlisting'] });
+        `, { substitutions: { '-title-': 'You\'re nearly there!', '-titleClass-': 'large' }, categories: ['engagement', 'engagement-finishlisting'] });
       });
     });
   });

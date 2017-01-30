@@ -4,16 +4,16 @@ const emailCopy = require('./email-copy.json');
 const { SENDGRID_SECRET, SERVICE_EMAIL, SENDGRID_TEMPLATE, SENDGRID_TRACKING } = process.env;
 
 const emailStyles = {
-  messageSrc: { padding: '.5em', background: '#F6F1F1', color: '#666', 'text-align': 'center' }
+  messageSrc: { padding: '.5em', background: '#F6F1F1', color: '#666', 'text-align': 'center' },
+  button: { 'font-family': 'serif', padding: '.5em', background: '#1B91CD', 'text-align': 'center', margin: '.75em 1em', display: 'block', color: '#FFF', 'text-decoration': 'none', 'font-size': '1.6em' }
 };
 
-const getStyledElement = (styleName, html, tagName) => {
+const getStyledElement = (styleName, html, attrs = {}, tagName = 'div') => {
   const style = emailStyles[styleName];
-  return `<${tagName || 'div'} style="${Object.keys(style).map(key => [key, style[key]].join(': ')).join(';')}">${html}</${tagName || 'div'}>`;
+  return `<${tagName} style="${Object.keys(style).map(key => [key, style[key]].join(': ')).join(';')}" ${Object.keys(attrs).map(key => [key, `"${attrs[key]}"`].join('=')).join(' ')}>${html}</${tagName}>`;
 };
 
-const sendEmail = (subject, to, body, opts) => {
-  opts = opts || {};
+const sendEmail = (subject, to, body, opts = {}) => {
   const { categories, attachments, substitutions, replyTo, bcc, NO_TEMPLATE } = opts;
   const sg = sendgrid(SENDGRID_SECRET);
   let templateId = opts.template_id || SENDGRID_TEMPLATE;
