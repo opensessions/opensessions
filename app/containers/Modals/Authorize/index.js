@@ -77,6 +77,7 @@ export default class AuthModal extends React.Component { // eslint-disable-line 
       return;
     }
     this.setState({ isLoading: true });
+    trackPage(window.location.href, '/special:signup-success');
     this.context.auth.signup({
       connection: 'Username-Password-Authentication',
       responseType: 'token',
