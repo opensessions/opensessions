@@ -8,6 +8,11 @@
       padding: .4em;
       display: block;
       line-height: 1;
+      transition: .2s all ease;
+      transform: scale(.75);
+      &:hover {
+        transform: scale(1);
+      }
     }
   }
 }

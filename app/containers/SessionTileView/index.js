@@ -51,6 +51,7 @@ const SessionTileView = function (props, context) {
   return (<article className={[styles.tile, style ? styles[style] : ''].join(' ')}>
     <div className={styles.imgCol}>
       <img src={image || '/images/placeholder.png'} role="presentation" className={!image ? styles.noImage : null} />
+      {isAdmin && session.analytics ? <div className={styles.moreInfo}>Viewed {session.analytics.views} times</div> : null}
     </div>
     <div className={styles.textCol}>
       <div className={styles.info}>

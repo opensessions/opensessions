@@ -52,6 +52,7 @@ module.exports = (DataTypes) => ({
         freezeTableName: true,
         classMethods: {
           getQuery(query) {
+            query.order = ['createdAt', 'DESC'];
             return query;
           },
           getActions(models, req) {

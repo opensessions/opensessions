@@ -26,7 +26,7 @@ const makeAppAnalysis = (models, info) => {
     const publishedSessions = userSessions.filter(data => data.sessions.some(session => session.state === 'published'));
     const analysis = {
       timestamp: new Date(),
-      version: pkgJS.version || process.env.HEROKU_RELEASE_VERSION || process.env.npm_package_version || false,
+      version: pkgJS.version || process.env.npm_package_version || false,
       gitHead: process.env.HEROKU_SLUG_COMMIT || getGitHash(),
       info,
       stats: {
