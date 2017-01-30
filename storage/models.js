@@ -449,7 +449,7 @@ module.exports = (DataTypes) => ({
                         <p class="label">Next session:</p>
                         <p>${parsedSlot ? `${parsedSlot.date} <b>at ${parsedSlot.time}</b>` : 'No upcoming session'}</p>
                       </td>
-                      <td style="border-left:1px solid #EEE;">
+                      <td style="border-left:1px solid #EEE;padding: 1em 0;">
                         <p class="label">Address:</p>
                         <p>${session.location.split(',').join('<br />')}</p>
                         <p class="label">Price:</p>
@@ -462,7 +462,7 @@ module.exports = (DataTypes) => ({
                 <h1>Where does my session appear?</h1>
                 <ol class="aggregators">
                   ${session.aggregators.map(aggregator => `<li>
-                    <img src="${aggregator.img}" />
+                    ${getStyledElement('imageCircle', `<img src="${aggregator.img}" style="max-width:100%;border-radius:2em;" />`, 'span')}
                     <div class="info">
                       <h2>${aggregator.name}</h2>
                       <p>${aggregator.description}</p>

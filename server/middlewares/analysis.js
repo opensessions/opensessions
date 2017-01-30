@@ -2,6 +2,8 @@ const { execSync } = require('child_process');
 
 const { getAllUsers } = require('../../storage/users');
 
+const pkgJS = require('../../package.json');
+
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
 const daysAgo = date => Math.floor((Date.now() - new Date(date).getTime()) / MS_PER_DAY);
 
@@ -24,7 +26,7 @@ const makeAppAnalysis = (models, info) => {
     const publishedSessions = userSessions.filter(data => data.sessions.some(session => session.state === 'published'));
     const analysis = {
       timestamp: new Date(),
-      version: process.env.HEROKU_RELEASE_VERSION || process.env.npm_package_version || false,
+      version: pkgJS.version || process.env.HEROKU_RELEASE_VERSION || process.env.npm_package_version || false,
       gitHead: process.env.HEROKU_SLUG_COMMIT || getGitHash(),
       info,
       stats: {

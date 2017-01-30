@@ -216,7 +216,7 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
     };
     analysisList.forEach(data => {
       if (lastVersion !== data.analysis.gitHead) versionChanges.push({ ...data, messages: getMessages(lastVersion, data.analysis.gitHead) });
-      lastVersion = data.analysis.gitHead;
+      if (data.analysis.gitHead) lastVersion = data.analysis.gitHead;
     });
     const now = new Date();
     const formatTime = date => `${date.toDateString()} (${date.toTimeString().substr(0, 5)})`;
