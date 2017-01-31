@@ -26,7 +26,7 @@ export default class AuthModal extends React.Component { // eslint-disable-line 
   constructor() {
     super();
     this.state = { form: {}, showPass: false, isLoading: false };
-    trackPage(window.location.href, '/special:signup');
+    trackPage(window.location.href, '/special:signup-open');
   }
   facebook() {
     this.setState({ isLoading: true });
@@ -40,6 +40,7 @@ export default class AuthModal extends React.Component { // eslint-disable-line 
     if (form && form.email) {
       this.setState({ isLoading: true });
       apiFetch('/api/auth-email', { body: form }).then(result => {
+        trackPage(window.location.href, `/special:signup-${result.exists ? 'signin' : 'create'}`);
         this.context.modal.dispatch({ component: result.exists ? <AuthModal stage="signin" email={form.email} /> : <AuthModal stage="create" email={form.email} /> });
         this.setState({ error: null, isLoading: false });
       }).catch(error => {

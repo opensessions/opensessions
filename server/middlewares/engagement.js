@@ -38,7 +38,7 @@ const sendFinishListingEmails = (models) => {
       yesterdayDrafts.forEach(draft => {
         const user = users.find(u => u.user_id === draft.owner);
         sendEmail('Finish your Open Sessions listing', user.email, `<p>Dear ${user.nickname || user.name},</p>
-          <p>Congratulations on starting your listing ${draft.title ? `'${draft.title}'` : 'on Open Sessions'}.</p>
+          <p>Congratulations on starting your listing ${draft.title ? `<b>${draft.title}</b>` : 'on Open Sessions'}.</p>
           <p>You're just a few steps away from getting the word out about your session.</p>
           <p>${getStyledElement('button', 'Finish your listing', 'a', { href: sessionHref(draft) })}</p>
           <h2>Why use Open Sessions?</h2>

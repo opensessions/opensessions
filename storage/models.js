@@ -52,7 +52,7 @@ module.exports = (DataTypes) => ({
         freezeTableName: true,
         classMethods: {
           getQuery(query) {
-            query.order = ['createdAt', 'DESC'];
+            query.order = [['createdAt', 'DESC']];
             return query;
           },
           getActions(models, req) {
@@ -458,7 +458,7 @@ module.exports = (DataTypes) => ({
                       </td>
                     </tr>
                   </table>
-                  <a class="view-link" href="${session.absoluteURL}">View or edit your session on Open Sessions</a>
+                  ${getStyledElement('viewLink', 'View or edit your session on Open Sessions', 'a', { href: session.absoluteURL })}
                 </div>
                 <h1>Where does my session appear?</h1>
                 <ol class="aggregators">
@@ -577,11 +577,11 @@ module.exports = (DataTypes) => ({
                   throw err;
                 }
                 if (instance.previous('state') === 'draft') {
-                  instance.sendPublishedEmail('Your session has been published!');
+                  instance.sendPublishedEmail('Your session was published');
                   const { title, socialTwitter, socialHashtag, Organizer, absoluteURL } = instance;
                   sendTweet([title, 'was just published', socialTwitter ? `by ${socialTwitter} (${Organizer.name})!` : `by ${Organizer.name}!`, socialHashtag, absoluteURL].filter(t => t).join(' '));
                 } else if (instance.previous('state') === 'unpublished') {
-                  instance.sendPublishedEmail('Your session has been updated!');
+                  instance.sendPublishedEmail('Your session was updated');
                 }
               } else if (instance.state === 'draft') {
                 if (instance.previous('state') === 'published') instance.state = 'unpublished';

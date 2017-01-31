@@ -245,7 +245,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         {meetingPoint}
         {preparation}
         {this.isAdmin() ? activitiesList : null}
-        {/* this.renderLastUpdated(session) */}
+        {this.isAdmin() ? this.renderLastUpdated(session) : null}
       </div>
       <div className={styles.sideCol}>
         <div className={styles.info}>
