@@ -458,12 +458,12 @@ module.exports = (DataTypes) => ({
                       </td>
                     </tr>
                   </table>
-                  ${getStyledElement('viewLink', 'View or edit your session on Open Sessions', 'a', { href: session.absoluteURL })}
+                  ${getStyledElement('viewLink', 'View or edit your session on Open Sessions', { href: session.absoluteURL }, 'a')}
                 </div>
                 <h1>Where does my session appear?</h1>
                 <ol class="aggregators">
                   ${session.aggregators.map(aggregator => `<li>
-                    ${getStyledElement('imageCircle', `<img src="${aggregator.img}" style="max-width:100%;border-radius:2em;" />`, 'span')}
+                    ${getStyledElement('imageCircle', `<img src="${aggregator.img}" style="max-width:100%;border-radius:2em;" />`, {}, 'span')}
                     <div class="info">
                       <h2>${aggregator.name}</h2>
                       <p>${aggregator.description}</p>

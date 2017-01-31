@@ -40,7 +40,7 @@ const sendFinishListingEmails = (models) => {
         sendEmail('Finish your Open Sessions listing', user.email, `<p>Dear ${user.nickname || user.name},</p>
           <p>Congratulations on starting your listing ${draft.title ? `<b>${draft.title}</b>` : 'on Open Sessions'}.</p>
           <p>You're just a few steps away from getting the word out about your session.</p>
-          <p>${getStyledElement('button', 'Finish your listing', 'a', { href: sessionHref(draft) })}</p>
+          <p>${getStyledElement('button', 'Finish your listing', { href: sessionHref(draft) }, 'a')}</p>
           <h2>Why use Open Sessions?</h2>
           <p>Open Sessions is the easy way to get the sessions you run discovered by the thousands of people across the country searching for physical activity via the web's activity finders.</p>
           <p><a href="${sessionHref(draft)}/edit">Complete your session listing</a> and publish it to start letting people know about the great sessions you run.</p>
