@@ -590,11 +590,14 @@ module.exports = (DataTypes) => ({
             }
             const prefixTypes = {
               socialWebsite: ['http://', 'https://'],
-              socialFacebook: ['https://facebook.com/'],
+              socialFacebook: ['https://facebook.com/', 'https://www.facebook.com/'],
               socialInstagram: ['@'],
               socialTwitter: ['@'],
               socialHashtag: ['#']
             };
+            if (instance.socialFacebook && instance.socialFacebook.match(' ')) {
+              instance.socialFacebook = `https://facebook.com/public?query=${instance.socialFacebook.replace(' ', '+')}&type=pages&init=dir&nomc=0`;
+            }
             Object.keys(prefixTypes).filter(type => instance.changed(type) && instance[type]).forEach(type => {
               const val = instance[type];
               const prefixes = prefixTypes[type];

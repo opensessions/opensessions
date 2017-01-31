@@ -108,7 +108,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   }
   isAdmin() {
     const { user } = this.context;
-    return user && user.email.indexOf(`@${ADMIN_DOMAIN}`) !== -1;
+    return user && user.email && user.email.indexOf(`@${ADMIN_DOMAIN}`) !== -1;
   }
   dispatchMessageModal = () => {
     const session = this.context.store.getState().get('session');
