@@ -540,6 +540,7 @@ module.exports = (DataTypes) => ({
               }
             }
             query.where = { $and: query.where ? [query.where] : [] };
+            if (!query.order) query.order = [['updatedAt', 'ASC']];
             if (user) {
               query.where.$and.push({
                 $or: [
