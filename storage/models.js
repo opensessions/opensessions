@@ -400,7 +400,7 @@ module.exports = (DataTypes) => ({
               }
               actions.push('duplicate');
               actions.push('delete');
-            } else {
+            } else if (!req.isAdmin) {
               actions.push('trackView');
             }
             return actions;
@@ -596,7 +596,7 @@ module.exports = (DataTypes) => ({
               socialHashtag: ['#']
             };
             if (instance.socialFacebook && instance.socialFacebook.match(' ')) {
-              instance.socialFacebook = `https://facebook.com/public?query=${instance.socialFacebook.replace(' ', '+')}&type=pages&init=dir&nomc=0`;
+              instance.socialFacebook = `https://facebook.com/search/pages/?q=${instance.socialFacebook.replace(' ', '+')}`;
             }
             Object.keys(prefixTypes).filter(type => instance.changed(type) && instance[type]).forEach(type => {
               const val = instance[type];
