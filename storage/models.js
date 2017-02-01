@@ -498,7 +498,7 @@ module.exports = (DataTypes) => ({
             const nextSlot = nextSchedule(session.schedule);
             const nextDate = nextSlot ? parseSchedule(nextSlot) : false;
             return models.Threads.create({ originEmail: message.from, metadata: { SessionUuid: session.uuid } })
-              .then(thread => sendEmail(`Open Sessions - New question from ${message.name}`, session.contactEmail, `
+              .then(thread => sendEmail(`${message.name} has a question about ${session.title}`, session.contactEmail, `
                 <div class="message">
                   ${getStyledElement('messageSrc', 'Message from Open Sessions user')}
                   <div class="msgBody">${message.body}</div>
