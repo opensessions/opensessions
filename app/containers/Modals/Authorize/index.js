@@ -11,6 +11,7 @@ import trackPage from '../../../utils/analytics';
 import styles from './styles.css';
 
 const KEY_ENTER = 13;
+const { fbq } = window;
 
 export default class AuthModal extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
@@ -79,10 +80,12 @@ export default class AuthModal extends React.Component { // eslint-disable-line 
     }
     this.setState({ isLoading: true });
     trackPage(window.location.href, '/special:signup-success');
+    const email = this.props.email || form.email;
+    if (fbq) fbq('track', 'CompleteRegistration', { value: 0, currency: 'GBP', email });
     this.context.auth.signup({
       connection: 'Username-Password-Authentication',
       responseType: 'token',
-      email: this.props.email || form.email,
+      email,
       password: form.password
     }, error => {
       if (error) {

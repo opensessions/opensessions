@@ -174,7 +174,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         </div>
         {session.Organizer ? <div className={styles.contactButton}><Button to={session.Organizer.href}>View organiser</Button></div> : null}
       </div>
-      <Helmet title={session.title} titleTemplate="%s - Open Sessions" meta={[['og:image', session.image], ['og:title', session.title], ['og:description', (session.description || '').substr(0, 256)], ['og:url', session.absoluteURL]].map(([property, content]) => ({ property, content })).concat([{ name: 'twitter:card', content: 'summary' }, { name: 'twitter:site', content: '@open_sessions' }, { name: 'twitter:creator', content: session.socialTwitter }])} />
+      <Helmet title={session.title} titleTemplate="%s - Open Sessions" meta={[['og:image', session.image], ['og:title', session.title], ['og:description', (session.description || '').substr(0, 256)], ['og:url', session.absoluteURL]].map(([property, content]) => ({ property, content })).concat([['twitter:card', 'summary'], ['twitter:site', '@open_sessions'], ['twitter:creator', session.socialTwitter]].map(([name, content]) => ({ name, content })))} />
     </div>);
   }
   renderLastUpdated(session) {
