@@ -106,6 +106,7 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
     if (isLoading) return <LoadingMessage message="Loading user sessions" ellipsis />;
     const users = this.context.store.getState().get('userList');
     const sessions = this.context.store.getState().get('sessionList');
+    if (!users || !sessions) return <LoadingMessage message="Loading user sessions" ellipsis />;
     const userSessions = users.map(user => ({ user, sessions: sessions.filter(s => s.owner === user.user_id) }));
     return (<div className={styles.chart}>
       <h1>User List</h1>
