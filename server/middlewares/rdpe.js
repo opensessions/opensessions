@@ -9,10 +9,9 @@ const compareMicrotime = (dateString, operator) => { // eslint-disable-line cons
   else if (operator === '<') return { $lt: lower };
 };
 
-module.exports = (database, opts) => {
+module.exports = (database, options = {}) => {
   const rdpe = express();
   const { Session, Organizer, Activity } = database.models;
-  const options = opts || {};
 
   rdpe.get('/', (req, res) => {
     res.json({
@@ -71,14 +70,14 @@ module.exports = (database, opts) => {
               const formatted = {};
               ['start', 'end'].forEach(point => {
                 const date = moment.tz(`${slot.startDate}T${slot[`${point}Time`] || defaultTime[point]}`, options.timezone);
-                formatted[point] = date.format();
+                formatted[point] = options.scrubTimezone ? date.utc().format() : date.format();
               });
               return formatted;
             });
           }
           if (item.data.Activities) item.data.Activities = item.data.Activities.map(activity => activity.name);
-          item.data.website = `${opts.URL}${item.data.href}`;
-          item.data.messageURL = `${opts.URL}${item.data.href}/action/message`;
+          item.data.website = `${options.URL}${item.data.href}`;
+          item.data.messageURL = `${options.URL}${item.data.href}/action/message`;
           hiddenFields.forEach(key => delete item.data[key]);
         }
         return item;

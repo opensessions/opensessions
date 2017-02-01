@@ -26,7 +26,7 @@ module.exports = (database) => {
     next();
   };
 
-  const rdpeConfig = { timezone: LOCALE_TIMEZONE, URL: SERVICE_LOCATION };
+  const rdpeConfig = { timezone: LOCALE_TIMEZONE, scrubTimezone: true, URL: SERVICE_LOCATION };
   api.use('/rdpe', RDPE(database, Object.assign({ baseURL: '/api/rdpe' }, rdpeConfig)));
   api.use('/rdpe-legacy', RDPE(database, Object.assign({}, rdpeConfig, { preserveLatLng: true, baseURL: '/api/rdpe-legacy' })));
 
