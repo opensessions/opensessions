@@ -520,7 +520,7 @@ module.exports = (DataTypes) => ({
                       </td>
                     </tr></table>
                   </div>
-                  ${getStyledElement('aggSrcContainer', `<span style="position:relative;border-radius:50%;border:1px solid #CCC;margin-top:-2em;display:inline-block;width:8em;height:8em;background:#FFF url(${SERVICE_LOCATION}/images/open-sessions.png) 50% 50% no-repeat;background-size:88%;"></span>`)}
+                  ${getStyledElement('aggSrcContainer', `<span style="position:relative;margin-top:-2em;border-radius:50%;border:1px solid #CCC;margin-top:-2em;display:inline-block;width:8em;height:8em;background:#FFF url(${SERVICE_LOCATION}/images/open-sessions.png) 50% 50% no-repeat;background-size:88%;"></span>`)}
                 </div>
                 <p class="session-link"><a href="${session.absoluteURL}">View or edit your session on Open Sessions</a></p>
               `, { substitutions: { '-title-': `Reply to ${message.name} by replying to this email`, '-signoffClass-': 'hide' }, replyTo: `${thread.uuid}@${EMAILS_INBOUND_URL}`, bcc: SERVICE_EMAIL }));

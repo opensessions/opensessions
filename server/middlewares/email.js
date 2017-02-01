@@ -5,7 +5,7 @@ const { SENDGRID_SECRET, SERVICE_EMAIL, SENDGRID_TEMPLATE, SENDGRID_TRACKING } =
 
 const emailStyles = {
   messageFrom: { padding: '.5em', background: '#F6F1F1', color: '#666', 'text-align': 'center' },
-  messageSrc: { padding: '.5em', background: '#FFF', 'border-bottom': '.15em solid #EEE' },
+  messageSrc: { padding: '.8em', background: '#FFF', 'border-bottom': '.15em solid #EEE' },
   button: { 'font-family': 'serif', padding: '.5em', background: '#1B91CD', 'text-align': 'center', margin: '.75em 1em', display: 'block', color: '#FFF', 'text-decoration': 'none', 'font-size': '1.6em' },
   imageCircle: { 'border-radius': '50%', border: '1px solid #CCC', padding: '.5em', width: '80px', height: '80px', 'vertical-align': 'middle', display: 'inline-block' },
   viewLink: { display: 'block', padding: '.75em 1em', background: '#f6f1f1', color: '#777', 'text-decoration': 'underline', 'text-align': 'center' },
