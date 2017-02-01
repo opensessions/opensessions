@@ -159,7 +159,7 @@
     "pg": "^5.1.0",
     "pg-hstore": "^2.3.2",
     "postcss-custom-media": "^5.0.1",
-    "react": "^15.3.2",
+    "react": "^15.4.2",
     "react-css-modules": "^3.7.6",
     "react-d3-basic": "^1.6.11",
     "react-datepicker": "^0.28.1",

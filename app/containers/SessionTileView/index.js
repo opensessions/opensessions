@@ -17,7 +17,7 @@ const SessionTileView = function (props, context) {
   const { notify, router, onExpire, user } = context;
   const isOwner = user && session.owner === user.user_id;
   const confirmAction = action => {
-    notify(`Are you sure you want to ${action} this session?`, action === 'delete' ? 'error' : null, [{
+    notify(`Are you sure you want to ${action} <b>${session.title || 'this session'}</b>?`, action === 'delete' ? 'error' : null, [{
       text: capitalize(action),
       dispatch: () => apiModel.action('session', session.uuid, action).then(res => {
         const { message, messageType, redirect } = res;
