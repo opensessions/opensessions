@@ -505,19 +505,22 @@ module.exports = (DataTypes) => ({
                   <div class="from">${message.name}</div>
                 </div>
                 <br />
-                <div class="session">
-                  <img src="${session.image}" />
-                  <h1><a href="${session.absoluteURL}">${session.title}</a></h1>
-                  <table style="text-align: center;"><tr>
-                    <td>
-                      <img src="${SERVICE_LOCATION}/images/map-pin.png" />
-                      <p>${session.location.replace(/,/, '<br>')}</p>
-                    </td>
-                    <td>
-                      <img src="${SERVICE_LOCATION}/images/calendar.png" />
-                      <p>${nextDate ? `Next occuring: <br />${nextDate.date} <b>at ${nextDate.time}</b>` : 'No upcoming sessions'}</p>
-                    </td>
-                  </tr></table>
+                <div class="session" style="padding:0;">
+                  <div style="padding:1em;">
+                    <img src="${session.image}" />
+                    <h1><a href="${session.absoluteURL}">${session.title}</a></h1>
+                    <table style="text-align: center;"><tr>
+                      <td>
+                        <img src="${SERVICE_LOCATION}/images/map-pin.png" style="max-height: 2em;" />
+                        <p>${session.location.replace(/,/, '<br>')}</p>
+                      </td>
+                      <td>
+                        <img src="${SERVICE_LOCATION}/images/calendar.png" style="max-height: 2em;" />
+                        <p>${nextDate ? `Next occuring: <br />${nextDate.date} <b>at ${nextDate.time}</b>` : 'No upcoming sessions'}</p>
+                      </td>
+                    </tr></table>
+                  </div>
+                  ${getStyledElement('aggSrcContainer', `<span style="position:relative;border-radius:50%;border:1px solid #CCC;margin-top:-2em;display:inline-block;width:8em;height:8em;background:#FFF url(${SERVICE_LOCATION}/images/open-sessions.png) 50% 50% no-repeat;background-size:88%;"></span>`)}
                 </div>
                 <p class="session-link"><a href="${session.absoluteURL}">View or edit your session on Open Sessions</a></p>
               `, { substitutions: { '-title-': `Reply to ${message.name} by replying to this email`, '-signoffClass-': 'hide' }, replyTo: `${thread.uuid}@${EMAILS_INBOUND_URL}`, bcc: SERVICE_EMAIL }));
