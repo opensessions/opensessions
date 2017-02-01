@@ -1,0 +1,26 @@
+.versionChange {
+  padding: .25em;
+  list-style: none;
+  & .changes {
+    display: inline-block;
+    vertical-align: top;
+    margin: 0 .5em;
+    padding: .5em;
+    text-align: left;
+    background: #EEE;
+    color: #333;
+    font-size: .9em;
+    font-family: monospace;
+    white-space: pre;
+  }
+  & .time {
+    font-weight: bold;
+  }
+  & .tag {
+    background-color: var(--actionColor);
+    display: inline-block;
+    color: #FFF;
+    padding: .25em;
+    line-height: 1;
+  }
+}

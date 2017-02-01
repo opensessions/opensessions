@@ -1,0 +1,24 @@
+.userIcon {
+  max-width: 2.5em;
+  border-radius: 50%;
+  margin: 0 .5em;
+  display: inline-block;
+}
+
+.sessionCount {
+  background-color: #FFF;
+  margin: .25em;
+  padding: .25em;
+  display: inline-block;
+}
+
+.lastLogin {
+  font-weight: bold;
+  padding: .25em;
+  display: inline-block;
+}
+
+.name {
+  padding: .25em;
+  display: inline-block;
+}

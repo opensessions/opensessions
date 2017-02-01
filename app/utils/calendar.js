@@ -44,3 +44,20 @@ export function sortSchedule(schedules) {
 export function nextSchedule(schedules) {
   return sortSchedule(schedules).find(schedule => schedule.start > Date.now());
 }
+
+const MS_PER_DAY = 1000 * 60 * 60 * 24;
+
+export function formatTime(date) {
+  return `${date.toDateString()} (${date.toTimeString().substr(0, 5)})`;
+}
+
+export function intervalsAgo(date, interval) {
+  return Math.floor((Date.now() - date.getTime()) / (MS_PER_DAY * interval));
+}
+
+export function cleanDate(date) {
+  const ranges = [7 * 24, 24, 1];
+  const period = Math.abs((date.getTime() - Date.now()) / (1000 * 60 * 60));
+  const [dW, dD, dH] = ranges.map((delta, key) => (period % (key ? ranges[key - 1] : 1000)) / delta).map(Math.floor);
+  return [[dW, 'w'], [dD, 'd'], [dH, 'h']].filter(([diff]) => diff).map(pair => pair.join('')).join(' ');
+}

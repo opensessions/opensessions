@@ -2,14 +2,17 @@ import React, { PropTypes } from 'react';
 import { LineChart, PieChart, BarGroupChart } from 'react-d3-basic';
 
 import LoadingMessage from '../../components/LoadingMessage';
+import PagedList from '../../components/PagedList';
 import Checkbox from '../../components/Fields/Checkbox';
+import VersionChange from '../../components/VersionChange';
+import UserSessions from '../../components/UserSessions';
 
 import { apiFetch, apiModel } from '../../utils/api';
+import { formatTime, intervalsAgo, cleanDate } from '../../utils/calendar';
 
 import styles from './styles.css';
 
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
-const intervalsAgo = (date, interval) => Math.floor((Date.now() - date.getTime()) / (MS_PER_DAY * interval));
 
 const emailCategories = [{ name: 'Expiry', id: 'engagement-expiring' }, { name: 'Live sessions', id: 'engagement-live' }, { name: 'Finish your listing', id: 'engagement-finishlisting' }];
 
@@ -96,6 +99,17 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
           />
         </li>
       </ol>
+    </div>);
+  }
+  renderUserSessions() {
+    const { isLoading } = this.state;
+    if (isLoading) return <LoadingMessage message="Loading user sessions" ellipsis />;
+    const users = this.context.store.getState().get('userList');
+    const sessions = this.context.store.getState().get('sessionList');
+    const userSessions = users.map(user => ({ user, sessions: sessions.filter(s => s.owner === user.user_id) }));
+    return (<div className={styles.chart}>
+      <h1>User List</h1>
+      <PagedList items={userSessions} page={1} itemToProps={item => item} Component={UserSessions} />
     </div>);
   }
   renderUserAnalytics() {
@@ -197,12 +211,6 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
     if (!analysisList) return <div>No analysis data</div>;
     const versionChanges = [];
     let lastVersion = null;
-    const cleanDate = date => {
-      const ranges = [7 * 24, 24, 1];
-      const period = Math.abs((date.getTime() - Date.now()) / (1000 * 60 * 60));
-      const [dW, dD, dH] = ranges.map((delta, key) => (period % (key ? ranges[key - 1] : 1000)) / delta).map(Math.floor);
-      return [[dW, 'w'], [dD, 'd'], [dH, 'h']].filter(([diff]) => diff).map(pair => pair.join('')).join(' ');
-    };
     const getMessages = (since, current) => {
       if (!this.state.commits || !current) return [];
       const msgs = [];
@@ -219,33 +227,18 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
       if (data.analysis.gitHead) lastVersion = data.analysis.gitHead;
     });
     const now = new Date();
-    const formatTime = date => `${date.toDateString()} (${date.toTimeString().substr(0, 5)})`;
     return (<div className={styles.chart}>
       <h1>App Analysis</h1>
       <h2>Small Version changes</h2>
-      <ol className={styles.versionChanges}>
-        {versionChanges.map(data => {
-          const { analysis, messages } = data;
-          const created = new Date(data.createdAt);
-          return (<li>
-            <span className={styles.time}>{formatTime(created)}</span>:
-            v{analysis.version}
-            {analysis.gitHead
-              ? (<span>
-                <a href={`https://github.com/opensessions/opensessions/commit/${analysis.gitHead}`} className={styles.tag}>#{analysis.gitHead.slice(0, 7)}</a>
-                <span className={styles.changes}>{messages && messages.length ? messages.map(msg => `+ ${msg}`).reverse().join('\n') : 'No git messages this far back'}</span>
-              </span>)
-              : null}
-          </li>);
-        })}
-        <li>{formatTime(now)}</li>
-      </ol>
+      <PagedList items={versionChanges} page={1} itemToProps={data => ({ data })} Component={VersionChange} />
+      <p>{formatTime(now)}</p>
     </div>);
   }
   render() {
     return (<div>
       {this.renderSessionAnalytics()}
       {this.renderUserAnalytics()}
+      {this.renderUserSessions()}
       {this.renderEmailAnalytics()}
       {this.renderAnalysisHistory()}
     </div>);

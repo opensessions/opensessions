@@ -21,18 +21,24 @@ export default class PagedList extends React.Component { // eslint-disable-line 
     newUrl: PropTypes.func,
     isSlim: PropTypes.bool,
   }
+  getPage() {
+    return this.state && this.state.pageOverride ? this.state.pageOverride : this.props.page;
+  }
   renderPagination(start, end, pages) {
-    const { page, newUrl } = this.props;
+    const { newUrl } = this.props;
+    const page = this.getPage();
+    const pageToProps = n => (newUrl ? { to: newUrl(n) } : { onClick: () => this.setState({ pageOverride: n }) });
     return (<div className={styles.pagination}>
-      {page > 1 ? <Button to={newUrl(1)} style="slim">Start</Button> : null}
-      {page > 1 ? <Button to={newUrl(page - 1)} style="slim">🠜</Button> : null}
+      {page > 1 ? <Button {...pageToProps(1)} style="slim">Start</Button> : null}
+      {page > 1 ? <Button {...pageToProps(page - 1)} style="slim">🠜</Button> : null}
       <span> Page {page} of {pages} </span>
-      {page < pages ? <Button to={newUrl(page + 1)} style="slim">🠞</Button> : null}
-      {page < pages ? <Button to={newUrl(pages)} style="slim">End</Button> : null}
+      {page < pages ? <Button {...pageToProps(page + 1)} style="slim">🠞</Button> : null}
+      {page < pages ? <Button {...pageToProps(pages)} style="slim">End</Button> : null}
     </div>);
   }
   render() {
-    const { items, itemToProps, Component, page, noneMessage, isSlim } = this.props;
+    const { items, itemToProps, Component, noneMessage, isSlim } = this.props;
+    const page = this.getPage();
     let { limit } = this.props;
     limit = limit || 10;
     const total = items ? items.length : 0;
