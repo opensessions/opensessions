@@ -20,24 +20,30 @@ export default class PagedList extends React.Component { // eslint-disable-line 
     noneMessage: PropTypes.any,
     newUrl: PropTypes.func,
     isSlim: PropTypes.bool,
+    orientation: PropTypes.string
   }
   getPage() {
     return this.state && this.state.pageOverride ? this.state.pageOverride : this.props.page;
   }
+  pageOverride(pageOverride) {
+    this.setState({ pageOverride });
+    const { scrollTo, innerHeight } = window;
+    scrollTo(0, this.refs.list.offsetTop - (innerHeight / 4));
+  }
   renderPagination(start, end, pages) {
     const { newUrl } = this.props;
     const page = this.getPage();
-    const pageToProps = n => (newUrl ? { to: newUrl(n) } : { onClick: () => this.setState({ pageOverride: n }) });
+    const pageToProps = n => (newUrl ? { to: newUrl(n) } : { onClick: () => this.pageOverride(n) });
     return (<div className={styles.pagination}>
-      {page > 1 ? <Button {...pageToProps(1)} style="slim">Start</Button> : null}
-      {page > 1 ? <Button {...pageToProps(page - 1)} style="slim">🠜</Button> : null}
+      <Button {...pageToProps(1)} style={page > 1 ? 'slim' : ['slim', 'disabled']}>Start</Button>
+      <Button {...pageToProps(page - 1)} style={page > 1 ? 'slim' : ['slim', 'disabled']}>🠜</Button>
       <span> Page {page} of {pages} </span>
-      {page < pages ? <Button {...pageToProps(page + 1)} style="slim">🠞</Button> : null}
-      {page < pages ? <Button {...pageToProps(pages)} style="slim">End</Button> : null}
+      <Button {...pageToProps(page + 1)} style={page < pages ? 'slim' : ['slim', 'disabled']}>🠞</Button>
+      <Button {...pageToProps(pages)} style={page < pages ? 'slim' : ['slim', 'disabled']}>End</Button>
     </div>);
   }
   render() {
-    const { items, itemToProps, Component, noneMessage, isSlim } = this.props;
+    const { items, itemToProps, Component, noneMessage, isSlim, orientation } = this.props;
     const page = this.getPage();
     let { limit } = this.props;
     limit = limit || 10;
@@ -45,10 +51,10 @@ export default class PagedList extends React.Component { // eslint-disable-line 
     const pages = Math.ceil(total / limit);
     const [start, end] = [-1, 0].map(index => page + index).map(index => index * limit);
     if (!total) return <p>{noneMessage}</p>;
-    return (<div className={[styles.list, isSlim ? styles.slim : ''].join(' ')}>
-      {this.renderPagination(start, end, pages)}
+    return (<div className={[styles.list, isSlim ? styles.slim : ''].join(' ')} ref="list">
+      {orientation !== 'bottom' && pages > 1 ? this.renderPagination(start, end, pages) : null}
       <ol>{items.slice(start, end).map((item, key) => <li key={key + start}><Component {...itemToProps(item)} /></li>)}</ol>
-      {this.renderPagination(start, end, pages)}
+      {orientation !== 'top' && pages > 1 ? this.renderPagination(start, end, pages) : null}
     </div>);
   }
 }

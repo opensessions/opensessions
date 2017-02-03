@@ -4,12 +4,15 @@ import { Link } from 'react-router';
 import { apiModel } from '../../utils/api';
 
 import SessionTileView from '../SessionTileView';
+import SessionList from '../SessionList';
 
-import NotificationBar from '../../components/NotificationBar';
 import Button from '../../components/Button';
 import LoadingMessage from '../../components/LoadingMessage';
-import SessionList from '../../containers/SessionList';
+import NotificationBar from '../../components/NotificationBar';
+import SessionMini from '../../components/SessionMini';
+import CalendarView from '../../components/CalendarView';
 import ImageUpload from '../../components/Fields/ImageUpload';
+import PagedList from '../../components/PagedList';
 
 import styles from './styles.css';
 
@@ -28,19 +31,15 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     store: PropTypes.object,
     onExpire: PropTypes.func
   }
-  constructor(props) {
-    super(props);
-    this.state = {
-      organizer: props.organizer || null
-    };
+  constructor() {
+    super();
+    this.state = {};
   }
   componentDidMount() {
     if (this.props.params) this.fetchData();
   }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.organizer) {
-      this.setState({ organizer: nextProps.organizer });
-    }
+  getOrganizer() {
+    return this.state && this.state.organizer ? this.state.organizer : this.props.organizer;
   }
   fetchData = () => {
     const { params } = this.props;
@@ -54,7 +53,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     });
   }
   photoChange = image => {
-    const { organizer } = this.state;
+    const organizer = this.getOrganizer();
     return apiModel.edit('organizer', organizer.uuid, { image }).then(res => {
       this.setState({ organizer: res.instance, modified: Date.now() });
     }).catch(() => {
@@ -62,7 +61,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     });
   }
   canAct(action) {
-    const { organizer } = this.state;
+    const organizer = this.getOrganizer();
     return organizer && organizer.actions.some(name => name === action);
   }
   toggleSessions = () => {
@@ -70,7 +69,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
   }
   renameOrganizer = name => {
     if (typeof name === 'string') {
-      const { organizer } = this.state;
+      const organizer = this.getOrganizer();
       if (name === organizer.name) return;
       const options = { name };
       if (options.name) {
@@ -90,7 +89,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     }
   }
   deleteOrganizer = () => {
-    const { organizer } = this.state;
+    const organizer = this.getOrganizer();
     return apiModel.delete('organizer', organizer.uuid).then(res => {
       if (res.status === 'success') {
         this.context.notify('Organiser deleted!', 'success');
@@ -129,17 +128,15 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     </select>);
   }
   renderSessions() {
-    const { organizer } = this.state;
+    const organizer = this.getOrganizer();
     if (!organizer) return null;
     const sessions = organizer.Sessions || [];
-    let sessionsDisplay = <li>No sessions yet {this.canAct('delete') ? <Button style="danger" onClick={this.deleteOrganizer}>delete this organiser</Button> : null}</li>;
-    if (sessions.length) sessionsDisplay = sessions.map(session => <li key={session.uuid}><SessionTileView session={session} /></li>);
     return (<div className={styles.sessions}>
       <h2>{organizer.name}&rsquo;{organizer.name[organizer.name.length - 1] !== 's' ? 's' : ''} Sessions</h2>
-      <ol className={styles.sessionsList}>
-        {sessionsDisplay}
-        {this.canAct('edit') ? <li className={styles.new}><Button to={`/session/add?OrganizerUuid=${organizer.uuid}`}><b>+</b> Add {sessions.length ? 'another' : 'a'} session</Button></li> : null}
-      </ol>
+      {sessions.length
+        ? <PagedList items={sessions} Component={SessionTileView} page={1} limit={6} orientation="bottom" itemToProps={session => ({ session })} />
+        : <p>No sessions yet {this.canAct('delete') ? <Button style="danger" onClick={this.deleteOrganizer}>delete this organiser</Button> : null}</p>}
+      {this.canAct('edit') ? <li className={styles.new}><Button to={`/session/add?OrganizerUuid=${organizer.uuid}`}><b>+</b> Add {sessions.length ? 'another' : 'a'} session</Button></li> : null}
       {this.canAct('edit') ? this.renderUnassignedSessions() : null}
     </div>);
   }
@@ -148,7 +145,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     return (<span><Link to={organizer.href}>{organizer.name}</Link> {this.canAct('edit') ? <a onClick={this.renameOrganizer} onKeyUp={event => event.keyCode === 13 && this.renameOrganizer()} className={styles.rename} tabIndex={0}><img src="/images/change.png" alt="edit" /></a> : null}</span>);
   }
   renderUploadPhoto() {
-    const { organizer } = this.state;
+    const organizer = this.getOrganizer();
     return <ImageUpload value={organizer.image} onChange={this.photoChange} preview={false} addText="Update photo" upload={{ URL: `/api/organizer/${organizer.uuid}/image`, name: 'image' }} />;
   }
   renderOrganizer(organizer) {
@@ -193,8 +190,16 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
       <p>{actions.some(action => action === 'addMember') ? <Button onClick={() => addMember()}>Add a member</Button> : null}</p>
     </div>);
   }
+  renderCalendar(organizer) {
+    const renderItem = (s, date) => <div>{s.sortedSchedule.map(slot => new Date(slot.start)).filter(start => start.toISOString().substr(0, 10) === date).map(start => start.toTimeString().substr(0, 5)).join(', ')}<br /><SessionMini session={s} /></div>;
+    return (<div>
+      <CalendarView items={organizer.Sessions} itemToDates={i => i.sortedSchedule.map(s => new Date(s.start))} month={(new Date()).toISOString().substr(0, 7)} renderItem={renderItem} />
+    </div>);
+  }
   render() {
-    const { organizer } = this.state;
+    const organizer = this.getOrganizer();
+    const { user } = this.context;
+    const isAdmin = user && user.email && user.email.indexOf(`@${window.ADMIN_DOMAIN}`) !== -1;
     return (<div className={styles.organizerView}>
       <NotificationBar zIndex={3} />
       {organizer ? this.renderOrganizer(organizer) : <LoadingMessage message="Loading organiser" ellipsis />}
@@ -202,6 +207,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
         {this.renderSessions()}
       </div>
       {organizer && organizer.actions.some(action => action === 'edit') ? this.renderMembers(organizer) : null}
+      {organizer && isAdmin ? this.renderCalendar(organizer) : null}
     </div>);
   }
 }

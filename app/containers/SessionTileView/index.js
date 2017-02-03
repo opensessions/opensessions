@@ -74,7 +74,6 @@ const SessionTileView = function (props, context) {
           ? sortSchedule(session.schedule).map(parseSchedule).map((date, key) => (<li className={[styles.schedule, date.hasOccurred ? styles.occurred : null].join(' ')} key={key}>
             <CalendarSVG />
             <span>{date.date} {date.time ? <span className={styles.time}>at {date.time}</span> : null}</span>
-            <span>{date.hasOccurred ? ' (Past)' : ''}</span>
           </li>))
           : (<li className={styles.addSchedule}>
             {isOwner

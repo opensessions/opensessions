@@ -188,13 +188,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       visibleActions.filter(action => session.actions.some(allowed => allowed === action)).forEach(action => {
         actions.push(<Button
           key={action}
-          onClick={() => apiModel.action('session', session.uuid, action)
-            .then(({ instance, redirect, message, messageType }) => {
-              if (redirect) this.context.router.push(redirect);
-              if (message) this.notify(message, messageType);
-              if (instance) this.setState({ session: instance });
-            })
-            .catch(res => this.notify(<p onClick={this.errorClick} dangerouslySetInnerHTML={{ __html: res.error }} />, 'error'))}
+          onClick={() => this.action(action)}
           style={isPendingSave ? 'disabled' : actionStyle[action]}
         >{action}</Button>);
       });
@@ -267,8 +261,6 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     return this.notification;
   }
   addName = key => name => {
-    // const names = [name].concat(this.state.customNames || []);
-    // this.setState({ customNames: names.filter((n, k) => names.indexOf(n) === k) });
     this.updateSession(key, name);
     return Promise.resolve();
   }
@@ -298,7 +290,14 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       });
     }, ms);
   }
-  renderForm = () => <Form fieldsets={this.state.fieldsets} onPublish={this.publishSession} pendingSteps={this.state.pendingSteps} status={this.state.status} saveState={this.state.saveState} tab={this.props.params.tab} activeField={this.props.location.hash.slice(1)}>{this.renderFieldsets()}</Form>
+  action(action) {
+    return apiModel.action('session', this.state.session.uuid, action).then(({ instance, redirect, message, messageType }) => {
+      if (redirect) this.context.router.push(redirect);
+      if (message) this.notify(message, messageType);
+      if (instance) this.setState({ session: instance });
+    }).catch(res => this.notify(<p onClick={this.errorClick} dangerouslySetInnerHTML={{ __html: res.error }} />, 'error'));
+  }
+  renderForm = () => <Form fieldsets={this.state.fieldsets} onPublish={() => this.action('publish')} pendingSteps={this.state.pendingSteps} status={this.state.status} saveState={this.state.saveState} tab={this.props.params.tab} activeField={this.props.location.hash.slice(1)}>{this.renderFieldsets()}</Form>
   renderFieldsets = () => this.state.fieldsets.map((fieldset, key) => <Fieldset key={key} {...fieldset.props} {...this.state.copy.fieldsets[fieldset.slug]}>{this.renderFieldset(fieldset)}</Fieldset>)
   renderFieldset = fieldset => <div>{fieldset.fields.map(this.renderField)}</div>
   renderField = (field, index) => <Field key={field} index={index} {...this.state.copy.fields[field]}>{this.state.fields[field] ? this.state.fields[field]() : <TextField {...this.getAttr(field)} />}</Field>

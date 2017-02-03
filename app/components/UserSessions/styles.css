@@ -1,3 +1,5 @@
+@import '../../containers/App/variables.css';
+
 .userIcon {
   max-width: 2.5em;
   border-radius: 50%;
@@ -6,7 +8,8 @@
 }
 
 .sessionCount {
-  background-color: #FFF;
+	color: #FFF;
+  background-color: var(--actionColor);
   margin: .25em;
   padding: .25em;
   display: inline-block;

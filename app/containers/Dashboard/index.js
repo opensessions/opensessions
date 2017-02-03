@@ -107,10 +107,10 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
     const users = this.context.store.getState().get('userList');
     const sessions = this.context.store.getState().get('sessionList');
     if (!users || !sessions) return <LoadingMessage message="Loading user sessions" ellipsis />;
-    const userSessions = users.map(user => ({ user, sessions: sessions.filter(s => s.owner === user.user_id) }));
+    const userSessions = users.sort((a, b) => (new Date(b.last_login)).getTime() - (new Date(a.last_login)).getTime()).map(user => ({ user, sessions: sessions.filter(s => s.owner === user.user_id) }));
     return (<div className={styles.chart}>
       <h1>User List</h1>
-      <PagedList items={userSessions} page={1} itemToProps={item => item} Component={UserSessions} />
+      <PagedList orientation="top" isSlim items={userSessions} page={1} itemToProps={item => item} Component={UserSessions} />
     </div>);
   }
   renderUserAnalytics() {
@@ -219,19 +219,19 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
       this.state.commits.forEach(({ sha, commit }) => {
         if (sha === current) recordMsg = true;
         if (sha === since) recordMsg = false;
-        if (recordMsg) msgs.push(`${commit.message}, ${cleanDate(new Date(commit.author.date))} ago`);
+        if (recordMsg) msgs.unshift(`${commit.message}, ${cleanDate(new Date(commit.author.date))} ago`);
       });
       return msgs;
     };
     analysisList.forEach(data => {
-      if (lastVersion !== data.analysis.gitHead) versionChanges.push({ ...data, messages: getMessages(lastVersion, data.analysis.gitHead) });
+      if (lastVersion !== data.analysis.gitHead) versionChanges.unshift({ ...data, messages: getMessages(lastVersion, data.analysis.gitHead) });
       if (data.analysis.gitHead) lastVersion = data.analysis.gitHead;
     });
     const now = new Date();
     return (<div className={styles.chart}>
       <h1>App Analysis</h1>
       <h2>Small Version changes</h2>
-      <PagedList items={versionChanges} page={1} itemToProps={data => ({ data })} Component={VersionChange} />
+      <PagedList orientation="bottom" isSlim items={versionChanges} page={1} itemToProps={data => ({ data })} Component={VersionChange} />
       <p>{formatTime(now)}</p>
     </div>);
   }

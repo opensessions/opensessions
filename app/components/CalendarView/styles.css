@@ -1,0 +1,67 @@
+@import '../../containers/App/variables.css';
+
+.calendar {
+  max-width: 60em;
+  margin: 1em auto;
+  background-color: transparent;
+}
+
+.tools {
+  display: flex;
+  justify-content: space-between;
+  & h1 {
+    text-align: center;
+    color: #444;
+    font-size: 1.25em;
+    padding: .25em;
+  }
+}
+
+.month {
+  display: flex;
+  flex-direction: column;
+  margin: .5em;
+  & > li {
+    list-style: none;
+    &:first-child .week {
+      & > li {
+        background-color: transparent;
+        text-align: center;
+      }
+    }
+  }
+}
+
+.week {
+  display: flex;
+  justify-content: space-between;
+  background: #E6E6E6;
+  & > li {
+    margin: .125em;
+    padding: .25em;
+    list-style: none;
+    background: #FFF;
+    flex-basis: 13%;
+    flex-grow: 1;
+    &.empty {
+      background-color: #DDD;
+    }
+    &.past {
+      background-color: #EEE;
+    }
+    &.today {
+      box-shadow: 0 0 .2em .1em var(--actionColor);
+      outline: .25em var(--actionColor);
+    }
+  }
+}
+
+.day {
+  font-weight: bold;
+}
+
+.none {
+  opacity: .5;
+  padding: 1em 0;
+  text-align: center;
+}

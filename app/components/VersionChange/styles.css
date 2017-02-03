@@ -3,6 +3,9 @@
 .versionChange {
   padding: .25em;
   list-style: none;
+  max-width: 40em;
+  margin: auto;
+  text-align: left;
   & .changes {
     display: inline-block;
     vertical-align: top;
