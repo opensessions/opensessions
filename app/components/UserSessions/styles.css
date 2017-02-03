@@ -8,7 +8,7 @@
 }
 
 .sessionCount {
-	color: #FFF;
+  color: #FFF;
   background-color: var(--actionColor);
   margin: .25em;
   padding: .25em;

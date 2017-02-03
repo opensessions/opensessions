@@ -1,8 +1,10 @@
 import React, { PropTypes } from 'react';
 
 import SessionTileView from '../SessionTileView';
+import SessionMini from '../../components/SessionMini';
 
 import SessionMap from '../../components/SessionMap';
+import CalendarView from '../../components/CalendarView';
 import LoadingMessage from '../../components/LoadingMessage';
 import PagedList from '../../components/PagedList';
 import Button from '../../components/Button';
@@ -34,7 +36,7 @@ export default class ListSessions extends React.Component { // eslint-disable-li
   }
   constructor(props) {
     super();
-    this.state = { isLoading: false, showExpired: true, isMap: props.location.pathname.indexOf('map') !== -1 };
+    this.state = { isLoading: false, showExpired: true, isMap: props.location.pathname.indexOf('map') !== -1, isCalendar: props.location.pathname.indexOf('calendar') !== -1 };
   }
   componentDidMount() {
     this.fetchData(this.context.store.dispatch, this.props.location.query);
@@ -78,18 +80,19 @@ export default class ListSessions extends React.Component { // eslint-disable-li
       </p>)}
       <p>
         <Checkbox checked={showExpired} onChange={checked => this.setState({ showExpired: checked })} label="Show expired sessions" />
-        &nbsp;&nbsp;<Checkbox checked={isMap} onChange={checked => this.setState({ isMap: checked })} label="View on map" />
+        &nbsp;&nbsp;<Checkbox checked={isMap} onChange={checked => this.context.router.push(checked ? '/sessions/map' : '/sessions')} label="View on map" />
       </p>
     </div>);
   }
   renderView() {
     const { params } = this.props;
-    const { isLoading, isMap, showExpired } = this.state;
+    const { isLoading, isMap, isCalendar, showExpired } = this.state;
     let sessions = this.context.store.getState().get('sessionList');
     if (!showExpired) sessions = sessions.filter(session => session.sortedSchedule.length && (new Date(session.sortedSchedule[session.sortedSchedule.length - 1].start)).getTime() > Date.now());
     const page = (params && params.page) ? parseInt(params.page, 10) : 1;
     if (isLoading) return <LoadingMessage message="Loading sessions" ellipsis />;
     if (isMap) return <SessionMap sessions={sessions} />;
+    if (isCalendar) return <CalendarView items={sessions} itemToDates={i => i.sortedSchedule.map(s => new Date(s.start))} month={(new Date()).toISOString().substr(0, 7)} renderItem={i => <SessionMini session={i} />} />;
     return <PagedList items={sessions} page={page} newUrl={pg => `/sessions/${pg}${this.props.location.search}`} Component={SessionTileView} itemToProps={item => ({ session: item })} noneMessage={`No sessions ${this.props.location.search ? 'for this search' : ''}`} />;
   }
   render() {

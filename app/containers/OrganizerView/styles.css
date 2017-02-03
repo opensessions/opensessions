@@ -75,20 +75,23 @@
     list-style: none;
     margin: 1em auto;
     max-width: var(--tileWidth);
-    &.new {
-      padding: 2em 0;
-      & > a {
-        padding: .75em .5em;
-        font-size: 1.2em;
-        display: block;
-        & b {
-          padding: 0 .1em;
-          font-size: 1.6em;
-          line-height: .9em;
-          display: inline-block;
-          vertical-align: text-bottom;
-        }
-      }
+  }
+}
+
+.new {
+  padding: 2em 0;
+  max-width: 48em;
+  margin: auto;
+  & > a {
+    padding: .75em .5em;
+    font-size: 1.2em;
+    display: block;
+    & b {
+      padding: 0 .1em;
+      font-size: 1.6em;
+      line-height: .9em;
+      display: inline-block;
+      vertical-align: text-bottom;
     }
   }
 }

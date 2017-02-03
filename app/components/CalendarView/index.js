@@ -17,7 +17,11 @@ export default class CalendarView extends React.Component {
     return this.state && this.state.month ? this.state.month : this.props.month;
   }
   renderDay(day, itemDates) {
-    return itemDates[day] ? itemDates[day].map(item => <p>{this.props.renderItem(item, day)}</p>) : <p className={styles.none}>No items</p>;
+    if (!itemDates[day]) return <p className={styles.none}>No items</p>;
+    return Object.keys(itemDates[day]).map(time => (<div>
+      <p className={styles.time}>{parseFloat(time.split(':')[0]) % 12 || 12}{time.split(':')[1].replace('00', '')}{parseFloat(time.split(':')[0]) >= 12 ? 'pm' : 'am'}</p>
+      {itemDates[day][time].map(item => <p>{this.props.renderItem(item, day)}</p>)}
+    </div>));
   }
   renderWeek(week, itemDates) {
     const dayStyles = [styles.past, styles.today, styles.future];
@@ -63,9 +67,10 @@ export default class CalendarView extends React.Component {
       items.forEach(item => {
         const dates = itemToDates(item);
         dates.forEach(date => {
-          const dateString = date.toISOString().substr(0, 10);
-          if (!itemDates[dateString]) itemDates[dateString] = [];
-          itemDates[dateString].push(item);
+          const [dateStr, time] = date.toISOString().substr(0, 16).split('T');
+          if (!itemDates[dateStr]) itemDates[dateStr] = {};
+          if (!itemDates[dateStr][time]) itemDates[dateStr][time] = [];
+          itemDates[dateStr][time].push(item);
         });
       });
       return itemDates;

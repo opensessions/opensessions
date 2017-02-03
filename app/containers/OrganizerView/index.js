@@ -136,7 +136,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
       {sessions.length
         ? <PagedList items={sessions} Component={SessionTileView} page={1} limit={6} orientation="bottom" itemToProps={session => ({ session })} />
         : <p>No sessions yet {this.canAct('delete') ? <Button style="danger" onClick={this.deleteOrganizer}>delete this organiser</Button> : null}</p>}
-      {this.canAct('edit') ? <li className={styles.new}><Button to={`/session/add?OrganizerUuid=${organizer.uuid}`}><b>+</b> Add {sessions.length ? 'another' : 'a'} session</Button></li> : null}
+      {this.canAct('edit') ? <p className={styles.new}><Button to={`/session/add?OrganizerUuid=${organizer.uuid}`}><b>+</b> Add {sessions.length ? 'another' : 'a'} session</Button></p> : null}
       {this.canAct('edit') ? this.renderUnassignedSessions() : null}
     </div>);
   }
@@ -191,7 +191,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     </div>);
   }
   renderCalendar(organizer) {
-    const renderItem = (s, date) => <div>{s.sortedSchedule.map(slot => new Date(slot.start)).filter(start => start.toISOString().substr(0, 10) === date).map(start => start.toTimeString().substr(0, 5)).join(', ')}<br /><SessionMini session={s} /></div>;
+    const renderItem = s => <SessionMini session={s} />;
     return (<div>
       <CalendarView items={organizer.Sessions} itemToDates={i => i.sortedSchedule.map(s => new Date(s.start))} month={(new Date()).toISOString().substr(0, 7)} renderItem={renderItem} />
     </div>);

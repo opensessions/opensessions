@@ -182,11 +182,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     const updated = new Date(session.updatedAt);
     let updatedAt = '';
     let freshness = 2;
-    const freshStyles = {
-      0: '',
-      1: styles.recent,
-      2: styles.new
-    };
+    const freshStyles = ['', styles.recent, styles.new];
     const dayDelta = [today, updated].map(time => Math.floor(time.getTime() / MS_PER_DAY)).reduce((todayDay, updatedDay) => todayDay - updatedDay);
     if (dayDelta === 0) {
       updatedAt = 'today';

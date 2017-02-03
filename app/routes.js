@@ -53,6 +53,12 @@ export default function createRoutes() {
         System.import('./containers/ListSessions').then(loadModule(cb)).catch(errorLoading);
       }
     }, {
+      path: '/sessions/calendar',
+      name: 'sessions calendar',
+      getComponent(nextState, cb) {
+        System.import('./containers/ListSessions').then(loadModule(cb)).catch(errorLoading);
+      }
+    }, {
       path: '/sessions/:page',
       name: 'sessions',
       getComponent(nextState, cb) {

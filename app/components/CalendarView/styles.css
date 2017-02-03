@@ -65,3 +65,8 @@
   padding: 1em 0;
   text-align: center;
 }
+
+.time {
+  font-size: .9em;
+  text-align: right;
+}
