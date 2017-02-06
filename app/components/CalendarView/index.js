@@ -18,10 +18,13 @@ export default class CalendarView extends React.Component {
   }
   renderDay(day, itemDates) {
     if (!itemDates[day]) return <p className={styles.none}>No items</p>;
-    return Object.keys(itemDates[day]).map(time => (<div>
-      <p className={styles.time}>{parseFloat(time.split(':')[0]) % 12 || 12}{time.split(':')[1].replace('00', '')}{parseFloat(time.split(':')[0]) >= 12 ? 'pm' : 'am'}</p>
-      {itemDates[day][time].map(item => <p>{this.props.renderItem(item, day)}</p>)}
-    </div>));
+    return Object.keys(itemDates[day]).map(time => {
+      const [h, m] = time.split(':').map(parseFloat);
+      return (<div>
+        <p className={styles.time}>{h % 12 || 12}{m ? `:${m}` : ''}{h >= 12 ? 'pm' : 'am'}</p>
+        {itemDates[day][time].map(item => <p className={styles.items}>{this.props.renderItem(item, day)}</p>)}
+      </div>);
+    });
   }
   renderWeek(week, itemDates) {
     const dayStyles = [styles.past, styles.today, styles.future];
@@ -62,6 +65,7 @@ export default class CalendarView extends React.Component {
       }
       return weeks;
     };
+    if (!items) return <p>No data</p>;
     const getItemDates = () => {
       const itemDates = {};
       items.forEach(item => {
@@ -85,9 +89,9 @@ export default class CalendarView extends React.Component {
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     return (<div className={styles.calendar}>
       <div className={styles.tools}>
-        <Button style="slim" onClick={() => this.setState({ month: monthDiff(-1) })}>back</Button>
+        <Button style="slim" onClick={() => this.setState({ month: monthDiff(-1) })}>🠜</Button>
         <h1>{months[parseInt(month.substr(5, 2), 10) - 1]} {month.substr(0, 4)}</h1>
-        <Button style="slim" onClick={() => this.setState({ month: monthDiff(1) })}>next</Button>
+        <Button style="slim" onClick={() => this.setState({ month: monthDiff(1) })}>🠞</Button>
       </div>
       <ol className={styles.month}>
         <li>{this.renderWeekTitles()}</li>

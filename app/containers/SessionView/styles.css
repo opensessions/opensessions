@@ -399,23 +399,6 @@
   }
 }
 
-ol.socialLinks {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  & > li {
-    list-style: none;
-  }
-  & a.organizerLink {
-    font-size: .9em;
-    font-weight: bold;
-    &:hover {
-      text-decoration: none;
-      color: inherit;
-    }
-  }
-}
-
 a.organizerLink {
   color: var(--actionColor);
   word-break: break-all;

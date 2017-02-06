@@ -36,7 +36,8 @@ export default class SessionMap extends React.Component { // eslint-disable-line
   };
   static propTypes = {
     location: PropTypes.object,
-    sessions: PropTypes.array
+    sessions: PropTypes.array,
+    size: PropTypes.number
   }
   constructor() {
     super();
@@ -69,9 +70,11 @@ export default class SessionMap extends React.Component { // eslint-disable-line
     };
     const { showInfo } = this.state;
     const Loader = isClustered ? GoogleMapLoaderCluster : GoogleMapLoader;
+    const sizes = ['24vh', '48vh', '80vh'];
+    const size = this.props.size || 2;
     return (<Loader
       mapElement={<div style={{ height: '100%' }} />}
-      containerElement={<div className={styles.mapFrame} style={{ height: '80vh', width: '100%' }} />}
+      containerElement={<div className={styles.mapFrame} style={{ height: sizes[size], width: '100%' }} />}
       mapProps={googleMap}
       markers={sessions ? sessions.filter(session => session.locationData && session.locationData.lat).map(session => (<Marker {...marker} icon={this.isActive(session) ? ACTIVE_ICON : INACTIVE_ICON} key={session.uuid} position={session.locationData} onClick={() => this.setState({ showInfo: session.uuid })}>
         {showInfo === session.uuid ? <InfoWindow onCloseClick={() => this.setState({ showInfo: null })}><SessionTileView session={session} style="slim" /></InfoWindow> : null}

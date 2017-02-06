@@ -12,7 +12,6 @@
 
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
-import Intercom from 'react-intercom';
 
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
@@ -151,9 +150,7 @@ export default class App extends React.Component { // eslint-disable-line react/
     });
   }
   render() {
-    const { profile, modal } = this.state;
-    const { INTERCOM_APPID } = window;
-    const intercomProps = profile ? { user_id: profile.user_id, email: profile.email, name: profile.nickname } : {};
+    const { modal } = this.state;
     return (<div className={styles.root}>
       <Header />
       <div className={styles.appBody}>
@@ -163,7 +160,6 @@ export default class App extends React.Component { // eslint-disable-line react/
         <NotificationBar storeName="cookieNotifications" orientation="bottom" />
         <Footer />
       </div>
-      <Intercom {...intercomProps} appID={INTERCOM_APPID} />
       <Modal modal={modal} />
     </div>);
   }

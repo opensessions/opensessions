@@ -1,0 +1,19 @@
+@import '../../containers/App/variables.css';
+
+.form {
+  background-color: #EFEFEF;
+  box-shadow: 0 2em 4em 0 #BBB;
+  input[type='submit'] {
+    cursor: pointer;
+    background-color: var(--actionColor);
+    color: #FFF;
+    padding: .5em 1.5em;
+    line-height: 1;
+    font-size: 1.2em;
+  }
+}
+
+.formBody {
+  max-width: var(--pagewidth);
+  margin: auto;
+}

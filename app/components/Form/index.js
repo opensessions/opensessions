@@ -18,7 +18,8 @@ export default class Form extends React.Component { // eslint-disable-line react
     onPublish: PropTypes.func,
     fieldsets: PropTypes.array,
     status: PropTypes.string,
-    saveState: PropTypes.string
+    saveState: PropTypes.string,
+    readyText: PropTypes.string
   };
   static contextTypes = {
     store: PropTypes.object
@@ -112,7 +113,7 @@ export default class Form extends React.Component { // eslint-disable-line react
     </div>);
   }
   render() {
-    const { saveState, pendingSteps } = this.props;
+    const { saveState, pendingSteps, readyText } = this.props;
     return (<GenericForm>
       <form ref="form" className={styles.form}>
         <NotificationBar />
@@ -120,7 +121,7 @@ export default class Form extends React.Component { // eslint-disable-line react
           <div className={styles.navLinks}>
             {this.renderNav()}
           </div>
-          <div className={styles.pending}>{pendingSteps ? <p>Complete <b>{`${pendingSteps} more`}</b> step{pendingSteps > 1 ? 's' : ''} to finish your listing</p> : 'Ready to publish!'}</div>
+          {readyText ? <div className={styles.pending}>{pendingSteps ? <p>Complete <b>{`${pendingSteps} more`}</b> step{pendingSteps > 1 ? 's' : ''} to finish your listing</p> : readyText}</div> : null}
         </nav>
         <div className={styles.tabs}>
           <div className={[styles.saveState, styles[saveState || 'unsaved']].join(' ')}>{this.state.saveState}</div>

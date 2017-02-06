@@ -13,6 +13,7 @@ import SessionMini from '../../components/SessionMini';
 import CalendarView from '../../components/CalendarView';
 import ImageUpload from '../../components/Fields/ImageUpload';
 import PagedList from '../../components/PagedList';
+import SocialMedia from '../../components/SocialMedia';
 
 import styles from './styles.css';
 
@@ -142,7 +143,9 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
   }
   renderName(organizer) {
     if (this.state.actionState && this.state.actionState === 'rename') return <input defaultValue={organizer.name} onKeyDown={this.renameEvents} onBlur={this.renameEvents} autoFocus />;
-    return (<span><Link to={organizer.href}>{organizer.name}</Link> {this.canAct('edit') ? <a onClick={this.renameOrganizer} onKeyUp={event => event.keyCode === 13 && this.renameOrganizer()} className={styles.rename} tabIndex={0}><img src="/images/change.png" alt="edit" /></a> : null}</span>);
+    return (<span>
+      <Link to={organizer.href}>{organizer.name}</Link> {this.canAct('edit') ? <a onClick={this.renameOrganizer} onKeyUp={event => event.keyCode === 13 && this.renameOrganizer()} className={styles.rename} tabIndex={0}><img src="/images/change.png" alt="edit" /></a> : null}
+    </span>);
   }
   renderUploadPhoto() {
     const organizer = this.getOrganizer();
@@ -167,7 +170,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
   }
   renderMembers(organizer) {
     if (!organizer) return null;
-    const { uuid, members, actions } = organizer;
+    const { uuid, members } = organizer;
     const removeMember = member => apiModel.action('Organizer', uuid, 'removeMember', { user_id: member.user_id }).then(() => {
       this.context.notify('Member removed', 'success');
       this.fetchData();
@@ -183,11 +186,32 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     };
     return (<div className={styles.members}>
       <h2>Members</h2>
-      <p><i>Other Open Sessions users who can edit <b>{organizer.name}</b>'s sessions</i></p>
-      <ol>
-        {members && members.length ? members.map(member => <li>{member.picture ? <img src={member.picture} role="presentation" /> : null} {member.name || member.email} {actions.some(action => action === 'removeMember') ? <Button onClick={() => removeMember(member)} style="danger">remove</Button> : null}</li>) : <li><i>No other members currently</i></li>}
-      </ol>
-      <p>{actions.some(action => action === 'addMember') ? <Button onClick={() => addMember()}>Add a member</Button> : null}</p>
+      <div className={styles.memberContent}>
+        <p><i>Other Open Sessions users who can edit <b>{organizer.name}</b>'s sessions</i></p>
+        <ol>
+          {members && members.length ? members.map((member, key) => <li key={key}>{member.picture ? <img src={member.picture} role="presentation" /> : null} {member.name || member.email} {this.canAct('removeMember') ? <Button onClick={() => removeMember(member)} style="danger">remove</Button> : null}</li>) : <li><i>No other members currently</i></li>}
+        </ol>
+        <p>{this.canAct('addMember') ? <Button onClick={() => addMember()}>Add a member</Button> : null}</p>
+      </div>
+    </div>);
+  }
+  renderData(organizer, canEdit) {
+    const { data } = organizer;
+    if ((!data || Object.keys(data).length === 0) && !canEdit) {
+      return null;
+    }
+    const { description, leader, contactName, contactPhone, location } = data;
+    return (<div>
+      <h2>Organiser Info</h2>
+      {description ? <p>{description}</p> : null}
+      {leader ? <p><b>Leader:</b> {leader}</p> : null}
+      {contactName ? <p>Contact: {contactName}</p> : null}
+      {contactPhone ? <p>Phone: <a href={`tel:${contactPhone}`}>{contactPhone}</a></p> : null}
+      {location ? <p>Location: {location}</p> : null}
+      <br />
+      <SocialMedia item={data} />
+      <br />
+      {this.canAct('edit') && canEdit ? <p><Button to={`${organizer.href}/edit`} style="slim"><img src="/images/change.png" alt="edit" style={{ filter: 'invert()' }} /> Edit</Button></p> : null}
     </div>);
   }
   renderCalendar(organizer) {
@@ -205,8 +229,11 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
       {organizer ? this.renderOrganizer(organizer) : <LoadingMessage message="Loading organiser" ellipsis />}
       <div className={styles.container}>
         {this.renderSessions()}
+        <div className={styles.sidebar}>
+          {organizer && this.canAct('edit') ? this.renderMembers(organizer) : null}
+          {organizer ? this.renderData(organizer, isAdmin) : null}
+        </div>
       </div>
-      {organizer && organizer.actions.some(action => action === 'edit') ? this.renderMembers(organizer) : null}
       {organizer && isAdmin ? this.renderCalendar(organizer) : null}
     </div>);
   }

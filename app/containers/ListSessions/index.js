@@ -73,7 +73,7 @@ export default class ListSessions extends React.Component { // eslint-disable-li
         Current filters - {search.slice(1).split('&').map(v => v.split('=')).map(([key, val]) => {
           const changeVal = () => {
             const newVal = prompt(`Change ${key}:`, val);
-            if (newVal) this.context.router.push(`/sessions${search.replace(`${key}=${val}`, `${key}=${newVal}`)}`);
+            if (newVal) this.context.router.push(`/sessions${search.replace([key, val].join('='), [key, newVal].join('='))}`);
           };
           return <span>{key}: <Button style={['slim', 'live']} onClick={() => changeVal()}>{val}</Button> <Button style={['slim', 'danger']} to={`/sessions${search.replace(new RegExp(`[\?&]?${key}=${val}`), '')}`}>x</Button></span>;
         })}

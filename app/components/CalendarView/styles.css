@@ -8,7 +8,7 @@
 
 .tools {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   & h1 {
     text-align: center;
     color: #444;
@@ -35,7 +35,6 @@
 .week {
   display: flex;
   justify-content: space-between;
-  background: #E6E6E6;
   & > li {
     margin: .125em;
     padding: .25em;
@@ -43,6 +42,8 @@
     background: #FFF;
     flex-basis: 13%;
     flex-grow: 1;
+    max-height: 24em;
+    overflow: auto;
     &.empty {
       background-color: #DDD;
     }
@@ -58,15 +59,23 @@
 
 .day {
   font-weight: bold;
+  float: left;
 }
 
 .none {
+  clear: both;
   opacity: .5;
-  padding: 1em 0;
+  padding: 2em 0;
   text-align: center;
 }
 
 .time {
   font-size: .9em;
+  font-weight: bold;
   text-align: right;
+  float: right;
+}
+
+.items {
+  clear: both;
 }

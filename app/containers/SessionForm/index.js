@@ -297,10 +297,17 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       if (instance) this.setState({ session: instance });
     }).catch(res => this.notify(<p onClick={this.errorClick} dangerouslySetInnerHTML={{ __html: res.error }} />, 'error'));
   }
-  renderForm = () => <Form fieldsets={this.state.fieldsets} onPublish={() => this.action('publish')} pendingSteps={this.state.pendingSteps} status={this.state.status} saveState={this.state.saveState} tab={this.props.params.tab} activeField={this.props.location.hash.slice(1)}>{this.renderFieldsets()}</Form>
+  organizerOverride(field) {
+    const { session } = this.state;
+    return session && session.Organizer && session.Organizer.data && session.Organizer.data[field] && field !== 'description';
+  }
+  renderForm = () => <Form readyText="Ready to publish!" fieldsets={this.state.fieldsets} onPublish={() => this.action('publish')} pendingSteps={this.state.pendingSteps} status={this.state.status} saveState={this.state.saveState} tab={this.props.params.tab} activeField={this.props.location.hash.slice(1)}>{this.renderFieldsets()}</Form>
   renderFieldsets = () => this.state.fieldsets.map((fieldset, key) => <Fieldset key={key} {...fieldset.props} {...this.state.copy.fieldsets[fieldset.slug]}>{this.renderFieldset(fieldset)}</Fieldset>)
   renderFieldset = fieldset => <div>{fieldset.fields.map(this.renderField)}</div>
-  renderField = (field, index) => <Field key={field} index={index} {...this.state.copy.fields[field]}>{this.state.fields[field] ? this.state.fields[field]() : <TextField {...this.getAttr(field)} />}</Field>
+  renderField = (field, index) => {
+    if (this.organizerOverride(field)) return <Field key={index} index={index} {...this.state.copy.fields[field]}><p style={{ opacity: .5 }}><i>This information is taken from the organiser ({this.state.session.Organizer.data[field]})</i></p></Field>;
+    return <Field key={index} index={index} {...this.state.copy.fields[field]}>{this.state.fields[field] ? this.state.fields[field]() : <TextField {...this.getAttr(field)} />}</Field>;
+  }
   render() {
     const { session } = this.state;
     const { headerText } = this.props;

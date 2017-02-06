@@ -29,6 +29,14 @@ function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
   return d;
 }
 
+const prefixTypes = {
+  socialWebsite: ['http://', 'https://'],
+  socialFacebook: ['https://facebook.com/', 'https://www.facebook.com/'],
+  socialInstagram: ['@'],
+  socialTwitter: ['@'],
+  socialHashtag: ['#']
+};
+
 module.exports = (DataTypes) => ({
   tablePrototype: {
     uuid: {
@@ -179,6 +187,7 @@ module.exports = (DataTypes) => ({
       },
       image: DataTypes.STRING(512),
       members: DataTypes.JSON,
+      data: DataTypes.JSON,
       _options: {
         getterMethods: {
           href() {
@@ -228,6 +237,22 @@ module.exports = (DataTypes) => ({
           },
           makeAssociations(models) {
             models.Organizer.hasMany(models.Session);
+          }
+        },
+        hooks: {
+          beforeUpdate(instance) {
+            const { data } = instance;
+            if (instance.changed('data') && data) {
+              if (data.socialFacebook && data.socialFacebook.match(' ')) {
+                data.socialFacebook = `https://facebook.com/search/pages/?q=${data.socialFacebook.replace(' ', '+')}`;
+              }
+              Object.keys(prefixTypes).filter(type => data[type]).forEach(type => {
+                const val = data[type];
+                const prefixes = prefixTypes[type];
+                if (!prefixes.some(prefix => val.indexOf(prefix) === 0)) data[type] = `${prefixes[0]}${val}`;
+              });
+              instance.data = data;
+            }
           }
         }
       }
@@ -591,13 +616,6 @@ module.exports = (DataTypes) => ({
                 if (instance.previous('state') === 'published') instance.state = 'unpublished';
               }
             }
-            const prefixTypes = {
-              socialWebsite: ['http://', 'https://'],
-              socialFacebook: ['https://facebook.com/', 'https://www.facebook.com/'],
-              socialInstagram: ['@'],
-              socialTwitter: ['@'],
-              socialHashtag: ['#']
-            };
             if (instance.socialFacebook && instance.socialFacebook.match(' ')) {
               instance.socialFacebook = `https://facebook.com/search/pages/?q=${instance.socialFacebook.replace(' ', '+')}`;
             }

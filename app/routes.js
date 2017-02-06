@@ -95,6 +95,18 @@ export default function createRoutes() {
         System.import('./containers/OrganizerView').then(loadModule(cb)).catch(errorLoading);
       },
     }, {
+      path: '/organizer/:uuid/edit',
+      name: 'Organizer edit',
+      getComponent(nextState, cb) {
+        System.import('./containers/OrganizerEdit').then(loadModule(cb)).catch(errorLoading);
+      },
+    }, {
+      path: '/organizer/:uuid/edit/:tab',
+      name: 'Organizer edit',
+      getComponent(nextState, cb) {
+        System.import('./containers/OrganizerEdit').then(loadModule(cb)).catch(errorLoading);
+      },
+    }, {
       path: '/session/add',
       name: 'add session',
       getComponent(nextState, cb) {

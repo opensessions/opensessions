@@ -1,1 +1,1 @@
-web: npm run start:prod-nomigration
+web: npm run start:prod-migrate

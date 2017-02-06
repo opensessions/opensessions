@@ -74,6 +74,7 @@ export default class HomePage extends React.Component { // eslint-disable-line r
       { text: '100s more people can find out about them', img: '/images/landing-step3.png' }
     ];
     const { stats } = this.state;
+    const { user } = this.context;
     return (<div className={styles.landing}>
       <Banner>
         <h1>Get your sessions found</h1>
@@ -94,7 +95,7 @@ export default class HomePage extends React.Component { // eslint-disable-line r
         <p><LoginButton button redirect="/session/add">Get started</LoginButton></p>
         {stats ? <p><span className={styles.stats}>{stats.sessions.published}</span> sessions published and counting!</p> : null}
       </div>
-      {this.context.user ? null : this.renderMarketingSections()}
+      {user ? null : this.renderMarketingSections()}
     </div>);
   }
   render() {

@@ -9,6 +9,10 @@
   position: relative;
 }
 
+.noImage {
+  display: block;
+}
+
 .link {
   position: absolute;
   top: 0;

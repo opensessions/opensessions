@@ -14,6 +14,7 @@ import PublishHeader from '../../components/PublishHeader';
 import PaymentSVG from '../../components/SVGs/PaymentMethod';
 import PriceSVG from '../../components/SVGs/Price';
 import Button from '../../components/Button';
+import SocialMedia from '../../components/SocialMedia';
 
 import { parseSchedule, sortSchedule } from '../../utils/calendar';
 import { apiModel } from '../../utils/api';
@@ -269,13 +270,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
             <p>{session.Organizer ? (<Link to={session.Organizer.href}>{session.Organizer.name}</Link>) : 'No organizer'}</p>
             <p>{session.contactPhone ? (<a className={styles.organizerLink} href={`tel:${session.contactPhone}`}><img src="/images/phone.svg" role="presentation" /> {session.contactPhone}</a>) : ''}</p>
             <p>{session.contactEmail ? (<a className={styles.organizerLink} onClick={this.dispatchMessageModal} onKeyUp={event => event.keyCode === 13 && event.target.click()} tabIndex={0}><img src="/images/email.png" role="presentation" /> Message organiser</a>) : ''}</p>
-            <ol className={styles.socialLinks}>
-              {session.socialWebsite ? <li><a className={styles.organizerLink} href={session.socialWebsite}>{session.socialWebsite.replace(/^https?:\/\/(www\.)?/, '')}</a></li> : null}
-              {session.socialFacebook ? <li><a className={styles.organizerLink} href={session.socialFacebook}><img src="/images/facebook.png" role="presentation" /> Facebook page</a></li> : null}
-              {session.socialInstagram ? <li><a className={styles.organizerLink} href={`https://instagram.com/${session.socialInstagram.slice(1)}`}><img src="/images/instagram.png" role="presentation" /> {session.socialInstagram}</a></li> : null}
-              {session.socialTwitter ? <li><a className={styles.organizerLink} href={`https://twitter.com/${session.socialTwitter.slice(1)}`}><img src="/images/twitter.png" role="presentation" /> {session.socialTwitter}</a></li> : null}
-              {session.socialHashtag ? <li><a className={styles.organizerLink} href={`https://twitter.com/hashtag/${session.socialHashtag.slice(1)}`}>{session.socialHashtag}</a></li> : null}
-            </ol>
+            <SocialMedia item={session} />
           </div>
         </div>
         <div className={styles.info}>

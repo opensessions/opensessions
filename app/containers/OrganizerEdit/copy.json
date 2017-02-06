@@ -1,0 +1,81 @@
+{
+  "fieldsets": {
+    "description": {
+      "label": "Description",
+      "heading": "Session Info",
+      "title": "Describe your organisation",
+      "subtitle": ""
+    },
+    "location": {
+      "label": "Location",
+      "title": "Where is your organisation based?",
+      "subtitle": "Select a location to indicate where your organisation is principly based"
+    },
+    "contact": {
+      "label": "Contact info",
+      "title": "Who can people talk to about your sessions?",
+      "subtitle": "Help potential attendees by providing details of who they can contact"
+    },
+    "social": {
+      "label": "Social media",
+      "title": "Where can people find more information about your organisation online?",
+      "subtitle": "Help potential attendees by providing links where they can find out more"
+    }
+  },
+  "fields": {
+    "name": {
+      "label": "Organiser Name",
+      "tip": "Edit the name of your organisation"
+    },
+    "description": {
+      "label": "Description",
+      "tip": "Let people know what your organisation is about"
+    },
+    "location": {
+      "label": "Address",
+      "tip": "Type to search an address and select from the dropdown"
+    },
+    "contactName": {
+      "label": "Full name",
+      "tip": "Who's the best person for attendees to contact if they have questions about your sessions?"
+    },
+    "contactEmail": {
+      "label": "Email address",
+      "tip": "What is their email address?"
+    },
+    "contactPhone": {
+      "label": "Phone number",
+      "tip": "What is their phone number (optional)?"
+    },
+    "socialWebsite": {
+      "label": "Website",
+      "tip": "Enter the website URL where potential attendees can find out more information about your sessions. Linking to the specific page on your site that relates to the session is better if possible"
+    },
+    "socialFacebook": {
+      "label": "Facebook page or group",
+      "tip": "Enter the URL of your Facebook page or Facebook group, where attendees can see who else usually attends"
+    },
+    "socialInstagram": {
+      "label": "Instagram",
+      "tip": "Enter the Instragram Account for your organisation",
+      "example": "E.g. @instagoodgym"
+    },
+    "socialTwitter": {
+      "label": "Twitter handle",
+      "tip": "Enter the Twitter Handle for your organisation",
+      "example": "E.g. @goodgym"
+    },
+    "socialHashtag": {
+      "label": "Hashtag",
+      "tip": "Enter the Hashtag for your session, if you have one",
+      "example": "E.g. #UseYourRun"
+    },
+    "image": {
+      "fullSize": true,
+      "label": "Banner image",
+      "tipType": "inline",
+      "tipTitle": "upload a real photo of your session",
+      "tip": "People are much more likely to attend a session if it has a real photo (One taken on your smartphone will do)"
+    }
+  }
+}

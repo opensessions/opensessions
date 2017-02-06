@@ -1,0 +1,23 @@
+@import '../../containers/App/variables.css';
+
+ol.social {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  & > li {
+    list-style: none;
+  }
+  & a.link {
+    font-size: .9em;
+    font-weight: bold;
+    color: var(--actionColor);
+    word-break: break-all;
+    & > img {
+      width: 1em;
+    }
+    &:hover {
+      text-decoration: none;
+      color: inherit;
+    }
+  }
+}

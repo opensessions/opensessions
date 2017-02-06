@@ -5,6 +5,16 @@
     max-width: var(--pagewidth);
     margin: auto;
     padding: 0 1em;
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    & > .sidebar {
+      max-width: var(--tileWidth);
+      flex-basis: 20em;
+      flex-grow: 1;
+      margin: 2em auto;
+      padding: 0 2em;
+    }
   }
   & .name {
     background: #FFF;
@@ -138,9 +148,12 @@
 }
 
 .members {
-  max-width: var(--tileWidth);
-  margin: 4em auto;
-  & > ol {
+  margin: 1em auto;
+  & .memberContent {
+    background: #FFF;
+    padding: 1em;
+  }
+  & ol {
     padding: 1em 0;
     & > li {
       list-style: none;
@@ -160,8 +173,9 @@
     & h2 {
       display: block;
     }
-    & .sessions {
-      margin: 4em auto;
+    & .sessions,
+    & .members {
+      margin: 2em auto;
     }
   }
 }

@@ -208,6 +208,10 @@ module.exports = (database) => {
     `);
   });
 
+  api.get('/health', (req, res) => {
+    res.json({ status: 'OK' });
+  });
+
   api.get('/leader-list', requireLogin, (req, res) => {
     const { Session } = database.models;
     Session.findAll(Session.getQuery({ where: { owner: getUser(req) } }, database.models, getUser(req))).then(instances => {
