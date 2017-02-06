@@ -1,7 +1,4 @@
-const dotenv = require('dotenv');
-
-dotenv.config({ silent: true });
-dotenv.load();
+require('dotenv').config({ silent: true });
 
 const connectDetails = {
   url: process.env.DATABASE_URL,
@@ -9,5 +6,6 @@ const connectDetails = {
 };
 
 module.exports = {
-  development: connectDetails
+  development: connectDetails,
+  production: connectDetails
 };
