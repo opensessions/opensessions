@@ -196,10 +196,9 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     </div>);
   }
   renderData(organizer, canEdit) {
-    const { data } = organizer;
-    if ((!data || Object.keys(data).length === 0) && !canEdit) {
-      return null;
-    }
+    let { data } = organizer;
+    if (canEdit && !data) data = {};
+    if (!canEdit && !Object.keys(data).length) return null;
     const { description, leader, contactName, contactPhone, location } = data;
     return (<div>
       <h2>Organiser Info</h2>
