@@ -2,8 +2,6 @@
  * Analytics: simply tracks whatever href and pathname is passed
  */
 
-import { IntercomAPI } from 'react-intercom';
-
 export default function trackPage(href, pathname) {
   const { analytics } = window;
   if (analytics) {
@@ -16,8 +14,4 @@ export default function trackPage(href, pathname) {
       path: generalPathname
     });
   }
-
-  IntercomAPI('trackEvent', 'page-nav', {
-    'New location': pathname
-  });
 }
