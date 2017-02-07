@@ -17,3 +17,13 @@
   max-width: var(--pagewidth);
   margin: auto;
 }
+
+.disabledField {
+  opacity: .5;
+  pointer-events: none;
+  filter: grayscale(1);
+  & > p {
+    font-size: .9em;
+    font-family: monospace;
+  }
+}

@@ -6,6 +6,7 @@ import { apiModel } from '../../utils/api';
 import SessionTileView from '../SessionTileView';
 import SessionList from '../SessionList';
 
+import ItemMap from '../../components/ItemMap';
 import Button from '../../components/Button';
 import LoadingMessage from '../../components/LoadingMessage';
 import NotificationBar from '../../components/NotificationBar';
@@ -199,17 +200,18 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     let { data } = organizer;
     if (canEdit && !data) data = {};
     if (!canEdit && !Object.keys(data).length) return null;
-    const { description, leader, contactName, contactPhone, location } = data;
-    return (<div>
+    const { description, contactName, contactPhone, location } = data;
+    return (<div className={styles.organizerData}>
       <h2>Organiser Info</h2>
-      {description ? <p>{description}</p> : null}
-      {leader ? <p><b>Leader:</b> {leader}</p> : null}
-      {contactName ? <p>Contact: {contactName}</p> : null}
-      {contactPhone ? <p>Phone: <a href={`tel:${contactPhone}`}>{contactPhone}</a></p> : null}
-      {location ? <p>Location: {location}</p> : null}
+      {description ? <p className={styles.description}>{description}</p> : null}
+      {contactName ? <p><b>Contact</b> {contactName}</p> : null}
+      {contactPhone ? <p><b>Phone</b> <a href={`tel:${contactPhone}`}>{contactPhone}</a></p> : null}
+      {location ? (<div>
+        <ItemMap markers={[{ ...location.data, isActive: true, box: () => <p>{location.address}</p> }]} size={0} />
+        <p><b>Location</b> {location.address}</p>
+      </div>) : null}
       <br />
       <SocialMedia item={data} />
-      <br />
       {this.canAct('edit') && canEdit ? <p><Button to={`${organizer.href}/edit`} style="slim"><img src="/images/change.png" alt="edit" style={{ filter: 'invert()' }} /> Edit</Button></p> : null}
     </div>);
   }
@@ -229,8 +231,8 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
       <div className={styles.container}>
         {this.renderSessions()}
         <div className={styles.sidebar}>
-          {organizer && this.canAct('edit') ? this.renderMembers(organizer) : null}
           {organizer ? this.renderData(organizer, isAdmin) : null}
+          {organizer && this.canAct('edit') ? this.renderMembers(organizer) : null}
         </div>
       </div>
       {organizer && isAdmin ? this.renderCalendar(organizer) : null}

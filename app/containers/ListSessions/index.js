@@ -59,6 +59,7 @@ export default class ListSessions extends React.Component { // eslint-disable-li
   }
   renderFilters() {
     const now = new Date();
+    const getURL = (isMap, query) => `/sessions${isMap ? '/map' : ''}${query}`;
     const filters = [
       { search: '', name: 'All' },
       { search: `?updatedAt=${toDate(now)}`, name: 'Updated today' },
@@ -68,19 +69,19 @@ export default class ListSessions extends React.Component { // eslint-disable-li
     const { search } = this.props.location;
     const { showExpired, isMap } = this.state;
     return (<div className={styles.filters}>
-      <p>Filters - {filters.map(filter => <Button to={`/sessions${filter.search}`} style={search === filter.search ? 'live' : false}>{filter.name}</Button>)}</p>
+      <p>Filters - {filters.map(filter => <Button to={getURL(isMap, filter.search)} style={search === filter.search ? 'live' : false}>{filter.name}</Button>)}</p>
       {filters.some(filter => filter.search === search) ? null : (<p>
         Current filters - {search.slice(1).split('&').map(v => v.split('=')).map(([key, val]) => {
           const changeVal = () => {
             const newVal = prompt(`Change ${key}:`, val);
-            if (newVal) this.context.router.push(`/sessions${search.replace([key, val].join('='), [key, newVal].join('='))}`);
+            if (newVal) this.context.router.push(getURL(isMap, search.replace([key, val].join('='), [key, newVal].join('='))));
           };
-          return <span>{key}: <Button style={['slim', 'live']} onClick={() => changeVal()}>{val}</Button> <Button style={['slim', 'danger']} to={`/sessions${search.replace(new RegExp(`[\?&]?${key}=${val}`), '')}`}>x</Button></span>;
+          return <span>{key}: <Button style={['slim', 'live']} onClick={() => changeVal()}>{val}</Button> <Button style={['slim', 'danger']} to={getURL(isMap, search.replace(new RegExp(`[\?&]?${key}=${val}`), ''))}>x</Button></span>;
         })}
       </p>)}
       <p>
         <Checkbox checked={showExpired} onChange={checked => this.setState({ showExpired: checked })} label="Show expired sessions" />
-        &nbsp;&nbsp;<Checkbox checked={isMap} onChange={checked => this.context.router.push(checked ? '/sessions/map' : '/sessions')} label="View on map" />
+        &nbsp;&nbsp;<Checkbox checked={isMap} onChange={checked => this.context.router.push(getURL(checked, search))} label="View on map" />
       </p>
     </div>);
   }
@@ -91,7 +92,7 @@ export default class ListSessions extends React.Component { // eslint-disable-li
     if (!showExpired) sessions = sessions.filter(session => session.sortedSchedule.length && (new Date(session.sortedSchedule[session.sortedSchedule.length - 1].start)).getTime() > Date.now());
     const page = (params && params.page) ? parseInt(params.page, 10) : 1;
     if (isLoading) return <LoadingMessage message="Loading sessions" ellipsis />;
-    if (isMap) return <SessionMap sessions={sessions} />;
+    if (isMap) return <SessionMap sessions={sessions} hasSidebar />;
     if (isCalendar) return <CalendarView items={sessions} itemToDates={i => i.sortedSchedule.map(s => new Date(s.start))} month={(new Date()).toISOString().substr(0, 7)} renderItem={i => <SessionMini session={i} />} />;
     return <PagedList items={sessions} page={page} newUrl={pg => `/sessions/${pg}${this.props.location.search}`} Component={SessionTileView} itemToProps={item => ({ session: item })} noneMessage={`No sessions ${this.props.location.search ? 'for this search' : ''}`} />;
   }

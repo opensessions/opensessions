@@ -1,5 +1,17 @@
 @import '../../containers/App/variables.css';
 
+.userSessions {
+  & a[href^='mailto:'] {
+    color: var(--actionColor);
+    &::before {
+      content: '<';
+    }
+    &::after {
+      content: '>';
+    }
+  }
+}
+
 .userIcon {
   max-width: 2.5em;
   border-radius: 50%;

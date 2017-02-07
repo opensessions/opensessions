@@ -100,9 +100,9 @@ export default class Form extends React.Component { // eslint-disable-line react
     const { fieldsets } = this.props;
     const { activeTab } = this.state;
     return this.getFieldsets().map((child, key) => {
-      const propFieldset = fieldsets[key];
-      const { slug } = propFieldset;
-      return <div key={key} className={styles[slug === activeTab ? 'activeTab' : 'hiddenTab']}>{child}</div>;
+      const { slug } = fieldsets[key];
+      if (slug === activeTab) return <div key={key}>{child}</div>;
+      return null;
     });
   }
   renderActionButtons() {

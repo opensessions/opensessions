@@ -10,6 +10,7 @@ import LoadingMessage from '../../components/LoadingMessage';
 import TextField from '../../components/Fields/Text';
 import Location from '../../components/Fields/Location';
 import ImageUpload from '../../components/Fields/ImageUpload';
+import Bool from '../../components/Fields/BoolRadio';
 
 import { Link } from 'react-router';
 
@@ -39,15 +40,19 @@ export default class OrganizerEdit extends React.Component { // eslint-disable-l
       isSaving: true,
       isLoading: true,
       fieldsets: [
-        { slug: 'description', fields: ['name', 'description', 'image'], props: { validity: 'none' } },
+        { slug: 'description', fields: ['name', 'description', 'slug', 'image'], props: { validity: 'none' } },
         { slug: 'contact', props: { validity: 'none' }, fields: ['contactName', 'contactEmail', 'contactPhone'] },
         { slug: 'social', props: { validity: 'none' }, fields: ['socialWebsite', 'socialFacebook', 'socialInstagram', 'socialTwitter', 'socialHashtag'] },
-        { slug: 'location', props: { validity: 'none' }, fields: ['location'] }
+        { slug: 'location', props: { validity: 'none' }, fields: ['location'] },
+        { slug: 'options', props: { validity: 'none' }, fields: ['noSchedule', 'noPricing'] }
       ],
       fields: {
         title: () => <TextField validation={{ maxLength: 50 }} {...this.getAttr('title')} />,
-        description: () => <TextField multi size="XL" {...this.getDataAttr('description')} validation={{ maxLength: 500 }} />,
+        description: () => <TextField multi size="XL" {...this.getDataAttr('description')} validation={{ maxLength: 1000 }} />,
         location: () => <Location {...this.getDataAttr('location')} />,
+        slug: () => <TextField {...this.getAttr('slug')} validation={{ maxLength: 32 }} helper={{ start: '/organizer/' }} />,
+        noSchedule: () => <Bool {...this.getDataAttr('noSchedule')} />,
+        noPricing: () => <Bool {...this.getDataAttr('noPricing')} />,
         contactName: () => <TextField {...this.getDataAttr('contactName')} />,
         contactEmail: () => <TextField {...this.getDataAttr('contactEmail')} />,
         contactPhone: () => <TextField {...this.getDataAttr('contactPhone')} />,

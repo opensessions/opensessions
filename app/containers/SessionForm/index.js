@@ -87,12 +87,10 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
             { Component: Relation, props: { size: 'small', relation: { model: 'activity' }, name: 'uuid', props: { lazyLoad: true, maxOptions: 5, placeholder: 'E.g. Badminton' } } }
           ]}
         />,
-        ActivityUuid: () => <Relation {...this.getAttr('ActivityUuid')} relation={{ model: 'activity', query: { } }} props={{ lazyLoad: true, maxOptions: 5 }} />,
         preparation: () => <TextField multi validation={{ maxLength: 500 }} {...this.getAttr('preparation')} />,
-        // leader: () => <TextField {...this.getAttr('leader')} />,
         leader: () => <SearchableSelect {...this.getAttr('leader')} onChange={value => this.updateSession('leader', value || '')} options={this.getNames()} addItem={this.addName('leader')} lazyLoad />,
         hasCoaching: () => <BoolRadio {...this.getAttr('hasCoaching')} options={[{ text: 'No, the session is unlead' }, { text: 'Yes, the session is coached' }]} />,
-        location: () => <Location {...this.getAttr('location')} dataValue={this.state.session.locationData} onDataChange={value => this.updateSession('locationData', value)} />,
+        location: () => <Location {...this.getLocation()} />,
         meetingPoint: () => <TextField multi validation={{ maxLength: 500 }} {...this.getAttr('meetingPoint')} />,
         pricing: () => <PricingField {...this.getAttr('pricing')} />,
         quantity: () => <NumberField {...this.getAttr('quantity')} validation={{ min: 0 }} />,
@@ -161,8 +159,10 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   }
   getAttr = name => {
     const { session } = this.state;
+    let data = session;
+    if (this.organizerOverride(name)) data = session.Organizer.data;
     return {
-      value: session[name],
+      value: data[name],
       onChange: value => this.updateSession(name, value)
     };
   }
@@ -171,6 +171,21 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     return {
       value: session[name] && session[name].length ? session[name] : ([{}]),
       onChange: value => this.updateSession(name, value)
+    };
+  }
+  getLocation() {
+    const { location, locationData } = this.state.session;
+    if (this.organizerOverride('location')) {
+      const { Organizer } = this.state.session;
+      const { data } = Organizer;
+      return { value: data.location };
+    }
+    return {
+      value: { address: location, data: locationData },
+      onChange: value => {
+        this.updateSession('location', value.address);
+        this.updateSession('locationData', value.data);
+      }
     };
   }
   getActions = () => {
@@ -238,11 +253,19 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
         this.context.router.replace(`${res.instance.href}/edit`);
       });
   }
-  updateSession = (name, value) => {
+  updateSession = (n, v) => {
     const { session } = this.state;
-    session[name] = value;
-    if (name === 'Activities') this.setActivities(value);
+    if (n === 'Activities') this.setActivities(v);
     else {
+      let names = n;
+      let values = v;
+      if (!(n instanceof Array)) {
+        names = [n];
+        values = [v];
+      }
+      names.forEach((name, key) => {
+        session[name] = values[key];
+      });
       this.onChange(session);
       this.setState({ status: '', session });
       this.autosave(2000);
@@ -305,7 +328,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   renderFieldsets = () => this.state.fieldsets.map((fieldset, key) => <Fieldset key={key} {...fieldset.props} {...this.state.copy.fieldsets[fieldset.slug]}>{this.renderFieldset(fieldset)}</Fieldset>)
   renderFieldset = fieldset => <div>{fieldset.fields.map(this.renderField)}</div>
   renderField = (field, index) => {
-    if (this.organizerOverride(field)) return <Field key={index} index={index} {...this.state.copy.fields[field]}><p style={{ opacity: .5 }}><i>This information is taken from the organiser ({this.state.session.Organizer.data[field]})</i></p></Field>;
+    if (this.organizerOverride(field)) return <Field key={index} index={index} {...this.state.copy.fields[field]}><div className={styles.disabledField}><p><i>This information is taken from the organiser</i></p><div>{this.state.fields[field]()}</div></div></Field>;
     return <Field key={index} index={index} {...this.state.copy.fields[field]}>{this.state.fields[field] ? this.state.fields[field]() : <TextField {...this.getAttr(field)} />}</Field>;
   }
   render() {

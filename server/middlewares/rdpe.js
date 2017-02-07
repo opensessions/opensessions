@@ -19,7 +19,8 @@ module.exports = (database, options = {}) => {
     });
   });
 
-  const hiddenFields = ['activityType', 'startDate', 'startTime', 'endTime', 'contactEmail', 'analytics', 'sortedSchedule'];
+  const hiddenFields = ['activityType', 'contactEmail', 'analytics', 'sortedSchedule', 'owner'];
+  const organizerFields = ['contactName', 'contactPhone', 'socialWebsite', 'socialTwitter', 'socialFacebook', 'socialHashtag', 'socialInstagram'];
 
   rdpe.get('/sessions', (req, res) => {
     const fromTS = req.query.from || 0;
@@ -78,6 +79,11 @@ module.exports = (database, options = {}) => {
           if (item.data.Activities) item.data.Activities = item.data.Activities.map(activity => activity.name);
           item.data.website = `${options.URL}${item.data.href}`;
           item.data.messageURL = `${options.URL}${item.data.href}/action/message`;
+          if (options.legacyOrganizerMerge) {
+            organizerFields.forEach(field => {
+              item.data[field] = item.data.info[field];
+            });
+          }
           hiddenFields.forEach(key => delete item.data[key]);
         }
         return item;
@@ -98,7 +104,7 @@ module.exports = (database, options = {}) => {
         license: 'https://creativecommons.org/licenses/by/4.0/'
       });
     }).catch(error => {
-      console.log('rdpe error', error);
+      console.error('rdpe error', error);
       res.json({ error });
     });
   });

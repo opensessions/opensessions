@@ -14,6 +14,21 @@ input[type='text'].smallText {
   }
 }
 
+.inputArea {
+  display: flex;
+}
+
+.helperStart {
+  color: #666;
+  line-height: 1.25em;
+  background: #EFEFEF;
+  padding: .5em;
+  padding-right: .25em;
+  position: relative;
+  border: 1px solid #C2C2C2;
+  border-right: 0;
+}
+
 .valid,
 .warn,
 .danger {

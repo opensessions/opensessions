@@ -18,9 +18,7 @@ export default class LocationField extends React.Component {
   };
   static propTypes = {
     value: PropTypes.string,
-    dataValue: PropTypes.object,
     onChange: PropTypes.func,
-    onDataChange: PropTypes.func,
     defaultLocation: PropTypes.object,
     className: PropTypes.string,
   }
@@ -61,7 +59,7 @@ export default class LocationField extends React.Component {
       return;
     }
     this.latLngChange(place.geometry.location, { placeID: place.place_id });
-    this.props.onChange(this.placeToAddress(place));
+    this.props.onChange({ ...this.props.value, address: this.placeToAddress(place) });
     this.setState({ clean: true });
   }
   placeToAddress(place) {
@@ -70,24 +68,24 @@ export default class LocationField extends React.Component {
     return address.indexOf(name) === -1 ? [name, address].join(', ') : address;
   }
   latLngChange = (latLng, extraData) => {
-    const locationData = {
+    const data = {
       lat: latLng.lat(),
       lng: latLng.lng(),
       ...extraData
     };
-    this.changeCenter(locationData);
-    this.props.onDataChange(locationData);
+    this.changeCenter(data);
+    this.props.onChange({ ...this.props.value, data });
   }
-  changeCenter = locationData => {
+  changeCenter = data => {
     if (this.refs.component) {
-      this.refs.component.state.map.panTo(locationData);
+      this.refs.component.state.map.panTo(data);
     }
   }
   generateManual(value) {
     return value ? value.split(', ') : [];
   }
-  renderSearch() {
-    const { value, className } = this.props;
+  renderSearch(value) {
+    const { className } = this.props;
     const { isManual } = this.state;
     const attrs = {
       type: 'text',
@@ -96,8 +94,8 @@ export default class LocationField extends React.Component {
       onFocus: this.onFocus,
       onBlur: this.onBlur,
       onChange: this.onChange,
-      placeholder: value,
-      defaultValue: value
+      placeholder: value.address,
+      defaultValue: value.address
     };
     return (<span style={{ display: isManual ? 'none' : 'block' }}>
       <input {...attrs} />
@@ -105,20 +103,22 @@ export default class LocationField extends React.Component {
     </span>);
   }
   renderManual() {
-    const { className, value } = this.props;
-    let { dataValue } = this.props;
-    if (!dataValue) dataValue = {};
+    const { className } = this.props;
+    let { value } = this.props;
+    if (!value) value = {};
+    let { data } = value;
+    if (!data) data = {};
     const attrs = {
       type: 'text',
       className,
     };
-    const manual = dataValue.manual || this.generateManual(value);
+    const manual = data.manual || this.generateManual(value.address);
     const getAttrs = index => ({
       ...attrs,
       onChange: event => {
-        if (!dataValue.manual) dataValue.manual = [];
-        dataValue.manual[index] = event.target.value;
-        this.props.onDataChange(dataValue);
+        if (!data.manual) data.manual = [];
+        data.manual[index] = event.target.value;
+        this.props.onChange({ ...value, data });
       },
       value: manual[index]
     });
@@ -136,25 +136,24 @@ export default class LocationField extends React.Component {
       <a
         className={styles.toggle}
         onClick={() => {
-          const data = this.props.dataValue;
           delete data.manual;
-          this.props.onDataChange(data);
+          this.props.onChange({ ...value, data });
           this.setState({ isManual: false });
         }}
       >Return to location search</a>
     </span>);
   }
   render() {
-    const { dataValue } = this.props;
+    let { value } = this.props;
+    if (!value) value = {};
+    const { data } = value;
     let { isManual } = this.state;
     let map = null;
     let mapHelp = null;
-    let locationData = dataValue;
-    if (locationData) {
-      if (typeof locationData === 'string') locationData = JSON.parse(locationData);
-      if (locationData.manual) isManual = true;
+    if (data) {
+      if (data.manual) isManual = true;
       const marker = {
-        position: locationData,
+        position: data,
         icon: { url: '/images/map-pin-active.svg' },
         defaultAnimation: 2,
         draggable: true,
@@ -165,8 +164,8 @@ export default class LocationField extends React.Component {
       };
       const mapProps = {
         defaultZoom: 15,
-        defaultCenter: locationData,
-        center: locationData,
+        defaultCenter: data,
+        center: data,
         draggableCursor: '-webkit-grab, move',
         options: { streetViewControl: false, scrollwheel: false, mapTypeControl: false }
       };
@@ -181,7 +180,7 @@ export default class LocationField extends React.Component {
     }
     return (<div>
       {isManual ? this.renderManual() : null}
-      {this.renderSearch()}
+      {this.renderSearch(value)}
       {map}
       {mapHelp}
     </div>);

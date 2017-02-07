@@ -86,6 +86,9 @@
   & > div {
     animation: appear .5s;
   }
+  & .activeTab {
+    display: block;
+  }
   & .hiddenTab {
     visibility: hidden;
     height: 0;

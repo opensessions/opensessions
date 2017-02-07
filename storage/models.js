@@ -73,6 +73,36 @@ module.exports = (DataTypes) => ({
         }
       }
     },
+    Partner: {
+      owner: DataTypes.STRING,
+      enabled: DataTypes.BOOLEAN,
+      _options: {
+        freezeTableName: true,
+        classMethods: {
+          getQuery(query) {
+            return query;
+          },
+          getActions(models, req) {
+            const actions = [];
+            if (req.isAdmin) {
+              actions.push('create');
+              actions.push('view');
+            }
+            return actions;
+          }
+        },
+        instanceMethods: {
+          getActions(models, req) {
+            const actions = [];
+            if (req.isAdmin || (req.user && req.user === this.owner)) {
+              actions.push('view');
+              actions.push('edit');
+            }
+            return actions;
+          }
+        }
+      }
+    },
     /* Messages: {
       from: DataTypes.STRING(256),
       to: DataTypes.STRING(256),
@@ -166,9 +196,21 @@ module.exports = (DataTypes) => ({
         classMethods: {
           getQuery(query, models) {
             if (!query) query = {};
-            query.attributes = ['uuid', 'name', 'owner', 'Activity.createdAt', 'Activity.updatedAt', [DataTypes.fn('COUNT', DataTypes.col('Sessions.uuid')), 'SessionsCount']];
-            query.include = [{ model: models.Session, through: models.SessionActivity, required: false, where: { state: 'published' } }];
-            query.group = ['Activity.uuid', 'Sessions.uuid', 'Sessions.SessionActivity.uuid'];
+            let depth = 0;
+            if (query.where && query.where.depth) {
+              depth = parseInt(query.where.depth, 10);
+              delete query.where.depth;
+            }
+            switch (depth) {
+              case 0:
+              default:
+                break;
+              case 1:
+                query.attributes = ['uuid', 'name', 'owner', 'Activity.createdAt', 'Activity.updatedAt', [DataTypes.fn('COUNT', DataTypes.col('Sessions.uuid')), 'SessionsCount']];
+                query.include = [{ model: models.Session, through: models.SessionActivity, required: false, where: { state: 'published' } }];
+                query.group = ['Activity.uuid', 'Sessions.uuid', 'Sessions.SessionActivity.uuid'];
+                break;
+            }
             return query;
           },
           makeAssociations(models) {
@@ -179,6 +221,7 @@ module.exports = (DataTypes) => ({
     },
     Organizer: {
       owner: DataTypes.STRING,
+      slug: { type: DataTypes.STRING(32), unique: true },
       name: {
         type: DataTypes.STRING,
         validate: {
@@ -191,7 +234,7 @@ module.exports = (DataTypes) => ({
       _options: {
         getterMethods: {
           href() {
-            return `/${this.Model.name.toLowerCase()}/${this.uuid}`;
+            return `/${this.Model.name.toLowerCase()}/${this.slug || this.uuid}`;
           }
         },
         instanceMethods: {
@@ -228,6 +271,14 @@ module.exports = (DataTypes) => ({
         classMethods: {
           getQuery(query, models, user) {
             const sessionQuery = models.Session.getQuery({}, models, user);
+            const uuidFormat = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/;
+            if (query.where.uuid) {
+              const { uuid } = query.where;
+              if (!uuidFormat.test(uuid)) {
+                delete query.where.uuid;
+                query.where.slug = uuid;
+              }
+            }
             query.include = [{
               model: models.Session,
               where: sessionQuery.where,
@@ -276,7 +327,6 @@ module.exports = (DataTypes) => ({
       locationData: DataTypes.JSON,
       meetingPoint: DataTypes.STRING,
       pricing: DataTypes.JSON,
-      quantity: DataTypes.INTEGER,
       genderRestriction: {
         type: DataTypes.STRING(16),
         defaultValue: 'mixed',
@@ -364,6 +414,29 @@ module.exports = (DataTypes) => ({
               return sortSchedule(this.schedule);
             }
             return [];
+          },
+          info() {
+            const { Organizer } = this;
+            let attr = name => this[name];
+            let location = { address: this.location, data: this.locationData };
+            if (Organizer && Organizer.data) {
+              attr = name => Organizer.data[name] || this[name];
+              location = Organizer.data.location || location;
+            }
+            return {
+              contact: {
+                name: attr('contactName'),
+                phone: attr('contactPhone')
+              },
+              social: {
+                website: attr('socialWebsite'),
+                facebook: attr('socialFacebook'),
+                instagram: attr('socialInstagram'),
+                hashtag: attr('socialHashtag'),
+                twitter: attr('socialTwitter')
+              },
+              location
+            };
           }
         },
         instanceMethods: {

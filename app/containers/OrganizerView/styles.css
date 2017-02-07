@@ -1,5 +1,14 @@
 @import '../App/variables.css';
 
+.organizerData {
+  & p {
+    margin: .5em auto;
+    &.description {
+      white-space: pre-wrap;
+    }
+  }
+}
+
 .organizerView {
   & .container {
     max-width: var(--pagewidth);

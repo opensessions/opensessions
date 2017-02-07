@@ -14,7 +14,7 @@ export default class ListActivities extends React.Component { // eslint-disable-
     router: PropTypes.object
   };
   static fetchData(dispatch) {
-    return apiModel.search('activity').then(result => {
+    return apiModel.search('activity', { depth: 1 }).then(result => {
       const { instances, error } = result;
       if (error) throw error;
       dispatch({ type: 'ACTIVITY_LIST_LOADED', payload: instances });

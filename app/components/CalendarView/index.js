@@ -19,12 +19,12 @@ export default class CalendarView extends React.Component {
   renderDay(day, itemDates) {
     if (!itemDates[day]) return <p className={styles.none}>No items</p>;
     return Object.keys(itemDates[day]).map(time => {
-      const [h, m] = time.split(':').map(parseFloat);
-      return (<div>
-        <p className={styles.time}>{h % 12 || 12}{m ? `:${m}` : ''}{h >= 12 ? 'pm' : 'am'}</p>
-        {itemDates[day][time].map(item => <p className={styles.items}>{this.props.renderItem(item, day)}</p>)}
-      </div>);
-    });
+      const [hours, mins] = time.split(':').map(parseFloat);
+      return ({ absMin: (hours * 60) + mins, hours, mins, time });
+    }).sort((t1, t2) => t1.absMin - t2.absMin).map(({ hours, mins, time }) => (<div>
+      <p className={styles.time}>{hours % 12 || 12}{mins ? `:${mins}` : ''}{hours >= 12 ? 'pm' : 'am'}</p>
+      {itemDates[day][time].map(item => <p className={styles.items}>{this.props.renderItem(item, day)}</p>)}
+    </div>));
   }
   renderWeek(week, itemDates) {
     const dayStyles = [styles.past, styles.today, styles.future];

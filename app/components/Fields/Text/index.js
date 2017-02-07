@@ -12,6 +12,7 @@ export default class TextField extends React.Component { // eslint-disable-line 
     autoFocus: PropTypes.bool,
     multi: PropTypes.bool,
     size: PropTypes.string,
+    helper: PropTypes.object
   }
   handleChange = event => {
     const { target } = event;
@@ -47,7 +48,7 @@ export default class TextField extends React.Component { // eslint-disable-line 
     return <div className={styles.maxLength}><span className={urgency}>{num}</span> {characters} {characterState}</div>;
   }
   render() {
-    const { value, className, placeholder, multi, size, validation, autoFocus } = this.props;
+    const { value, className, placeholder, multi, size, validation, autoFocus, helper } = this.props;
     const attrs = {
       value: value || '',
       onChange: this.handleChange,
@@ -70,7 +71,10 @@ export default class TextField extends React.Component { // eslint-disable-line 
       input = <input type="text" {...attrs} />;
     }
     return (<div>
-      {input}
+      <div className={styles.inputArea}>
+        {helper && helper.start ? <span className={styles.helperStart}>{helper.start}</span> : null}
+        {input}
+      </div>
       {this.renderValidation()}
     </div>);
   }

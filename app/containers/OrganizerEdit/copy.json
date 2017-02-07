@@ -20,6 +20,11 @@
       "label": "Social media",
       "title": "Where can people find more information about your organisation online?",
       "subtitle": "Help potential attendees by providing links where they can find out more"
+    },
+    "options": {
+      "label": "Options",
+      "title": "Advanced settings for your organiser",
+      "subtitle": "Fine-tune your sessions"
     }
   },
   "fields": {
@@ -30,6 +35,11 @@
     "description": {
       "label": "Description",
       "tip": "Let people know what your organisation is about"
+    },
+    "slug": {
+      "label": "URL",
+      "tip": "Set a unique URL for your organiser",
+      "example": "E.g. /organizer/MyClubName"
     },
     "location": {
       "label": "Address",
@@ -74,8 +84,16 @@
       "fullSize": true,
       "label": "Banner image",
       "tipType": "inline",
-      "tipTitle": "upload a real photo of your session",
-      "tip": "People are much more likely to attend a session if it has a real photo (One taken on your smartphone will do)"
+      "tipTitle": "give your organiser page a banner image",
+      "tip": "Show off the individuality offered by your sessions with a banner image"
+    },
+    "noPricing": {
+      "label": "Disable Pricing",
+      "tip": "Hide the Pricing section for this organiser's sessions"
+    },
+    "noSchedule": {
+      "label": "Disable Schedule",
+      "tip": "Hide the Schedule section for this organiser's sessions"
     }
   }
 }

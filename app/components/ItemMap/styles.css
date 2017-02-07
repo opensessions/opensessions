@@ -6,11 +6,21 @@
   color: white;
 }
 
+.noItems {
+  padding: 1em;
+  color: #666;
+  font-size: 1.5em;
+}
+
 @media (--desktop) {
   .frame {
     display: flex;
   }
   .map {
+    display: flex;
+    min-height: 20vh;
     flex-grow: 1;
+    align-items: center;
+    justify-content: center;
   }
 }
