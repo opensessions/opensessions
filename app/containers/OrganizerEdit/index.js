@@ -6,6 +6,7 @@ import Field from '../../components/Field';
 import PublishHeader from '../../components/PublishHeader';
 import LoadingIcon from '../../components/LoadingIcon';
 import LoadingMessage from '../../components/LoadingMessage';
+import InfoBox from '../../components/InfoBox';
 
 import TextField from '../../components/Fields/Text';
 import Location from '../../components/Fields/Location';
@@ -48,19 +49,19 @@ export default class OrganizerEdit extends React.Component { // eslint-disable-l
       ],
       fields: {
         title: () => <TextField validation={{ maxLength: 50 }} {...this.getAttr('title')} />,
-        description: () => <TextField multi size="XL" {...this.getDataAttr('description')} validation={{ maxLength: 1000 }} />,
-        location: () => <Location {...this.getDataAttr('location')} />,
+        description: () => <TextField multi size="XL" {...this.getAttr('data.description')} validation={{ maxLength: 1000 }} />,
+        location: () => <Location {...this.getAttr('data.location')} />,
         slug: () => <TextField {...this.getAttr('slug')} validation={{ maxLength: 32 }} helper={{ start: '/organizer/' }} />,
-        noSchedule: () => <Bool {...this.getDataAttr('noSchedule')} />,
-        noPricing: () => <Bool {...this.getDataAttr('noPricing')} />,
+        noSchedule: () => <Bool {...this.getAttr('data.noSchedule')} />,
+        noPricing: () => <Bool {...this.getAttr('data.noPricing')} />,
         contactName: () => <TextField {...this.getAttr('data.contactName')} />,
         contactEmail: () => <TextField {...this.getAttr('data.contactEmail')} />,
         contactPhone: () => <TextField {...this.getAttr('data.contactPhone')} />,
-        socialWebsite: () => <TextField placeholder="https://" {...this.getDataAttr('socialWebsite')} />,
-        socialFacebook: () => <TextField placeholder="https://" {...this.getDataAttr('socialFacebook')} />,
-        socialInstagram: () => <TextField placeholder="@instagoodgym" {...this.getDataAttr('socialInstagram')} />,
-        socialTwitter: () => <TextField placeholder="@goodgym" {...this.getDataAttr('socialTwitter')} />,
-        socialHashtag: () => <TextField placeholder="#UseYourRun" {...this.getDataAttr('socialHashtag')} />,
+        socialWebsite: () => <TextField placeholder="https://" {...this.getAttr('data.socialWebsite')} />,
+        socialFacebook: () => <TextField placeholder="https://" {...this.getAttr('data.socialFacebook')} />,
+        socialInstagram: () => <TextField placeholder="@instagoodgym" {...this.getAttr('data.socialInstagram')} />,
+        socialTwitter: () => <TextField placeholder="@goodgym" {...this.getAttr('data.socialTwitter')} />,
+        socialHashtag: () => <TextField placeholder="#UseYourRun" {...this.getAttr('data.socialHashtag')} />,
         image: () => <ImageUpload preview {...this.getAttr('image')} upload={{ URL: `/api/organizer/${this.state.instance.uuid}/image`, name: 'image' }} />
       }
     };
@@ -92,18 +93,6 @@ export default class OrganizerEdit extends React.Component { // eslint-disable-l
       onChange: newValue => this.update(name, newValue)
     };
   }
-  getDataAttr = name => {
-    const { instance } = this.state;
-    return {
-      value: instance.data ? instance.data[name] : null,
-      onChange: value => {
-        let { data } = instance;
-        if (!data) data = {};
-        data[name] = value;
-        this.update('data', data);
-      }
-    };
-  }
   getActions = () => {
     const { instance, isSaving, isPendingSave } = this.state;
     const { tab } = this.props.params;
@@ -118,11 +107,19 @@ export default class OrganizerEdit extends React.Component { // eslint-disable-l
     return apiModel.get('organizer', uuid).then(res => {
       const { instance } = res;
       this.setState({ instance, isSaving: false, isLoading: false });
+    }).catch(res => {
+      this.setState({ error: res.error, isLoading: false });
     });
   }
   update = (name, value) => {
     const { instance } = this.state;
-    instance[name] = value;
+    let pointer = instance;
+    const names = name.split('.');
+    const lastName = names.pop();
+    names.forEach(n => {
+      if (typeof pointer[n] === 'object') pointer = pointer[n];
+    });
+    pointer[lastName] = value;
     this.onChange(instance);
     this.setState({ status: '', instance });
     this.autosave(2000);
@@ -168,17 +165,26 @@ export default class OrganizerEdit extends React.Component { // eslint-disable-l
       if (instance) this.setState({ instance });
     }).catch(res => this.notify(<p onClick={this.errorClick} dangerouslySetInnerHTML={{ __html: res.error }} />, 'error'));
   }
-  renderForm = () => <Form fieldsets={this.state.fieldsets} pendingSteps={this.state.pendingSteps} status={this.state.status} saveState={this.state.saveState} tab={this.props.params.tab} activeField={this.props.location.hash.slice(1)}>{this.renderFieldsets()}</Form>
+  renderForm(instance, isLoading, error) {
+    if (error) {
+      return (<div className={styles.formBody}>
+        <InfoBox type="error" message={error} />
+      </div>);
+    }
+    return (<div className={styles.formBody}>
+      {isLoading
+        ? <LoadingMessage message="Loading" ellipsis />
+        : <Form fieldsets={this.state.fieldsets} pendingSteps={this.state.pendingSteps} status={this.state.status} saveState={this.state.saveState} tab={this.props.params.tab} activeField={this.props.location.hash.slice(1)}>{this.renderFieldsets()}</Form>}
+    </div>);
+  }
   renderFieldsets = () => this.state.fieldsets.map((fieldset, key) => <Fieldset key={key} {...fieldset.props} {...copy.fieldsets[fieldset.slug]}>{this.renderFieldset(fieldset)}</Fieldset>)
   renderFieldset = fieldset => <div>{fieldset.fields.map(this.renderField)}</div>
   renderField = (field, index) => <Field key={field} index={index} {...copy.fields[field]}>{this.state.fields[field] ? this.state.fields[field]() : <TextField {...this.getAttr(field)} />}</Field>
   render() {
-    const { instance } = this.state;
+    const { instance, isLoading, error } = this.state;
     return (<div className={styles.form}>
       <PublishHeader h2="Edit organizer" h3={instance ? instance.name : <i>Untitled</i>} actions={this.getActions()} />
-      <div className={styles.formBody}>
-        {this.state.isLoading ? <LoadingMessage message="Loading" ellipsis /> : this.renderForm()}
-      </div>
+      {this.renderForm(instance, isLoading, error)}
     </div>);
   }
 }

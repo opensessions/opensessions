@@ -19,7 +19,7 @@ module.exports = (database, options = {}) => {
     });
   });
 
-  const hiddenFields = ['activityType', 'contactEmail', 'analytics', 'sortedSchedule', 'owner'];
+  const hiddenFields = ['aggregators', 'contactEmail', 'analytics', 'sortedSchedule', 'owner'];
   const organizerFields = ['contactName', 'contactPhone', 'socialWebsite', 'socialTwitter', 'socialFacebook', 'socialHashtag', 'socialInstagram'];
 
   rdpe.get('/sessions', (req, res) => {
@@ -79,12 +79,12 @@ module.exports = (database, options = {}) => {
           if (item.data.Activities) item.data.Activities = item.data.Activities.map(activity => activity.name);
           item.data.website = `${options.URL}${item.data.href}`;
           item.data.messageURL = `${options.URL}${item.data.href}/action/message`;
-          if (options.legacyOrganizerMerge) {
+          hiddenFields.forEach(key => delete item.data[key]);
+          if (options.legacyOrganizerMerge && session.Organizer && session.Organizer.data) {
             organizerFields.forEach(field => {
-              item.data[field] = item.data.info[field];
+              item.data[field] = session.Organizer.data[field] || item.data[field];
             });
           }
-          hiddenFields.forEach(key => delete item.data[key]);
         }
         return item;
       });

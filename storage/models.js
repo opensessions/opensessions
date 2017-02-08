@@ -472,7 +472,13 @@ module.exports = (DataTypes) => ({
             } else if (!req.isAdmin) {
               actions.push('trackView');
             }
+            if (req.isAdmin) {
+              if (this.state === 'published') actions.push('touch');
+            }
             return actions;
+          },
+          touch() {
+            return this.update({ state: 'published' }).then(instance => ({ message: 'Session re-published', messageType: 'success', instance }));
           },
           publish() {
             return this.update({ state: 'published' }, { returning: true }).then(instance => ({ message: 'Your session has been published!', messageType: 'success', redirect: instance.href, instance }));
