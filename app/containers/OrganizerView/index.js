@@ -56,7 +56,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
   }
   photoChange = image => {
     const organizer = this.getOrganizer();
-    return apiModel.edit('organizer', organizer.uuid, { image }).then(res => {
+    return apiModel.edit('organizer', organizer.uuid, { image }).then(() => {
       this.setState({ modified: Date.now() });
       this.fetchData();
     }).catch(() => {
@@ -201,7 +201,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
   renderData(organizer, canEdit) {
     let { data } = organizer;
     const { info } = organizer;
-    if (canEdit && !data) data = {};
+    if (!data) data = {};
     if (!canEdit && !Object.keys(data).length) return null;
     const { description, location } = data;
     return (<div className={styles.organizerData}>

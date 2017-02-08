@@ -184,7 +184,7 @@ module.exports = (DataTypes) => ({
             return `/${this.Model.name.toLowerCase()}/${this.slug || this.uuid}`;
           },
           info() {
-            const attr = name => this.data ? this.data[name] : null;
+            const attr = name => (this.data ? this.data[name] : null);
             return {
               contact: {
                 name: attr('contactName'),
@@ -247,18 +247,13 @@ module.exports = (DataTypes) => ({
               depth = parseInt(query.where.depth, 10);
               delete query.where.depth;
             }
-            switch (depth) {
-              case 0:
-              default:
-                break;
-              case 1:
-                const sessionQuery = models.Session.getQuery({}, models, user);
-                query.include = [{
-                  model: models.Session,
-                  where: sessionQuery.where,
-                  required: false
-                }];
-                break;
+            if (depth === 1) {
+              const sessionQuery = models.Session.getQuery({}, models, user);
+              query.include = [{
+                model: models.Session,
+                where: sessionQuery.where,
+                required: false
+              }];
             }
             return query;
           },
