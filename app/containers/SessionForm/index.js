@@ -322,13 +322,18 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   }
   organizerOverride(field) {
     const { session } = this.state;
-    return session && session.Organizer && session.Organizer.data && session.Organizer.data[field] && field !== 'description';
+    if (session && session.Organizer && session.Organizer.data && field !== 'description') {
+      if ((session.Organizer.data.noPricing && field === 'pricing') || (session.Organizer.data.noSchedule && field === 'schedule')) return <p>This field is disabled by the organiser</p>;
+      return session.Organizer.data[field] && field === 'location' ? session.Organizer.data[field].address : session.Organizer.data[field];
+    }
+    return false;
   }
   renderForm = () => <Form readyText="Ready to publish!" fieldsets={this.state.fieldsets} onPublish={() => this.action('publish')} pendingSteps={this.state.pendingSteps} status={this.state.status} saveState={this.state.saveState} tab={this.props.params.tab} activeField={this.props.location.hash.slice(1)}>{this.renderFieldsets()}</Form>
   renderFieldsets = () => this.state.fieldsets.map((fieldset, key) => <Fieldset key={key} {...fieldset.props} {...this.state.copy.fieldsets[fieldset.slug]}>{this.renderFieldset(fieldset)}</Fieldset>)
   renderFieldset = fieldset => <div>{fieldset.fields.map(this.renderField)}</div>
   renderField = (field, index) => {
-    if (this.organizerOverride(field)) return <Field key={index} index={index} {...this.state.copy.fields[field]}><div className={styles.disabledField}><p><i>This information is taken from the organiser</i></p><div>{this.state.fields[field]()}</div></div></Field>;
+    const override = this.organizerOverride(field);
+    if (override) return <Field key={index} index={index} {...this.state.copy.fields[field]} label={<span>{this.state.copy.fields[field].label} <i>(taken from organiser)</i></span>}><div className={styles.disabledField}>{override}</div></Field>;
     return <Field key={index} index={index} {...this.state.copy.fields[field]}>{this.state.fields[field] ? this.state.fields[field]() : <TextField {...this.getAttr(field)} />}</Field>;
   }
   render() {

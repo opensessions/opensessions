@@ -103,59 +103,6 @@ module.exports = (DataTypes) => ({
         }
       }
     },
-    /* Messages: {
-      from: DataTypes.STRING(256),
-      to: DataTypes.STRING(256),
-      body: DataTypes.STRING(4096),
-      metadata: DataTypes.JSON,
-      _options: {
-        classMethods: {
-          makeAssociations(models) {
-            models.Messages.hasOne(models.Messages, { as: 'previous' });
-          }
-        },
-        instanceMethods: {
-          reply(req) {
-            const email = parseEmailRequest(req);
-            return this.models.Message.create({
-              to: this.from,
-              from: this.to,
-              body: email.body,
-              previous: this
-            });
-          },
-          view(req) {
-            const { user } = req;
-            if (user) {
-              this.metadata = { ...this.metadata, seen: true };
-              return this.save();
-            }
-            return Promise.reject('Must be user');
-          },
-          getActions(models, req) {
-            const actions = [];
-            const email = parseEmailRequest(req);
-            if (email.from === this.from && email.uuid === this.uuid) {
-              actions.push('view');
-              actions.push('reply');
-            }
-            return actions;
-          }
-        },
-        hooks: {
-          afterCreate(instance) {
-            const { SERVICE_LOCATION } = process.env;
-            const { session } = this.metadata;
-            return sendEmail(`${instance.from} has submitted a question on Open Sessions`, SERVICE_EMAIL, `
-              <p>Hey, ${session.contactName}! A message has been sent on <a href="${SERVICE_LOCATION}">Open Sessions</a>.</p>
-              <p>Here's the message:</p>
-              <p style="padding:.5em;white-space:pre;background:#FFF;">From: ${this.from}</p>
-              <p style="padding:.5em;white-space:pre;background:#FFF;">${this.body}</p>
-            `, { substitutions: { '-title-': 'Organizer communication' } });
-          }
-        }
-      }
-    }, */
     Activity: {
       owner: DataTypes.STRING,
       name: {
@@ -235,6 +182,23 @@ module.exports = (DataTypes) => ({
         getterMethods: {
           href() {
             return `/${this.Model.name.toLowerCase()}/${this.slug || this.uuid}`;
+          },
+          info() {
+            const attr = name => this.data ? this.data[name] : null;
+            return {
+              contact: {
+                name: attr('contactName'),
+                phone: attr('contactPhone')
+              },
+              social: {
+                website: attr('socialWebsite'),
+                facebook: attr('socialFacebook'),
+                instagram: attr('socialInstagram'),
+                hashtag: attr('socialHashtag'),
+                twitter: attr('socialTwitter')
+              },
+              location: attr('location')
+            };
           }
         },
         instanceMethods: {
@@ -270,7 +234,6 @@ module.exports = (DataTypes) => ({
         },
         classMethods: {
           getQuery(query, models, user) {
-            const sessionQuery = models.Session.getQuery({}, models, user);
             const uuidFormat = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/;
             if (query.where.uuid) {
               const { uuid } = query.where;
@@ -279,11 +242,24 @@ module.exports = (DataTypes) => ({
                 query.where.slug = uuid;
               }
             }
-            query.include = [{
-              model: models.Session,
-              where: sessionQuery.where,
-              required: false
-            }];
+            let depth = 0;
+            if (query.where && query.where.depth) {
+              depth = parseInt(query.where.depth, 10);
+              delete query.where.depth;
+            }
+            switch (depth) {
+              case 0:
+              default:
+                break;
+              case 1:
+                const sessionQuery = models.Session.getQuery({}, models, user);
+                query.include = [{
+                  model: models.Session,
+                  where: sessionQuery.where,
+                  required: false
+                }];
+                break;
+            }
             return query;
           },
           makeAssociations(models) {
@@ -525,13 +501,13 @@ module.exports = (DataTypes) => ({
           },
           sendPublishedEmail(subject) {
             const session = this;
-            const { contactEmail, pricing, schedule } = session;
+            const { info, pricing, schedule } = session;
             const nextSlot = nextSchedule(schedule);
             const parsedSlot = nextSlot ? parseSchedule(nextSlot) : false;
-            if (contactEmail) {
+            if (info.contact.email) {
               const prices = pricing && pricing.prices ? pricing.prices.map(band => parseFloat(band.price)).sort((a, b) => (a > b ? 1 : -1)) : [0];
               const { lat, lng } = session.locationData;
-              sendEmail(subject, session.contactEmail, `
+              sendEmail(subject, info.contact.email, `
                 <p>Dear ${session.contactName || 'Open Sessions user'},</p>
                 <p>Great news!</p>
                 <p>You have successfully listed your session on Open Sessions.</p>
@@ -596,7 +572,7 @@ module.exports = (DataTypes) => ({
             const nextSlot = nextSchedule(session.schedule);
             const nextDate = nextSlot ? parseSchedule(nextSlot) : false;
             return models.Threads.create({ originEmail: message.from, metadata: { SessionUuid: session.uuid } })
-              .then(thread => sendEmail(`${message.name} has a question about ${session.title}`, session.contactEmail, `
+              .then(thread => sendEmail(`${message.name} has a question about ${session.title}`, session.info.contact.email, `
                 <div class="message">
                   ${getStyledElement('messageSrc', 'Message from Open Sessions user')}
                   <div class="msgBody">${message.body}</div>

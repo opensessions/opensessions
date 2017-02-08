@@ -53,9 +53,9 @@ export default class OrganizerEdit extends React.Component { // eslint-disable-l
         slug: () => <TextField {...this.getAttr('slug')} validation={{ maxLength: 32 }} helper={{ start: '/organizer/' }} />,
         noSchedule: () => <Bool {...this.getDataAttr('noSchedule')} />,
         noPricing: () => <Bool {...this.getDataAttr('noPricing')} />,
-        contactName: () => <TextField {...this.getDataAttr('contactName')} />,
-        contactEmail: () => <TextField {...this.getDataAttr('contactEmail')} />,
-        contactPhone: () => <TextField {...this.getDataAttr('contactPhone')} />,
+        contactName: () => <TextField {...this.getAttr('data.contactName')} />,
+        contactEmail: () => <TextField {...this.getAttr('data.contactEmail')} />,
+        contactPhone: () => <TextField {...this.getAttr('data.contactPhone')} />,
         socialWebsite: () => <TextField placeholder="https://" {...this.getDataAttr('socialWebsite')} />,
         socialFacebook: () => <TextField placeholder="https://" {...this.getDataAttr('socialFacebook')} />,
         socialInstagram: () => <TextField placeholder="@instagoodgym" {...this.getDataAttr('socialInstagram')} />,
@@ -82,10 +82,14 @@ export default class OrganizerEdit extends React.Component { // eslint-disable-l
     this.setState({ fieldsets, pendingSteps });
   }
   getAttr = name => {
-    const { instance } = this.state;
+    const names = name.split('.');
+    let value = this.state.instance;
+    names.forEach(n => {
+      value = value ? value[n] : undefined;
+    });
     return {
-      value: instance[name],
-      onChange: value => this.update(name, value)
+      value,
+      onChange: newValue => this.update(name, newValue)
     };
   }
   getDataAttr = name => {

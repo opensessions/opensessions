@@ -82,14 +82,16 @@ export default class ListSessions extends React.Component { // eslint-disable-li
       <p>
         <Checkbox checked={showExpired} onChange={checked => this.setState({ showExpired: checked })} label="Show expired sessions" />
         &nbsp;&nbsp;<Checkbox checked={isMap} onChange={checked => this.context.router.push(getURL(checked, search))} label="View on map" />
+        &nbsp;&nbsp;<Button onClick={() => this.setState({ filterAggregator: prompt('Name of aggregator') })}>Filter by aggregator</Button>
       </p>
     </div>);
   }
   renderView() {
     const { params } = this.props;
-    const { isLoading, isMap, isCalendar, showExpired } = this.state;
+    const { isLoading, isMap, isCalendar, showExpired, filterAggregator } = this.state;
     let sessions = this.context.store.getState().get('sessionList');
     if (!showExpired) sessions = sessions.filter(session => session.sortedSchedule.length && (new Date(session.sortedSchedule[session.sortedSchedule.length - 1].start)).getTime() > Date.now());
+    if (filterAggregator) sessions = sessions.filter(session => session.aggregators.some(agg => agg.name === filterAggregator));
     const page = (params && params.page) ? parseInt(params.page, 10) : 1;
     if (isLoading) return <LoadingMessage message="Loading sessions" ellipsis />;
     if (isMap) return <SessionMap sessions={sessions} hasSidebar />;

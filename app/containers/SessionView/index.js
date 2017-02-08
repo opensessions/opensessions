@@ -86,26 +86,22 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   getActions(session) {
     const { location } = this.props;
     const actions = [];
-    if (this.canEdit()) {
-      let editURL = `${session.href}/edit`;
-      if (location && location.query && location.query.tab) editURL = [editURL, location.query.tab].join('/');
-      if (session.actions.some(action => action === 'edit')) actions.push(<Link key="edit" to={editURL} className={publishStyles.previewButton}>Continue editing</Link>);
-      if (session.actions.some(action => action === 'unpublish')) {
-        actions.push(<Button key="unpublish" onClick={() => apiModel.action('session', session.uuid, 'unpublish').then(result => actionNext(result, this.context.notify, this.context.router))} className={publishStyles.previewButton}>Unpublish and edit</Button>);
-      }
-      if (session.actions.some(action => action === 'updateMySchedule')) {
-        actions.push(<Button key="updateMySchedule" onClick={() => confirm('This will automatically update your session so all dates are in the future. Are you sure you want to continue?') && apiModel.action('session', session.uuid, 'updateMySchedule').then(result => actionNext(result, this.context.notify, this.context.router, () => this.fetchData()))} className={publishStyles.previewButton}>Auto-update schedule</Button>);
-      }
+    if (this.canAct('edit')) {
+      let tab = false;
+      if (location && location.query && location.query.tab) tab = location.query.tab;
+      if (session.actions.some(action => action === 'edit')) actions.push(<Link key="edit" to={[session.href, 'edit', tab].filter(v => v).join('/')} className={publishStyles.previewButton}>Continue editing</Link>);
     }
+    if (this.canAct('unpublish')) actions.push(<Button key="unpublish" onClick={() => apiModel.action('session', session.uuid, 'unpublish').then(result => actionNext(result, this.context.notify, this.context.router))} className={publishStyles.previewButton}>Unpublish and edit</Button>);
+    if (this.canAct('updateMySchedule')) actions.push(<Button key="updateMySchedule" onClick={() => confirm('This will automatically update your session so all dates are in the future. Are you sure you want to continue?') && apiModel.action('session', session.uuid, 'updateMySchedule').then(result => actionNext(result, this.context.notify, this.context.router, () => this.fetchData()))} className={publishStyles.previewButton}>Auto-update schedule</Button>);
     if (!actions.length) return null;
     return actions;
   }
   fetchData() {
     return this.fetchDataClient(this.context.store.dispatch, this.props.params);
   }
-  canEdit() {
+  canAct(type) {
     const session = this.context.store.getState().get('session');
-    return session && session.actions.some(action => action === 'edit' || action === 'unpublish');
+    return session && session.actions.some(action => action === type);
   }
   isAdmin() {
     const { user } = this.context;
@@ -113,7 +109,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   }
   dispatchMessageModal = () => {
     const session = this.context.store.getState().get('session');
-    this.context.modal.dispatch({ component: <MessageModal to={session.contactEmail} title={<span>Ask <b>{session.contactName}</b> {session.Organizer ? <span>from <b>{session.Organizer.name}</b></span> : ''} a question</span>} url={`/api/session/${session.uuid}/action/message`} /> });
+    this.context.modal.dispatch({ component: <MessageModal title={<span>Ask <b>{session.info.contact.name}</b> {session.Organizer ? <span>from <b>{session.Organizer.name}</b></span> : ''} a question</span>} url={`/api/session/${session.uuid}/action/message`} /> });
   }
   fetchDataClient = (dispatch, params) => {
     this.setState({ isLoading: true });
@@ -160,7 +156,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     }
     return (<div className={styles.detailsSection}>
       <div className={[styles.detailsImg, session.image ? '' : styles.noImg].join(' ')}>
-        <img src={session.image ? `${session.image}${this.canEdit() ? `?${this.state.imageExpire}` : ''}` : '/images/placeholder.png'} role="presentation" />
+        <img src={session.image ? `${session.image}${this.canAct('edit') ? `?${this.state.imageExpire}` : ''}` : '/images/placeholder.png'} role="presentation" />
       </div>
       <div className={styles.detailsText}>
         <h1>
@@ -175,7 +171,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         </div>
         {session.Organizer ? <div className={styles.contactButton}><Button to={session.Organizer.href}>View organiser</Button></div> : null}
       </div>
-      <Helmet title={session.title} titleTemplate="%s - Open Sessions" meta={[['og:image', session.image], ['og:title', session.title], ['og:description', (session.description || '').substr(0, 256)], ['og:url', session.absoluteURL]].map(([property, content]) => ({ property, content })).concat([['twitter:card', 'summary'], ['twitter:site', '@open_sessions'], ['twitter:creator', session.socialTwitter]].map(([name, content]) => ({ name, content })))} />
+      <Helmet title={session.title} titleTemplate="%s - Open Sessions" meta={[['og:image', session.image], ['og:title', session.title], ['og:description', (session.description || '').substr(0, 256)], ['og:url', session.absoluteURL]].map(([property, content]) => ({ property, content })).concat([['twitter:card', 'summary'], ['twitter:site', '@open_sessions'], ['twitter:creator', session.info.social.twitter]].map(([name, content]) => ({ name, content })))} />
     </div>);
   }
   renderLastUpdated(session) {
@@ -232,7 +228,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     }
     const activitiesList = session.Activities ? <ol className={styles.activitiesList}>{session.Activities.map(activity => <li key={activity.name}><Link to={`/sessions?activity=${activity.name}`}>{activity.name}</Link></li>)}</ol> : null;
     const prices = this.getPrices();
-    const { pricing } = session;
+    const { pricing, info } = session;
     return (<div className={styles.descriptionSection}>
       <div className={styles.mainCol}>
         <h2>Description</h2>
@@ -268,9 +264,9 @@ export default class SessionView extends React.Component { // eslint-disable-lin
           <h3>Organiser</h3>
           <div className={`${styles.floatingInfo} ${styles.organizerInfo}`}>
             <p>{session.Organizer ? (<Link to={session.Organizer.href}>{session.Organizer.name}</Link>) : 'No organizer'}</p>
-            <p>{session.contactPhone ? (<a className={styles.organizerLink} href={`tel:${session.contactPhone}`}><img src="/images/phone.svg" role="presentation" /> {session.contactPhone}</a>) : ''}</p>
-            <p>{session.contactEmail ? (<a className={styles.organizerLink} onClick={this.dispatchMessageModal} onKeyUp={event => event.keyCode === 13 && event.target.click()} tabIndex={0}><img src="/images/email.png" role="presentation" /> Message organiser</a>) : ''}</p>
-            <SocialMedia item={session} />
+            <p>{info.contact.phone ? (<a className={styles.organizerLink} href={`tel:${info.contact.phone}`}><img src="/images/phone.svg" role="presentation" /> {info.contact.phone}</a>) : ''}</p>
+            <p>{this.canAct('message') ? <a className={styles.organizerLink} onClick={this.dispatchMessageModal} onKeyUp={e => e.keyCode === 13 && e.target.click()} tabIndex={0}><img src="/images/email.png" role="presentation" /> Message organiser</a> : ''}</p>
+            <SocialMedia item={info.social} />
           </div>
         </div>
         <div className={styles.info}>
@@ -415,8 +411,9 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     const { isLoading } = this.state;
     const session = this.context.store.getState().get('session');
     if (isLoading) return <LoadingMessage message="Loading session" ellipsis />;
+    const actions = this.getActions(session);
     return (<div className={styles.sessionView}>
-      {this.canEdit() ? <PublishHeader h2={session && session.state === 'published' ? 'Published session' : 'Preview'} actions={this.getActions(session)} /> : null}
+      {actions ? <PublishHeader h2={session && session.state === 'published' ? 'Published session' : 'Preview'} actions={actions} /> : null}
       <NotificationBar />
       {session ? this.renderSession(session) : <LoadingMessage message="Session not found" />}
     </div>);

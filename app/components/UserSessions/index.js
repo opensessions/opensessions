@@ -24,7 +24,7 @@ export default class UserSessions extends React.Component { // eslint-disable-li
       {user.email ? <a href={`mailto:${user.email}`}>{user.email}</a> : null}
       {user.last_login ? <span className={styles.lastLogin}>last login {cleanDate(new Date(user.last_login))} ago</span> : null}
       {sessions.length ? <span onClick={() => this.setState({ isExpanded: !isExpanded })} className={styles.sessionCount}>{sessions.length} sessions</span> : null}
-      {sessions.length ? <span onClick={() => alert(sessions.map(s => `${s.title}: ${s.contactName || 'no name'} ${s.contactPhone || 'no phone'}`).join('\n'))}>info</span> : null}
+      {sessions.length ? <span onClick={() => alert(sessions.map(s => `${s.title}: ${s.info.contact.name || 'no name'} / ${s.info.contact.phone || 'no phone'}`).join('\n'))}>info</span> : null}
       {isExpanded ? <div>{sessions.map(s => <SessionTileView session={s} style="slim" />)}</div> : null}
     </div>);
   }

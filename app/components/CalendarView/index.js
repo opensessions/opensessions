@@ -11,7 +11,8 @@ export default class CalendarView extends React.Component {
     month: PropTypes.string,
     renderItem: PropTypes.func,
     items: PropTypes.array,
-    itemToDates: PropTypes.func
+    itemToDates: PropTypes.func,
+    isWeekView: PropTypes.bool
   }
   getMonth() {
     return this.state && this.state.month ? this.state.month : this.props.month;
@@ -38,7 +39,7 @@ export default class CalendarView extends React.Component {
   }
   render() {
     const month = this.getMonth();
-    const { items, itemToDates } = this.props;
+    const { items, isWeekView, itemToDates } = this.props;
     const getWeeksInMonth = date => {
       const weeks = [];
       const trackMonth = new Date(date);
@@ -63,8 +64,23 @@ export default class CalendarView extends React.Component {
         }
         weeks.push(week);
       }
+      console.log('getWeeksInMonth', weeks);
       return weeks;
     };
+    const getSingleWeek = date => {
+      const trackDay = new Date(date);
+      trackDay.setDate(trackDay.getDate() - trackDay.getDay());
+      const week = [];
+      do {
+        const day = trackDay.getDate();
+        const mon = trackDay.getMonth() + 1;
+        const year = trackDay.getFullYear();
+        week.push([year, mon, day].map(n => (n > 9 ? n : `0${n}`)).join('-'));
+        trackDay.setDate(trackDay.getDate() + 1);
+      } while (week.length < 7);
+      return [week];
+    };
+    const getWeeks = date => (isWeekView ? getSingleWeek(date) : getWeeksInMonth(date));
     if (!items) return <p>No data</p>;
     const getItemDates = () => {
       const itemDates = {};
@@ -95,7 +111,7 @@ export default class CalendarView extends React.Component {
       </div>
       <ol className={styles.month}>
         <li>{this.renderWeekTitles()}</li>
-        {getWeeksInMonth(new Date(`${month}-01`)).map(week => <li>{this.renderWeek(week, itemDates)}</li>)}
+        {getWeeks(new Date(`${month}-01`)).map(week => <li>{this.renderWeek(week, itemDates)}</li>)}
       </ol>
     </div>);
   }

@@ -215,7 +215,7 @@ module.exports = (database) => {
   api.get('/leader-list', requireLogin, (req, res) => {
     const { Session } = database.models;
     Session.findAll(Session.getQuery({ where: { owner: getUser(req) } }, database.models, getUser(req))).then(instances => {
-      const list = instances.map(s => s.leader).concat(instances.map(s => s.contactName)).filter(name => name);
+      const list = instances.map(s => s.leader).concat(instances.map(s => s.info.contact.name)).filter(name => name);
       res.json({ list: list.filter((name, key) => list.indexOf(name) === key) });
     });
   });
@@ -258,7 +258,7 @@ module.exports = (database) => {
     const { Model } = req;
     const { uuid } = req.params;
     processUser(req, res, () => {
-      const query = Model.getQuery({ where: { uuid } }, database.models, getUser(req));
+      const query = Model.getQuery({ where: Object.assign({}, req.query, { uuid }) }, database.models, getUser(req));
       if (query instanceof Error) {
         res.status(400).json({ status: 'failure', error: query.message });
       } else {

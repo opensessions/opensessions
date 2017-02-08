@@ -8,13 +8,13 @@ export default class SocialMedia extends React.Component { // eslint-disable-lin
   }
   render() {
     const { item } = this.props;
-    const { socialWebsite, socialFacebook, socialInstagram, socialTwitter, socialHashtag } = item;
+    const { website, facebook, instagram, twitter, hashtag } = item;
     return (<ol className={styles.social}>
-      {socialWebsite ? <li><a className={styles.link} href={socialWebsite}>{socialWebsite.replace(/^https?:\/\/(www\.)?/, '')}</a></li> : null}
-      {socialFacebook ? <li><a className={styles.link} href={socialFacebook}><img src="/images/facebook.png" role="presentation" /> Facebook page</a></li> : null}
-      {socialInstagram ? <li><a className={styles.link} href={`https://instagram.com/${socialInstagram.slice(1)}`}><img src="/images/instagram.png" role="presentation" /> {socialInstagram}</a></li> : null}
-      {socialTwitter ? <li><a className={styles.link} href={`https://twitter.com/${socialTwitter.slice(1)}`}><img src="/images/twitter.png" role="presentation" /> {socialTwitter}</a></li> : null}
-      {socialHashtag ? <li><a className={styles.link} href={`https://twitter.com/hashtag/${socialHashtag.slice(1)}`}>{socialHashtag}</a></li> : null}
+      {website ? <li><a className={styles.link} href={website}>{website.replace(/^https?:\/\/(www\.)?/, '')}</a></li> : null}
+      {facebook ? <li><a className={styles.link} href={facebook}><img src="/images/facebook.png" role="presentation" /> Facebook page</a></li> : null}
+      {instagram ? <li><a className={styles.link} href={`https://instagram.com/${instagram.slice(1)}`}><img src="/images/instagram.png" role="presentation" /> {instagram}</a></li> : null}
+      {twitter ? <li><a className={styles.link} href={`https://twitter.com/${twitter.slice(1)}`}><img src="/images/twitter.png" role="presentation" /> {twitter}</a></li> : null}
+      {hashtag ? <li><a className={styles.link} href={`https://twitter.com/hashtag/${hashtag.slice(1)}`}>{hashtag}</a></li> : null}
     </ol>);
   }
 }

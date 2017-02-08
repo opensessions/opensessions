@@ -47,7 +47,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     const { params } = this.props;
     const uuid = params ? params.uuid : this.state.organizer.uuid;
     this.setState({ isLoading: true });
-    return apiModel.get('organizer', uuid).then(res => {
+    return apiModel.get('organizer', uuid, { depth: 1 }).then(res => {
       this.setState({ organizer: res.instance, isLoading: false });
     }).catch(() => {
       this.setState({ isLoading: false });
@@ -57,7 +57,8 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
   photoChange = image => {
     const organizer = this.getOrganizer();
     return apiModel.edit('organizer', organizer.uuid, { image }).then(res => {
-      this.setState({ organizer: res.instance, modified: Date.now() });
+      this.setState({ modified: Date.now() });
+      this.fetchData();
     }).catch(() => {
       this.context.notify('Couldn\'t change the image', 'error');
     });
@@ -80,7 +81,8 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
           if (error) throw new Error('failed to rename organiser');
           this.context.notify('Organiser successfully renamed!', 'success');
           this.context.router.push(instance.href);
-          this.setState({ organizer: instance, actionState: 'none' });
+          this.setState({ actionState: 'none' });
+          this.fetchData();
         }).catch(() => {
           this.context.notify('Couldn\'t rename organiser', 'error');
           this.setState({ actionState: 'none' });
@@ -198,20 +200,21 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
   }
   renderData(organizer, canEdit) {
     let { data } = organizer;
+    const { info } = organizer;
     if (canEdit && !data) data = {};
     if (!canEdit && !Object.keys(data).length) return null;
-    const { description, contactName, contactPhone, location } = data;
+    const { description, location } = data;
     return (<div className={styles.organizerData}>
       <h2>Organiser Info</h2>
       {description ? <p className={styles.description}>{description}</p> : null}
-      {contactName ? <p><b>Contact</b> {contactName}</p> : null}
-      {contactPhone ? <p><b>Phone</b> <a href={`tel:${contactPhone}`}>{contactPhone}</a></p> : null}
+      {info.contact.name ? <p><b>Contact</b> {info.contact.name}</p> : null}
+      {info.contact.phone ? <p><b>Phone</b> <a href={`tel:${info.contact.phone}`}>{info.contact.phone}</a></p> : null}
       {location ? (<div>
         <ItemMap markers={[{ ...location.data, isActive: true, box: () => <p>{location.address}</p> }]} size={0} />
         <p><b>Location</b> {location.address}</p>
       </div>) : null}
       <br />
-      <SocialMedia item={data} />
+      <SocialMedia item={organizer.info} />
       {this.canAct('edit') && canEdit ? <p><Button to={`${organizer.href}/edit`} style="slim"><img src="/images/change.png" alt="edit" style={{ filter: 'invert()' }} /> Edit</Button></p> : null}
     </div>);
   }
