@@ -119,6 +119,8 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
   addItem = () => {
     const { search } = this.state;
     if (!search) return Promise.resolve();
+    const alreadyExists = this.props.options.find(option => option.name.toLowerCase() === search.toLowerCase());
+    if (alreadyExists) return this.setValue(alreadyExists.uuid);
     return this.props.addItem(search).then(() => {
       this.setState({ visible: false, search: this.emptySearch() });
     });

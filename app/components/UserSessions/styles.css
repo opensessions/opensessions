@@ -1,6 +1,11 @@
 @import '../../containers/App/variables.css';
 
 .userSessions {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  max-width: 48em;
+  margin: auto;
   & a[href^='mailto:'] {
     color: var(--actionColor);
     &::before {
