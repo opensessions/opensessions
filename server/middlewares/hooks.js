@@ -39,6 +39,20 @@ const hooks = (database) => {
   const route = express();
   const { SERVICE_LOCATION, SERVICE_EMAIL } = process.env;
 
+  route.post('/feedback', (req, res) => {
+    const { name, email, category, message } = req.body;
+    if (email && message && category) {
+      sendEmail(`${name || 'Someone'} has ${category.toLowerCase()} on Open Sessions`, SERVICE_EMAIL, `
+        <p>${name || 'A user'} &lt;${email}&gt; has submitted some feedback with the category '${category.toLowerCase()}' on Open Sessions:</p>
+        <p>${message}</p>
+      `, { replyTo: email, substitutions: { '-title-': 'Feedback' } }).then(() => {
+        res.json({ status: 'success' });
+      }).catch(err => res.status(400).json({ status: 'error', message: err }));
+    } else {
+      res.json({ status: 'error', message: `You must enter ${['email', 'message'].filter(v => !req.body[v]).join(' & ')}` });
+    }
+  });
+
   route.use('/emails', emailsRoute(database.models));
 
   route.post('/feature', requireLogin, (req, res) => {

@@ -49,4 +49,17 @@
       background-color: #777;
     }
   }
+  &.dark {
+    background-color: #111;
+    &:hover {
+      background-color: #333;
+    }
+  }
+  &.hasIcon {
+    padding-left: .25em;
+    & > img {
+      width: 1.5em;
+      margin-right: .25em;
+    }
+  }
 }

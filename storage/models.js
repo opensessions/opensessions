@@ -567,17 +567,18 @@ module.exports = (DataTypes) => ({
             return req.Model.create(data).then(instance => ({ instance, message: 'Session duplicated!', redirect: instance.href }));
           },
           message(req, models) {
-            const message = req.body;
+            const { name, email, message } = req.body;
             const session = this;
-            if (['name', 'from', 'body'].some(name => !message[name])) return Promise.reject('Incomplete form');
+            const missingFields = ['name', 'email', 'message'].filter(key => !req.body[key]);
+            if (missingFields.length) return Promise.reject(`Incomplete form (${missingFields.join(', ')})`);
             const nextSlot = nextSchedule(session.schedule);
             const nextDate = nextSlot ? parseSchedule(nextSlot) : false;
-            return models.Threads.create({ originEmail: message.from, metadata: { SessionUuid: session.uuid } })
-              .then(thread => sendEmail(`${message.name} has a question about ${session.title}`, session.info.contact.email, `
+            return models.Threads.create({ originEmail: email, metadata: { SessionUuid: session.uuid } })
+              .then(thread => sendEmail(`${name} has a question about ${session.title}`, session.info.contact.email, `
                 <div class="message">
                   ${getStyledElement('messageSrc', 'Message from Open Sessions user')}
-                  <div class="msgBody">${message.body}</div>
-                  <div class="from">${message.name}</div>
+                  <div class="msgBody">${message}</div>
+                  <div class="from">${name}</div>
                 </div>
                 <br />
                 <div class="session" style="padding:0;">
@@ -598,7 +599,7 @@ module.exports = (DataTypes) => ({
                   ${getStyledElement('aggSrcContainer', getStyledElement('aggSrcImg', '', { style: { 'background-image': `url(${SERVICE_LOCATION}/images/open-sessions.png)` } }))}
                 </div>
                 <p class="session-link"><a href="${session.absoluteURL}">View or edit your session on Open Sessions</a></p>
-              `, { substitutions: { '-title-': `Reply to ${message.name} by replying to this email`, '-signoffClass-': 'hide' }, replyTo: `${thread.uuid}@${EMAILS_INBOUND_URL}`, bcc: SERVICE_EMAIL }));
+              `, { substitutions: { '-title-': `Reply to ${name} by replying to this email`, '-signoffClass-': 'hide' }, replyTo: `${thread.uuid}@${EMAILS_INBOUND_URL}`, bcc: SERVICE_EMAIL }));
           },
           setActivitiesAction(req) {
             let { uuids } = req.body;

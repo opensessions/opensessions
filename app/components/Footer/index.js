@@ -3,12 +3,16 @@ import { Link } from 'react-router';
 
 import Authenticated from '../Authenticated';
 import LogoutLink from '../LogoutLink';
+import Button from '../Button';
+
+import MessageModal from '../../containers/Modals/Message';
 
 import styles from './styles.css';
 
 export default class Footer extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
-    isAdmin: PropTypes.bool
+    isAdmin: PropTypes.bool,
+    modal: PropTypes.object,
   }
   render() {
     return (
@@ -23,6 +27,9 @@ export default class Footer extends React.Component { // eslint-disable-line rea
           <div className={styles.column}>
             <Authenticated>
               <h2>Your account</h2>
+              <p><Button style={['slim', 'dark']} icon={'/images/open-sessions-icon.png'} onClick={() => this.context.modal.dispatch({ component: <MessageModal url="/hooks/feedback" title={<h1>Message the <b>Open Sessions</b> team</h1>} options={['Trouble uploading session', 'Question about the app', 'Feature request', 'General feedback']} /> })}>
+                Message us!
+              </Button></p>
               <p><LogoutLink>Log out</LogoutLink></p>
             </Authenticated>
           </div>

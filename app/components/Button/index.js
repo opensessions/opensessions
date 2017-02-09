@@ -11,7 +11,8 @@ export default class Button extends React.PureComponent {
     className: PropTypes.string,
     style: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
     to: PropTypes.string,
-    onClick: PropTypes.func
+    onClick: PropTypes.func,
+    icon: PropTypes.string
   }
   act() {
     const { to, onClick } = this.props;
@@ -24,8 +25,9 @@ export default class Button extends React.PureComponent {
     this.act();
   }
   render() {
-    const { to, children, className, style } = this.props;
-    return (<a tabIndex={0} href={to} onClick={this.onClick} onKeyDown={e => e.keyCode === 13 && this.onClick(event)} onKeyUp={console.log} className={[styles.button, className, style instanceof Array ? style.map(s => styles[s]).join(' ') : styles[style]].join(' ')}>
+    const { to, icon, children, className, style } = this.props;
+    return (<a tabIndex={0} href={to} onClick={this.onClick} onKeyDown={e => e.keyCode === 13 && this.onClick(event)} onKeyUp={console.log} className={[styles.button, icon ? styles.hasIcon : null, className, style instanceof Array ? style.map(s => styles[s]).join(' ') : styles[style]].join(' ')}>
+      {icon ? <img src={icon} role="presentation" /> : null}
       {children}
     </a>);
   }

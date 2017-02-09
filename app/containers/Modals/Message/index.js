@@ -15,38 +15,40 @@ export default class MessageModal extends React.Component { // eslint-disable-li
     store: PropTypes.object
   };
   static propTypes = {
-    url: PropTypes.string,
-    title: PropTypes.string
+    url: PropTypes.string.isRequired,
+    title: PropTypes.node,
+    options: PropTypes.array
   }
   constructor() {
     super();
-    this.state = {};
+    this.state = { form: {} };
   }
-  onChange = event => {
-    const { value, name } = event.target;
-    const newForm = Object.assign({}, this.state.form);
-    newForm[name] = value;
-    this.setState({ form: newForm });
+  componentWillMount() {
+    const { user } = this.context;
+    if (user) this.setState({ form: { email: user.email } });
   }
-  send = () => apiFetch(this.props.url, { body: this.state.form }).then(() => {
+  send = () => apiFetch(this.props.url, { body: this.state.form }).then(res => {
+    const { status } = res;
+    if (status === 'error') throw new Error(res.message);
     this.context.modal.dispatch({ component: (<GenericModal>
       <h1><b>Success!</b></h1>
       <p>Your message has been sent</p>
       <p><span className={styles.sentTick}><img alt="tick" src="/images/tick.svg" /></span></p>
-      <p>Replies will be sent to {this.state.form.from}</p>
+      <p>Replies will be sent to {this.state.form.email}</p>
       <br />
       <p><Button onClick={() => this.context.modal.close()}>OK</Button></p>
     </GenericModal>) });
   }).catch(error => {
-    alert(error.error);
+    alert(error);
   })
   render() {
-    const { title } = this.props;
+    const { title, options } = this.props;
     const { form } = this.state;
     const fields = [
       { label: 'Your name', name: 'name' },
-      { label: 'Your email', name: 'from' },
-      { label: 'Your message', name: 'body', type: 'textarea' },
+      { label: 'Your email', name: 'email' },
+      { label: 'Enquiry type', name: 'category', type: 'select', options },
+      { label: 'Your message', name: 'message', type: 'textarea' },
     ];
     return (<GenericModal>
       <div className={styles.modal}>
@@ -54,10 +56,22 @@ export default class MessageModal extends React.Component { // eslint-disable-li
         <GenericForm>
           {fields.map((field, index) => {
             const { label, name, type } = field;
-            const props = { name, value: form ? form[name] : '', onChange: this.onChange, autoFocus: index === 0 };
+            const props = {
+              value: form ? form[name] : '',
+              onChange: event => {
+                const { value } = event.target;
+                const newForm = Object.assign({}, form);
+                newForm[name] = value;
+                this.setState({ form: newForm });
+              },
+              autoFocus: index === 0
+            };
+            let input = <input {...props} type={type || 'text'} />;
+            if (type === 'textarea') input = <textarea {...props} placeholder="Type your message here" />;
+            if (type === 'select') input = <select {...props}>{options.map(o => <option value={o}>{o}</option>)}</select>;
             return (<div className={styles.question}>
               <label>{label}</label>
-              {type === 'textarea' ? <textarea {...props} /> : <input {...props} type={type || 'text'} />}
+              {input}
             </div>);
           })}
           <Button onClick={() => this.send()}>Send</Button>
