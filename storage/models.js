@@ -478,7 +478,8 @@ module.exports = (DataTypes) => ({
             return actions;
           },
           touch() {
-            return this.update({ updatedAt: new Date() }).then(instance => ({ message: 'Session re-published', messageType: 'success', instance }));
+            this.changed('updatedAt', true);
+            return this.update({ updatedAt: new Date() }, { returning: true }).then(instance => ({ message: 'Session re-published', messageType: 'success', instance }));
           },
           publish() {
             return this.update({ state: 'published' }, { returning: true }).then(instance => ({ message: 'Your session has been published!', messageType: 'success', redirect: instance.href, instance }));
