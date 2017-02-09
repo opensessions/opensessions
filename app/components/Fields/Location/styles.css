@@ -1,7 +1,31 @@
+@import '../../../containers/App/variables.css';
+
 .mapView {
   margin: 1em 0 0;
   border: 1px solid #C2C2C2;
   height: 16em;
+}
+
+.reset {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 2em;
+  padding: .5em;
+  line-height: 1;
+  text-align: center;
+  opacity: .5;
+  transition: .2s ease all;
+  font-family: monospace;
+  font-size: 1.5em;
+  &:hover {
+    text-decoration: none;
+    opacity: 1;
+  }
+}
+
+.searchBox {
+  position: relative;
 }
 
 .mapView,
@@ -14,6 +38,11 @@
   text-align: center;
   display: block;
   background: #FFF;
+  transition: .2s ease all;
+  &.dragPrompt {
+    background: var(--actionColor);
+    color: #FFF;
+  }
 }
 
 .toggle {

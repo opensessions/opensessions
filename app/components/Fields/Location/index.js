@@ -12,6 +12,9 @@ const GoogleMapLoader = withGoogleMap(props => (
   </GoogleMap>
 ));
 
+const { LOCALE_COUNTRY, google } = window;
+const KEY_ENTER = 13;
+
 export default class LocationField extends React.Component {
   static contextTypes = {
     notify: PropTypes.func
@@ -27,10 +30,9 @@ export default class LocationField extends React.Component {
     this.state = { clean: true };
   }
   componentDidMount() {
-    const { LOCALE_COUNTRY } = window;
     const options = { types: [], componentRestrictions: { country: LOCALE_COUNTRY } };
     const { input } = this.refs;
-    const { maps } = window.google;
+    const { maps } = google;
     const autocomplete = new maps.places.Autocomplete(input, options);
     maps.event.addListener(autocomplete, 'place_changed', () => {
       const place = autocomplete.getPlace();
@@ -47,20 +49,22 @@ export default class LocationField extends React.Component {
     event.target.select();
   }
   onChange = event => {
-    if (!(event.nativeEvent.detail && event.nativeEvent.detail === 'generated')) {
-      this.setState({ clean: false });
-      event.stopPropagation();
-      event.preventDefault();
-    }
+    event.preventDefault();
+    event.stopPropagation();
+    this.setState({ clean: false });
   }
   onPlaceChange = place => {
     if (!place.geometry) {
-      this.context.notify('No map data for this location; please try a different address', 'error');
+      this.context.notify('No map data for this location! Please try a different address', 'error');
       return;
     }
     this.latLngChange(place.geometry.location, { placeID: place.place_id });
     this.props.onChange({ ...this.props.value, address: this.placeToAddress(place) });
     this.setState({ clean: true });
+  }
+  setManual() {
+    const { onChange, value } = this.props;
+    onChange({ ...value, data: Object.assign({}, value.data, { manual: this.generateManual(value.address) }) });
   }
   placeToAddress(place) {
     const { name } = place;
@@ -69,6 +73,7 @@ export default class LocationField extends React.Component {
   }
   latLngChange = (latLng, extraData) => {
     const data = {
+      ...this.props.value.data,
       lat: latLng.lat(),
       lng: latLng.lng(),
       ...extraData
@@ -86,7 +91,7 @@ export default class LocationField extends React.Component {
   }
   renderSearch(value) {
     const { className } = this.props;
-    const { isManual } = this.state;
+    const isManual = value.data && value.data.manual;
     const attrs = {
       type: 'text',
       className,
@@ -94,13 +99,30 @@ export default class LocationField extends React.Component {
       onFocus: this.onFocus,
       onBlur: this.onBlur,
       onChange: this.onChange,
+      onKeyPress: event => {
+        if (event.charCode === KEY_ENTER) {
+          event.stopPropagation();
+          event.preventDefault();
+        }
+      },
       placeholder: value.address,
       defaultValue: value.address
     };
-    return (<span style={{ display: isManual ? 'none' : 'block' }}>
+    let manualText = <p className={styles.toggle}>To complete this field, search for a nearby location and move the map pin to the location of your session</p>;
+    if (value.data && value.data.lat && value.data.lng) manualText = null;
+    return (<div className={styles.searchBox}>
       <input {...attrs} />
-      <a className={styles.toggle} onClick={() => this.setState({ isManual: true })}>Can't find the location you're looking for in the dropdown?</a>
-    </span>);
+      {value.address ? <a
+        onClick={() => {
+          this.props.onChange({ address: '', data: {} });
+          this.refs.input.value = '';
+        }}
+        className={styles.reset}
+      >×</a> : null}
+      {isManual
+        ? manualText
+        : <a className={styles.toggle} onClick={() => this.setManual()}>Can't find the location you're looking for in the dropdown?</a>}
+    </div>);
   }
   renderManual() {
     const { className } = this.props;
@@ -112,13 +134,19 @@ export default class LocationField extends React.Component {
       type: 'text',
       className,
     };
-    const manual = data.manual || this.generateManual(value.address);
+    const manual = data.manual;
     const getAttrs = index => ({
       ...attrs,
       onChange: event => {
         if (!data.manual) data.manual = [];
         data.manual[index] = event.target.value;
         this.props.onChange({ ...value, data });
+      },
+      onBlur: () => {
+        const newVal = [manual[2], manual[4]].filter(v => v).join(', ');
+        if (newVal && (index === 2 || index === 4) && !(data.lat && data.lng)) {
+          this.refs.input.value = newVal;
+        }
       },
       value: manual[index]
     });
@@ -138,7 +166,6 @@ export default class LocationField extends React.Component {
         onClick={() => {
           delete data.manual;
           this.props.onChange({ ...value, data });
-          this.setState({ isManual: false });
         }}
       >Return to location search</a>
     </span>);
@@ -147,36 +174,39 @@ export default class LocationField extends React.Component {
     let { value } = this.props;
     if (!value) value = {};
     const { data } = value;
-    let { isManual } = this.state;
+    const { dragPrompt } = this.state;
+    let isManual = false;
     let map = null;
     let mapHelp = null;
     if (data) {
       if (data.manual) isManual = true;
-      const marker = {
-        position: data,
-        icon: { url: '/images/map-pin-active.svg' },
-        defaultAnimation: 2,
-        draggable: true,
-        cursor: '-webkit-grab, move',
-        onDragEnd: drag => {
-          this.latLngChange(drag.latLng);
-        }
-      };
-      const mapProps = {
-        defaultZoom: 15,
-        defaultCenter: data,
-        center: data,
-        draggableCursor: '-webkit-grab, move',
-        options: { streetViewControl: false, scrollwheel: false, mapTypeControl: false }
-      };
-      map = (<GoogleMapLoader
-        containerElement={<div className={styles.mapView} />}
-        mapElement={<div style={{ height: '100%' }} />}
-        mapProps={mapProps}
-        marker={marker}
-        ref="component"
-      />);
-      mapHelp = <p className={styles.dragHelp}>Drag map pin to refine location</p>;
+      if (data.lat && data.lng) {
+        const marker = {
+          position: data,
+          icon: { url: '/images/map-pin-active.svg' },
+          defaultAnimation: 2,
+          draggable: true,
+          onMouseOver: () => this.setState({ dragPrompt: true }),
+          onMouseOut: () => this.setState({ dragPrompt: false }),
+          onDragEnd: drag => {
+            this.latLngChange(drag.latLng);
+          }
+        };
+        const mapProps = {
+          defaultZoom: 15,
+          defaultCenter: data,
+          center: data,
+          options: { streetViewControl: false, scrollwheel: false, mapTypeControl: false }
+        };
+        map = (<GoogleMapLoader
+          containerElement={<div className={styles.mapView} />}
+          mapElement={<div style={{ height: '100%' }} />}
+          mapProps={mapProps}
+          marker={marker}
+          ref="component"
+        />);
+        mapHelp = <p className={[styles.dragHelp, dragPrompt ? styles.dragPrompt : ''].join(' ')}>Drag map pin to refine location</p>;
+      }
     }
     return (<div>
       {isManual ? this.renderManual() : null}

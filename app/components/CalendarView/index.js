@@ -64,7 +64,6 @@ export default class CalendarView extends React.Component {
         }
         weeks.push(week);
       }
-      console.log('getWeeksInMonth', weeks);
       return weeks;
     };
     const getSingleWeek = date => {
