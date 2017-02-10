@@ -49,7 +49,7 @@ const hooks = (database) => {
         res.json({ status: 'success' });
       }).catch(err => res.status(400).json({ status: 'error', message: err }));
     } else {
-      res.json({ status: 'error', message: `You must enter ${['email', 'message'].filter(v => !req.body[v]).join(' & ')}` });
+      res.json({ status: 'error', message: `You must enter ${['email', 'message', 'category'].filter(v => !req.body[v]).join(' & ')}` });
     }
   });
 

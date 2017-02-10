@@ -25,7 +25,8 @@ export default class MessageModal extends React.Component { // eslint-disable-li
   }
   componentWillMount() {
     const { user } = this.context;
-    if (user) this.setState({ form: { email: user.email } });
+    const { options } = this.props;
+    this.setState({ form: { email: user ? user.email : null, category: options ? options[0] : null } });
   }
   send = () => apiFetch(this.props.url, { body: this.state.form }).then(res => {
     const { status } = res;
@@ -47,9 +48,9 @@ export default class MessageModal extends React.Component { // eslint-disable-li
     const fields = [
       { label: 'Your name', name: 'name' },
       { label: 'Your email', name: 'email' },
-      { label: 'Enquiry type', name: 'category', type: 'select', options },
+      options ? { label: 'Enquiry type', name: 'category', type: 'select', options } : null,
       { label: 'Your message', name: 'message', type: 'textarea' },
-    ];
+    ].filter(v => v);
     return (<GenericModal>
       <div className={styles.modal}>
         <h1>{title}</h1>
