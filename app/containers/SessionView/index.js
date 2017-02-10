@@ -7,6 +7,7 @@ import Marker from 'react-google-maps/lib/Marker';
 import Helmet from 'react-helmet';
 
 import MessageModal from '../Modals/Message';
+import Tooltip from '../../components/Tooltip';
 import NotificationBar from '../../components/NotificationBar';
 import SocialShareIcons from '../../components/SocialShareIcons';
 import LoadingMessage from '../../components/LoadingMessage';
@@ -170,7 +171,9 @@ export default class SessionView extends React.Component { // eslint-disable-lin
           <img src="/images/tag.svg" role="presentation" />
           {session.pricing && session.pricing.firstFree ? <span>First session {this.getFree()}</span> : this.getLowestPrice()}
         </div>
-        {session.Organizer ? <div className={styles.contactButton}><Button to={session.Organizer.href}>View organiser</Button></div> : null}
+        <div className={styles.contactButton}>
+          {session.Organizer ? <Button to={session.Organizer.href} style="slim">View organiser</Button> : null}
+        </div>
       </div>
       <Helmet title={session.title} titleTemplate="%s - Open Sessions" meta={[['og:image', session.image], ['og:title', session.title], ['og:description', (session.description || '').substr(0, 256)], ['og:url', session.absoluteURL]].map(([property, content]) => ({ property, content })).concat([['twitter:card', 'summary'], ['twitter:site', '@open_sessions'], ['twitter:creator', session.info.social.twitter]].map(([name, content]) => ({ name, content })))} />
     </div>);
@@ -265,8 +268,8 @@ export default class SessionView extends React.Component { // eslint-disable-lin
           <h3>Organiser</h3>
           <div className={`${styles.floatingInfo} ${styles.organizerInfo}`}>
             <p>{session.Organizer ? (<Link to={session.Organizer.href}>{session.Organizer.name}</Link>) : 'No organizer'}</p>
+            <p>{this.canAct('message') ? <Button style="slim" onClick={this.dispatchMessageModal} icon="/images/email.png" tip="Got a question about this session?">Message</Button> : null}</p>
             <p>{info.contact.phone ? (<a className={styles.organizerLink} href={`tel:${info.contact.phone}`}><img src="/images/phone.svg" role="presentation" /> {info.contact.phone}</a>) : ''}</p>
-            <p>{this.canAct('message') ? <a className={styles.organizerLink} onClick={this.dispatchMessageModal} onKeyUp={e => e.keyCode === 13 && e.target.click()} tabIndex={0}><img src="/images/email.png" role="presentation" /> Message organiser</a> : ''}</p>
             <SocialMedia item={info.social} />
           </div>
         </div>
@@ -344,12 +347,11 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     </div>);
   }
   renderMap(session) {
-    const { locationData } = session;
+    const data = session.locationData;
     let map = null;
     let address = null;
-    if (locationData) {
-      const locData = typeof locationData === 'object' ? locationData : JSON.parse(locationData);
-      const defaultCenter = { lat: locData.lat, lng: locData.lng };
+    if (data && data.lat && data.lng) {
+      const defaultCenter = data;
       const marker = {
         position: defaultCenter,
         icon: { url: '/images/map-pin-active.svg' },
@@ -391,10 +393,13 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     const { title, href } = session;
     const link = `${process.env.SERVICE_LOCATION}${href}`;
     const disabled = session.state !== 'published';
-    return (<div className={[styles.shareSection, disabled ? styles.disabled : null].join(' ')}>
+    const { isOpened } = this.state;
+    return (<div className={[styles.shareSection, disabled ? styles.disabled : null].join(' ')} onMouseOver={() => this.setState({ isOpened: true })} onMouseOut={() => this.setState({ isOpened: false })}>
       <div className={styles.inner}>
-        Share this session
-        {disabled ? <sub> (enabled when published)</sub> : null}
+        <span style={{ position: 'relative' }}>
+          Share this session
+          {disabled ? <Tooltip tip="Enabled when published" isOpened={isOpened} style="dark" /> : null}
+        </span>
         <SocialShareIcons link={link} title={title} message="I found this cool session on Open Sessions! Wanna go?" />
       </div>
     </div>);

@@ -72,8 +72,9 @@ export default class LocationField extends React.Component {
     return address.indexOf(name) === -1 ? [name, address].join(', ') : address;
   }
   latLngChange = (latLng, extraData) => {
+    const initialData = this.props.value ? this.props.value.data : {};
     const data = {
-      ...this.props.value.data,
+      ...initialData,
       lat: latLng.lat(),
       lng: latLng.lng(),
       ...extraData

@@ -27,7 +27,7 @@ export default class Footer extends React.Component { // eslint-disable-line rea
           <div className={styles.column}>
             <Authenticated>
               <h2>Your account</h2>
-              <p><Button style={['slim', 'dark']} icon={'/images/open-sessions-icon.png'} onClick={() => this.context.modal.dispatch({ component: <MessageModal url="/hooks/feedback" title={<h1>Message the <b>Open Sessions</b> team</h1>} options={['Trouble uploading session', 'Question about the app', 'Feature request', 'General feedback']} /> })}>
+              <p><Button style={['slim', 'dark']} tip="Have a question or issue? Let us know!" icon={'/images/open-sessions-icon.png'} onClick={() => this.context.modal.dispatch({ component: <MessageModal url="/hooks/feedback" title={<h1>Message the <b>Open Sessions</b> team</h1>} options={['Trouble uploading session', 'Question about the app', 'Feature request', 'General feedback']} /> })}>
                 Message us!
               </Button></p>
               <p><LogoutLink>Log out</LogoutLink></p>

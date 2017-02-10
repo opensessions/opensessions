@@ -188,7 +188,8 @@ module.exports = (DataTypes) => ({
             return {
               contact: {
                 name: attr('contactName'),
-                phone: attr('contactPhone')
+                phone: attr('contactPhone'),
+                email: attr('contactEmail')
               },
               social: {
                 website: attr('socialWebsite'),
@@ -397,7 +398,8 @@ module.exports = (DataTypes) => ({
             return {
               contact: {
                 name: attr('contactName'),
-                phone: attr('contactPhone')
+                phone: attr('contactPhone'),
+                email: attr('contactEmail')
               },
               social: {
                 website: attr('socialWebsite'),
@@ -418,9 +420,11 @@ module.exports = (DataTypes) => ({
               OrganizerUuid: { tab: 'description', pretty: 'Organiser Name' },
               description: { tab: 'description', pretty: 'Session Description' },
               leader: { tab: 'additional', pretty: 'Leader' },
-              location: { tab: 'location', pretty: 'Address' },
-              contactName: { tab: 'contact', pretty: 'Full name' },
-              contactEmail: { tab: 'contact', pretty: 'Email address' }
+              location: { tab: 'location', pretty: 'Address' }
+            };
+            const requiredInfo = {
+              'contact.name': { tab: 'contact', pretty: 'Full name' },
+              'contact.email': { tab: 'contact', pretty: 'Email address' }
             };
             const errors = [];
             const missingFields = Object.keys(required).filter(key => !session[key]).map(key => required[key]);
@@ -429,19 +433,31 @@ module.exports = (DataTypes) => ({
                 .map((field, key) => `${key && key + 1 === missingFields.length ? 'and ' : ''}<a data-tab="${field.tab}" data-field="${field.pretty}">${field.pretty}</a>`)
                 .join(', ')}`);
             }
+            const missingInfo = Object.keys(requiredInfo).map(key => key.split('.')).filter(([k1, k2]) => !(session.info[k1] && session.info[k1][k2])).map(keys => requiredInfo[keys.join('.')]);
+            if (missingInfo.length) {
+              errors.push(`Please enter a ${missingInfo
+                .map((field, key) => `${key && key + 1 === missingInfo.length ? 'and ' : ''}<a data-tab="${field.tab}" data-field="${field.pretty}">${field.pretty}</a>`)
+                .join(', ')}`);
+            }
             if (session.Activities && !session.Activities.length) {
               errors.push('You need to add an <a data-tab="description" data-field="Activity Type">activity type</a>');
             }
-            if (session.schedule && session.schedule.length) {
-              if (!session.schedule.every(slot => slot.startDate && slot.startTime && slot.endTime)) {
+            const requireSchedule = !(session.Organizer && session.Organizer.data && session.Organizer.data.noSchedule);
+            if (requireSchedule) {
+              if (!session.sortedSchedule.length) {
+                errors.push('You must add a <a data-tab="schedule" data-field="schedule">schedule</a>');
+              } else if (session.sortedSchedule.some(slot => slot.hasOccurred)) {
+                errors.push('Some of your <a data-tab="schedule" data-field="schedule">schedule</a> is out of date');
+              } else if (!session.schedule.every(slot => slot.startDate && slot.startTime && slot.endTime)) {
                 errors.push('You must complete <a data-tab="schedule" data-field="schedule">schedule</a> information');
               }
-            } else {
-              errors.push('You must add a <a data-tab="schedule" data-field="schedule">schedule</a>');
             }
-            if (session.pricing && session.pricing.prices && session.pricing.prices.length) {
-              if (!session.pricing.prices.every(band => band.price)) {
-                errors.push('You need to complete <a data-tab="pricing" data-field="pricing">pricing</a> information');
+            const requirePricing = !(session.Organizer && session.Organizer.data && session.Organizer.data.noPricing);
+            if (requirePricing) {
+              if (session.pricing && session.pricing.prices && session.pricing.prices.length) {
+                if (!session.pricing.prices.every(band => band.price)) {
+                  errors.push('You need to complete <a data-tab="pricing" data-field="pricing">pricing</a> information');
+                }
               }
             }
             if (errors.length) throw new Error(`<b>We can't publish this yet!</b> ${errors.join('. ')}`);
@@ -571,9 +587,8 @@ module.exports = (DataTypes) => ({
             const { name, email, message } = req.body;
             const session = this;
             const missingFields = ['name', 'email', 'message'].filter(key => !req.body[key]);
-            if (missingFields.length) return Promise.reject(`Incomplete form (${missingFields.join(', ')})`);
-            const nextSlot = nextSchedule(session.schedule);
-            const nextDate = nextSlot ? parseSchedule(nextSlot) : false;
+            if (missingFields.length) return Promise.reject({ instance: this, message: `Incomplete form (${missingFields.join(', ')})` });
+            const nextDate = session.sortedSchedule.length ? parseSchedule(session.sortedSchedule[0]) : false;
             return models.Threads.create({ originEmail: email, metadata: { SessionUuid: session.uuid } })
               .then(thread => sendEmail(`${name} has a question about ${session.title}`, session.info.contact.email, `
                 <div class="message">
@@ -600,7 +615,8 @@ module.exports = (DataTypes) => ({
                   ${getStyledElement('aggSrcContainer', getStyledElement('aggSrcImg', '', { style: { 'background-image': `url(${SERVICE_LOCATION}/images/open-sessions.png)` } }))}
                 </div>
                 <p class="session-link"><a href="${session.absoluteURL}">View or edit your session on Open Sessions</a></p>
-              `, { substitutions: { '-title-': `Reply to ${name} by replying to this email`, '-signoffClass-': 'hide' }, replyTo: `${thread.uuid}@${EMAILS_INBOUND_URL}`, bcc: SERVICE_EMAIL }));
+              `, { substitutions: { '-title-': `Reply to ${name} by replying to this email`, '-signoffClass-': 'hide' }, replyTo: `${thread.uuid}@${EMAILS_INBOUND_URL}`, bcc: SERVICE_EMAIL }))
+              .then({ message: `Message sent! Replies will be sent to ${email}` });
           },
           setActivitiesAction(req) {
             let { uuids } = req.body;

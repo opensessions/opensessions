@@ -41,12 +41,17 @@ export default class OrganizerEdit extends React.Component { // eslint-disable-l
       isSaving: true,
       isLoading: true,
       fieldsets: [
-        { slug: 'description', fields: ['name', 'description', 'slug', 'image'], props: { validity: 'none' } },
+        { slug: 'description', required: ['name'], fields: ['name', 'description', 'slug', 'image'], props: { validity: 'none' } },
         { slug: 'contact', props: { validity: 'none' }, fields: ['contactName', 'contactEmail', 'contactPhone'] },
         { slug: 'social', props: { validity: 'none' }, fields: ['socialWebsite', 'socialFacebook', 'socialInstagram', 'socialTwitter', 'socialHashtag'] },
-        { slug: 'location', props: { validity: 'none' }, fields: ['location'] },
-        { slug: 'options', props: { validity: 'none' }, fields: ['noSchedule', 'noPricing'] }
+        { slug: 'location', props: { validity: 'none' }, fields: ['data.location'] },
+        { slug: 'options', props: { validity: 'none' }, fields: ['data.noSchedule', 'data.noPricing'] }
       ],
+      fieldToType: {
+        'data.location': Location,
+        'data.noPricing': Bool,
+        'data.noSchedule': Bool
+      },
       fields: {
         title: () => <TextField validation={{ maxLength: 50 }} {...this.getAttr('title')} />,
         description: () => <TextField multi size="XL" {...this.getAttr('data.description')} validation={{ maxLength: 1000 }} />,
@@ -117,7 +122,8 @@ export default class OrganizerEdit extends React.Component { // eslint-disable-l
     const names = name.split('.');
     const lastName = names.pop();
     names.forEach(n => {
-      if (typeof pointer[n] === 'object') pointer = pointer[n];
+      if (!(pointer[n] instanceof Object)) pointer[n] = {};
+      pointer = pointer[n];
     });
     pointer[lastName] = value;
     this.onChange(instance);
@@ -179,7 +185,10 @@ export default class OrganizerEdit extends React.Component { // eslint-disable-l
   }
   renderFieldsets = () => this.state.fieldsets.map((fieldset, key) => <Fieldset key={key} {...fieldset.props} {...copy.fieldsets[fieldset.slug]}>{this.renderFieldset(fieldset)}</Fieldset>)
   renderFieldset = fieldset => <div>{fieldset.fields.map(this.renderField)}</div>
-  renderField = (field, index) => <Field key={field} index={index} {...copy.fields[field]}>{this.state.fields[field] ? this.state.fields[field]() : <TextField {...this.getAttr(field)} />}</Field>
+  renderField = (field, index) => {
+    const FieldType = this.state.fieldToType[field] || TextField;
+    return <Field key={field} index={index} {...copy.fields[field]}>{this.state.fields[field] ? this.state.fields[field]() : <FieldType {...this.getAttr(field)} />}</Field>;
+  }
   render() {
     const { instance, isLoading, error } = this.state;
     return (<div className={styles.form}>

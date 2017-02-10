@@ -2,7 +2,7 @@
 
 .userSessions {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
   max-width: 48em;
   margin: auto;
@@ -34,11 +34,17 @@
 
 .lastLogin {
   font-weight: bold;
-  padding: .25em;
   display: inline-block;
 }
 
 .name {
   padding: .25em;
   display: inline-block;
+}
+
+.sessions {
+  max-width: 48em;
+  margin: auto;
+  padding: 1em;
+  background: #EEE;
 }

@@ -1,0 +1,10 @@
+.session {
+  & > img {
+    max-height: 3em;
+  }
+}
+
+.title {
+  font-weight: bold;
+  padding: .25em;
+}

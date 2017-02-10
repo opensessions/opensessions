@@ -206,7 +206,8 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     const { description, location } = data;
     return (<div className={styles.organizerData}>
       <h2>Organiser Info</h2>
-      {description ? <p className={styles.description}>{description}</p> : null}
+      {description || info ? null : <i>No additional info yet</i>}
+      <p className={styles.description}>{description || <i>No description</i>}</p>
       {info.contact.name ? <p><b>Contact</b> {info.contact.name}</p> : null}
       {info.contact.phone ? <p><b>Phone</b> <a href={`tel:${info.contact.phone}`}>{info.contact.phone}</a></p> : null}
       {location ? (<div>

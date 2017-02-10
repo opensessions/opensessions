@@ -9,6 +9,7 @@ import styles from './styles.css';
 export default class Header extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
     user: PropTypes.object,
+    store: PropTypes.object,
     isLoadingUser: PropTypes.bool
   }
   renderLoginButton() {

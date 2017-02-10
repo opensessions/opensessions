@@ -61,3 +61,8 @@ export function cleanDate(date) {
   const [dW, dD, dH] = ranges.map((delta, key) => (period % (key ? ranges[key - 1] : 1000)) / delta).map(Math.floor);
   return [[dW, 'w'], [dD, 'd'], [dH, 'h']].filter(([diff]) => diff).map(pair => pair.join('')).join(' ');
 }
+
+export function timeAgo(date) {
+  const clean = cleanDate(new Date(date));
+  return clean ? `${clean} ago` : 'just now';
+}

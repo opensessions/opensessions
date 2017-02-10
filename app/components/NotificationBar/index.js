@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 
 import Sticky from '../Sticky';
+import Tooltip from '../Tooltip';
 
 import styles from './styles.css';
 
@@ -15,6 +16,10 @@ export default class NotificationBar extends React.Component { // eslint-disable
   };
   static contextTypes = {
     store: PropTypes.object
+  }
+  constructor() {
+    super();
+    this.state = {};
   }
   componentDidMount() {
     this.unhideMessages();
@@ -69,6 +74,7 @@ export default class NotificationBar extends React.Component { // eslint-disable
   }
   renderNotification(message) {
     const { id, status, text, actions } = message;
+    const { isOpened } = this.state;
     const fullActions = actions ? actions.filter(action => action.type === 'full') : [];
     const clickFull = () => {
       fullActions.forEach(action => action.dispatch());
@@ -76,14 +82,14 @@ export default class NotificationBar extends React.Component { // eslint-disable
     };
     const tooltip = fullActions.length ? fullActions[0].tooltip : null;
     return (<li key={id} data-id={id} className={[styles.hidden, styles[status || 'standard']].join(' ')} onClick={actions && actions.some(action => action.type === 'full') ? (event => event.target.tagName !== 'A' && clickFull()) : null}>
-      <div className={styles.inner}>
+      <div className={styles.inner} onMouseOver={() => this.setState({ isOpened: true })} onMouseOut={() => this.setState({ isOpened: false })}>
         {typeof text === 'object' ? <span className={styles.text}>{text}</span> : <span className={styles.text} dangerouslySetInnerHTML={{ __html: text }} />}
         {actions && actions.some(action => action.type !== 'full')
           ? <span className={styles.actions}>{actions.map((action, key) => <a key={key} {...ENTER_CLICK} onClick={() => action.dispatch() && this.dismiss(id)} autoFocus>{action.text}</a>)}</span>
           : null}
         <a {...ENTER_CLICK} onClick={this.onDismiss} data-id={id} className={styles.dismiss}>&times;</a>
       </div>
-      {tooltip ? <div className={styles.tooltip}><div className={styles.tip}>{tooltip}</div></div> : null}
+      {tooltip ? <Tooltip tip={tooltip} isOpened={isOpened} /> : null}
     </li>);
   }
   render() {

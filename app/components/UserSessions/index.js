@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 
-import SessionTileView from '../../containers/SessionTileView';
+import Session from '../Session';
 
-import { cleanDate } from '../../utils/calendar';
+import { timeAgo } from '../../utils/calendar';
 
 import styles from './styles.css';
 
@@ -18,14 +18,19 @@ export default class UserSessions extends React.Component { // eslint-disable-li
   render() {
     const { user, sessions } = this.props;
     const { isExpanded } = this.state;
-    return (<div className={styles.userSessions}>
-      {user.picture ? <img src={user.picture} className={styles.userIcon} role="presentation" /> : null}
-      {user.nickname || user.name ? <span className={styles.name}>{user.nickname || user.name}</span> : null}
-      {user.email ? <a href={`mailto:${user.email}`}>{user.email}</a> : null}
-      {user.last_login ? <span className={styles.lastLogin}>last login {cleanDate(new Date(user.last_login))} ago</span> : null}
-      {sessions.length ? <span onClick={() => this.setState({ isExpanded: !isExpanded })} className={styles.sessionCount}>{sessions.length} sessions</span> : null}
-      {sessions.length ? <span onClick={() => alert(sessions.map(s => `${s.title}: ${s.info.contact.name || 'no name'} / ${s.info.contact.phone || 'no phone'}`).join('\n'))}>info</span> : null}
-      {isExpanded ? <div>{sessions.map(s => <SessionTileView session={s} style="slim" />)}</div> : null}
+    return (<div>
+      <div className={styles.userSessions}>
+        <span>
+          {user.picture ? <img src={user.picture} className={styles.userIcon} role="presentation" /> : null}
+          {user.nickname || user.name ? <span className={styles.name}>{user.nickname || user.name}</span> : null}
+          {user.email ? <a href={`mailto:${user.email}`}>{user.email}</a> : null}
+        </span>
+        <span>
+          {sessions.length ? <span onClick={() => this.setState({ isExpanded: !isExpanded })} className={styles.sessionCount}>{sessions.length} sessions</span> : null}
+        </span>
+        {user.last_login ? <span className={styles.lastLogin}>last login {timeAgo(user.last_login)}</span> : null}
+      </div>
+      {isExpanded ? <div className={styles.sessions}>{sessions.map(s => <Session session={s} />)}</div> : null}
     </div>);
   }
 }

@@ -22,6 +22,11 @@
   &.slim {
     min-width: 2em;
     padding: .5em;
+    &.hasIcon {
+      & > img {
+        margin: -.25em .25em;
+      }
+    }
   }
   &.draft {
     background-color: var(--draftColor);
@@ -56,10 +61,10 @@
     }
   }
   &.hasIcon {
-    padding-left: .25em;
+    padding: .5em .25em;
     & > img {
       width: 1.5em;
-      margin-right: .25em;
+      margin: -.5em .5em;
     }
   }
 }
