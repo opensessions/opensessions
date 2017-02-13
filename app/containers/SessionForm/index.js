@@ -8,20 +8,7 @@ import PublishHeader from '../../components/PublishHeader';
 import LoadingIcon from '../../components/LoadingIcon';
 import LoadingMessage from '../../components/LoadingMessage';
 
-import TextField from '../../components/Fields/Text';
-import DateField from '../../components/Fields/Date';
-import TimeField from '../../components/Fields/Time';
-import BoolRadio from '../../components/Fields/BoolRadio';
-import IconRadio from '../../components/Fields/IconRadio';
-import Location from '../../components/Fields/Location';
-import SearchableSelect from '../../components/Fields/SearchableSelect';
-import MultiBool from '../../components/Fields/MultiBool';
-import ImageUpload from '../../components/Fields/ImageUpload';
-import Relation from '../../components/Fields/Relation';
-import Optional from '../../components/Fields/Optional';
-import JSONList from '../../components/Fields/JSONList';
-import NumberField from '../../components/Fields/Number';
-import PricingField from '../../components/Fields/Pricing';
+import { TextField, DateField, TimeField, BoolRadio, IconRadio, Location, SearchableSelect, MultiBool, ImageUpload, Relation, Optional, JSONList, NumberField, PricingField } from '../../components/Fields';
 
 import { Link } from 'react-router';
 import Authenticated from '../../components/Authenticated';

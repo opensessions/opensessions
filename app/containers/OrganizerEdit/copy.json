@@ -41,7 +41,7 @@
       "tip": "Set a unique URL for your organiser",
       "example": "E.g. /organizer/MyClubName"
     },
-    "location": {
+    "data.location": {
       "label": "Address",
       "tip": "Type to search an address and select from the dropdown"
     },
@@ -87,11 +87,11 @@
       "tipTitle": "give your organiser page a banner image",
       "tip": "Show off your organisation's individuality"
     },
-    "noPricing": {
+    "data.noPricing": {
       "label": "Disable Pricing",
       "tip": "Hide the Pricing section for this organiser's sessions"
     },
-    "noSchedule": {
+    "data.noSchedule": {
       "label": "Disable Schedule",
       "tip": "Hide the Schedule section for this organiser's sessions"
     }

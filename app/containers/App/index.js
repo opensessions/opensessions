@@ -18,6 +18,7 @@ import Footer from '../../components/Footer';
 import NotificationBar from '../../components/NotificationBar';
 import Modal from '../../components/Modal';
 import AuthModal from '../../containers/Modals/Authorize';
+import Dialog from '../Modals/Dialog';
 
 import getUserToken from './getUserToken';
 import cookie from '../../utils/cookie';
@@ -54,13 +55,21 @@ export default class App extends React.Component { // eslint-disable-line react/
   }
   getChildContext() {
     const { profile, isLoadingUser, firstLocation, auth } = this.state;
+    const { ADMIN_DOMAIN } = window;
     return {
       user: profile,
       auth: auth || {},
       notify: this.notify,
-      modal: { dispatch: this.modal, close: () => this.setState({ modal: null }) },
+      modal: {
+        dispatch: this.modal,
+        close: () => this.setState({ modal: null }),
+        confirm: (message, confirm) => this.modal({ component: <Dialog message={message} confirm={confirm} /> }),
+        prompt: (message, prompt) => this.modal({ component: <Dialog message={message} prompt={prompt} /> }),
+        options: (message, options, prompt) => this.modal({ component: <Dialog message={message} prompt={prompt} options={options} /> }),
+        alert: message => this.modal({ component: <Dialog message={message} /> })
+      },
       isLoadingUser,
-      isAdmin: profile && profile.email && profile.email.indexOf('@imin.co') !== -1,
+      isAdmin: profile && profile.email && profile.email.indexOf(`@${ADMIN_DOMAIN}`) !== -1,
       firstLocation
     };
   }

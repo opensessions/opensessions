@@ -31,6 +31,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     router: PropTypes.object,
     notify: PropTypes.func,
     store: PropTypes.object,
+    modal: PropTypes.object,
     onExpire: PropTypes.func
   }
   constructor() {
@@ -179,13 +180,12 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
       this.fetchData();
     }).catch(() => this.context.notify('Could not remove member', 'error'));
     const addMember = () => {
-      const email = prompt('Enter an email');
-      if (email) {
+      this.context.modal.prompt('Enter an email', email => {
         apiModel.action('Organizer', uuid, 'addMember', { email }).then(() => {
           this.context.notify('Member added', 'success');
           this.fetchData();
         }).catch(() => this.context.notify('User does not exist', 'error'));
-      }
+      });
     };
     return (<div className={styles.members}>
       <h2>Members</h2>

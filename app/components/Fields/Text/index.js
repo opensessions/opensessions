@@ -6,6 +6,7 @@ export default class TextField extends React.Component { // eslint-disable-line 
   static propTypes = {
     value: PropTypes.string,
     onChange: PropTypes.func,
+    onEnter: PropTypes.func,
     className: PropTypes.string,
     placeholder: PropTypes.string,
     validation: PropTypes.object,
@@ -48,12 +49,13 @@ export default class TextField extends React.Component { // eslint-disable-line 
     return <div className={styles.maxLength}><span className={urgency}>{num}</span> {characters} {characterState}</div>;
   }
   render() {
-    const { value, className, placeholder, multi, size, validation, autoFocus, helper } = this.props;
+    const { value, className, onEnter, placeholder, multi, size, validation, autoFocus, helper } = this.props;
     const attrs = {
       value: value || '',
       onChange: this.handleChange,
       placeholder,
       className,
+      onKeyUp: onEnter ? (e => e.keyCode === 13 && onEnter()) : null,
       autoFocus
     };
     let input;

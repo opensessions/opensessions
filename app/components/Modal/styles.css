@@ -35,7 +35,7 @@
   }
   & > .modalFG {
     max-width: 94vw;
-    transition: .75s ease all;
+    transition: .5s ease all;
     opacity: 0;
     transform: perspective(60em) rotateX(45deg) scale(.75);
     max-height: 94vh;

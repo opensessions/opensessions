@@ -1,10 +1,7 @@
 import React, { PropTypes } from 'react';
 
-import IconRadio from '../IconRadio';
-import TextField from '../Text';
-import PriceField from '../Price';
-import Checkbox from '../Checkbox';
-import JSONList from '../JSONList';
+import { IconRadio, TextField, PriceField, Checkbox, JSONList } from '../../Fields';
+
 import PriceSVG from '../../SVGs/Price';
 import PaymentMethodSVG from '../../SVGs/PaymentMethod';
 import FeatureModal from '../../../containers/Modals/Feature';

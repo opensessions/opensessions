@@ -1,0 +1,14 @@
+.feature {
+  & p {
+    margin: 1em auto;
+  }
+  & select,
+  & input {
+    background-color: #FFF;
+    padding: .5em;
+    border: 1px solid #CCC;
+    &:focus {
+      outline: none;
+    }
+  }
+}

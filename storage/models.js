@@ -121,13 +121,23 @@ module.exports = (DataTypes) => ({
           delete() {
             return this.destroy();
           },
+          merge(req, models, user) {
+            if (!(req.body && req.body.target)) return Promise.reject({ message: 'No target activity selected' });
+            const { target } = req.body;
+            const src = this;
+            const isAdmin = req.isAdmin;
+            return models.Session.findAll(models.Session.getQuery({ where: { activityId: src.uuid } }, models, user, isAdmin))
+              .then(sessions => Promise.all(sessions.map(s => s.setActivities(s.Activities.map(a => (a.uuid === src.uuid ? target : a.uuid))))))
+              .then(() => src.destroy())
+              .then(() => ({ message: 'Activities merged!' }));
+          },
           getActions(models, req) {
             const actions = [];
             // if (user && user === this.owner && this.get('SessionsCount') === '0') {
             actions.push('view');
-            if (req.user) {
-              // if (user === this.owner) actions.push('delete');
-              if (req.isAdmin) actions.push('delete');
+            if (req.isAdmin) {
+              actions.push('delete');
+              actions.push('merge');
             }
             return actions;
           }
@@ -625,7 +635,7 @@ module.exports = (DataTypes) => ({
           }
         },
         classMethods: {
-          getQuery(query, models, user) {
+          getQuery(query, models, user, isAdmin) {
             query.include = [models.Organizer, { model: models.Activity, through: models.SessionActivity }];
             if (query.where) {
               if (query.where.activityId) {
@@ -635,18 +645,19 @@ module.exports = (DataTypes) => ({
                 query.where = [`"Activities"."name" = '${query.where.activity}'`];
               }
             }
-            query.where = { $and: query.where ? [query.where] : [] };
             if (!query.order) query.order = [['updatedAt', 'ASC']];
-            if (user) {
-              query.where.$and.push({
+            let viewPermissions = { state: 'published' };
+            if (isAdmin) {
+              viewPermissions = { state: { $not: 'deleted' } };
+            } else if (user) {
+              viewPermissions = {
                 $or: [
                   { state: { $not: 'deleted' }, owner: user },
                   { state: 'published' }
                 ]
-              });
-            } else {
-              query.where.$and.push({ state: 'published' });
+              };
             }
+            query.where = query.where ? { $and: [query.where, viewPermissions] } : viewPermissions;
             return query;
           },
           getPrototype(models, user) {

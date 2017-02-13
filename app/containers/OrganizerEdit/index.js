@@ -8,10 +8,7 @@ import LoadingIcon from '../../components/LoadingIcon';
 import LoadingMessage from '../../components/LoadingMessage';
 import InfoBox from '../../components/InfoBox';
 
-import TextField from '../../components/Fields/Text';
-import Location from '../../components/Fields/Location';
-import ImageUpload from '../../components/Fields/ImageUpload';
-import Bool from '../../components/Fields/BoolRadio';
+import { TextField, Location, ImageUpload, Bool } from '../../components/Fields';
 
 import { Link } from 'react-router';
 
@@ -55,10 +52,7 @@ export default class OrganizerEdit extends React.Component { // eslint-disable-l
       fields: {
         title: () => <TextField validation={{ maxLength: 50 }} {...this.getAttr('title')} />,
         description: () => <TextField multi size="XL" {...this.getAttr('data.description')} validation={{ maxLength: 1000 }} />,
-        location: () => <Location {...this.getAttr('data.location')} />,
         slug: () => <TextField {...this.getAttr('slug')} validation={{ maxLength: 32 }} helper={{ start: '/organizer/' }} />,
-        noSchedule: () => <Bool {...this.getAttr('data.noSchedule')} />,
-        noPricing: () => <Bool {...this.getAttr('data.noPricing')} />,
         contactName: () => <TextField {...this.getAttr('data.contactName')} />,
         contactEmail: () => <TextField {...this.getAttr('data.contactEmail')} />,
         contactPhone: () => <TextField {...this.getAttr('data.contactPhone')} />,

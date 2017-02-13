@@ -8,31 +8,22 @@ import { apiModel } from '../../utils/api';
 
 import styles from './styles.css';
 
-const { ADMIN_DOMAIN } = window;
-
-const capitalize = word => `${word.charAt(0).toUpperCase()}${word.slice(1)}`;
-
 const SessionTileView = function (props, context) {
   const { session, style } = props;
-  const { notify, router, onExpire, user } = context;
+  const { notify, modal, router, onExpire, user } = context;
   const isOwner = user && session.owner === user.user_id;
-  const confirmAction = action => {
-    notify(`Are you sure you want to ${action} <b>${session.title || 'this session'}</b>?`, action === 'delete' ? 'error' : null, [{
-      text: capitalize(action),
-      dispatch: () => apiModel.action('session', session.uuid, action).then(res => {
-        const { message, messageType, redirect } = res;
-        if (res.status === 'success') {
-          if (message) notify(message, messageType || 'success');
-          if (redirect) router.push(redirect);
-          onExpire();
-        } else {
-          throw new Error(`Failed to ${action} session`);
-        }
-      }).catch(() => {
-        notify(`Failed to ${action} session`, 'error');
-      })
-    }]);
-  };
+  const confirmAction = action => modal.confirm(<span>Are you sure you want to {action} <b>{session.title || 'this session'}</b>?</span>, () => apiModel.action('session', session.uuid, action).then(res => {
+    const { message, messageType, redirect } = res;
+    if (res.status === 'success') {
+      if (message) notify(message, messageType || 'success');
+      if (redirect) router.push(redirect);
+      onExpire();
+    } else {
+      throw new Error(`Failed to ${action} session`);
+    }
+  }).catch(() => {
+    notify(`Failed to ${action} session`, 'error');
+  }));
   const renderActions = () => {
     const actionTypes = {
       edit: <Link to={`${session.href}/edit`}>Edit</Link>,
@@ -47,7 +38,7 @@ const SessionTileView = function (props, context) {
   const { title, image, aggregators } = session;
   let { state } = session;
   if (state === 'unpublished') state = 'draft';
-  const isAdmin = user && user.email && user.email.indexOf(`@${ADMIN_DOMAIN}`) !== -1;
+  const isAdmin = context.isAdmin;
   return (<article className={[styles.tile, style ? styles[style] : ''].join(' ')}>
     <div className={styles.imgCol}>
       <img src={image || '/images/placeholder.png'} role="presentation" className={!image ? styles.noImage : null} />
@@ -92,9 +83,11 @@ SessionTileView.propTypes = {
 };
 SessionTileView.contextTypes = {
   user: PropTypes.object,
+  modal: PropTypes.object,
   router: PropTypes.object,
   notify: PropTypes.func,
-  onExpire: PropTypes.func
+  onExpire: PropTypes.func,
+  isAdmin: PropTypes.bool
 };
 
 export default SessionTileView;
