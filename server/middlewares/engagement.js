@@ -47,9 +47,7 @@ const sendExpiredListingEmails = (models, users) => {
   const date = new Date();
   date.setDate(date.getDate() + 1);
   const tomorrow = date.getTime();
-  const slotHasOccurredAtTime = (slot, time) => {
-    return (new Date(slot.start)).getTime() < time;
-  };
+  const slotHasOccurredAtTime = (slot, time) => (new Date(slot.start)).getTime() < time;
   const sessionExpiresTomorrow = session => {
     const pending = session.sortedSchedule.filter(slot => !slot.hasOccurred);
     return pending.length && pending.every(slot => slotHasOccurredAtTime(slot, tomorrow));
