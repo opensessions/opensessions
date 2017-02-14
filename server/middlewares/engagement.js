@@ -45,7 +45,6 @@ const sendFinishListingEmails = (models, users) => {
 
 const sendExpiredListingEmails = (models, users) => {
   const date = new Date();
-  const now = date.getTime();
   date.setDate(date.getDate() + 1);
   const tomorrow = date.getTime();
   const slotHasOccurredAtTime = (slot, time) => {
@@ -65,30 +64,28 @@ const sendExpiredListingEmails = (models, users) => {
     users.forEach(user => {
       const userSessionsExpiring = sessionsExpiringTomorrow.filter(s => s.owner === user.user_id);
       if (userSessionsExpiring.length) {
-        userSessionsExpiring.forEach(session => {
-          sendEmail('Your session\'s schedule is coming to an end!', user.email, `
-            <p>The schedule for your session <b>${session.title}</b> is coming to an end soon.</p>
-            <p>Add more sessions to the schedule to keep this listing active.</p>
-            <p>${getStyledElement('button', 'Update Schedule', { href: sessionHref(session) }, 'a')}</p>
-            <h1>Where does my session appear?</h1>
-            <ol class="aggregators">
-              ${(session.aggregators.length ? session.aggregators : [Object.assign({ href: sessionHref(session) }, openSessionsAggregator)]).map(aggregator => `<li>
-                ${getStyledElement('imageCircle', `<img src="${aggregator.img}" style="max-width:100%;border-radius:2em;" />`, {}, 'span')}
-                <div class="info">
-                  <h2>${aggregator.name}</h2>
-                  <p>${aggregator.description}</p>
-                  <a href="${aggregator.href}" style="color: inherit;">View your session on ${aggregator.name}</a>
-                </div>
-              </li>`).join('')}
-              <li class="meta-info">
-                ${session.aggregators.length ? `Your session appears on ${session.aggregators.length} activity finder${session.aggregators.length > 1 ? 's' : ''}` : 'Your session doesn\'t appear anywhere yet. We\'ll be in touch'}
-              </li>
-            </ol>
-            <h1>What can we do better?</h1>
-            <p>Open Sessions is still in beta testing - your feedback helps us improve it.</p>
-            <p>What would have made things easier for you? Let us know by simply replying to this email with your feedback.</p>
-          `, { substitutions: { '-title-': 'Your schedule finishes soon!' } });
-        });
+        userSessionsExpiring.forEach(session => sendEmail('Your session\'s schedule is coming to an end!', user.email, `
+          <p>The schedule for your session <b>${session.title}</b> is coming to an end soon.</p>
+          <p>Add more sessions to the schedule to keep this listing active.</p>
+          <p>${getStyledElement('button', 'Update Schedule', { href: sessionHref(session) }, 'a')}</p>
+          <h1>Where does my session appear?</h1>
+          <ol class="aggregators">
+            ${(session.aggregators.length ? session.aggregators : [Object.assign({ href: sessionHref(session) }, openSessionsAggregator)]).map(aggregator => `<li>
+              ${getStyledElement('imageCircle', `<img src="${aggregator.img}" style="max-width:100%;border-radius:2em;" />`, {}, 'span')}
+              <div class="info">
+                <h2>${aggregator.name}</h2>
+                <p>${aggregator.description}</p>
+                <a href="${aggregator.href}" style="color: inherit;">View your session on ${aggregator.name}</a>
+              </div>
+            </li>`).join('')}
+            <li class="meta-info">
+              ${session.aggregators.length ? `Your session appears on ${session.aggregators.length} activity finder${session.aggregators.length > 1 ? 's' : ''}` : 'Your session doesn\'t appear anywhere yet. We\'ll be in touch'}
+            </li>
+          </ol>
+          <h1>What can we do better?</h1>
+          <p>Open Sessions is still in beta testing - your feedback helps us improve it.</p>
+          <p>What would have made things easier for you? Let us know by simply replying to this email with your feedback.</p>
+        `, { substitutions: { '-title-': 'Your schedule finishes soon!' }, categories: ['engagement', 'engagement-expire-tomorrow'] }));
       }
     });
   });
@@ -147,12 +144,7 @@ const sendEngagementEmails = (models) => {
         });
         let email = false;
         if (analysis.sessions.published.length) {
-          if (analysis.totals.expire.past.week && !analysis.totals.expire.future) {
-            email = ['Your sessions have just expired', user.email, `<p>Dear ${user.given_name || user.name},</p>
-            <p>Thanks for being one of the first providers to use the Open Sessions uploader. However, we’ve noticed you’ve been a little inactive lately.</p>
-            <p>Login <a href="https://app.opensessions.io/">here</a> and upload more sessions on Open Sessions to ensure they are are visible to thousands of people on Get Active every month.</p>
-            <p>Happy uploading!</p>`, { substitutions: { '-title-': 'Just checking in...', '-titleClass-': 'large' }, categories: ['engagement', 'engagement-expiring'] }];
-          } else if (analysis.totals.expire.future) {
+          if (analysis.totals.expire.future) {
             email = ['Good news from Open Sessions', user.email, `<p>Dear ${user.given_name || user.name},</p>
             <p>Thanks for being one of the first providers to use the Open Sessions uploader. We wanted to let you know that your session information is now <b>live</b> on activity finders like Get Active!</p>
             <p>If your session information is up to date, please simply reply YES to this email. Otherwise, please visit Open Sessions and update them.</p>
