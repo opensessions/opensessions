@@ -69,7 +69,7 @@ export default class ListSessions extends React.Component { // eslint-disable-li
     const { search } = this.props.location;
     const { showExpired, isMap } = this.state;
     return (<div className={styles.filters}>
-      <p>Filters - {filters.map(filter => <Button to={getURL(isMap, filter.search)} style={search === filter.search ? 'live' : false}>{filter.name}</Button>)}</p>
+      <p>Filters - {filters.map(filter => <Button to={getURL(isMap, filter.search)} style={search === filter.search ? 'live' : ''}>{filter.name}</Button>)}</p>
       {filters.some(filter => filter.search === search) ? null : (<p>
         Current filters - {search.slice(1).split('&').map(v => v.split('=')).map(([key, val]) => {
           const changeVal = () => {

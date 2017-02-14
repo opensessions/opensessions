@@ -10,6 +10,6 @@ export default class Tooltip extends React.Component { // eslint-disable-line re
   }
   render() {
     const { tip, isOpened, style } = this.props;
-    return <div className={[styles.tooltip, isOpened ? styles.open : '', style ? styles[style] : ''].join(' ')}><div className={styles.tip}>{tip}</div></div>;
+    return <span className={[styles.tooltip, isOpened ? styles.open : '', style ? styles[style] : ''].join(' ')}><span className={styles.tip}>{tip}</span></span>;
   }
 }

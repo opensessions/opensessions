@@ -214,7 +214,6 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
         <ItemMap markers={[{ ...location.data, isActive: true, box: () => <p>{location.address}</p> }]} size={0} />
         <p><b>Location</b> {location.address}</p>
       </div>) : null}
-      <br />
       <SocialMedia item={organizer.info} />
       {this.canAct('edit') && canEdit ? <p><Button to={`${organizer.href}/edit`} style="slim"><img src="/images/change.png" alt="edit" style={{ filter: 'invert()' }} /> Edit</Button></p> : null}
     </div>);

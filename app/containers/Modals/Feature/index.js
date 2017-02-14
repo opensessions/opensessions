@@ -37,7 +37,7 @@ export default class FeatureModal extends React.Component { // eslint-disable-li
           <p><Button onClick={this.context.modal.close}>Close</Button></p>
         </GenericModal>) });
       }).catch(error => {
-        alert(error.error);
+        this.context.modal.alert(error.error);
       });
     } else {
       this.context.modal.close();

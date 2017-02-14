@@ -77,7 +77,6 @@ export default class ItemMap extends React.Component { // eslint-disable-line re
       const { lat, lng } = marker;
       latlngbounds.extend(new google.maps.LatLng(lat, lng));
     });
-    console.log('latlngbounds', latlngbounds);
     const googleMap = {
       defaultZoom: getZoom(latlngbounds, { height: 500, width: 500 }) || 15,
       defaultCenter: latlngbounds.getCenter(),

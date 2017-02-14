@@ -8,7 +8,7 @@ import LoadingIcon from '../../components/LoadingIcon';
 import LoadingMessage from '../../components/LoadingMessage';
 import InfoBox from '../../components/InfoBox';
 
-import { TextField, Location, ImageUpload, Bool } from '../../components/Fields';
+import { TextField, Location, ImageUpload, BoolRadio } from '../../components/Fields';
 
 import { Link } from 'react-router';
 
@@ -39,23 +39,20 @@ export default class OrganizerEdit extends React.Component { // eslint-disable-l
       isLoading: true,
       fieldsets: [
         { slug: 'description', required: ['name'], fields: ['name', 'description', 'slug', 'image'], props: { validity: 'none' } },
-        { slug: 'contact', props: { validity: 'none' }, fields: ['contactName', 'contactEmail', 'contactPhone'] },
+        { slug: 'contact', props: { validity: 'none' }, fields: ['data.contactName', 'data.contactEmail', 'data.contactPhone'] },
         { slug: 'social', props: { validity: 'none' }, fields: ['socialWebsite', 'socialFacebook', 'socialInstagram', 'socialTwitter', 'socialHashtag'] },
         { slug: 'location', props: { validity: 'none' }, fields: ['data.location'] },
         { slug: 'options', props: { validity: 'none' }, fields: ['data.noSchedule', 'data.noPricing'] }
       ],
       fieldToType: {
         'data.location': Location,
-        'data.noPricing': Bool,
-        'data.noSchedule': Bool
+        'data.noPricing': BoolRadio,
+        'data.noSchedule': BoolRadio
       },
       fields: {
         title: () => <TextField validation={{ maxLength: 50 }} {...this.getAttr('title')} />,
         description: () => <TextField multi size="XL" {...this.getAttr('data.description')} validation={{ maxLength: 1000 }} />,
         slug: () => <TextField {...this.getAttr('slug')} validation={{ maxLength: 32 }} helper={{ start: '/organizer/' }} />,
-        contactName: () => <TextField {...this.getAttr('data.contactName')} />,
-        contactEmail: () => <TextField {...this.getAttr('data.contactEmail')} />,
-        contactPhone: () => <TextField {...this.getAttr('data.contactPhone')} />,
         socialWebsite: () => <TextField placeholder="https://" {...this.getAttr('data.socialWebsite')} />,
         socialFacebook: () => <TextField placeholder="https://" {...this.getAttr('data.socialFacebook')} />,
         socialInstagram: () => <TextField placeholder="@instagoodgym" {...this.getAttr('data.socialInstagram')} />,

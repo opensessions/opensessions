@@ -33,7 +33,7 @@ export default class Button extends React.PureComponent {
   }
   renderLink() {
     const { to, icon, children, className, style } = this.props;
-    return (<a tabIndex={0} href={to} onClick={this.onClick} onKeyDown={e => e.keyCode === 13 && this.onClick(event)} onKeyUp={console.log} className={[styles.button, icon ? styles.hasIcon : null, className, style instanceof Array ? style.map(s => styles[s]).join(' ') : styles[style]].join(' ')}>
+    return (<a tabIndex={0} href={to} onClick={this.onClick} onKeyDown={e => e.keyCode === 13 && this.onClick(event)} className={[styles.button, icon ? styles.hasIcon : null, className, style instanceof Array ? style.map(s => styles[s]).join(' ') : styles[style]].join(' ')}>
       {icon ? <img src={icon} role="presentation" /> : null}
       {children}
     </a>);

@@ -60,6 +60,8 @@ const emailDailyCron = new CronJob(EVERY_MORNING, () => { // eslint-disable-line
   makeAppAnalysis(database.models, { trigger: 'daily-cron' });
 }, null, true, process.env.LOCALE_TIMEZONE);
 
+
+sendDailyEmails(database.models);
 makeAppAnalysis(database.models, { trigger: 'app-started' });
 
 // Initialize frontend middleware that will serve your JS app

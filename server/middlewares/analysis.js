@@ -17,7 +17,7 @@ const getGitHash = () => execSync('git rev-parse HEAD').toString().trim();
 const makeAppAnalysis = (models, info) => {
   const getResources = Promise.all([
     getAllUsers(),
-    models.Session.findAll({ state: { $not: 'deleted' } })
+    models.Session.findAll({ where: { state: { $not: 'deleted' } } })
   ]);
   getResources.then(([users, sessions]) => {
     const userSessions = users.map(user => ({ user, sessions: sessions.filter(session => session.owner === user.user_id) }));

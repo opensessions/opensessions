@@ -20,6 +20,6 @@ export default class SessionMap extends React.Component { // eslint-disable-line
   render() {
     const storeState = this.context.store.getState();
     const sessions = this.props.sessions || storeState.get('sessionList');
-    return <ItemMap {...this.props} markers={sessions.filter(s => s.locationData && s.locationData.lat).map(s => ({ ...s.locationData, isActive: this.isActive(s), box: () => <SessionTileView session={s} style="slim" /> }))} />;
+    return sessions ? <ItemMap {...this.props} markers={sessions.filter(s => s.locationData && s.locationData.lat).map(s => ({ ...s.locationData, isActive: this.isActive(s), box: () => <SessionTileView session={s} style="slim" /> }))} /> : null;
   }
 }
