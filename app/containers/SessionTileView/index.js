@@ -12,6 +12,18 @@ const SessionTileView = function (props, context) {
   const { session, style } = props;
   const { notify, modal, router, onExpire, user } = context;
   const isOwner = user && session.owner === user.user_id;
+  const promptAction = action => modal.prompt(<span>Give a name for your duplicated session:</span>, title => apiModel.action('session', session.uuid, action, { title }).then(res => {
+    const { message, messageType, redirect } = res;
+    if (res.status === 'success') {
+      if (message) notify(message, messageType || 'success');
+      if (redirect) router.push(redirect);
+      onExpire();
+    } else {
+      throw new Error(`Failed to ${action} session`);
+    }
+  }).catch(() => {
+    notify(`Failed to ${action} session`, 'error');
+  }), session.title);
   const confirmAction = action => modal.confirm(<span>Are you sure you want to {action} <b>{session.title || 'this session'}</b>?</span>, () => apiModel.action('session', session.uuid, action).then(res => {
     const { message, messageType, redirect } = res;
     if (res.status === 'success') {
@@ -28,7 +40,7 @@ const SessionTileView = function (props, context) {
     const actionTypes = {
       edit: <Link to={`${session.href}/edit`}>Edit</Link>,
       view: <Link to={session.href}>View</Link>,
-      duplicate: <a onClick={() => confirmAction('duplicate')} onKeyUp={({ keyCode, target }) => keyCode === 13 && target.click()} tabIndex={0}>Duplicate</a>,
+      duplicate: <a onClick={() => promptAction('duplicate')} onKeyUp={({ keyCode, target }) => keyCode === 13 && target.click()} tabIndex={0}>Duplicate</a>,
       delete: <a onClick={() => confirmAction('delete')} onKeyUp={({ keyCode, target }) => keyCode === 13 && target.click()} tabIndex={0} className={styles.delete}>Delete</a>
     };
     return (<ol className={styles.actions}>

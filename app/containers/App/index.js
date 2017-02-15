@@ -64,7 +64,7 @@ export default class App extends React.Component { // eslint-disable-line react/
         dispatch: this.modal,
         close: () => this.setState({ modal: null }),
         confirm: (message, confirm) => this.modal({ component: <Dialog message={message} confirm={confirm} /> }),
-        prompt: (message, prompt) => this.modal({ component: <Dialog message={message} prompt={prompt} /> }),
+        prompt: (message, prompt, value) => this.modal({ component: <Dialog message={message} prompt={prompt} value={value} /> }),
         options: (message, options, prompt) => this.modal({ component: <Dialog message={message} prompt={prompt} options={options} /> }),
         alert: message => this.modal({ component: <Dialog message={message} /> })
       },

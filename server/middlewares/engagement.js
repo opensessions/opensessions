@@ -23,25 +23,55 @@ const { sendEmail, getStyledElement } = require('./email');
 
 const sessionHref = session => `${SERVICE_LOCATION}${session.href}`;
 
-const sendFinishListingEmails = (models, users) => {
-  models.Session.findAll({ where: { state: 'draft' } }).then(drafts => {
-    const now = new Date();
-    now.setDate(now.getDate() - 1);
-    const yesterdayDateString = now.toDateString();
-    const yesterdayDrafts = drafts.filter(draft => (new Date(draft.createdAt)).toDateString() === yesterdayDateString);
-    yesterdayDrafts.forEach(draft => {
-      const user = users.find(u => u.user_id === draft.owner);
-      sendEmail('Finish your Open Sessions listing', user.email, `<p>Dear ${user.nickname || user.name},</p>
-        <p>Congratulations on starting your listing ${draft.title ? `<b>${draft.title}</b>` : 'on Open Sessions'}.</p>
-        <p>You're just a few steps away from getting the word out about your session.</p>
-        <p>${getStyledElement('button', 'Finish your listing', { href: sessionHref(draft) }, 'a')}</p>
-        <h2>Why use Open Sessions?</h2>
-        <p>Open Sessions is the easy way to get the sessions you run discovered by the thousands of people across the country searching for physical activity via the web's activity finders.</p>
-        <p><a href="${sessionHref(draft)}/edit">Complete your session listing</a> and publish it to start letting people know about the great sessions you run.</p>
-      `, { substitutions: { '-title-': 'You\'re nearly there!', '-titleClass-': 'large' }, categories: ['engagement', 'engagement-finishlisting'] });
-    });
+const sendFinishListingEmails = (models, users) => models.Session.findAll({ where: { state: 'draft' } }).then(drafts => {
+  const now = new Date();
+  now.setDate(now.getDate() - 1);
+  const yesterdayDateString = now.toDateString();
+  const yesterdayDrafts = drafts.filter(draft => (new Date(draft.createdAt)).toDateString() === yesterdayDateString);
+  const emails = [];
+  yesterdayDrafts.forEach(draft => {
+    const user = users.find(u => u.user_id === draft.owner);
+    emails.push(['Finish your Open Sessions listing', user.email, `<p>Dear ${user.nickname || user.name},</p>
+      <p>Congratulations on starting your listing ${draft.title ? `<b>${draft.title}</b>` : 'on Open Sessions'}.</p>
+      <p>You're just a few steps away from getting the word out about your session.</p>
+      <p>${getStyledElement('button', 'Finish your listing', { href: sessionHref(draft) }, 'a')}</p>
+      <h2>Why use Open Sessions?</h2>
+      <p>Open Sessions is the easy way to get the sessions you run discovered by the thousands of people across the country searching for physical activity via the web's activity finders.</p>
+      <p><a href="${sessionHref(draft)}/edit">Complete your session listing</a> and publish it to start letting people know about the great sessions you run.</p>
+    `, { substitutions: { '-title-': 'You\'re nearly there!', '-titleClass-': 'large' }, categories: ['engagement', 'engagement-finishlisting'] }]);
   });
+  emails.forEach(email => sendEmail.apply(sendEmail, email));
+  return emails;
+});
+
+const openSessionsAggregator = {
+  name: 'Open Sessions',
+  description: 'There are no compatible activity finders in your area for us to publish your session on just now. Fear not! Open Sessions is expanding. We’ll be in touch as soon as your session appears somewhere new.<br /><br />You can still use Open Sessions to promote your session by sharing the listing through your social media channels.',
+  image: '/images/aggregators/opensessions.png'
 };
+
+const scheduleEndingEmail = (user, session) => `
+  <p>The schedule for your session <b>${session.title}</b> is coming to an end soon.</p>
+  <p>Add more sessions to the schedule to keep this listing active.</p>
+  <p>${getStyledElement('button', 'Update Schedule', { href: sessionHref(session) }, 'a')}</p>
+  <h1>Where does my session appear?</h1>
+  <ol class="aggregators">
+    ${(session.aggregators.length ? session.aggregators : [Object.assign({ href: sessionHref(session) }, openSessionsAggregator)]).map(aggregator => `<li>
+      ${getStyledElement('imageCircle', `<img src="${aggregator.img}" style="max-width:100%;border-radius:2em;" />`, {}, 'span')}
+      <div class="info">
+        <h2>${aggregator.name}</h2>
+        <p>${aggregator.description}</p>
+        <a href="${aggregator.href}" style="color: inherit;">View your session on ${aggregator.name}</a>
+      </div>
+    </li>`).join('')}
+    <li class="meta-info">
+      ${session.aggregators.length ? `Your session appears on ${session.aggregators.length} activity finder${session.aggregators.length > 1 ? 's' : ''}` : 'Your session doesn\'t appear anywhere yet. We\'ll be in touch'}
+    </li>
+  </ol>
+  <h1>What can we do better?</h1>
+  <p>Open Sessions is still in beta testing - your feedback helps us improve it.</p>
+  <p>What would have made things easier for you? Let us know by simply replying to this email with your feedback.</p>
+`;
 
 const sendExpiredListingEmails = (models, users) => {
   const date = new Date();
@@ -52,40 +82,17 @@ const sendExpiredListingEmails = (models, users) => {
     const pending = session.sortedSchedule.filter(slot => !slot.hasOccurred);
     return pending.length && pending.every(slot => slotHasOccurredAtTime(slot, tomorrow));
   };
-  const openSessionsAggregator = {
-    name: 'Open Sessions',
-    description: 'There are no compatible activity finders in your area for us to publish your session on just now. Fear not! Open Sessions is expanding. We’ll be in touch as soon as your session appears somewhere new.<br /><br />You can still use Open Sessions to promote your session by sharing the listing through your social media channels.',
-    image: '/images/aggregators/opensessions.png'
-  };
-  models.Session.findAll({ where: { state: 'published' } }).then(sessions => {
+  return models.Session.findAll({ where: { state: 'published' } }).then(sessions => {
     const sessionsExpiringTomorrow = sessions.filter(sessionExpiresTomorrow);
+    let emails = [];
     users.forEach(user => {
       const userSessionsExpiring = sessionsExpiringTomorrow.filter(s => s.owner === user.user_id);
       if (userSessionsExpiring.length) {
-        userSessionsExpiring.forEach(session => sendEmail('Your session\'s schedule is coming to an end!', user.email, `
-          <p>The schedule for your session <b>${session.title}</b> is coming to an end soon.</p>
-          <p>Add more sessions to the schedule to keep this listing active.</p>
-          <p>${getStyledElement('button', 'Update Schedule', { href: sessionHref(session) }, 'a')}</p>
-          <h1>Where does my session appear?</h1>
-          <ol class="aggregators">
-            ${(session.aggregators.length ? session.aggregators : [Object.assign({ href: sessionHref(session) }, openSessionsAggregator)]).map(aggregator => `<li>
-              ${getStyledElement('imageCircle', `<img src="${aggregator.img}" style="max-width:100%;border-radius:2em;" />`, {}, 'span')}
-              <div class="info">
-                <h2>${aggregator.name}</h2>
-                <p>${aggregator.description}</p>
-                <a href="${aggregator.href}" style="color: inherit;">View your session on ${aggregator.name}</a>
-              </div>
-            </li>`).join('')}
-            <li class="meta-info">
-              ${session.aggregators.length ? `Your session appears on ${session.aggregators.length} activity finder${session.aggregators.length > 1 ? 's' : ''}` : 'Your session doesn\'t appear anywhere yet. We\'ll be in touch'}
-            </li>
-          </ol>
-          <h1>What can we do better?</h1>
-          <p>Open Sessions is still in beta testing - your feedback helps us improve it.</p>
-          <p>What would have made things easier for you? Let us know by simply replying to this email with your feedback.</p>
-        `, { substitutions: { '-title-': 'Your schedule finishes soon!' }, categories: ['engagement', 'engagement-expire-tomorrow'] }));
+        emails = emails.concat(userSessionsExpiring.map(session => ['Your session\'s schedule is coming to an end!', user.email, scheduleEndingEmail(user, session), { substitutions: { '-title-': 'Your schedule finishes soon!' }, categories: ['engagement', 'engagement-expire-tomorrow'] }]));
       }
     });
+    emails.forEach(email => sendEmail.apply(sendEmail, email));
+    return emails;
   });
 };
 
@@ -173,12 +180,22 @@ const sendEngagementEmails = (models) => {
   });
 };
 
-const sendDailyEmails = (models) => {
-  getAllUsers().then(users => {
-    sendFinishListingEmails(models, users);
-    sendExpiredListingEmails(models, users);
-  });
-};
+const sendDailyEmails = (models) => getAllUsers().then(users => Promise.all([
+  sendFinishListingEmails(models, users),
+  sendExpiredListingEmails(models, users)
+]).then(([draftEmails, expireEmails]) => {
+  const yesterdayDate = new Date();
+  yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+  const getDate = date => date.toISOString().substr(0, 10);
+  sendEmail('Daily Email Summary', SERVICE_EMAIL, `<p>We've just generated daily engagement emails from ${SERVICE_LOCATION}.</p>
+    <h1>Total sent</h1>
+    <h2>Finish Your Listing (${draftEmails.length})</h2>
+    <ul>${draftEmails.map(email => `<li><b>Subject:</b> ${email[0]}<br /><b>User:</b> &lt;${email[1]}&gt;</li>`).join('')}</ul>
+    <h2>Schedule Expiry Emails (${expireEmails.length})</h2>
+    <ul>${expireEmails.map(email => `<li><b>Subject:</b> ${email[0]}<br /><b>User:</b> &lt;${email[1]}&gt;</li>`).join('')}</ul>
+    <p>${users.map(u => new Date(u.created_at)).filter(createdAt => getDate(createdAt) === getDate(yesterdayDate)).length} users signed up yesterday</p>
+  `, { substitutions: { '-title-': 'Daily engagement email summary' } });
+}));
 
 const sendWeeklyEmails = (models) => {
   sendEngagementEmails(models);

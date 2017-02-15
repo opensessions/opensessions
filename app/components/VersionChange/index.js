@@ -1,8 +1,25 @@
 import React, { PropTypes } from 'react';
 
-import { formatTime } from '../../utils/calendar';
+import { timeAgo } from '../../utils/calendar';
 
 import styles from './styles.css';
+
+const shortDate = date => date.toISOString().substr(2, 8);
+const reverseDate = date => date.split('-').reverse().join('-');
+const shortDateReversed = date => reverseDate(shortDate(date));
+const dateToString = date => {
+  const now = shortDateReversed(new Date()).split('-');
+  const then = shortDateReversed(date).split('-');
+  let dateString = then.join('-');
+  if (then[2] === now[2]) {
+    dateString = then.slice(0, 2).join('-');
+    if (then[1] === now[1]) {
+      dateString = then.slice(0, 1).join('-');
+      if (then[0] === now[0]) dateString = '';
+    }
+  }
+  return `${date.toTimeString().substr(0, 5)} ${dateString}`;
+};
 
 export default class VersionChange extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
@@ -12,7 +29,8 @@ export default class VersionChange extends React.Component { // eslint-disable-l
     const { analysis, messages, createdAt } = this.props.data;
     const created = new Date(createdAt);
     return (<div className={styles.versionChange}>
-      <span className={styles.time}>{formatTime(created)}</span>:
+      <span className={styles.time}>{timeAgo(created)}</span>
+      <span className={styles.timeFull}>{dateToString(created)}</span>:
       v{analysis.version}
       {analysis.gitHead
         ? (<span>

@@ -16,11 +16,12 @@ export default class DialogModal extends React.Component { // eslint-disable-lin
     dismiss: PropTypes.func,
     prompt: PropTypes.func,
     options: PropTypes.array,
+    value: PropTypes.string,
     message: PropTypes.string
   }
-  constructor() {
+  constructor(props) {
     super();
-    this.state = { notify: false };
+    this.state = { notify: false, input: props.value };
   }
   action(type) {
     if (type === 'confirm') {

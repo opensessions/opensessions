@@ -590,7 +590,7 @@ module.exports = (DataTypes) => ({
           duplicate(req) {
             const data = this.dataValues;
             delete data.uuid;
-            data.title = data.title.match(/\(duplicated\)$/g) ? data.title : `${data.title} (duplicated)`;
+            if (req.body && req.body.title) data.title = req.body.title;
             return req.Model.create(data).then(instance => ({ instance, message: 'Session duplicated!', redirect: instance.href }));
           },
           message(req, models) {

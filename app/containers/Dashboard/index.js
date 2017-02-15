@@ -108,7 +108,7 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
     const sessions = this.context.store.getState().get('sessionList');
     if (!users || !sessions) return <LoadingMessage message="Loading user sessions" ellipsis />;
     const userSessions = users.sort((a, b) => (new Date(b.last_login)).getTime() - (new Date(a.last_login)).getTime()).map(user => ({ user, sessions: sessions.filter(s => s.owner === user.user_id) }));
-    return (<div className={styles.chart}>
+    return (<div>
       <h1>User List</h1>
       <PagedList orientation="top" isSlim items={userSessions} page={1} itemToProps={item => item} Component={UserSessions} />
     </div>);
@@ -228,7 +228,7 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
       if (data.analysis.gitHead) lastVersion = data.analysis.gitHead;
     });
     const now = new Date();
-    return (<div className={styles.chart}>
+    return (<div>
       <h1>App Analysis</h1>
       <h2>Small Version changes</h2>
       <PagedList orientation="bottom" isSlim items={versionChanges} page={1} itemToProps={data => ({ data })} Component={VersionChange} />
@@ -239,9 +239,11 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
     return (<div>
       {this.renderSessionAnalytics()}
       {this.renderUserAnalytics()}
-      {this.renderUserSessions()}
+      <div className={`${styles.chart} ${styles.cols}`}>
+        {this.renderUserSessions()}
+        {this.renderAnalysisHistory()}
+      </div>
       {this.renderEmailAnalytics()}
-      {this.renderAnalysisHistory()}
     </div>);
   }
 }
