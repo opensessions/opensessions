@@ -11,7 +11,8 @@ import Relation from './Relation';
 import Optional from './Optional';
 import JSONList from './JSONList';
 import NumberField from './Number';
+import Checkbox from './Checkbox';
 import PriceField from './Price';
-import PricingField from './Pricing';
+import Pricing from './Pricing';
 
-export { TextField, DateField, TimeField, BoolRadio, IconRadio, Location, SearchableSelect, MultiBool, ImageUpload, Relation, Optional, JSONList, NumberField, PriceField, PricingField };
+export { TextField, DateField, TimeField, BoolRadio, IconRadio, Checkbox, Location, SearchableSelect, MultiBool, ImageUpload, Relation, Optional, JSONList, NumberField, PriceField, Pricing };

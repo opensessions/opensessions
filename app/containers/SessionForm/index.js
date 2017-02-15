@@ -8,7 +8,7 @@ import PublishHeader from '../../components/PublishHeader';
 import LoadingIcon from '../../components/LoadingIcon';
 import LoadingMessage from '../../components/LoadingMessage';
 
-import { TextField, DateField, TimeField, BoolRadio, IconRadio, Location, SearchableSelect, MultiBool, ImageUpload, Relation, Optional, JSONList, NumberField, PricingField } from '../../components/Fields';
+import { TextField, DateField, TimeField, BoolRadio, IconRadio, Location, SearchableSelect, MultiBool, ImageUpload, Relation, Optional, JSONList, NumberField, Pricing } from '../../components/Fields';
 
 import { Link } from 'react-router';
 import Authenticated from '../../components/Authenticated';
@@ -79,7 +79,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
         hasCoaching: () => <BoolRadio {...this.getAttr('hasCoaching')} options={[{ text: 'No, the session is unlead' }, { text: 'Yes, the session is coached' }]} />,
         location: () => <Location {...this.getLocation()} />,
         meetingPoint: () => <TextField multi validation={{ maxLength: 500 }} {...this.getAttr('meetingPoint')} />,
-        pricing: () => <PricingField {...this.getAttr('pricing')} />,
+        pricing: () => <Pricing {...this.getAttr('pricing')} />,
         quantity: () => <NumberField {...this.getAttr('quantity')} validation={{ min: 0 }} />,
         genderRestriction: () => <IconRadio options={GENDER_OPTIONS} {...this.getAttr('genderRestriction')} />,
         minAgeRestriction: () => <Optional {...this.getAttr('minAgeRestriction')} component={{ type: NumberField, props: { validation: { min: 0, max: this.state.session.maxAgeRestriction || MAX_AGE }, format: ': years old' } }} null="0" />,
@@ -321,7 +321,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   renderFieldset = fieldset => <div>{fieldset.fields.map(this.renderField)}</div>
   renderField = (field, index) => {
     const override = this.organizerOverride(field);
-    if (override) return <Field key={index} index={index} {...this.state.copy.fields[field]} label={<span>{this.state.copy.fields[field].label} <i>(taken from organiser)</i></span>}><div className={styles.disabledField}>{override}</div></Field>;
+    if (override) return <Field key={index} index={index} {...this.state.copy.fields[field]} label={<span>{this.state.copy.fields[field].label} <i>(taken from <Link to={`${this.state.session.Organizer.href}/edit`}>organiser</Link>)</i></span>}><div className={styles.disabledField}>{override}</div></Field>;
     return <Field key={index} index={index} {...this.state.copy.fields[field]}>{this.state.fields[field] ? this.state.fields[field]() : <TextField {...this.getAttr(field)} />}</Field>;
   }
   render() {
