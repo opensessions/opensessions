@@ -2,7 +2,7 @@
   "fieldsets": {
     "description": {
       "label": "Description",
-      "heading": "Session Info",
+      "heading": "Organiser Info",
       "title": "Describe your organisation",
       "subtitle": ""
     },
@@ -23,6 +23,7 @@
     },
     "options": {
       "label": "Options",
+      "heading": "Session Settings",
       "title": "Advanced settings for your organiser",
       "subtitle": "Fine-tune your sessions"
     }
@@ -45,15 +46,15 @@
       "label": "Address",
       "tip": "Type to search an address and select from the dropdown"
     },
-    "contactName": {
+    "data.contactName": {
       "label": "Full name",
       "tip": "Who's the best person for attendees to contact if they have questions about your sessions?"
     },
-    "contactEmail": {
+    "data.contactEmail": {
       "label": "Email address",
       "tip": "What is their email address?"
     },
-    "contactPhone": {
+    "data.contactPhone": {
       "label": "Phone number",
       "tip": "What is their phone number (optional)?"
     },

@@ -89,6 +89,12 @@ export default function createRoutes() {
         System.import('./containers/MyProfile').then(loadModule(cb)).catch(errorLoading);
       },
     }, {
+      path: '/profile/calendar',
+      name: 'My profile',
+      getComponent(nextState, cb) {
+        System.import('./containers/MyProfile').then(loadModule(cb)).catch(errorLoading);
+      },
+    }, {
       path: '/organizer/:uuid',
       name: 'Organizer view',
       getComponent(nextState, cb) {

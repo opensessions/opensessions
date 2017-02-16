@@ -2,11 +2,15 @@ import React, { PropTypes } from 'react';
 
 import OrganizerView from '../OrganizerView';
 
+import CalendarView from '../../components/CalendarView';
+import SessionMini from '../../components/SessionMini';
 import Authenticated from '../../components/Authenticated';
 import LoadingMessage from '../../components/LoadingMessage';
 import SessionList from '../../containers/SessionList';
 
 import { apiModel } from '../../utils/api';
+
+import styles from './styles.css';
 
 export default class MyProfile extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
@@ -74,9 +78,22 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
     if (isLoading) return <LoadingMessage message="Loading organisers" ellipsis />;
     return <SessionList sessions={sessions} />;
   }
+  renderCalendar() {
+    const { isLoading } = this.state;
+    if (isLoading) return <LoadingMessage message="Loading calendar" ellipsis />;
+    const sessions = this.getSessions();
+    const organizers = this.getOrganizers();
+    const renderItem = s => <SessionMini session={s} />;
+    const allSessions = sessions.concat.apply(sessions, organizers ? organizers.map(o => o.Sessions) : []);
+    return (<div className={styles.container}>
+      <h1>Schedule</h1>
+      <p>This is the calendar of all your sessions:</p>
+      <CalendarView items={allSessions} itemToDates={i => i.sortedSchedule.map(s => new Date(s.start))} month={(new Date()).toISOString().substr(0, 7)} renderItem={renderItem} />
+    </div>);
+  }
   render() {
     return (<Authenticated message="You must be logged on to view your profile" button="Log in">
-      {this.renderOrganizers()}
+      {this.props.location.pathname.match(/calendar/) ? this.renderCalendar() : this.renderOrganizers()}
     </Authenticated>);
   }
 }

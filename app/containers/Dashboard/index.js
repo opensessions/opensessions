@@ -110,7 +110,7 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
     const userSessions = users.sort((a, b) => (new Date(b.last_login)).getTime() - (new Date(a.last_login)).getTime()).map(user => ({ user, sessions: sessions.filter(s => s.owner === user.user_id) }));
     return (<div>
       <h1>User List</h1>
-      <PagedList orientation="top" isSlim items={userSessions} page={1} itemToProps={item => item} Component={UserSessions} />
+      <PagedList limit={16} orientation="top" isSlim items={userSessions} page={1} itemToProps={item => item} Component={UserSessions} />
     </div>);
   }
   renderUserAnalytics() {

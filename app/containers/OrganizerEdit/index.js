@@ -94,7 +94,7 @@ export default class OrganizerEdit extends React.Component { // eslint-disable-l
     const { tab } = this.props.params;
     const actions = [];
     if (isSaving) actions.push(<LoadingIcon key="loading" />);
-    if (instance) actions.push(<Link key="view" to={`/organizer/${instance.uuid}${tab ? `?tab=${tab}` : ''}`} className={[publishStyles.previewButton, isPendingSave ? publishStyles.disabled : null].join(' ')}>{isPendingSave ? 'Saving...' : 'View'}</Link>);
+    if (instance) actions.push(<Link key="view" to={`${instance.href}${tab ? `?tab=${tab}` : ''}`} className={[publishStyles.previewButton, isPendingSave ? publishStyles.disabled : null].join(' ')}>{isPendingSave ? 'Saving...' : 'View'}</Link>);
     return actions;
   }
   fetchData = () => {

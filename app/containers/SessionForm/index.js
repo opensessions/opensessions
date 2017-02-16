@@ -181,10 +181,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     const actions = [];
     const visibleActions = ['view', 'publish', 'unpublish'];
     if (isSaving) actions.push(<LoadingIcon key="loading" />);
-    if (session.state) {
-      const viewURL = `/session/${session.uuid}${params.tab ? `?tab=${params.tab}` : ''}`;
-      actions.push(<Link key="view" to={viewURL} className={[publishStyles.previewButton, isPendingSave ? publishStyles.disabled : null].join(' ')}>{isPendingSave ? 'Saving...' : 'Preview'}</Link>);
-    }
+    if (session.state) actions.push(<Link key="view" to={`${session.href}${params.tab ? `?tab=${params.tab}` : ''}`} className={[publishStyles.previewButton, isPendingSave ? publishStyles.disabled : null].join(' ')}>{isPendingSave ? 'Saving...' : 'Preview'}</Link>);
     if (session.actions) {
       const actionStyle = { publish: 'live', unpublish: 'draft' };
       visibleActions.filter(action => session.actions.some(allowed => allowed === action)).forEach(action => {
@@ -309,7 +306,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   }
   organizerOverride(field) {
     const { session } = this.state;
-    if (session && session.Organizer && session.Organizer.data && field !== 'description') {
+    if (session && session.OrganizerUuid && session.Organizer && session.Organizer.data && field !== 'description') {
       const { data } = session.Organizer;
       if ((data.noPricing && data.noPricing !== 'false' && field === 'pricing') || (data.noSchedule && data.noSchedule !== 'false' && field === 'schedule')) return <p>This field is disabled by the organiser (<Link to={`${session.Organizer.href}/edit`}>edit</Link>)</p>;
       return data[field] && field === 'location' ? data[field].address : data[field];

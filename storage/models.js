@@ -563,19 +563,17 @@ module.exports = (DataTypes) => ({
                   ${getStyledElement('viewLink', 'View or edit your session on Open Sessions', { href: session.absoluteURL }, 'a')}
                 </div>
                 <h1>Where does my session appear?</h1>
-                <ol class="aggregators">
-                  ${session.aggregators.map(aggregator => `<li>
-                    ${getStyledElement('imageCircle', `<img src="${aggregator.img}" style="max-width:100%;border-radius:2em;" />`, {}, 'span')}
-                    <div class="info">
+                ${getStyledElement('aggregators', `
+                  ${session.aggregators.map(aggregator => getStyledElement('aggregatorsLi', `
+                    ${getStyledElement('imageCircle', getStyledElement('aggImg', null, { src: aggregator.img }, 'img'), {}, 'span')}
+                    ${getStyledElement('aggInfo', `
                       <h2>${aggregator.name}</h2>
                       <p>${aggregator.description}</p>
                       <a href="${aggregator.href}" style="color: inherit;">View your session on ${aggregator.name}</a>
-                    </div>
-                  </li>`).join('')}
-                  <li class="meta-info">
-                    ${session.aggregators.length ? `Your session appears on ${session.aggregators.length} activity finder${session.aggregators.length > 1 ? 's' : ''}` : 'Your session doesn\'t appear anywhere yet. We\'ll be in touch'}
-                  </li>
-                </ol>
+                    `)}
+                  `, { class: 'info' }, 'li')).join('')}
+                  ${getStyledElement('aggMeta', `Your session ${session.aggregators.length ? `appears on ${session.aggregators.length} activity finder${session.aggregators.length > 1 ? 's' : ''}` : 'doesn\'t appear anywhere yet. We\'ll be in touch'}`, {}, 'li')}
+                `, {}, 'ol')}
                 <h1>What next?</h1>
                 <p>We know that sometimes plans change. If you need to update your listing, click <a href="${session.absoluteURL}/edit">here</a>.</p>
                 <p>Why not share your sessions on your social media? Use the social links on your session page.</p>
@@ -658,6 +656,10 @@ module.exports = (DataTypes) => ({
               };
             }
             query.where = query.where ? { $and: [query.where, viewPermissions] } : viewPermissions;
+            return query;
+          },
+          queryParse(query) {
+            if (query.state) query.state = query.state.split(',');
             return query;
           },
           getPrototype(models, user) {

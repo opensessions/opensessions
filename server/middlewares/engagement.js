@@ -55,19 +55,17 @@ const scheduleEndingEmail = (user, session) => `
   <p>Add more sessions to the schedule to keep this listing active.</p>
   <p>${getStyledElement('button', 'Update Schedule', { href: sessionHref(session) }, 'a')}</p>
   <h1>Where does my session appear?</h1>
-  <ol class="aggregators">
-    ${(session.aggregators.length ? session.aggregators : [Object.assign({ href: sessionHref(session) }, openSessionsAggregator)]).map(aggregator => `<li>
-      ${getStyledElement('imageCircle', `<img src="${aggregator.img}" style="max-width:100%;border-radius:2em;" />`, {}, 'span')}
-      <div class="info">
+  ${getStyledElement('aggregators', `
+    ${(session.aggregators.length ? session.aggregators : [Object.assign({ href: sessionHref(session) }, openSessionsAggregator)]).map(aggregator => getStyledElement('aggregatorsLi', `
+      ${getStyledElement('imageCircle', getStyledElement('aggImg', null, { src: aggregator.img }, 'img'), {}, 'span')}
+      ${getStyledElement('aggInfo', `
         <h2>${aggregator.name}</h2>
         <p>${aggregator.description}</p>
         <a href="${aggregator.href}" style="color: inherit;">View your session on ${aggregator.name}</a>
-      </div>
-    </li>`).join('')}
-    <li class="meta-info">
-      ${session.aggregators.length ? `Your session appears on ${session.aggregators.length} activity finder${session.aggregators.length > 1 ? 's' : ''}` : 'Your session doesn\'t appear anywhere yet. We\'ll be in touch'}
-    </li>
-  </ol>
+      `)}
+    `, { class: 'info' }, 'li')).join('')}
+    ${getStyledElement('aggMeta', `Your session ${session.aggregators.length ? `appears on ${session.aggregators.length} activity finder${session.aggregators.length > 1 ? 's' : ''}` : 'doesn\'t appear anywhere yet. We\'ll be in touch'}`, {}, 'li')}
+  `, {}, 'ol')}
   <h1>What can we do better?</h1>
   <p>Open Sessions is still in beta testing - your feedback helps us improve it.</p>
   <p>What would have made things easier for you? Let us know by simply replying to this email with your feedback.</p>
@@ -88,7 +86,7 @@ const sendExpiredListingEmails = (models, users) => {
     users.forEach(user => {
       const userSessionsExpiring = sessionsExpiringTomorrow.filter(s => s.owner === user.user_id);
       if (userSessionsExpiring.length) {
-        emails = emails.concat(userSessionsExpiring.map(session => ['Your session\'s schedule is coming to an end!', user.email, scheduleEndingEmail(user, session), { substitutions: { '-title-': 'Your schedule finishes soon!' }, categories: ['engagement', 'engagement-expire-tomorrow'] }]));
+        emails = emails.concat(userSessionsExpiring.map(session => ['Your session\'s schedule is coming to an end!', user.email, scheduleEndingEmail(user, session), { substitutions: { '-title-': 'Your schedule finishes soon!', '-titleClass-': 'large' }, categories: ['engagement', 'engagement-expire-tomorrow'] }]));
       }
     });
     emails.forEach(email => sendEmail.apply(sendEmail, email));

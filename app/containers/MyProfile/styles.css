@@ -3,6 +3,11 @@
 .container {
   max-width: var(--pagewidth);
   margin: auto;
+  & > h1 {
+    font-size: 1.5em;
+    padding: .5em 1em;
+    text-align: center;
+  }
 }
 
 .organizerList {

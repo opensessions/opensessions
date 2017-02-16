@@ -10,8 +10,6 @@ import ItemMap from '../../components/ItemMap';
 import Button from '../../components/Button';
 import LoadingMessage from '../../components/LoadingMessage';
 import NotificationBar from '../../components/NotificationBar';
-import SessionMini from '../../components/SessionMini';
-import CalendarView from '../../components/CalendarView';
 import ImageUpload from '../../components/Fields/ImageUpload';
 import PagedList from '../../components/PagedList';
 import SocialMedia from '../../components/SocialMedia';
@@ -184,7 +182,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
         apiModel.action('Organizer', uuid, 'addMember', { email }).then(() => {
           this.context.notify('Member added', 'success');
           this.fetchData();
-        }).catch(() => this.context.notify('User does not exist', 'error'));
+        }).catch(() => this.context.modal.alert('No user with that email! Check that they\'ve signed up and try again'));
       });
     };
     return (<div className={styles.members}>
@@ -205,7 +203,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     if (!canEdit && !Object.keys(data).length) return null;
     const { description, location } = data;
     return (<div className={styles.organizerData}>
-      <h2>Organiser Info</h2>
+      <h2>About Us</h2>
       {description || info ? null : <i>No additional info yet</i>}
       <p className={styles.description}>{description || <i>No description</i>}</p>
       {info.contact.name ? <p><b>Contact</b> {info.contact.name}</p> : null}
@@ -216,12 +214,6 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
       </div>) : null}
       <SocialMedia item={organizer.info} />
       {this.canAct('edit') && canEdit ? <p><Button to={`${organizer.href}/edit`} style="slim"><img src="/images/change.png" alt="edit" style={{ filter: 'invert()' }} /> Edit</Button></p> : null}
-    </div>);
-  }
-  renderCalendar(organizer) {
-    const renderItem = s => <SessionMini session={s} />;
-    return (<div>
-      <CalendarView items={organizer.Sessions} itemToDates={i => i.sortedSchedule.map(s => new Date(s.start))} month={(new Date()).toISOString().substr(0, 7)} renderItem={renderItem} />
     </div>);
   }
   render() {
@@ -238,7 +230,6 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
           {organizer && this.canAct('edit') ? this.renderMembers(organizer) : null}
         </div>
       </div>
-      {organizer && isAdmin ? this.renderCalendar(organizer) : null}
     </div>);
   }
 }

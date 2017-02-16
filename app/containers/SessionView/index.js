@@ -17,7 +17,7 @@ import PriceSVG from '../../components/SVGs/Price';
 import Button from '../../components/Button';
 import SocialMedia from '../../components/SocialMedia';
 
-import { parseSchedule, sortSchedule } from '../../utils/calendar';
+import { parseSchedule, sortSchedule, weeksAgo } from '../../utils/calendar';
 import { apiModel } from '../../utils/api';
 
 import styles from './styles.css';
@@ -87,14 +87,19 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   getActions(session) {
     const { location } = this.props;
     const actions = [];
+    const actionProps = {
+      touch: { text: 'Touch', onClick: () => apiModel.action('session', session.uuid, 'touch', { method: 'POST' }).then(result => actionNext(result, this.context.notify, this.context.router)) },
+      unpublish: { text: 'Unpublish and Edit', onClick: () => apiModel.action('session', session.uuid, 'unpublish').then(result => actionNext(result, this.context.notify, this.context.router)) },
+      updateMySchedule: { text: 'Auto-update Schedule', onClick: () => this.context.modal.confirm(`Currently ${session.sortedSchedule.filter(s => s.hasOccurred).length} of your session's dates are in the past by up to ${weeksAgo(new Date(session.sortedSchedule[0].start)) * -1} weeks. This will shift your schedule ahead by that many weeks so all dates are in the future. Are you sure you want to continue?`, () => apiModel.action('session', session.uuid, 'updateMySchedule').then(result => actionNext(result, this.context.notify, this.context.router, () => this.fetchData()))) }
+    };
     if (this.canAct('edit')) {
       let tab = false;
       if (location && location.query && location.query.tab) tab = location.query.tab;
       if (session.actions.some(action => action === 'edit')) actions.push(<Link key="edit" to={[session.href, 'edit', tab].filter(v => v).join('/')} className={publishStyles.previewButton}>Continue editing</Link>);
     }
-    if (this.canAct('touch')) actions.push(<Button key="touch" onClick={() => apiModel.action('session', session.uuid, 'touch', { method: 'POST' }).then(result => actionNext(result, this.context.notify, this.context.router))} className={publishStyles.previewButton}>Touch</Button>);
-    if (this.canAct('unpublish')) actions.push(<Button key="unpublish" onClick={() => apiModel.action('session', session.uuid, 'unpublish').then(result => actionNext(result, this.context.notify, this.context.router))} className={publishStyles.previewButton}>Unpublish and edit</Button>);
-    if (this.canAct('updateMySchedule')) actions.push(<Button key="updateMySchedule" onClick={() => this.context.modal.confirm(`Currently ${session.sortedSchedule.filter(s => s.hasOccurred).length} of your session's dates are in the past. This will automatically update your schedule so all dates are in the future. Are you sure you want to continue?`, () => apiModel.action('session', session.uuid, 'updateMySchedule').then(result => actionNext(result, this.context.notify, this.context.router, () => this.fetchData())))} className={publishStyles.previewButton}>Auto-update schedule</Button>);
+    Object.keys(actionProps).filter(key => this.canAct(key)).map(key => [key, actionProps[key]]).forEach(([key, props]) => {
+      actions.push(<Button key={key} onClick={props.onClick} className={publishStyles.previewButton}>{props.text}</Button>);
+    });
     if (!actions.length) return null;
     return actions;
   }
@@ -132,8 +137,8 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   }
   renderDate() {
     const session = this.context.store.getState().get('session');
-    const { schedule } = session;
-    const sorted = sortSchedule(schedule).map(parseSchedule).filter(slot => (slot.date || slot.time) && !slot.hasOccurred);
+    const { sortedSchedule } = session;
+    const sorted = sortedSchedule.filter(slot => !slot.hasOccurred);
     const LIMIT = 2;
     const scheduleItems = this.state.scheduleItems || LIMIT;
     return (<div className={styles.dateDetail}>

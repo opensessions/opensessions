@@ -66,3 +66,7 @@ export function timeAgo(date) {
   const clean = cleanDate(new Date(date));
   return clean ? `${clean} ago` : 'just now';
 }
+
+export function weeksAgo(date) {
+  return intervalsAgo(date, 7);
+}
