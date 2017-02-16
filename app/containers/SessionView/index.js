@@ -17,7 +17,7 @@ import PriceSVG from '../../components/SVGs/Price';
 import Button from '../../components/Button';
 import SocialMedia from '../../components/SocialMedia';
 
-import { parseSchedule, sortSchedule, weeksAgo } from '../../utils/calendar';
+import { weeksAgo } from '../../utils/calendar';
 import { apiModel } from '../../utils/api';
 
 import styles from './styles.css';
@@ -60,7 +60,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   }).catch(console.error)
   constructor() {
     super();
-    this.state = { imageExpire: Math.floor(Date.now() / (60 * 1000)) };
+    this.state = {};
   }
   componentDidMount() {
     this.fetchData();
@@ -163,7 +163,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     }
     return (<div className={styles.detailsSection}>
       <div className={[styles.detailsImg, session.image ? '' : styles.noImg].join(' ')}>
-        <img src={session.image ? `${session.image}${this.canAct('edit') ? `?${this.state.imageExpire}` : ''}` : '/images/placeholder.png'} role="presentation" />
+        <img src={session.image || '/images/placeholder.png'} role="presentation" />
       </div>
       <div className={styles.detailsText}>
         <h1>

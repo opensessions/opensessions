@@ -56,7 +56,6 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
   photoChange = image => {
     const organizer = this.getOrganizer();
     return apiModel.edit('organizer', organizer.uuid, { image }).then(() => {
-      this.setState({ modified: Date.now() });
       this.fetchData();
     }).catch(() => {
       this.context.notify('Couldn\'t change the image', 'error');
@@ -154,8 +153,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     return <ImageUpload value={organizer.image} onChange={this.photoChange} preview={false} addText="Update photo" upload={{ URL: `/api/organizer/${organizer.uuid}/image`, name: 'image' }} />;
   }
   renderOrganizer(organizer) {
-    const { modified } = this.state;
-    const imageUrl = organizer.image ? `${organizer.image}${modified ? `?${modified}` : ''}` : '/images/organizer-bg-default.png';
+    const imageUrl = organizer.image || '/images/organizer-bg-default.png';
     return (<div className={styles.banner}>
       <div className={styles.bannerImage} style={{ backgroundImage: `url(${imageUrl})` }}>
         <div className={styles.container}>

@@ -13,6 +13,9 @@ import { apiModel } from '../../utils/api';
 import styles from './styles.css';
 
 export default class MyProfile extends React.Component { // eslint-disable-line react/prefer-stateless-function
+  static propTypes = {
+    location: PropTypes.object,
+  };
   static contextTypes = {
     store: PropTypes.object,
     user: PropTypes.object,
@@ -84,7 +87,8 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
     const sessions = this.getSessions();
     const organizers = this.getOrganizers();
     const renderItem = s => <SessionMini session={s} />;
-    const allSessions = sessions.concat.apply(sessions, organizers ? organizers.map(o => o.Sessions) : []);
+    // const allSessions = sessions.concat.apply(sessions, organizers ? organizers.map(o => o.Sessions) : []);
+    const allSessions = sessions.concat(...(organizers ? organizers.map(o => o.Sessions) : []));
     return (<div className={styles.container}>
       <h1>Schedule</h1>
       <p>This is the calendar of all your sessions:</p>

@@ -41,7 +41,7 @@ export default class ImageUploadField extends React.Component { // eslint-disabl
     formData.append(upload.name, file, file.name);
     this.setState({ isUploading: true });
     apiModel.upload(upload.URL, formData).then(data => {
-      this.setState({ isUploading: false, modified: Date.now() });
+      this.setState({ isUploading: false });
       const { instance } = data;
       onChange(instance[upload.name]);
     }).catch(error => {
@@ -62,7 +62,7 @@ export default class ImageUploadField extends React.Component { // eslint-disabl
   }
   render() {
     const { value, preview, addText, editText } = this.props;
-    const { isUploading, isDragging, modified } = this.state;
+    const { isUploading, isDragging } = this.state;
     let uploadText = value ? editText || 'Change photo' : addText || 'Add photo';
     uploadText = isDragging ? 'Drop to upload' : uploadText;
     const buttons = [
@@ -70,7 +70,7 @@ export default class ImageUploadField extends React.Component { // eslint-disabl
     ];
     if (value && !isDragging) buttons.unshift({ key: 'remove', text: 'Remove photo', icon: <img src="/images/remove.png" role="presentation" />, onClick: this.reset });
     return (<div className={[styles.imageField, isUploading ? styles.loading : null].join(' ')} onDragOver={this.onDragOver} onDragLeave={this.onDragLeave} onDrop={this.onDrop}>
-      {preview ? <img src={value ? `${value}?${modified || ''}` : '/images/placeholder.png'} role="presentation" className={styles.preview} /> : null}
+      {preview ? <img src={value || '/images/placeholder.png'} role="presentation" className={styles.preview} /> : null}
       <div className={styles.buttons}>
         {buttons.map(button => (<label className={styles.choose} onClick={button.onClick} onKeyUp={event => event.keyCode === 13 && event.target.click()} key={button.key} tabIndex={0}>
           {button.icon} <span className={styles.text}>{button.text}</span> {button.input || null}

@@ -15,7 +15,7 @@ const emailStyles = {
   aggMeta: { 'list-style': 'none', color: '#777', background: '#f6f1f1', padding: '.5em', margin: '0' },
   aggSrcContainer: { background: '#F6F1F1', 'box-shadow': 'inset 0 2em #FFF', 'text-align': 'center', 'margin-top': '1em', padding: '.5em' },
   aggSrcImg: { 'border-radius': '50%', border: '1px solid #CCC', display: 'inline-block', width: '8em', height: '8em', 'background-color': '#FFF', 'background-position': '50% 50%', 'background-repeat': 'no-repeat', 'background-size': '88%' },
-  aggImg: { 'border-radius': '50%', padding: '.5em', width: '64px', height: '64px', 'vertical-align': 'middle', 'max-width': '100%', 'border-radius': '2em' }
+  aggImg: { padding: '.5em', width: '64px', height: '64px', 'vertical-align': 'middle', 'max-width': '100%', 'border-radius': '2em' }
 };
 
 const getStyledElement = (styleName, html, attrs = {}, tagName = 'div') => {

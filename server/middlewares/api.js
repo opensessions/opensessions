@@ -103,7 +103,7 @@ module.exports = (database) => {
             query[key] = { $gte: date, $lt: new Date(new Date(date).setDate(date.getDate() + 1)) };
             break;
           case 21:
-            dates = query[key].split(':').map(d => new Date(d)).map((d, key) => new Date(d.setDate(d.getDate() + key)));
+            dates = query[key].split(':').map(d => new Date(d)).map((d, k) => new Date(d.setDate(d.getDate() + k)));
             query[key] = { $gte: dates[0], $lt: dates[1] };
             break;
           default:
@@ -326,6 +326,15 @@ module.exports = (database) => {
   api.post('/:model/:uuid/:field', requireLogin, resolveModel, upload.single('image'), (req, res, next) => {
     const { Model } = req;
     const image = req.file;
+    const getNewImgPath = (instance, field) => {
+      let version = 1;
+      if (instance[field]) {
+        const v = instance[field].split(`${instance.uuid}-`);
+        version = parseInt(v[1], 10) + 1;
+        if (isNaN(version)) version = 1;
+      }
+      return [instance.uuid, version].join('-');
+    };
     if (image) {
       const { model, uuid, field } = req.params;
       const aws = {
@@ -334,16 +343,16 @@ module.exports = (database) => {
         accessKeyId: process.env.AWS_S3_IMAGES_ACCESSKEY,
         secretAccessKey: process.env.AWS_S3_IMAGES_SECRETKEY
       };
-      s3(aws, image.path, uuid)
-        .then(result => Model.findOne({ where: { uuid, owner: getUser(req) } })
-          .then(instance => {
+      Model.findOne({ where: { uuid, owner: getUser(req) } })
+        .then(instance => s3(aws, image.path, getNewImgPath(instance, field))
+          .then(result => {
             const data = {};
             data[field] = `https://${aws.URL}/${result.versions[model === 'organizer' ? 0 : 1].key}`;
             [image].concat(result.versions).forEach(version => fs.unlink(version.path));
             return instance.update(data)
               .then(final => res.json({ status: 'success', result, baseURL: aws.URL, instance: final }));
-          }).catch(error => res.status(404).json({ error })))
-        .catch(error => res.status(400).json({ error }));
+          }).catch(error => res.status(400).json({ error })))
+        .catch(error => res.status(404).json({ error }));
     } else {
       next();
     }
