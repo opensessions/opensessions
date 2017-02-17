@@ -4,7 +4,7 @@ const dotenv = require('dotenv');
 const fs = require('fs');
 const sendgrid = require('sendgrid');
 
-const RDPE = require('./rdpe.js');
+const { rdpe } = require('./rdpe.js');
 const s3 = require('./s3.js');
 
 const multer = require('multer');
@@ -27,8 +27,8 @@ module.exports = (database) => {
   };
 
   const rdpeConfig = { timezone: LOCALE_TIMEZONE, scrubTimezone: true, URL: SERVICE_LOCATION, legacyOrganizerMerge: true };
-  api.use('/rdpe', RDPE(database, Object.assign({ baseURL: '/api/rdpe' }, rdpeConfig)));
-  api.use('/rdpe-legacy', RDPE(database, Object.assign({}, rdpeConfig, { preserveLatLng: true, baseURL: '/api/rdpe-legacy' })));
+  api.use('/rdpe', rdpe(database, Object.assign({ baseURL: '/api/rdpe' }, rdpeConfig)));
+  api.use('/rdpe-legacy', rdpe(database, Object.assign({}, rdpeConfig, { preserveLatLng: true, baseURL: '/api/rdpe-legacy' })));
 
   const requireLogin = jwt({
     secret: new Buffer(AUTH0_CLIENT_SECRET, 'base64'),
@@ -238,20 +238,54 @@ module.exports = (database) => {
     });
   });
 
-  api.all('/:model/create', requireLogin, resolveModel, (req, res) => {
+  api.all('/:model/action/new', processUser, resolveModel, (req, res) => {
     const { Model } = req;
     const getPrototype = Model.getPrototype || (() => Promise.resolve({}));
-    getPrototype(database.models, getUser(req)).then(data => {
-      Object.keys(req.body).forEach(key => {
-        data[key] = req.body[key];
+    if (Model.new) {
+      if (Model.getActions(database.models, req).some(action => action === 'new')) {
+        Model.new(req, database.models)
+          .then(instance => {
+            res.json({ instance: instanceToJSON(instance, req) });
+          })
+          .catch(error => {
+            res.status(404).json({ error: error.message });
+          });
+      } else {
+        res.status(400).json({ error: `Permission denied to create ${req.params.model}` });
+      }
+    } else {
+      getPrototype(database.models, getUser(req)).then(data => {
+        Object.keys(req.body).forEach(key => {
+          data[key] = req.body[key];
+        });
+        data.owner = getUser(req);
+        Model.create(data).then(instance => {
+          res.json({ instance: instanceToJSON(instance, req) });
+        }).catch(error => {
+          res.status(404).json({ error: error.message });
+        });
       });
-      data.owner = getUser(req);
-      Model.create(data).then(instance => {
-        res.json({ instance: instanceToJSON(instance, req) });
-      }).catch(error => {
-        res.status(404).json({ error: error.message });
-      });
-    });
+    }
+  });
+
+  api.all('/:model/action/:action', processUser, resolveModel, (req, res) => {
+    const { Model } = req;
+    const { action } = req.params;
+    if (Model[action]) {
+      if (Model.getActions(database.models, req).some(a => a === action)) {
+        Model.new(req, database.models)
+          .then(result => {
+            res.json(result.rawResult ? result : { instance: instanceToJSON(result, req) });
+          })
+          .catch(error => {
+            res.status(404).json({ error: error.message });
+          });
+      } else {
+        res.status(400).json({ error: `Permission denied on ${req.params.model} with action ${action}` });
+      }
+    } else {
+      res.status(400).json({ error: 'Unrecognized action' });
+    }
   });
 
   api.get('/:model/:uuid', resolveModel, (req, res) => {
@@ -312,7 +346,7 @@ module.exports = (database) => {
         Model.findOne(query).then(instance => {
           const actions = instance.getActions(database.models, req);
           if (actions.indexOf(action) !== -1) {
-            instance[action](req, database.models, authClient)
+            instance[action](req, database.models)
               .then(result => res.json(Object.assign({ status: 'success' }, result)))
               .catch(error => console.log(error) || res.status(404).json({ status: 'failure', error: error.message }));
           } else {

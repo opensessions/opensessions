@@ -1,11 +1,10 @@
 import React, { PropTypes } from 'react';
-import { LineChart, PieChart, BarGroupChart } from 'react-d3-basic';
+import { LineChart, PieChart } from 'react-d3-basic';
 
 import LoadingMessage from '../../components/LoadingMessage';
 import PagedList from '../../components/PagedList';
 import Checkbox from '../../components/Fields/Checkbox';
 import VersionChange from '../../components/VersionChange';
-import UserSessions from '../../components/UserSessions';
 
 import { apiFetch, apiModel } from '../../utils/api';
 import { formatTime, intervalsAgo, cleanDate } from '../../utils/calendar';
@@ -24,36 +23,33 @@ const layout = {
 
 export default class Dashboard extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
+    modal: PropTypes.object,
     store: PropTypes.object,
     notify: PropTypes.func
   };
   static fetchData(dispatch) {
-    return apiModel.search('session', { state: 'published' }).then(result => {
-      const { instances, error } = result;
-      if (error) throw error;
-      dispatch({ type: 'SESSION_LIST_LOADED', payload: instances });
-      return apiFetch('/api/admin/users').then(userResult => {
-        dispatch({ type: 'USER_LIST_LOADED', payload: userResult.users });
-        return apiFetch(`/api/admin/emails?days=56&categories=${emailCategories.map(cat => cat.id).join(',')}`).then(emailResult => {
-          dispatch({ type: 'EMAIL_LIST_LOADED', payload: emailResult.emails });
-          return apiFetch('/api/analysis').then(analysisResult => {
-            dispatch({ type: 'ANALYSIS_LIST_LOADED', payload: analysisResult.instances });
-          });
-        });
-      });
-    });
+    return apiModel.search('session', { state: 'published' })
+      .then(sessionResult => dispatch({ type: 'SESSION_LIST_LOADED', payload: sessionResult.instances }))
+      .then(() => apiFetch(`/api/admin/emails?days=56&categories=${emailCategories.map(cat => cat.id).join(',')}`))
+      .then(emailResult => dispatch({ type: 'EMAIL_LIST_LOADED', payload: emailResult.emails }))
+      .then(() => apiModel.search('analysis'))
+      .then(analysisResult => dispatch({ type: 'ANALYSIS_LIST_LOADED', payload: analysisResult.instances }));
   }
   constructor() {
     super();
     this.state = { isLoading: false, sessionLength: 8, usersWeekly: true };
   }
   componentDidMount() {
-    this.setState({ isLoading: true }); // eslint-disable-line react/no-did-mount-set-state
-    this.constructor.fetchData(this.context.store.dispatch).then(() => {
-      this.setState({ isLoading: false });
+    this.fetchData().then(() => {
       fetch('https://api.github.com/repos/opensessions/opensessions/commits').then(json => json.json()).then(commits => this.setState({ commits }));
     }).catch(error => {
       this.context.notify(error, 'error');
+      this.setState({ isLoading: false });
+    });
+  }
+  fetchData() {
+    this.setState({ isLoading: true });
+    return this.constructor.fetchData(this.context.store.dispatch).then(() => {
       this.setState({ isLoading: false });
     });
   }
@@ -97,62 +93,6 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
             value={item => item.total}
             chartSeries={aggStats.map(agg => ({ field: agg.name, name: `${agg.name}: ${agg.total}`, value: agg.total }))}
           />
-        </li>
-      </ol>
-    </div>);
-  }
-  renderUserSessions() {
-    const { isLoading } = this.state;
-    if (isLoading) return <LoadingMessage message="Loading user sessions" ellipsis />;
-    const users = this.context.store.getState().get('userList');
-    const sessions = this.context.store.getState().get('sessionList');
-    if (!users || !sessions) return <LoadingMessage message="Loading user sessions" ellipsis />;
-    const userSessions = users.sort((a, b) => (new Date(b.last_login)).getTime() - (new Date(a.last_login)).getTime()).map(user => ({ user, sessions: sessions.filter(s => s.owner === user.user_id) }));
-    return (<div>
-      <h1>User List</h1>
-      <PagedList limit={16} orientation="top" isSlim items={userSessions} page={1} itemToProps={item => item} Component={UserSessions} />
-    </div>);
-  }
-  renderUserAnalytics() {
-    const { isLoading, usersWeekly } = this.state;
-    if (isLoading) return <LoadingMessage message="Loading users" ellipsis />;
-    const users = this.context.store.getState().get('userList');
-    const sessions = this.context.store.getState().get('sessionList');
-    if (!users || !sessions) return <div>No user information</div>;
-    const sessionOwners = sessions.map(session => session.owner);
-    const liveSessionOwners = sessions.filter(session => session.sortedSchedule.some(slot => !slot.hasOccurred)).map(session => session.owner);
-    const totalUsers = users.length;
-    const activeUsers = users.filter(user => intervalsAgo(new Date(user.last_login), 1) > 28).length;
-    const publishedUsers = users.filter(user => sessionOwners.some(owner => owner === user.user_id)).length;
-    const publishedActive = users.filter(user => liveSessionOwners.some(owner => owner === user.user_id)).length;
-    const percentDescriptions = ['are "active" (have logged in within the last 28 days)', 'have ever published a session', 'have published a session which has upcoming sessions'];
-    return (<div className={styles.chart}>
-      <h1>User Analytics</h1>
-      <p>Total users: {totalUsers} | Active users (online in last 28 days): {activeUsers} | Published users: {publishedUsers}</p>
-      <ol className={styles.blocks}>
-        <li>
-          <h2>New sign-ups</h2>
-          {this.renderTimeChartFromCreatedObjects(users, 'created_at', 26, usersWeekly ? 7 : 1, 'user')}
-          <p><Checkbox checked={usersWeekly} onChange={checked => this.setState({ usersWeekly: checked })} label="Per week" /></p>
-        </li>
-        <li>
-          <h2>User totals</h2>
-          <BarGroupChart
-            width={320}
-            height={400}
-            data={[{ activeUsers, publishedUsers, totalUsers, publishedActive }]}
-            chartSeries={[
-              { field: 'activeUsers', name: 'Active users', color: '#88c540' },
-              { field: 'publishedUsers', name: 'Published users (all time)', color: '#1b91cd' },
-              { field: 'publishedActive', name: 'Published users (live)', color: '#eade37' },
-              { field: 'totalUsers', name: 'All users', color: '#AAA' }
-            ]}
-            showXGrid={false}
-            showYGrid={false}
-            x={() => 'Users'}
-            xScale="ordinal"
-          />
-          {[activeUsers, publishedUsers, publishedActive].map((list, key) => <p>{((list / totalUsers) * 100).toFixed(1)}% of users {percentDescriptions[key]}</p>)}
         </li>
       </ol>
     </div>);
@@ -228,7 +168,7 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
       if (data.analysis.gitHead) lastVersion = data.analysis.gitHead;
     });
     const now = new Date();
-    return (<div>
+    return (<div className={styles.chart}>
       <h1>App Analysis</h1>
       <h2>Small Version changes</h2>
       <PagedList orientation="bottom" isSlim items={versionChanges} page={1} itemToProps={data => ({ data })} Component={VersionChange} />
@@ -238,11 +178,7 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
   render() {
     return (<div>
       {this.renderSessionAnalytics()}
-      {this.renderUserAnalytics()}
-      <div className={`${styles.chart} ${styles.cols}`}>
-        {this.renderUserSessions()}
-        {this.renderAnalysisHistory()}
-      </div>
+      {this.renderAnalysisHistory()}
       {this.renderEmailAnalytics()}
     </div>);
   }

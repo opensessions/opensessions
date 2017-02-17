@@ -17,7 +17,7 @@ import PriceSVG from '../../components/SVGs/Price';
 import Button from '../../components/Button';
 import SocialMedia from '../../components/SocialMedia';
 
-import { weeksAgo } from '../../utils/calendar';
+import { parseSlot, weeksAgo } from '../../utils/calendar';
 import { apiModel } from '../../utils/api';
 
 import styles from './styles.css';
@@ -90,7 +90,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     const actionProps = {
       touch: { text: 'Touch', onClick: () => apiModel.action('session', session.uuid, 'touch', { method: 'POST' }).then(result => actionNext(result, this.context.notify, this.context.router)) },
       unpublish: { text: 'Unpublish and Edit', onClick: () => apiModel.action('session', session.uuid, 'unpublish').then(result => actionNext(result, this.context.notify, this.context.router)) },
-      updateMySchedule: { text: 'Auto-update Schedule', onClick: () => this.context.modal.confirm(`Currently ${session.sortedSchedule.filter(s => s.hasOccurred).length} of your session's dates are in the past by up to ${weeksAgo(new Date(session.sortedSchedule[0].start)) * -1} weeks. This will shift your schedule ahead by that many weeks so all dates are in the future. Are you sure you want to continue?`, () => apiModel.action('session', session.uuid, 'updateMySchedule').then(result => actionNext(result, this.context.notify, this.context.router, () => this.fetchData()))) }
+      updateMySchedule: { text: 'Auto-update Schedule', onClick: () => this.context.modal.confirm(`Currently ${session.sortedSchedule.filter(s => s.hasOccurred).length} of your session's dates are ${(weeksAgo(new Date(session.sortedSchedule[0].start)) * -1) + 1} week(s) in the past. Would you like to shift your schedule ahead by that many weeks so that all dates are in the future?`, () => apiModel.action('session', session.uuid, 'updateMySchedule').then(result => actionNext(result, this.context.notify, this.context.router, () => this.fetchData()))) }
     };
     if (this.canAct('edit')) {
       let tab = false;
@@ -144,7 +144,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     return (<div className={styles.dateDetail}>
       <img src="/images/calendar.svg" role="presentation" />
       {sorted.length ? (<ol className={styles.dateList}>
-        {sorted.slice(0, scheduleItems).map((slot, index) => <li className={[styles.detailText, index === 0 ? styles.nextOccurring : ''].join(' ')}>
+        {sorted.slice(0, scheduleItems).map(parseSlot).map((slot, index) => <li className={[styles.detailText, index === 0 ? styles.nextOccurring : ''].join(' ')}>
           {slot.date} {slot.time ? <span className={styles.timespan}>at {slot.time}</span> : null}
           {index === 0 || slot.duration !== sorted[index - 1].duration ? <span className={styles.duration}><img src="/images/clock.svg" role="presentation" />{slot.duration}</span> : null}
         </li>)}

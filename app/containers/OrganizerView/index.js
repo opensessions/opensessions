@@ -25,7 +25,6 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     onOrganizerChange: PropTypes.func,
   };
   static contextTypes = {
-    user: PropTypes.object,
     router: PropTypes.object,
     notify: PropTypes.func,
     store: PropTypes.object,
@@ -97,8 +96,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
         this.context.notify('Organiser deleted!', 'success');
         this.context.onExpire();
       }
-    }).catch(err => {
-      console.log(err);
+    }).catch(() => {
       this.context.notify('Couldn\'t delete organiser', 'error');
     });
   }
@@ -194,7 +192,8 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
       </div>
     </div>);
   }
-  renderData(organizer, canEdit) {
+  renderData(organizer) {
+    const canEdit = this.canAct('edit');
     let { data } = organizer;
     const { info } = organizer;
     if (!data) data = {};
@@ -211,21 +210,19 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
         <p><b>Location</b> {location.address}</p>
       </div>) : null}
       <SocialMedia item={organizer.info} />
-      {this.canAct('edit') && canEdit ? <p><Button to={`${organizer.href}/edit`} style="slim"><img src="/images/change.png" alt="edit" style={{ filter: 'invert()' }} /> Edit</Button></p> : null}
+      {this.canAct('edit') ? <p><Button to={`${organizer.href}/edit`} style="slim"><img src="/images/change.png" alt="edit" style={{ filter: 'invert()' }} /> Edit</Button></p> : null}
     </div>);
   }
   render() {
     const organizer = this.getOrganizer();
-    const { user } = this.context;
-    const isAdmin = user && user.email && user.email.indexOf(`@${window.ADMIN_DOMAIN}`) !== -1;
     return (<div className={styles.organizerView}>
       <NotificationBar zIndex={3} />
       {organizer ? this.renderOrganizer(organizer) : <LoadingMessage message="Loading organiser" ellipsis />}
       <div className={styles.container}>
         {this.renderSessions()}
         <div className={styles.sidebar}>
-          {organizer ? this.renderData(organizer, isAdmin) : null}
-          {organizer && this.canAct('edit') ? this.renderMembers(organizer) : null}
+          {organizer ? this.renderData(organizer) : null}
+          {organizer && this.canAct('addMember') ? this.renderMembers(organizer) : null}
         </div>
       </div>
     </div>);

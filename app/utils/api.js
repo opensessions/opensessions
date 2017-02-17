@@ -44,7 +44,10 @@ const apiModel = {
     return apiFetch(`/api/${model}`, { query });
   },
   new(model, body) {
-    return apiFetch(`/api/${model}/create`, { body });
+    return apiModel.modelAct(model, 'new', body);
+  },
+  modelAct(model, action, body) {
+    return apiFetch(`/api/${model}/action/${action}`, { body });
   },
   get(model, uuid, query) {
     return apiFetch(`/api/${model}/${uuid}`, { query });

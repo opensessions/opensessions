@@ -3,6 +3,10 @@ const { SERVICE_LOCATION, SERVICE_EMAIL, EMAILS_INBOUND_URL, GOOGLE_MAPS_API_STA
 const { sortSchedule, parseSchedule, nextSchedule } = require('../utils/calendar');
 const { sendTweet } = require('../server/middlewares/twitter');
 
+const { reqToSearch, sessionToItem } = require('../server/middlewares/rdpe');
+
+const { getUserByEmail, getUserById } = require('./users');
+
 function getStaticMapUrl(center, zoom, size, marker) {
   const [lat, lng] = center;
   const opts = {
@@ -74,8 +78,8 @@ module.exports = (DataTypes) => ({
       }
     },
     Partner: {
-      owner: DataTypes.STRING,
-      enabled: DataTypes.BOOLEAN,
+      userId: DataTypes.STRING,
+      data: DataTypes.JSON,
       _options: {
         freezeTableName: true,
         classMethods: {
@@ -85,10 +89,17 @@ module.exports = (DataTypes) => ({
           getActions(models, req) {
             const actions = [];
             if (req.isAdmin) {
-              actions.push('create');
+              actions.push('new');
               actions.push('view');
             }
             return actions;
+          },
+          new(req, models) {
+            const { userId } = req.body;
+            return getUserById(userId).then(user => {
+              const { picture, name } = user;
+              return models.Partner.create({ userId, data: { picture, name } });
+            });
           }
         },
         instanceMethods: {
@@ -98,7 +109,37 @@ module.exports = (DataTypes) => ({
               actions.push('view');
               actions.push('edit');
             }
+            if (req.isAdmin) {
+              actions.push('enable');
+              actions.push('disable');
+              actions.push('delete');
+            }
+            actions.push('rdpe');
             return actions;
+          },
+          delete() {
+            return this.destroy();
+          },
+          rdpe(req, models) {
+            const { uuid, userId } = this;
+            const options = { legacyOrganizerMerge: true, URL: `/api/partner/${uuid}/action/rdpe` };
+            return models.Session.findAll(reqToSearch(req, models)).then(rawSessions => {
+              const sessions = rawSessions.map(session => sessionToItem(session, options, s => s.owner === userId));
+              const next = {};
+              if (sessions.length) {
+                const lastSession = sessions[sessions.length - 1];
+                next.from = lastSession.modified;
+                next.after = lastSession.id;
+              } else {
+                ['from', 'after'].filter(key => key in req.query).forEach(key => (next[key] = req.query[key]));
+              }
+              return {
+                items: sessions,
+                next: `/api/partner/${uuid}/action/rdpe?${Object.keys(next).map(key => [key, encodeURIComponent(next[key])].join('=')).join('&')}`,
+                license: 'https://creativecommons.org/licenses/by/4.0/',
+                rawResult: true
+              };
+            });
           }
         }
       }
@@ -216,9 +257,8 @@ module.exports = (DataTypes) => ({
           delete() {
             return this.destroy();
           },
-          addMember(req, models, authClient) {
-            return authClient.getUsers({ q: `email:"${req.body.email}"` })
-              .then(users => users[0])
+          addMember(req) {
+            return getUserByEmail(req.body.email)
               .then(user => this.update({ members: (this.members || []).concat({ email: user.email, user_id: user.user_id, picture: user.picture, name: user.name }) }))
               .then(() => ({}));
           },

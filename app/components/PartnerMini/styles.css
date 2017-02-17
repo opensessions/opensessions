@@ -1,0 +1,7 @@
+.partner {
+  & img {
+    margin: .5em;
+    max-width: 2em;
+    border-radius: 50%;
+  }
+}

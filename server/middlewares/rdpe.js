@@ -12,15 +12,18 @@ const compareMicrotime = (dateString, operator = '=') => {
 const hiddenFields = ['aggregators', 'contactEmail', 'analytics', 'sortedSchedule', 'owner'];
 const organizerFields = ['contactName', 'contactPhone', 'socialWebsite', 'socialTwitter', 'socialFacebook', 'socialHashtag', 'socialInstagram'];
 
-const sessionToItem = (session, options) => {
-  const state = session.state === 'published' ? 'updated' : 'deleted';
+const sessionToItem = (session, options = {}, isShown) => {
   const item = {
-    state,
+    state: session.state,
     kind: 'session',
     id: session.uuid,
     modified: session.updatedAt.toISOString(),
   };
-  if (state === 'updated') {
+  if (item.state === 'published') item.state = 'updated';
+  if (item.state === 'updated' && isShown) {
+    item.state = isShown(session) ? 'updated' : 'deleted';
+  }
+  if (item.state === 'updated') {
     item.data = session.toJSON();
     const { locationData } = item.data;
     if (locationData) {
@@ -59,20 +62,14 @@ const sessionToItem = (session, options) => {
   return item;
 };
 
-module.exports = (database, options = {}) => {
-  const rdpe = express();
-  const { Session, Organizer, Activity } = database.models;
-
-  rdpe.get('/', (req, res) => {
-    res.json({
-      sessions: `${options.baseURL}/sessions`,
-    });
-  });
-
-  rdpe.get('/sessions', (req, res) => {
-    const fromTS = req.query.from || 0;
-    const afterID = req.query.after;
-    const where = {
+const reqToSearch = (req, models, extraWhere = {}) => {
+  const fromTS = req.query.from || 0;
+  const afterID = req.query.after;
+  return {
+    where: Object.assign({
+      state: {
+        $in: ['published', 'deleted', 'unpublished']
+      },
       $or: [{
         updatedAt: compareMicrotime(fromTS, '='),
         uuid: {
@@ -80,32 +77,45 @@ module.exports = (database, options = {}) => {
         }
       }, {
         updatedAt: compareMicrotime(fromTS, '>'),
-      }],
-      state: {
-        $in: ['published', 'deleted', 'unpublished']
-      }
-    };
-    const order = [
+      }]
+    }, extraWhere),
+    order: [
       ['updatedAt', 'ASC'],
       ['uuid', 'ASC']
-    ];
-    const limit = 40;
-    Session.findAll({ where, order, limit, include: [Organizer, Activity] }).then(rawSessions => {
-      const sessions = rawSessions.map(session => sessionToItem(session, options));
-      const next = {};
-      if (sessions.length) {
-        const lastSession = sessions[sessions.length - 1];
-        next.from = lastSession.modified;
-        next.after = lastSession.id;
-      } else {
-        if ('from' in req.query) next.from = req.query.from;
-        if ('after' in req.query) next.after = req.query.after;
-      }
-      const query = Object.keys(next).map(key => [key, encodeURIComponent(next[key])].join('=')).join('&');
-      res.json({
-        items: sessions,
-        next: `${options.baseURL}/sessions?${query}`,
-        license: 'https://creativecommons.org/licenses/by/4.0/'
+    ],
+    limit: 40,
+    include: [models.Organizer, models.Activity]
+  };
+};
+
+const rdpe = (database, options = {}) => {
+  const api = express();
+  const { Session, Partner } = database.models;
+
+  api.get('/', (req, res) => {
+    res.json({
+      sessions: `${options.baseURL}/sessions`,
+    });
+  });
+
+  api.get('/sessions', (req, res) => {
+    Partner.findAll().then(partners => {
+      const partnerIDs = partners.map(p => p.userId).filter(id => id);
+      return Session.findAll(reqToSearch(req, database.models)).then(rawSessions => {
+        const sessions = rawSessions.map(session => sessionToItem(session, options, s => partnerIDs.indexOf(s.owner) === -1));
+        const next = {};
+        if (sessions.length) {
+          const lastSession = sessions[sessions.length - 1];
+          next.from = lastSession.modified;
+          next.after = lastSession.id;
+        } else {
+          ['from', 'after'].filter(key => key in req.query).forEach(key => (next[key] = req.query[key]));
+        }
+        res.json({
+          items: sessions,
+          next: `${options.baseURL}/sessions?${Object.keys(next).map(key => [key, encodeURIComponent(next[key])].join('=')).join('&')}`,
+          license: 'https://creativecommons.org/licenses/by/4.0/'
+        });
       });
     }).catch(error => {
       console.error('rdpe error', error);
@@ -113,5 +123,7 @@ module.exports = (database, options = {}) => {
     });
   });
 
-  return rdpe;
+  return api;
 };
+
+module.exports = { reqToSearch, sessionToItem, rdpe };

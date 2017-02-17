@@ -2,6 +2,20 @@ import moment from 'moment';
 
 import { pgTimeToDate } from './postgres';
 
+export function parseSlot(slot) {
+  const date = new Date(slot.start);
+  const now = new Date();
+  const dur = moment.duration(moment(slot.end).diff(moment(slot.start)));
+  const hours = (dur.asHours() + 24) % 24;
+  const hoursInt = Math.floor(hours);
+  const minsInt = Math.ceil((hours % 1) * 60);
+  return {
+    date: moment(date).format(date.getFullYear() === now.getFullYear() ? 'dddd D MMM' : 'dddd D MMM YYYY'),
+    time: date.toTimeString().slice(0, 5),
+    duration: [hoursInt ? `${hoursInt}h` : '', minsInt ? ` ${minsInt}m` : ''].join('')
+  };
+}
+
 export function parseSchedule(instance) {
   const { startDate, startTime, endTime } = instance;
   const data = {};

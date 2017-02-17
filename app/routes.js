@@ -41,6 +41,12 @@ export default function createRoutes() {
         System.import('./containers/Dashboard').then(loadModule(cb)).catch(errorLoading);
       }
     }, {
+      path: '/dashboard/users',
+      name: 'user dashboard',
+      getComponent(nextState, cb) {
+        System.import('./containers/UserDashboard').then(loadModule(cb)).catch(errorLoading);
+      }
+    }, {
       path: '/sessions',
       name: 'sessions',
       getComponent(nextState, cb) {

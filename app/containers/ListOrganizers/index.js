@@ -30,7 +30,7 @@ export default class ListOrganizers extends React.Component { // eslint-disable-
     params: PropTypes.object
   };
   static fetchData(dispatch) {
-    return apiModel.search('organizer').then(result => {
+    return apiModel.search('organizer', { depth: 1 }).then(result => {
       const { instances, error } = result;
       if (error) throw error;
       dispatch({ type: 'ORGANIZER_LIST_LOADED', payload: instances.sort((i1, i2) => (i1.createdAt > i2.createdAt ? 1 : -1)) });

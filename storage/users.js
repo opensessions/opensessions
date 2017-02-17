@@ -20,4 +20,8 @@ const getAllUsers = () => {
   return pageUsers(page, allUsers);
 };
 
-module.exports = { authClient, getAllUsers };
+const getUserById = id => authClient.getUsers({ q: `user_id:"${id}"` }).then(users => users[0]);
+
+const getUserByEmail = email => authClient.getUsers({ q: `email:"${email}"` }).then(users => users[0]);
+
+module.exports = { authClient, getAllUsers, getUserById, getUserByEmail };

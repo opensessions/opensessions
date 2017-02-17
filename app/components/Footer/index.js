@@ -37,7 +37,7 @@ export default class Footer extends React.Component { // eslint-disable-line rea
           {this.context.isAdmin ? (<div className={styles.column}>
             <Authenticated>
               <h2>Admin</h2>
-              <p><Link to="/dashboard">Analytics</Link></p>
+              <p><Link to="/dashboard">Dashboard</Link> • <Link to="/dashboard/users">Users</Link></p>
               <p>View sessions - <Link to="/sessions/map">Map</Link> • <Link to="/sessions">List</Link></p>
               <p><Link to="/activities">Activity list</Link></p>
               <p><Link to="/organizers">Organiser list</Link></p>

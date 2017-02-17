@@ -1,0 +1,42 @@
+@import '../App/variables.css';
+
+.dashboard {
+  & > h1 {
+    font-size: 2em;
+    text-align: center;
+    margin: .5em auto;
+  }
+}
+
+.chart {
+  text-align: center;
+  margin: 1em auto;
+  padding: 1em;
+  background-color: #FFF;
+  & svg {
+    margin: auto;
+  }
+  & h1 {
+    font-size: 1.5em;
+  }
+  & h2 {
+    font-size: 1.25em;
+  }
+  &.cols {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+}
+
+.blocks {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  & > li {
+    list-style: none;
+    max-width: 52em;
+    overflow: auto;
+  }
+}

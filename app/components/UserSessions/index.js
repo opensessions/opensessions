@@ -18,7 +18,6 @@ export default class UserSessions extends React.Component { // eslint-disable-li
   render() {
     const { user, sessions } = this.props;
     const { isExpanded } = this.state;
-    console.log(user);
     return (<div>
       <div className={styles.userSessions}>
         <span>

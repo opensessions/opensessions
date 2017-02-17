@@ -4,6 +4,7 @@
   }
   & select,
   & input {
+    max-width: 100%;
     background-color: #FFF;
     padding: .5em;
     border: 1px solid #CCC;

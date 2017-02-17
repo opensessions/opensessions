@@ -24,11 +24,13 @@
   & .timeFull {
     display: inline-block;
     vertical-align: middle;
+    margin: .2em;
     padding: .2em;
     font-size: .75em;
-    background-color: #888;
+    background-color: #AAA;
     color: #FFF;
     font-family: monospace;
+    line-height: 1;
   }
   & .tag {
     background-color: var(--actionColor);

@@ -47,17 +47,23 @@ app.use('/api', apiMiddleware(database));
 const { CronJob } = require('cron');
 const { sendWeeklyEmails, sendDailyEmails } = require('./middlewares/engagement');
 const { makeAppAnalysis } = require('./middlewares/analysis');
+const { runDatabaseCleanup } = require('./maintenance');
 
 const EVERY_MONDAY_MORNING = '0 0 7 * * 1';
 const EVERY_MORNING = '0 0 8 * * *';
+const EVERY_NIGHT = '0 0 0 * * *';
 
-const emailWeeklyCron = new CronJob(EVERY_MONDAY_MORNING, () => { // eslint-disable-line no-unused-vars
+CronJob(EVERY_MONDAY_MORNING, () => {
   sendWeeklyEmails(database.models);
 }, null, true, process.env.LOCALE_TIMEZONE);
 
-const emailDailyCron = new CronJob(EVERY_MORNING, () => { // eslint-disable-line no-unused-vars
+CronJob(EVERY_MORNING, () => {
   sendDailyEmails(database.models);
   makeAppAnalysis(database.models, { trigger: 'daily-cron' });
+}, null, true, process.env.LOCALE_TIMEZONE);
+
+CronJob(EVERY_NIGHT, () => {
+  runDatabaseCleanup(database);
 }, null, true, process.env.LOCALE_TIMEZONE);
 
 makeAppAnalysis(database.models, { trigger: 'app-started' });

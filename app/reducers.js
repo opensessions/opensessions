@@ -182,6 +182,17 @@ function analysisListReducer(state = analysisListInitialState, action) {
   }
 }
 
+const partnerListInitialState = [];
+
+function partnerListReducer(state = partnerListInitialState, action) {
+  switch (action.type) {
+    case 'PARTNER_LIST_LOADED':
+      return action.payload;
+    default:
+      return state;
+  }
+}
+
 /**
  * Creates the main reducer with the asynchronously loaded ones
  */
@@ -201,6 +212,7 @@ export default function createReducer(asyncReducers) {
     formFocusIndex: formFocusIndexReducer,
     mapClustered: mapClusteredReducer,
     analysisList: analysisListReducer,
+    partnerList: partnerListReducer,
     ...asyncReducers,
   });
 }
