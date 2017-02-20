@@ -56,7 +56,6 @@ const sessionToItem = (session, options = {}, isShown) => {
       });
       if (session.Organizer.data.noSchedule) delete item.data.schedule;
       if (session.Organizer.data.noPricing) delete item.data.pricing;
-      item.state = 'deleted'; // remove these sessions temporarily from endpoint
     }
   }
   return item;
@@ -99,28 +98,29 @@ const rdpe = (database, options = {}) => {
   });
 
   api.get('/sessions', (req, res) => {
-    Partner.findAll().then(partners => {
-      const partnerIDs = partners.map(p => p.userId).filter(id => id);
-      return Session.findAll(reqToSearch(req, database.models)).then(rawSessions => {
-        const sessions = rawSessions.map(session => sessionToItem(session, options, s => partnerIDs.indexOf(s.owner) === -1));
-        const next = {};
-        if (sessions.length) {
-          const lastSession = sessions[sessions.length - 1];
-          next.from = lastSession.modified;
-          next.after = lastSession.id;
-        } else {
-          ['from', 'after'].filter(key => key in req.query).forEach(key => (next[key] = req.query[key]));
-        }
-        res.json({
-          items: sessions,
-          next: `${options.baseURL}/sessions?${Object.keys(next).map(key => [key, encodeURIComponent(next[key])].join('=')).join('&')}`,
-          license: 'https://creativecommons.org/licenses/by/4.0/'
-        });
+    Partner.findAll()
+      .then(partners => partners.map(p => p.userId).filter(id => id))
+      .then(partnerIDs => Session.findAll(reqToSearch(req, database.models))
+        .then(rawSessions => {
+          const sessions = rawSessions.map(session => sessionToItem(session, options, s => partnerIDs.indexOf(s.owner) === -1));
+          const next = {};
+          if (sessions.length) {
+            const lastSession = sessions[sessions.length - 1];
+            next.from = lastSession.modified;
+            next.after = lastSession.id;
+          } else {
+            ['from', 'after'].filter(key => key in req.query).forEach(key => (next[key] = req.query[key]));
+          }
+          res.json({
+            items: sessions,
+            next: `${options.baseURL}/sessions?${Object.keys(next).map(key => [key, encodeURIComponent(next[key])].join('=')).join('&')}`,
+            license: 'https://creativecommons.org/licenses/by/4.0/'
+          });
+        })
+      ).catch(error => {
+        console.error('rdpe error', error);
+        res.json({ error });
       });
-    }).catch(error => {
-      console.error('rdpe error', error);
-      res.json({ error });
-    });
   });
 
   return api;

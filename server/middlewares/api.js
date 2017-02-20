@@ -59,7 +59,9 @@ module.exports = (database) => {
 
   const processUser = (req, res, next) => {
     req.isAdmin = false;
+    console.log('processUser', req.headers);
     requireLogin(req, res, () => {
+      console.log('processUser req.user', req.user);
       if (req.user) {
         isAdmin(req.user).then(admin => {
           req.isAdmin = admin;
@@ -240,7 +242,6 @@ module.exports = (database) => {
 
   api.all('/:model/action/new', processUser, resolveModel, (req, res) => {
     const { Model } = req;
-    const getPrototype = Model.getPrototype || (() => Promise.resolve({}));
     if (Model.new) {
       if (Model.getActions(database.models, req).some(action => action === 'new')) {
         Model.new(req, database.models)
@@ -254,6 +255,7 @@ module.exports = (database) => {
         res.status(400).json({ error: `Permission denied to create ${req.params.model}` });
       }
     } else {
+      const getPrototype = Model.getPrototype || (() => Promise.resolve({}));
       getPrototype(database.models, getUser(req)).then(data => {
         Object.keys(req.body).forEach(key => {
           data[key] = req.body[key];

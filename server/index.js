@@ -53,18 +53,20 @@ const EVERY_MONDAY_MORNING = '0 0 7 * * 1';
 const EVERY_MORNING = '0 0 8 * * *';
 const EVERY_NIGHT = '0 0 0 * * *';
 
-CronJob(EVERY_MONDAY_MORNING, () => {
-  sendWeeklyEmails(database.models);
-}, null, true, process.env.LOCALE_TIMEZONE);
+const crons = [
+  new CronJob(EVERY_MONDAY_MORNING, () => {
+    sendWeeklyEmails(database.models);
+  }, null, true, process.env.LOCALE_TIMEZONE),
+  new CronJob(EVERY_MORNING, () => {
+    sendDailyEmails(database.models);
+    makeAppAnalysis(database.models, { trigger: 'daily-cron' });
+  }, null, true, process.env.LOCALE_TIMEZONE),
+  new CronJob(EVERY_NIGHT, () => {
+    runDatabaseCleanup(database);
+  }, null, true, process.env.LOCALE_TIMEZONE)
+];
 
-CronJob(EVERY_MORNING, () => {
-  sendDailyEmails(database.models);
-  makeAppAnalysis(database.models, { trigger: 'daily-cron' });
-}, null, true, process.env.LOCALE_TIMEZONE);
-
-CronJob(EVERY_NIGHT, () => {
-  runDatabaseCleanup(database);
-}, null, true, process.env.LOCALE_TIMEZONE);
+console.log('Crons started', crons);
 
 makeAppAnalysis(database.models, { trigger: 'app-started' });
 
