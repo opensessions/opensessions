@@ -20,6 +20,7 @@ const sessionToItem = (session, options = {}, isShown) => {
     modified: session.updatedAt.toISOString(),
   };
   if (item.state === 'published') item.state = 'updated';
+  if (item.state === 'unpublished') item.state = 'deleted';
   if (item.state === 'updated' && isShown) {
     item.state = isShown(session) ? 'updated' : 'deleted';
   }

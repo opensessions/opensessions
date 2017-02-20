@@ -55,7 +55,7 @@ export default class ViewRDPE extends React.Component { // eslint-disable-line r
       {isLoading
         ? <LoadingMessage message="Loading RDPE" />
         : (<ol className={styles.list}>
-          {rdpe.items.map(data => <li><JSONView data={data} /></li>)}
+          {rdpe && rdpe.items ? rdpe.items.map((data, key) => <li key={key}><JSONView data={data} /></li>) : null}
         </ol>)}
     </div>);
   }

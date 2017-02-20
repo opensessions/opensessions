@@ -20,6 +20,7 @@ const dateDayDiff = (date, delta) => new Date((new Date()).setDate(date.getDate(
 export default class ListSessions extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
     notify: PropTypes.func,
+    modal: PropTypes.object,
     store: PropTypes.object,
     router: PropTypes.object
   };
@@ -68,13 +69,18 @@ export default class ListSessions extends React.Component { // eslint-disable-li
     ];
     const { search } = this.props.location;
     const { showExpired, isMap } = this.state;
+    const activityList = this.context.store.getState().get('activityList');
+    const activities = {};
+    if (activityList) activityList.forEach(a => {
+      activities[a.name] = a.name;
+    });
     return (<div className={styles.filters}>
       <p>Filters - {filters.map(filter => <Button to={getURL(isMap, filter.search)} style={search === filter.search ? 'live' : ''}>{filter.name}</Button>)}</p>
       {filters.some(filter => filter.search === search) ? null : (<p>
         Current filters - {search.slice(1).split('&').map(v => v.split('=')).map(([key, val]) => {
           const changeVal = () => {
-            const newVal = prompt(`Change ${key}:`, val);
-            if (newVal) this.context.router.push(getURL(isMap, search.replace([key, val].join('='), [key, newVal].join('='))));
+            if (activityList) this.context.modal.options(`Change ${key}`, activities, newVal => this.context.router.push(getURL(isMap, search.replace([key, val].join('='), [key, newVal].join('=')))));
+            else this.context.modal.prompt(`Change ${key}`, newVal => this.context.router.push(getURL(isMap, search.replace([key, val].join('='), [key, newVal].join('=')))));
           };
           return <span>{key}: <Button style={['slim', 'live']} onClick={() => changeVal()}>{val}</Button> <Button style={['slim', 'danger']} to={getURL(isMap, search.replace(new RegExp(`[\?&]?${key}=${val}`), ''))}>x</Button></span>;
         })}

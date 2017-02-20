@@ -37,7 +37,7 @@ export default class VersionChange extends React.Component { // eslint-disable-l
       {analysis.gitHead
         ? (<span>
           <a href={`https://github.com/opensessions/opensessions/commit/${analysis.gitHead}`} className={styles.tag}>#{analysis.gitHead.slice(0, 7)}</a>
-          <span className={styles.changes}>{messages && messages.length ? messages.map(msg => `+ ${msg}`).reverse().join('\n') : 'No git messages this far back'}</span>
+          {messages && messages.length ? <span className={styles.changes}>{messages.map(msg => `+ ${msg}`).reverse().join('\n')}</span> : null}
         </span>)
         : null}
     </div>);
