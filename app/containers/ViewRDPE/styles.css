@@ -2,13 +2,14 @@
   font-family: monospace;
   margin: 1em auto;
   max-width: 140em;
+  max-height: 80vh;
   padding: 0 1em;
   display: flex;
   flex-direction: row;
   overflow: auto;
+  background: #FFF;
   & > li {
     list-style: none;
-    background: #FFF;
     padding: .5em;
   }
 }

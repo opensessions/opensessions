@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 
 import CalendarSVG from '../../components/SVGs/Calendar';
 
-import { parseSchedule, sortSchedule } from '../../utils/calendar';
+import { parseSchedule, lastUpdatedString } from '../../utils/calendar';
 import { apiModel } from '../../utils/api';
 
 import styles from './styles.css';
@@ -51,10 +51,16 @@ const SessionTileView = function (props, context) {
   let { state } = session;
   if (state === 'unpublished') state = 'draft';
   const isAdmin = context.isAdmin;
+  const [updatedAt] = lastUpdatedString(session);
   return (<article className={[styles.tile, style ? styles[style] : ''].join(' ')}>
     <div className={styles.imgCol}>
       <img src={image || '/images/placeholder.png'} role="presentation" className={!image ? styles.noImage : null} />
-      {isAdmin && session.analytics ? <div className={styles.moreInfo}>Viewed {session.analytics.views} times</div> : null}
+      {isAdmin
+        ? (<div className={styles.moreInfo}>
+          {session.analytics ? <span className={styles.views}>{session.analytics.views} views</span> : null}
+          <span className={styles.updatedAt}>updated {updatedAt}</span>
+        </div>)
+        : null}
     </div>
     <div className={styles.textCol}>
       <div className={styles.info}>
@@ -73,8 +79,8 @@ const SessionTileView = function (props, context) {
     <div className={styles.schedules}>
       <div>{session.schedule ? session.schedule.length : 'NONE'} SCHEDULED</div>
       <ol>
-        {session.schedule && session.schedule.length
-          ? sortSchedule(session.schedule).map(parseSchedule).map((date, key) => (<li className={[styles.schedule, date.hasOccurred ? styles.occurred : null].join(' ')} key={key}>
+        {session.sortedSchedule.length
+          ? session.sortedSchedule.map(parseSchedule).map((date, key) => (<li className={[styles.schedule, date.hasOccurred ? styles.occurred : null].join(' ')} key={key}>
             <CalendarSVG />
             <span>{date.date} {date.time ? <span className={styles.time}>at {date.time}</span> : null}</span>
           </li>))

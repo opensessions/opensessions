@@ -46,9 +46,9 @@ export default class ViewRDPE extends React.Component { // eslint-disable-line r
     const actions = [];
     if (rdpe && rdpe.items) {
       if (!isLoading) h3 = `Showing ${rdpe.items.length} items`;
-      if (this.props.location.search) actions.push(<Button to="/rdpe" style="danger">Reset</Button>);
-      actions.push(<Button onClick={() => window.location.assign(`/api/rdpe/sessions?${this.props.location.search}`)}>Raw</Button>);
-      actions.push(<Button to={`/rdpe?${rdpe.next.split('?')[1]}`}>Next</Button>);
+      if (this.props.location.search) actions.push(<Button key="reset" to="/rdpe" style="danger">Reset</Button>);
+      actions.push(<Button key="raw" onClick={() => window.location.assign(`/api/rdpe/sessions?${this.props.location.search}`)}>Raw</Button>);
+      actions.push(<Button key="next" to={`/rdpe?${rdpe.next.split('?')[1]}`}>Next</Button>);
     }
     return (<div>
       <PublishHeader h2="RDPE Viewer" h3={h3} actions={actions} />

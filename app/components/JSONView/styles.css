@@ -5,12 +5,9 @@
     list-style: none;
     & .key {
       font-weight: bold;
-      &:after {
-        content: ': ';
-      }
     }
     & .value {
-      
+      margin-left: 1em;
     }
   }
 }

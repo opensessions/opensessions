@@ -37,13 +37,7 @@ export default class OrganizerEdit extends React.Component { // eslint-disable-l
       isPendingSave: false,
       isSaving: true,
       isLoading: true,
-      fieldsets: [
-        { slug: 'description', required: ['name'], fields: ['name', 'description', 'slug', 'image'], props: { validity: 'none' } },
-        { slug: 'contact', props: { validity: 'none' }, fields: ['data.contactName', 'data.contactEmail', 'data.contactPhone'] },
-        { slug: 'social', props: { validity: 'none' }, fields: ['socialWebsite', 'socialFacebook', 'socialInstagram', 'socialTwitter', 'socialHashtag'] },
-        { slug: 'location', props: { validity: 'none' }, fields: ['data.location'] },
-        { slug: 'options', props: { validity: 'none' }, fields: ['data.noSchedule', 'data.noPricing'] }
-      ],
+      fieldsets: [],
       fieldToType: {
         'data.location': Location,
         'data.noPricing': BoolRadio,
@@ -64,6 +58,7 @@ export default class OrganizerEdit extends React.Component { // eslint-disable-l
   }
   componentDidMount() {
     this.fetchData();
+    this.getFieldsets();
   }
   onChange = instance => {
     const { fieldsets } = this.state;
@@ -77,6 +72,17 @@ export default class OrganizerEdit extends React.Component { // eslint-disable-l
     });
     const pendingSteps = fieldsets.filter(fieldset => !fieldset.props.validity).length;
     this.setState({ fieldsets, pendingSteps });
+  }
+  getFieldsets() {
+    const { user } = this.context;
+    const fieldsets = [
+      { slug: 'description', required: ['name'], fields: ['name', 'description', 'slug', 'image'], props: { validity: 'none' } },
+      { slug: 'contact', props: { validity: 'none' }, fields: ['data.contactName', 'data.contactEmail', 'data.contactPhone'] },
+      { slug: 'social', props: { validity: 'none' }, fields: ['socialWebsite', 'socialFacebook', 'socialInstagram', 'socialTwitter', 'socialHashtag'] },
+      { slug: 'location', props: { validity: 'none' }, fields: ['data.location'] }
+    ];
+    if (user && user.partner) fieldsets.push({ slug: 'options', props: { validity: 'none' }, fields: ['data.noSchedule', 'data.noPricing'] });
+    return this.setState({ fieldsets });
   }
   getAttr = name => {
     const names = name.split('.');

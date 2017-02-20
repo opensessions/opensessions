@@ -22,6 +22,7 @@ import Dialog from '../Modals/Dialog';
 
 import getUserToken from './getUserToken';
 import cookie from '../../utils/cookie';
+import { apiFetch } from '../../utils/api';
 
 import styles from './styles.css';
 
@@ -86,6 +87,13 @@ export default class App extends React.Component { // eslint-disable-line react/
       cookie.set('postlogin_redirect', location.search.replace(loginRE, ''));
       this.modal({ component: <AuthModal /> });
     }
+  }
+  getPartner() {
+    const { profile } = this.state;
+    return apiFetch('/api/partner', { query: { userId: profile.user_id } }).then(res => {
+      profile.partner = res.instances && res.instances.length ? res.instances[0] : false;
+      this.setState({ profile });
+    });
   }
   notify = (text, status, actions, storeType) => {
     const notification = {
@@ -154,6 +162,8 @@ export default class App extends React.Component { // eslint-disable-line react/
       if (Date.now() - updatedAt.getTime() <= 10000 && cookie.has('postlogin_redirect')) {
         this.context.router.push(cookie.one('postlogin_redirect'));
       }
+
+      this.getPartner();
 
       return true;
     });

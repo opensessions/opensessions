@@ -25,15 +25,23 @@
 
 .moreInfo {
   position: absolute;
-  opacity: .75;
   bottom: 0;
-  background: var(--actionColor);
+  left: 0;
+  right: 0;
   padding: .25em;
   font-size: .9em;
   font-family: monospace;
-  color: #FFF;
-  &:hover {
-    opacity: 1;
+  & .views {
+    float: left;
+    padding: .25em;
+    background: var(--actionColor);
+    color: #FFF;
+  }
+  & .updatedAt {
+    float: right;
+    padding: .25em;
+    text-shadow: 1px 1px #FFF;
+    background-color: #FFF8;
   }
 }
 

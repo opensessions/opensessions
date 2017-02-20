@@ -30,7 +30,6 @@
   }
   & .changes {
     display: block;
-    vertical-align: top;
     padding: .5em;
     text-align: left;
     background: #FFF;

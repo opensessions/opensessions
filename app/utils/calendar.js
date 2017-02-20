@@ -84,3 +84,25 @@ export function timeAgo(date) {
 export function weeksAgo(date) {
   return intervalsAgo(date, 7);
 }
+
+export function lastUpdatedString(session) {
+  const today = new Date();
+  const updated = new Date(session.updatedAt);
+  let updatedAt = '';
+  let freshness = 2;
+  const dayDelta = [today, updated].map(time => Math.floor(time.getTime() / MS_PER_DAY)).reduce((todayDay, updatedDay) => todayDay - updatedDay);
+  if (dayDelta === 0) {
+    updatedAt = 'today';
+  } else if (dayDelta < 7) {
+    updatedAt = `${dayDelta} days ago`;
+  } else if (dayDelta < 31) {
+    updatedAt = `${Math.floor(dayDelta / 7)} week${dayDelta < 14 ? '' : 's'} ago`;
+  } else if (dayDelta < 92) {
+    updatedAt = 'over a month ago';
+    freshness = 1;
+  } else {
+    updatedAt = 'over three months ago';
+    freshness = 0;
+  }
+  return [updatedAt, dayDelta, freshness];
+}

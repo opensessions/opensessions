@@ -17,14 +17,13 @@ import PriceSVG from '../../components/SVGs/Price';
 import Button from '../../components/Button';
 import SocialMedia from '../../components/SocialMedia';
 
-import { parseSlot, weeksAgo } from '../../utils/calendar';
+import { parseSlot, weeksAgo, lastUpdatedString } from '../../utils/calendar';
 import { apiModel } from '../../utils/api';
 
 import styles from './styles.css';
 import publishStyles from '../../components/PublishHeader/styles.css';
 
 const { google, ADMIN_DOMAIN } = window;
-const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
 const GoogleMapLoader = withGoogleMap(props => (
   <GoogleMap {...props.mapProps}>
@@ -184,25 +183,8 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     </div>);
   }
   renderLastUpdated(session) {
-    const today = new Date();
-    const updated = new Date(session.updatedAt);
-    let updatedAt = '';
-    let freshness = 2;
+    const [updatedAt, dayDelta, freshness] = lastUpdatedString(session);
     const freshStyles = ['', styles.recent, styles.new];
-    const dayDelta = [today, updated].map(time => Math.floor(time.getTime() / MS_PER_DAY)).reduce((todayDay, updatedDay) => todayDay - updatedDay);
-    if (dayDelta === 0) {
-      updatedAt = 'today';
-    } else if (dayDelta < 7) {
-      updatedAt = `${dayDelta} days ago`;
-    } else if (dayDelta < 31) {
-      updatedAt = `${Math.floor(dayDelta / 7)} week${dayDelta < 14 ? '' : 's'} ago`;
-    } else if (dayDelta < 92) {
-      updatedAt = 'over a month ago';
-      freshness = 1;
-    } else {
-      updatedAt = 'over three months ago';
-      freshness = 0;
-    }
     return <span className={[styles.lastUpdated, freshStyles[freshness]].join(' ')} title={dayDelta <= 1 ? '' : `${dayDelta} days ago`}>last updated {updatedAt}</span>;
   }
   renderPriceList(prices) {
