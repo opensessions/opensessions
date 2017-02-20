@@ -150,6 +150,7 @@ export default class UserDashboard extends React.Component { // eslint-disable-l
     if (isLoading) return <LoadingMessage message="Loading app analysis" ellipsis />;
     const partners = this.context.store.getState().get('partnerList');
     const users = this.context.store.getState().get('userList');
+    if (!users) return null;
     const userList = {};
     users.forEach(user => {
       userList[user.user_id] = `${user.name} <${user.email}>`;
