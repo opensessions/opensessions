@@ -193,6 +193,17 @@ function partnerListReducer(state = partnerListInitialState, action) {
   }
 }
 
+const rdpeInitialState = [];
+
+function rdpeReducer(state = rdpeInitialState, action) {
+  switch (action.type) {
+    case 'RDPE_LOADED':
+      return action.payload;
+    default:
+      return state;
+  }
+}
+
 /**
  * Creates the main reducer with the asynchronously loaded ones
  */
@@ -213,6 +224,7 @@ export default function createReducer(asyncReducers) {
     mapClustered: mapClusteredReducer,
     analysisList: analysisListReducer,
     partnerList: partnerListReducer,
+    rdpe: rdpeReducer,
     ...asyncReducers,
   });
 }

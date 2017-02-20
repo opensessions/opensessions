@@ -1,0 +1,14 @@
+.list {
+  font-family: monospace;
+  margin: 1em auto;
+  max-width: 140em;
+  padding: 0 1em;
+  display: flex;
+  flex-direction: row;
+  overflow: auto;
+  & > li {
+    list-style: none;
+    background: #FFF;
+    padding: .5em;
+  }
+}

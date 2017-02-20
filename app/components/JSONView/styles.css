@@ -1,0 +1,44 @@
+.list {
+  display: inline-block;
+  vertical-align: top;
+  & > li {
+    list-style: none;
+    & .key {
+      font-weight: bold;
+      &:after {
+        content: ': ';
+      }
+    }
+    & .value {
+      
+    }
+  }
+}
+
+ol.list {
+  &::before {
+    content: '[';
+  }
+  &::after {
+    content: ']';
+  }
+  & > li {
+    display: inline-block;
+  }
+}
+
+.false {
+  background: #CCC;
+  color: #FFF;
+  padding: .25em;
+}
+
+.date {
+  background-color: #1A90CD;
+  color: #FFF;
+  padding: .25em;
+}
+
+.url {
+  padding: .25em;
+}

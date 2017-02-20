@@ -47,6 +47,12 @@ export default function createRoutes() {
         System.import('./containers/UserDashboard').then(loadModule(cb)).catch(errorLoading);
       }
     }, {
+      path: '/rdpe',
+      name: 'rdpe',
+      getComponent(nextState, cb) {
+        System.import('./containers/ViewRDPE').then(loadModule(cb)).catch(errorLoading);
+      }
+    }, {
       path: '/sessions',
       name: 'sessions',
       getComponent(nextState, cb) {

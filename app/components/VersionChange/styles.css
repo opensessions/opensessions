@@ -6,18 +6,6 @@
   max-width: 40em;
   margin: auto;
   text-align: left;
-  & .changes {
-    display: inline-block;
-    vertical-align: top;
-    margin: 0 .5em;
-    padding: .5em;
-    text-align: left;
-    background: #EEE;
-    color: #333;
-    font-size: .9em;
-    font-family: monospace;
-    white-space: pre-wrap;
-  }
   & .time {
     font-weight: bold;
   }
@@ -38,5 +26,17 @@
     color: #FFF;
     padding: .25em;
     line-height: 1;
+    font-family: monospace;
+  }
+  & .changes {
+    display: block;
+    vertical-align: top;
+    padding: .5em;
+    text-align: left;
+    background: #FFF;
+    color: #333;
+    font-size: .8em;
+    font-family: monospace;
+    white-space: pre-wrap;
   }
 }

@@ -2,12 +2,12 @@ import React, { PropTypes } from 'react';
 import { LineChart, PieChart } from 'react-d3-basic';
 
 import LoadingMessage from '../../components/LoadingMessage';
-import PagedList from '../../components/PagedList';
 import Checkbox from '../../components/Fields/Checkbox';
 import VersionChange from '../../components/VersionChange';
+import CalendarView from '../../components/CalendarView';
 
 import { apiFetch, apiModel } from '../../utils/api';
-import { formatTime, intervalsAgo, cleanDate } from '../../utils/calendar';
+import { intervalsAgo, timeAgo } from '../../utils/calendar';
 
 import styles from './styles.css';
 
@@ -159,7 +159,7 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
       this.state.commits.forEach(({ sha, commit }) => {
         if (sha === current) recordMsg = true;
         if (sha === since) recordMsg = false;
-        if (recordMsg) msgs.unshift(`${commit.message}, ${cleanDate(new Date(commit.author.date))} ago`);
+        if (recordMsg) msgs.unshift(`${commit.message}, ${timeAgo(commit.author.date)}`);
       });
       return msgs;
     };
@@ -167,12 +167,10 @@ export default class Dashboard extends React.Component { // eslint-disable-line 
       if (lastVersion !== data.analysis.gitHead) versionChanges.unshift({ ...data, messages: getMessages(lastVersion, data.analysis.gitHead) });
       if (data.analysis.gitHead) lastVersion = data.analysis.gitHead;
     });
-    const now = new Date();
     return (<div className={styles.chart}>
       <h1>App Analysis</h1>
       <h2>Small Version changes</h2>
-      <PagedList orientation="bottom" isSlim items={versionChanges} page={1} itemToProps={data => ({ data })} Component={VersionChange} />
-      <p>{formatTime(now)}</p>
+      <CalendarView items={versionChanges} itemToDates={i => [new Date(i.createdAt)]} month={(new Date()).toISOString().substr(0, 7)} renderItem={i => <VersionChange data={i} />} />
     </div>);
   }
   render() {

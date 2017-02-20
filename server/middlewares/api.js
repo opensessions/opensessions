@@ -59,9 +59,7 @@ module.exports = (database) => {
 
   const processUser = (req, res, next) => {
     req.isAdmin = false;
-    console.log('processUser', req.headers);
     requireLogin(req, res, () => {
-      console.log('processUser req.user', req.user);
       if (req.user) {
         isAdmin(req.user).then(admin => {
           req.isAdmin = admin;

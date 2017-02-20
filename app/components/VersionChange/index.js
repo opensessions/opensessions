@@ -23,14 +23,16 @@ const dateToString = date => {
 
 export default class VersionChange extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
-    data: PropTypes.object
+    data: PropTypes.object,
+    showDate: PropTypes.bool
   }
   render() {
-    const { analysis, messages, createdAt } = this.props.data;
+    const { showDate, data } = this.props;
+    const { analysis, messages, createdAt } = data;
     const created = new Date(createdAt);
     return (<div className={styles.versionChange}>
-      <span className={styles.time}>{timeAgo(created)}</span>
-      <span className={styles.timeFull}>{dateToString(created)}</span>:
+      {showDate ? <span className={styles.time}>{timeAgo(created)}</span> : null}
+      {showDate ? <span className={styles.timeFull}>{dateToString(created)}</span> : null}
       v{analysis.version}
       {analysis.gitHead
         ? (<span>
