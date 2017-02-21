@@ -3,9 +3,9 @@ import { Link } from 'react-router';
 
 import { apiModel } from '../../utils/api';
 
-import SessionTileView from '../SessionTileView';
 import SessionList from '../SessionList';
 
+import SessionTile from '../../components/SessionTile';
 import ItemMap from '../../components/ItemMap';
 import Button from '../../components/Button';
 import LoadingMessage from '../../components/LoadingMessage';
@@ -134,7 +134,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     return (<div className={styles.sessions}>
       <h2>{organizer.name}&rsquo;{organizer.name[organizer.name.length - 1] !== 's' ? 's' : ''} Sessions</h2>
       {sessions.length
-        ? <PagedList items={sessions} Component={SessionTileView} page={1} limit={6} orientation="bottom" itemToProps={session => ({ session })} />
+        ? <PagedList items={sessions} Component={SessionTile} page={1} limit={6} orientation="bottom" itemToProps={session => ({ session })} />
         : <p>No sessions yet {this.canAct('delete') ? <Button style="danger" onClick={this.deleteOrganizer}>delete this organiser</Button> : null}</p>}
       {this.canAct('edit') ? <p className={styles.new}><Button to={`/session/add?OrganizerUuid=${organizer.uuid}`}><b>+</b> Add {sessions.length ? 'another' : 'a'} session</Button></p> : null}
       {this.canAct('edit') ? this.renderUnassignedSessions() : null}

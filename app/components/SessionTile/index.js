@@ -8,34 +8,28 @@ import { apiModel } from '../../utils/api';
 
 import styles from './styles.css';
 
-const SessionTileView = function (props, context) {
+const actionResult = ({ notify, router, onExpire }, action) => ({ message, messageType, redirect, status }) => {
+  if (status === 'success') {
+    if (message) notify(message, messageType || 'success');
+    if (redirect) router.push(redirect);
+    onExpire();
+  } else {
+    throw new Error(`Failed to ${action} session`);
+  }
+};
+
+const actionError = ({ notify }, action, object) => () => notify(`Failed to ${action} ${object}`);
+
+const SessionTile = function (props, context) {
   const { session, style } = props;
-  const { notify, modal, router, onExpire, user } = context;
+  const { notify, modal, user } = context;
   const isOwner = user && session.owner === user.user_id;
-  const promptAction = action => modal.prompt(<span>Give a name for your duplicated session:</span>, title => apiModel.action('session', session.uuid, action, { title }).then(res => {
-    const { message, messageType, redirect } = res;
-    if (res.status === 'success') {
-      if (message) notify(message, messageType || 'success');
-      if (redirect) router.push(redirect);
-      onExpire();
-    } else {
-      throw new Error(`Failed to ${action} session`);
-    }
-  }).catch(() => {
-    notify(`Failed to ${action} session`, 'error');
-  }), session.title);
-  const confirmAction = action => modal.confirm(<span>Are you sure you want to {action} <b>{session.title || 'this session'}</b>?</span>, () => apiModel.action('session', session.uuid, action).then(res => {
-    const { message, messageType, redirect } = res;
-    if (res.status === 'success') {
-      if (message) notify(message, messageType || 'success');
-      if (redirect) router.push(redirect);
-      onExpire();
-    } else {
-      throw new Error(`Failed to ${action} session`);
-    }
-  }).catch(() => {
-    notify(`Failed to ${action} session`, 'error');
-  }));
+  const promptAction = action => modal.prompt(<span>Give a name for your duplicated session:</span>, title => apiModel.action('session', session.uuid, action, { title })
+    .then(actionResult(context, action))
+    .catch(actionError(context, action, 'session')), session.title);
+  const confirmAction = action => modal.confirm(<span>Are you sure you want to {action} <b>{session.title || 'this session'}</b>?</span>, () => apiModel.action('session', session.uuid, action)
+    .then(actionResult(context, action))
+    .catch(actionError(context, action, 'session')));
   const renderActions = () => {
     const actionTypes = {
       edit: <Link to={`${session.href}/edit`}>Edit</Link>,
@@ -85,7 +79,7 @@ const SessionTileView = function (props, context) {
             <span>{date.date} {date.time ? <span className={styles.time}>at {date.time}</span> : null}</span>
           </li>))
           : (<li className={styles.addSchedule}>
-            {isOwner
+            {isOwner && !(session.Organizer && session.Organizer.data && session.Organizer.data.noSchedule)
               ? <Link to={`${session.href}/edit/schedule`}><b>+</b> Add a schedule</Link>
               : 'No schedule yet'
             }
@@ -95,11 +89,11 @@ const SessionTileView = function (props, context) {
     </div>
   </article>);
 };
-SessionTileView.propTypes = {
+SessionTile.propTypes = {
   session: PropTypes.object,
   style: PropTypes.string
 };
-SessionTileView.contextTypes = {
+SessionTile.contextTypes = {
   user: PropTypes.object,
   modal: PropTypes.object,
   router: PropTypes.object,
@@ -108,4 +102,4 @@ SessionTileView.contextTypes = {
   isAdmin: PropTypes.bool
 };
 
-export default SessionTileView;
+export default SessionTile;

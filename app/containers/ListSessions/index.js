@@ -1,8 +1,7 @@
 import React, { PropTypes } from 'react';
 
-import SessionTileView from '../SessionTileView';
 import SessionMini from '../../components/SessionMini';
-
+import SessionTile from '../../components/SessionTile';
 import SessionMap from '../../components/SessionMap';
 import CalendarView from '../../components/CalendarView';
 import LoadingMessage from '../../components/LoadingMessage';
@@ -71,9 +70,11 @@ export default class ListSessions extends React.Component { // eslint-disable-li
     const { showExpired, isMap } = this.state;
     const activityList = this.context.store.getState().get('activityList');
     const activities = {};
-    if (activityList) activityList.forEach(a => {
-      activities[a.name] = a.name;
-    });
+    if (activityList) {
+      activityList.forEach(a => {
+        activities[a.name] = a.name;
+      });
+    }
     return (<div className={styles.filters}>
       <p>Filters - {filters.map(filter => <Button to={getURL(isMap, filter.search)} style={search === filter.search ? 'live' : ''}>{filter.name}</Button>)}</p>
       {filters.some(filter => filter.search === search) ? null : (<p>
@@ -102,7 +103,7 @@ export default class ListSessions extends React.Component { // eslint-disable-li
     if (isLoading) return <LoadingMessage message="Loading sessions" ellipsis />;
     if (isMap) return <SessionMap sessions={sessions} hasSidebar />;
     if (isCalendar) return <CalendarView items={sessions} itemToDates={i => i.sortedSchedule.map(s => new Date(s.start))} month={(new Date()).toISOString().substr(0, 7)} renderItem={i => <SessionMini session={i} />} />;
-    return <PagedList items={sessions} page={page} newUrl={pg => `/sessions/${pg}${this.props.location.search}`} Component={SessionTileView} itemToProps={item => ({ session: item })} noneMessage={`No sessions ${this.props.location.search ? 'for this search' : ''}`} />;
+    return <PagedList items={sessions} page={page} newUrl={pg => `/sessions/${pg}${this.props.location.search}`} Component={SessionTile} itemToProps={item => ({ session: item })} noneMessage={`No sessions ${this.props.location.search ? 'for this search' : ''}`} />;
   }
   render() {
     return (<div className={styles.list}>

@@ -123,7 +123,7 @@ module.exports = (DataTypes) => ({
           rdpe(req, models) {
             const { uuid, userId } = this;
             const options = { legacyOrganizerMerge: true, URL: `/api/partner/${uuid}/action/rdpe` };
-            return models.Session.findAll(reqToSearch(req, models)).then(rawSessions => {
+            return models.Session.findAll(reqToSearch(req, models, { owner: userId })).then(rawSessions => {
               const sessions = rawSessions.map(session => sessionToItem(session, options, s => s.owner === userId));
               const next = {};
               if (sessions.length) {
@@ -582,7 +582,7 @@ module.exports = (DataTypes) => ({
                 <p>Dear ${session.contactName || 'Open Sessions user'},</p>
                 <p>Great news!</p>
                 <p>You have successfully listed your session on Open Sessions.</p>
-                <div class="session compact">
+                ${getStyledElement('session', `
                   <h1>${session.title}</h1>
                   <table style="text-align:center;">
                     <tr class="images">
@@ -604,14 +604,14 @@ module.exports = (DataTypes) => ({
                     </tr>
                   </table>
                   ${getStyledElement('viewLink', 'View or edit your session on Open Sessions', { href: session.absoluteURL }, 'a')}
-                </div>
+                `, { class: 'session compact' })}
                 <h1>Where does my session appear?</h1>
                 ${getStyledElement('aggregators', `
                   ${session.aggregators.map(aggregator => getStyledElement('aggregatorsLi', `
                     ${getStyledElement('imageCircle', getStyledElement('aggImg', null, { src: aggregator.img }, 'img'), {}, 'span')}
                     ${getStyledElement('aggInfo', `
-                      <h2>${aggregator.name}</h2>
-                      <p>${aggregator.description}</p>
+                      ${getStyledElement('aggInfoTitle', aggregator.name, {}, 'h2')}
+                      ${getStyledElement('aggInfoDesc', aggregator.description, {}, 'p')}
                       <a href="${aggregator.href}" style="color: inherit;">View your session on ${aggregator.name}</a>
                     `)}
                   `, { class: 'info' }, 'li')).join('')}
@@ -648,7 +648,7 @@ module.exports = (DataTypes) => ({
                   <div class="from">${name}</div>
                 </div>
                 <br />
-                <div class="session" style="padding:0;">
+                ${getStyledElement('session', `
                   <div style="padding:1em;">
                     <img src="${session.image}" />
                     <h1><a href="${session.absoluteURL}">${session.title}</a></h1>
@@ -664,8 +664,8 @@ module.exports = (DataTypes) => ({
                     </tr></table>
                   </div>
                   ${getStyledElement('aggSrcContainer', getStyledElement('aggSrcImg', '', { style: { 'background-image': `url(${SERVICE_LOCATION}/images/open-sessions.png)` } }))}
-                </div>
-                <p class="session-link"><a href="${session.absoluteURL}">View or edit your session on Open Sessions</a></p>
+                `, { class: 'session', style: 'padding: 0' })}
+                ${getStyledElement('sessionLink', getStyledElement('sessionLinkA', 'View or edit your session on Open Sessions', { href: session.absoluteURL }, 'a'), {}, 'p')}
               `, { substitutions: { '-title-': `Reply to ${name} by replying to this email`, '-signoffClass-': 'hide' }, replyTo: `${thread.uuid}@${EMAILS_INBOUND_URL}`, bcc: SERVICE_EMAIL }))
               .then({ message: `Message sent! Replies will be sent to ${email}` });
           },

@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 
 import ItemMap from '../ItemMap';
 
-import SessionTileView from '../../containers/SessionTileView';
+import SessionTile from '../SessionTile';
 
 export default class SessionMap extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
@@ -20,6 +20,6 @@ export default class SessionMap extends React.Component { // eslint-disable-line
   render() {
     const storeState = this.context.store.getState();
     const sessions = this.props.sessions || storeState.get('sessionList');
-    return sessions ? <ItemMap {...this.props} markers={sessions.filter(s => s.locationData && s.locationData.lat).map(s => ({ ...s.locationData, isActive: this.isActive(s), box: () => <SessionTileView session={s} style="slim" /> }))} /> : null;
+    return sessions ? <ItemMap {...this.props} markers={sessions.filter(s => s.locationData && s.locationData.lat).map(s => ({ ...s.locationData, isActive: this.isActive(s), box: () => <SessionTile session={s} style="slim" /> }))} /> : null;
   }
 }

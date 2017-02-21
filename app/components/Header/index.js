@@ -20,6 +20,7 @@ export default class Header extends React.Component { // eslint-disable-line rea
     return <Link to="/profile">Hello, {nickname}! {user.picture ? <img src={user.picture} role="presentation" className={styles.userIcon} /> : null}</Link>;
   }
   render() {
+    const { user } = this.context;
     const addSession = <span><span className={styles.plus}>+</span> Add a session</span>;
     return (<Sticky zIndex={4}><header className={styles.header}>
       <div className={styles.pageMargin}>
@@ -32,6 +33,7 @@ export default class Header extends React.Component { // eslint-disable-line rea
           {this.renderLoginButton()}
         </nav>
       </div>
+      {user && user.partner ? <div className={styles.partner}><div className={styles.pageMargin}>partner portal</div></div> : null}
     </header></Sticky>);
   }
 }

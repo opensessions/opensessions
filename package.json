@@ -10,9 +10,10 @@
   "author": "Oliver Beatson @ imin-ltd, based on boilerplate by Max Stoiber",
   "license": "ISC",
   "engines": {
-    "node": "6.2.2",
+    "node": ">=6.2.2",
     "npm": ">=3"
   },
+  "engineStrict": true,
   "scripts": {
     "npmcheckversion": "node ./internals/scripts/npmcheckversion.js",
     "db:migration:make": "node_modules/.bin/sequelize migration:create --config storage/migrations.config.js --migrations-path storage/migrations",

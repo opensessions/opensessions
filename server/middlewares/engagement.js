@@ -59,8 +59,8 @@ const scheduleEndingEmail = (user, session) => `
     ${(session.aggregators.length ? session.aggregators : [Object.assign({ href: sessionHref(session) }, openSessionsAggregator)]).map(aggregator => getStyledElement('aggregatorsLi', `
       ${getStyledElement('imageCircle', getStyledElement('aggImg', null, { src: aggregator.img }, 'img'), {}, 'span')}
       ${getStyledElement('aggInfo', `
-        <h2>${aggregator.name}</h2>
-        <p>${aggregator.description}</p>
+        ${getStyledElement('aggInfoTitle', aggregator.name, {}, 'h2')}
+        ${getStyledElement('aggInfoDesc', aggregator.description, {}, 'p')}
         <a href="${aggregator.href}" style="color: inherit;">View your session on ${aggregator.name}</a>
       `)}
     `, { class: 'info' }, 'li')).join('')}

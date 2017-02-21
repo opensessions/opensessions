@@ -1,5 +1,4 @@
 const sendgrid = require('sendgrid');
-const emailCopy = require('./email-copy.json');
 
 const { SENDGRID_SECRET, SERVICE_EMAIL, SENDGRID_TEMPLATE, SENDGRID_TRACKING } = process.env;
 
@@ -12,10 +11,15 @@ const emailStyles = {
   aggregators: { background: '#FFF', padding: '0', margin: '1em auto', 'text-align': 'center' },
   aggregatorsLi: { 'border-bottom': '1px solid #DDD', 'list-style': 'none', margin: '0' },
   aggInfo: { display: 'inline-block', width: '75%', padding: '.5em', 'vertical-align': 'middle', 'text-align': 'left' },
+  aggInfoTitle: { 'font-size': '1.2em', 'font-weight': 'bold' },
+  aggInfoDesc: { 'font-size': '.9em', 'font-weight': 'bold' },
   aggMeta: { 'list-style': 'none', color: '#777', background: '#f6f1f1', padding: '.5em', margin: '0' },
   aggSrcContainer: { background: '#F6F1F1', 'box-shadow': 'inset 0 2em #FFF', 'text-align': 'center', 'margin-top': '1em', padding: '.5em' },
   aggSrcImg: { 'border-radius': '50%', border: '1px solid #CCC', display: 'inline-block', width: '8em', height: '8em', 'background-color': '#FFF', 'background-position': '50% 50%', 'background-repeat': 'no-repeat', 'background-size': '88%' },
-  aggImg: { padding: '.5em', width: '64px', height: '64px', 'vertical-align': 'middle', 'max-width': '100%', 'border-radius': '2em' }
+  aggImg: { padding: '.5em', width: '64px', height: '64px', 'vertical-align': 'middle', 'max-width': '100%', 'border-radius': '2em' },
+  sessionLink: { 'text-align': 'center', color: '#666' },
+  sessionLinkA: { color: '#555' },
+  session: { 'text-align': 'center', padding: '0', background: '#FFF', margin: '1em auto' }
 };
 
 const getStyledElement = (styleName, html, attrs = {}, tagName = 'div') => {
@@ -57,11 +61,4 @@ const sendEmail = (subject, to, body, opts = {}) => {
   return sg.API(request);
 };
 
-const sendStoredEmail = (type, to, name) => {
-  const copy = emailCopy[type];
-  const { subject, title } = copy;
-  const body = [`<p>Dear ${name},</p>`, copy.body].join('');
-  return sendEmail(subject, to, body, { substitutions: { '-title-': title } });
-};
-
-module.exports = { sendEmail, sendStoredEmail, getStyledElement };
+module.exports = { sendEmail, getStyledElement };

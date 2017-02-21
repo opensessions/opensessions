@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 
 import { apiModel } from '../../utils/api';
 
-import SessionTileView from '../SessionTileView';
+import SessionTile from '../../components/SessionTile';
 import Button from '../../components/Button';
 import LoadingMessage from '../../components/LoadingMessage';
 import PagedList from '../../components/PagedList';
@@ -62,7 +62,7 @@ export default class SessionList extends React.Component { // eslint-disable-lin
     if (isLoading) return <div className={styles.sessionList}><LoadingMessage message="Loading sessions" ellipsis /></div>;
     return (<div className={styles.sessionList}>
       {heading || <p className={styles.intro}>{sessions.length ? 'These are the sessions you\'ve created so far:' : 'You haven\'t created any sessions yet! Click the button below to create a session.'}</p>}
-      <PagedList items={sessions} page={1} limit={8} orientation="bottom" itemToProps={session => ({ session })} Component={SessionTileView} />
+      <PagedList items={sessions} page={1} limit={8} orientation="bottom" itemToProps={session => ({ session })} Component={SessionTile} />
       {hideButton ? null : <p><Button to="/session/add">+ Add a session</Button></p>}
     </div>);
   }
