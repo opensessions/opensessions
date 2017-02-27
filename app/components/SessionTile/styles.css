@@ -1,5 +1,5 @@
 /* stylelint-disable selector-pseudo-class-no-unknown */
-@import '../App/variables.css';
+@import '../../containers/App/variables.css';
 
 @keyframes appear {
   from {

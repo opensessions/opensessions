@@ -8,6 +8,8 @@ import PublishHeader from '../../components/PublishHeader';
 import LoadingIcon from '../../components/LoadingIcon';
 import LoadingMessage from '../../components/LoadingMessage';
 
+import JSONField from '../../components/Fields/JSON';
+import RegExpField from '../../components/Fields/RegExp';
 import { TextField, DateField, TimeField, BoolRadio, IconRadio, Location, SearchableSelect, MultiBool, ImageUpload, Relation, Optional, JSONList, NumberField, Pricing } from '../../components/Fields';
 
 import { Link } from 'react-router';
@@ -49,20 +51,10 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       isSaving: true,
       isLoading: true,
       copy: formCopy,
-      fieldsets: [
-        { slug: 'description', required: ['title', 'OrganizerUuid', 'description', 'Activities'], fields: ['title', 'OrganizerUuid', 'description', 'Activities'], props: { validity: false } },
-        { slug: 'additional', required: ['leader'], props: { validity: false }, fields: ['preparation', 'leader', 'hasCoaching'] },
-        { slug: 'location', required: ['location'], props: { validity: false }, fields: ['location', 'meetingPoint'] },
-        { slug: 'pricing', props: { validity: 'none' }, fields: ['pricing'] },
-        { slug: 'restrictions', props: { validity: 'none' }, fields: ['genderRestriction', 'minAgeRestriction', 'maxAgeRestriction', 'abilityRestriction'] },
-        { slug: 'contact', required: ['contactName', 'contactEmail'], props: { validity: false }, fields: ['contactName', 'contactEmail', 'contactPhone'] },
-        { slug: 'social', props: { validity: 'none' }, fields: ['socialWebsite', 'socialFacebook', 'socialInstagram', 'socialTwitter', 'socialHashtag'] },
-        { slug: 'photo', props: { validity: 'none' }, fields: ['image'] },
-        { slug: 'schedule', required: ['schedule'], props: { validity: false }, fields: ['schedule'] }
-      ],
+      fieldsets: [],
       fields: {
         title: () => <TextField validation={{ maxLength: 50 }} {...this.getAttr('title')} />,
-        OrganizerUuid: () => <Relation {...this.getAttr('OrganizerUuid')} props={{ placeholder: 'E.g. Richmond Volleyball' }} relation={{ model: 'organizer', query: { canAct: 'edit' } }} />,
+        OrganizerUuid: () => <Relation {...this.getAttr('OrganizerUuid')} listKey="activities" props={{ placeholder: 'E.g. Richmond Volleyball' }} relation={{ model: 'organizer', query: { canAct: 'edit' } }} />,
         description: () => <TextField multi size="XL" {...this.getAttr('description')} validation={{ maxLength: 2000 }} />,
         Activities: () => <JSONList
           {...this.getAttrRelation('Activities')}
@@ -112,7 +104,8 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
             { label: 'Start time', Component: TimeField, props: { name: 'startTime' } },
             { label: 'End time', Component: TimeField, props: { name: 'endTime' } }
           ]}
-        />
+        />,
+        metadata: () => <JSONField {...this.getAttr('metadata')} guides={[{ key: 'titleMatch', render: (value, onChange) => <RegExpField value={value} onChange={onChange} /> }]} />
       }
     };
   }
@@ -143,6 +136,23 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       session.Activities = uuids.map(uuid => ({ uuid }));
       this.setState({ session });
     });
+  }
+  getFieldsets(session) {
+    const { user } = this.context;
+    const organizerData = session && session.Organizer && session.Organizer.data ? session.Organizer.data : {};
+    const fieldsets = [
+      { slug: 'description', required: ['title', 'OrganizerUuid', 'description', 'Activities'], fields: ['title', 'OrganizerUuid', 'description', 'Activities'], props: { validity: false } },
+      { slug: 'additional', required: ['leader'], props: { validity: false }, fields: ['preparation', 'leader', 'hasCoaching'] },
+    ];
+    fieldsets.push({ slug: 'location', required: ['location'], props: { validity: false }, fields: ['location', 'meetingPoint'] });
+    if (!organizerData.noPricing) fieldsets.push({ slug: 'pricing', props: { validity: 'none' }, fields: ['pricing'] });
+    fieldsets.push({ slug: 'restrictions', props: { validity: 'none' }, fields: ['genderRestriction', 'minAgeRestriction', 'maxAgeRestriction', 'abilityRestriction'] });
+    fieldsets.push({ slug: 'contact', required: ['contactName', 'contactEmail'], props: { validity: false }, fields: ['contactName', 'contactEmail', 'contactPhone'] });
+    fieldsets.push({ slug: 'social', props: { validity: 'none' }, fields: ['socialWebsite', 'socialFacebook', 'socialInstagram', 'socialTwitter', 'socialHashtag'] });
+    fieldsets.push({ slug: 'photo', props: { validity: 'none' }, fields: ['image'] });
+    if (!organizerData.noSchedule) fieldsets.push({ slug: 'schedule', required: ['schedule'], props: { validity: false }, fields: ['schedule'] });
+    if (user.partner) fieldsets.push({ slug: 'partner', props: { validity: 'none' }, fields: ['metadata'] });
+    return this.setState({ fieldsets });
   }
   getAttr = name => {
     const { session } = this.state;
@@ -219,7 +229,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
         emailOptions.push(contactEmail);
       }
     }
-    return emailOptions.map(option => ({ uuid: option, name: option }));
+    return emailOptions.map(name => ({ uuid: name, name }));
   }
   fetchData = () => {
     const { session, params, location } = this.props;
@@ -228,9 +238,8 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       ? apiModel.get('session', uuid).then(res => {
         this.onChange(res.instance);
         this.setState({ session: res.instance, isSaving: false, isLoading: false });
-        apiFetch('/api/leader-list').then(result => {
-          this.setState({ personList: result.list });
-        });
+        apiFetch('/api/leader-list').then(result => this.setState({ personList: result.list }));
+        this.getFieldsets(res.instance);
       })
       : apiModel.new('session', location.query).then(res => {
         if (!(location.hash && location.hash === '#welcome')) this.notify('You have created a new session', 'success');
@@ -289,6 +298,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
         if (this.state.isPendingSave) return true;
         if (error) throw new Error(error);
         this.setState({ isPendingSave: false, isSaving: false, session: instance, status: 'Saved draft!', saveState: 'saved' });
+        this.getFieldsets(instance);
         return result;
       }).catch(result => {
         this.setState({ status: 'Failed saving', isPendingSave: false, isSaving: false, saveState: 'error' });

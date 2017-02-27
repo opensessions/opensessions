@@ -27,7 +27,6 @@ export default class Form extends React.Component { // eslint-disable-line react
   constructor(props) {
     super(props);
     this.state = {
-      activeTab: props.tab || props.fieldsets[0].slug,
       saveState: 'Unsaved'
     };
   }

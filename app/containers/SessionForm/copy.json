@@ -46,6 +46,12 @@
       "heading": "Scheduling",
       "title": "Add a schedule for your sessions",
       "subtitle": "You can add multiple dates for sessions which occur regularly"
+    },
+    "partner": {
+      "label": "Options",
+      "heading": "Partner Portal",
+      "title": "Extended options for partner sessions",
+      "subtitle": "Decide advanced features about how this session appears in the endpoint"
     }
   },
   "fields": {
@@ -173,6 +179,9 @@
     },
     "schedule": {
       "fullSize": true
+    },
+    "metadata": {
+      "label": "Metadata"
     }
   }
 }

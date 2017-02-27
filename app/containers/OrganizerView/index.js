@@ -125,6 +125,7 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
     return (<select onChange={onOrganizerChange}>
       <option>Select organiser</option>
       {organizerList.map(organizer => <option key={organizer.uuid} value={organizer.uuid}>{organizer.name}</option>)}
+      <option value="new">+ New organiser</option>
     </select>);
   }
   renderSessions() {
@@ -209,8 +210,8 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
         <ItemMap markers={[{ ...location.data, isActive: true, box: () => <p>{location.address}</p> }]} size={0} />
         <p><b>Location</b> {location.address}</p>
       </div>) : null}
-      <SocialMedia item={organizer.info} />
-      {this.canAct('edit') ? <p><Button to={`${organizer.href}/edit`} style="slim"><img src="/images/change.png" alt="edit" style={{ filter: 'invert()' }} /> Edit</Button></p> : null}
+      <SocialMedia item={organizer.info.social} />
+      {this.canAct('edit') ? <p><Button to={`${organizer.href}/edit/description`} style="slim"><img src="/images/change.png" alt="edit" style={{ filter: 'invert()' }} /> Edit</Button></p> : null}
     </div>);
   }
   render() {

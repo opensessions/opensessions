@@ -105,6 +105,19 @@ function emailListViewReducer(state = emailListInitialState, action) {
   }
 }
 
+const selectListInitialState = {};
+
+function selectListReducer(state = selectListInitialState, action) {
+  switch (action.type) {
+    case 'SELECT_LIST_LOADED':
+      const newObject = {};
+      newObject[action.key] = action.payload;
+      return { ...state, ...newObject };
+    default:
+      return state;
+  }
+}
+
 const organizerListInitialState = fromJS(null);
 
 function organizerListViewReducer(state = organizerListInitialState, action) {
@@ -216,6 +229,7 @@ export default function createReducer(asyncReducers) {
     sessionList: sessionListViewReducer,
     userList: userListViewReducer,
     emailList: emailListViewReducer,
+    selectList: selectListReducer,
     organizerList: organizerListViewReducer,
     activityList: activityListViewReducer,
     profileOrganizersList: profileOrganizersViewReducer,

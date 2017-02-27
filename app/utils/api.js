@@ -40,14 +40,18 @@ function apiFetch(url, opts) {
 }
 
 const apiModel = {
+  model: name => ({
+    act: (action, body) => apiFetch(`/api/${name}/action/${action}`, { body }),
+    instance: id => ({
+      get: query => apiFetch(`/api/${name}/${id}`, { query }),
+      act: (action, body) => apiFetch(`/api/${name}/${id}/${action}`, { body })
+    })
+  }),
   search(model, query) {
     return apiFetch(`/api/${model}`, { query });
   },
   new(model, body) {
-    return apiModel.modelAct(model, 'new', body);
-  },
-  modelAct(model, action, body) {
-    return apiFetch(`/api/${model}/action/${action}`, { body });
+    return apiModel.model(model).act('new', body);
   },
   get(model, uuid, query) {
     return apiFetch(`/api/${model}/${uuid}`, { query });

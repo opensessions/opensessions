@@ -92,7 +92,8 @@ const hooks = require('./middlewares/hooks');
 app.use('/hooks', hooks(database));
 
 // Webpack frontend (hot reloading etc for dev)
-app.use(frontend(webpackConfig));
+console.log(process.argv);
+if (process.argv.indexOf('NO_WEBPACK') === -1) app.use(frontend(webpackConfig));
 
 const port = process.env.PORT || 3850;
 

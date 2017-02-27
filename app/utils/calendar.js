@@ -70,10 +70,10 @@ export function intervalsAgo(date, interval) {
 }
 
 export function cleanDate(date) {
-  const ranges = [7 * 24, 24, 1];
+  const ranges = [4 * 7 * 24, 7 * 24, 24, 1];
   const period = Math.abs((date.getTime() - Date.now()) / (1000 * 60 * 60));
-  const [dW, dD, dH] = ranges.map((delta, key) => (period % (key ? ranges[key - 1] : 1000)) / delta).map(Math.floor);
-  return [[dW, 'w'], [dD, 'd'], [dH, 'h']].filter(([diff]) => diff).map(pair => pair.join('')).join(' ');
+  const [dM, dW, dD, dH] = ranges.map((delta, key) => (period % (key ? ranges[key - 1] : 10000)) / delta).map(Math.floor);
+  return [[dM, 'm'], [dW, 'w'], [dD, 'd'], [dH, 'h']].filter(([diff]) => diff).map(pair => pair.join('')).join(' ');
 }
 
 export function timeAgo(date) {

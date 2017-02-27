@@ -4,6 +4,7 @@ import LoadingMessage from '../../components/LoadingMessage';
 import Button from '../../components/Button';
 
 import { apiModel } from '../../utils/api';
+import { timeAgo } from '../../utils/calendar';
 
 import styles from './styles.css';
 
@@ -15,7 +16,7 @@ export default class ListActivities extends React.Component { // eslint-disable-
     modal: PropTypes.object
   };
   static fetchData(dispatch) {
-    return apiModel.search('activity', { depth: 1 }).then(result => {
+    return apiModel.model('activity').act('list').then(result => {
       const { instances, error } = result;
       if (error) throw error;
       dispatch({ type: 'ACTIVITY_LIST_LOADED', payload: instances });
@@ -69,8 +70,9 @@ export default class ListActivities extends React.Component { // eslint-disable-
   }
   renderActivity(activity) {
     return (<li>
-      <span className={styles.name}>{activity.name} {activity.Sessions.length ? <span className={styles.count}>{activity.Sessions.length}</span> : null}</span>
+      <span className={styles.name}>{activity.name} <span className={styles.count}>{activity.SessionsCount}</span></span>
       <span className={styles.actions}>{activity.actions.map(action => <Button onClick={() => this.actionClick(activity, action)}>{action}</Button>)}</span>
+      <span>{timeAgo(new Date(activity.createdAt))}</span>
     </li>);
   }
   render() {

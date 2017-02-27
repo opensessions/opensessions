@@ -137,7 +137,7 @@ module.exports = (DataTypes) => ({
                 items: sessions,
                 next: `/api/partner/${uuid}/action/rdpe?${Object.keys(next).map(key => [key, encodeURIComponent(next[key])].join('=')).join('&')}`,
                 license: 'https://creativecommons.org/licenses/by/4.0/',
-                rawResult: true
+                raw: true
               };
             });
           }
@@ -173,14 +173,7 @@ module.exports = (DataTypes) => ({
               .then(() => ({ message: 'Activities merged!' }));
           },
           getActions(models, req) {
-            const actions = [];
-            // if (user && user === this.owner && this.get('SessionsCount') === '0') {
-            actions.push('view');
-            if (req.isAdmin) {
-              actions.push('delete');
-              actions.push('merge');
-            }
-            return actions;
+            return models.Activity.getInstanceActions(this, models, req);
           }
         },
         hooks: {
@@ -204,12 +197,43 @@ module.exports = (DataTypes) => ({
               default:
                 break;
               case 1:
-                query.attributes = ['uuid', 'name', 'owner', 'Activity.createdAt', 'Activity.updatedAt', [DataTypes.fn('COUNT', DataTypes.col('Sessions.uuid')), 'SessionsCount']];
-                query.include = [{ model: models.Session, through: models.SessionActivity, required: false, where: { state: 'published' } }];
-                query.group = ['Activity.uuid', 'Sessions.uuid', 'Sessions.SessionActivity.uuid'];
+                query.attributes = ['uuid', 'name', 'owner', 'createdAt', 'updatedAt', [DataTypes.fn('COUNT', DataTypes.col('Sessions.uuid')), 'SessionsCount'], [DataTypes.fn('COUNT', DataTypes.col('Sessions.SessionActivity.uuid')), 'SessionsActivitiesCount']];
+                query.include = [{ model: models.Session, through: { model: models.SessionActivity, attributes: [] }, required: false, where: { state: 'published' }, attributes: [] }];
+                query.group = ['Activity.uuid'];
                 break;
             }
             return query;
+          },
+          getActions(models, req) {
+            const actions = ['list'];
+            if (req.user) actions.push('new');
+            return actions;
+          },
+          getInstanceActions(instance, models, req) {
+            const actions = [];
+            actions.push('view');
+            if (req.isAdmin) {
+              actions.push('merge');
+              if (parseInt(instance.SessionsCount, 10) === 1) actions.push('delete');
+            }
+            return actions;
+          },
+          new(req, models) {
+
+          },
+          list(req, models) {
+            return models.Activity.sequelize.query(`
+              SELECT
+                "Activity"."uuid", "Activity"."name", "Activity"."createdAt",
+                COUNT("Sessions".uuid) AS "SessionsCount"
+              FROM "Activities" AS "Activity"
+              LEFT OUTER JOIN (
+                "SessionActivities" AS "Sessions.SessionActivity"
+                INNER JOIN "Sessions" AS "Sessions" ON "Sessions"."uuid" = "Sessions.SessionActivity"."SessionUuid"
+              ) ON "Activity"."uuid" = "Sessions.SessionActivity"."ActivityUuid" AND "Sessions"."state" = 'published'
+              GROUP BY "Activity"."uuid"
+              ORDER BY "Activity"."name";
+            `).then(([instances]) => ({ instances: instances.map(instance => Object.assign(instance, { actions: models.Activity.getInstanceActions(instance, models, req) })), raw: true }));
           },
           makeAssociations(models) {
             models.Activity.belongsToMany(models.Session, { through: models.SessionActivity });
@@ -372,6 +396,7 @@ module.exports = (DataTypes) => ({
       socialTwitter: DataTypes.STRING(64),
       socialHashtag: DataTypes.STRING(64),
       analytics: DataTypes.JSON,
+      metadata: DataTypes.JSON,
       _options: {
         getterMethods: {
           href() {

@@ -18,20 +18,18 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
   };
   static contextTypes = {
     store: PropTypes.object,
+    router: PropTypes.object,
     user: PropTypes.object,
-    notify: PropTypes.func
+    notify: PropTypes.func,
+    modal: PropTypes.object
   };
   static childContextTypes = {
     onExpire: PropTypes.func
   };
-  static fetchData = (dispatch, user) => apiModel.search('organizer', { canAct: 'edit', depth: 1 }).then(result => {
-    dispatch({ type: 'PROFILE_ORGANIZERS_LOADED', payload: result.instances });
-    return apiModel.search('session', { owner: user.user_id, OrganizerUuid: 'null' }).then(sessionResult => {
-      const { instances, error } = sessionResult;
-      if (error) throw Error(error);
-      dispatch({ type: 'PROFILE_SESSIONS_LOADED', payload: instances });
-    });
-  })
+  static fetchData = (dispatch, user) => apiModel.search('organizer', { canAct: 'edit', depth: 1 })
+    .then(({ instances }) => dispatch({ type: 'PROFILE_ORGANIZERS_LOADED', payload: instances }))
+    .then(() => apiModel.search('session', { owner: user.user_id, OrganizerUuid: 'null' }))
+    .then(({ instances }) => dispatch({ type: 'PROFILE_SESSIONS_LOADED', payload: instances }))
   constructor() {
     super();
     this.state = { isLoading: false };
@@ -52,7 +50,15 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
   }
   onOrganizerChange = event => {
     const { value } = event.target;
-    this.setState({ selectedOrganizer: value });
+    if (value === 'new') {
+      this.context.modal.prompt('Name the new organiser', name => {
+        apiModel.new('organizer', { name }).then(result => {
+          this.context.router.push(`${result.instance.href}/edit/description`);
+        });
+      });
+    } else {
+      this.setState({ selectedOrganizer: value });
+    }
   }
   getSessions() {
     return this.context.store.getState().get('profileSessionsList') || [];
@@ -87,7 +93,6 @@ export default class MyProfile extends React.Component { // eslint-disable-line 
     const sessions = this.getSessions();
     const organizers = this.getOrganizers();
     const renderItem = s => <SessionMini session={s} />;
-    // const allSessions = sessions.concat.apply(sessions, organizers ? organizers.map(o => o.Sessions) : []);
     const allSessions = sessions.concat(...(organizers ? organizers.map(o => o.Sessions) : []));
     return (<div className={styles.container}>
       <h1>Schedule</h1>

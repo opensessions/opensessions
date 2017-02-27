@@ -6,9 +6,10 @@ import styles from './styles.css';
 
 import { apiModel } from '../../../utils/api';
 
-export default class RelationField extends React.Component { // eslint-disable-line react/prefer-stateless-function
+export default class Relation extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
-    notify: PropTypes.func
+    notify: PropTypes.func,
+    store: PropTypes.func
   };
   static propTypes = {
     value: PropTypes.string,
@@ -46,18 +47,19 @@ export default class RelationField extends React.Component { // eslint-disable-l
     if (this.props.onChange) this.props.onChange(value === 'none' ? null : value);
   }
   fetchRelation = value => {
-    const { relation, onChange } = this.props;
+    const { relation, onChange, listKey } = this.props;
+    this.setState({ isLoading: true });
     return apiModel.search(relation.model, relation.query).then(result => {
       if (value) onChange(value);
-      this.setState({ options: result.instances });
+      this.context.store.dispatch({ type: 'SELECT_LIST_LOADED', payload: result.instances, key: listKey });
+      this.setState({ isLoading: false });
     });
   }
   render() {
-    const state = this.state || {};
-    const { className, props, size, autoFocus } = this.props;
+    const { className, props, size, listKey, autoFocus } = this.props;
     let { value } = this.props;
     if (value && typeof value === 'object') value = value.uuid;
-    const options = 'options' in state ? state.options : [];
+    const options = this.context.store.getState().get('selectList')[listKey] || [];
     const searchableAttrs = { options, value, className, autoFocus };
     return (<div className={[styles.relationWrap, size ? styles[size] : ''].join(' ')}>
       <SearchableSelect {...searchableAttrs} {...props} dispatchRefresh={this.fetchRelation} onChange={this.handleValueChange} addItem={this.newRelation} />

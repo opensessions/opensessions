@@ -1,0 +1,12 @@
+.field {
+  & ol.list {
+    & > li {
+      display: flex;
+      align-items: center;
+      & label {
+        font-weight: bold;
+        padding-right: 1em;
+      }
+    }
+  }
+}

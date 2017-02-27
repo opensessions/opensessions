@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 
-import CalendarSVG from '../../components/SVGs/Calendar';
+import CalendarSVG from '../SVGs/Calendar';
 
 import { parseSchedule, lastUpdatedString } from '../../utils/calendar';
 import { apiModel } from '../../utils/api';

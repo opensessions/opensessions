@@ -273,9 +273,9 @@ module.exports = (database) => {
     const { action } = req.params;
     if (Model[action]) {
       if (Model.getActions(database.models, req).some(a => a === action)) {
-        Model.new(req, database.models)
+        Model[action](req, database.models)
           .then(result => {
-            res.json(result.rawResult ? result : { instance: instanceToJSON(result, req) });
+            res.json(result.raw ? result : { instance: instanceToJSON(result, req) });
           })
           .catch(error => {
             res.status(404).json({ error: error.message });
