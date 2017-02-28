@@ -4,14 +4,6 @@ import Button from '../../Button';
 
 import styles from './styles.css';
 
-const duplicateObject = original => {
-  const duplicate = {};
-  Object.keys(original).forEach(key => {
-    duplicate[key] = original[key];
-  });
-  return duplicate;
-};
-
 export default class JSONField extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
     modal: PropTypes.object
@@ -53,6 +45,10 @@ export default class JSONField extends React.Component { // eslint-disable-line 
     value[key] = val;
     this.props.onChange(value);
   }
+  changeKey(key, newKey) {
+    this.change(newKey, this.props.value[key]);
+    this.delete(key);
+  }
   render() {
     const { guides } = this.props;
     let { value } = this.props;
@@ -63,10 +59,7 @@ export default class JSONField extends React.Component { // eslint-disable-line 
         {value ? Object.keys(value).map(key => {
           const guide = guides.find(g => g.key === key);
           return (<li key={key}>
-            {guide ? <label>{key}</label> : <input type="text" value={key} onChange={newKey => {
-              this.change(newKey, value[key]);
-              this.delete(key);
-            }} />}
+            {guide ? <label>{key}</label> : <input type="text" value={key} onChange={newKey => this.changeKey(key, newKey)} />}
             {guide ? guide.render(value[key], val => this.change(key, val)) : <input type="text" value={value} />}
             <Button onClick={() => this.delete(key)} style={['slim', 'danger']}>×</Button>
           </li>);

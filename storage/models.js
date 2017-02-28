@@ -214,12 +214,19 @@ module.exports = (DataTypes) => ({
             actions.push('view');
             if (req.isAdmin) {
               actions.push('merge');
-              if (parseInt(instance.SessionsCount, 10) === 1) actions.push('delete');
+              actions.push('delete');
             }
             return actions;
           },
           new(req, models) {
-
+            const { name } = req.body;
+            if (!name) return Promise.reject({ raw: true, error: 'You must enter a name' });
+            const cleanName = name.replace(/[^a-zA-Z ]/g, '').trim();
+            if (!cleanName) return Promise.reject({ raw: true, error: `"${name}" is not a valid name` });
+            return models.Activity.findAll({ where: { name: { $iLike: cleanName } } }).then(activities => {
+              if (activities.length) return Promise.reject({ raw: true, error: 'Activity with a similar name already exists' });
+              return models.Activity.create({ name: cleanName }).then(instance => ({ raw: true, instance }));
+            });
           },
           list(req, models) {
             return models.Activity.sequelize.query(`

@@ -1,7 +1,5 @@
 import React, { PropTypes } from 'react';
 
-import Button from '../../Button';
-
 import styles from './styles.css';
 
 const startsWith = /^\/\^/;
@@ -19,9 +17,9 @@ export default class RegExpField extends React.Component { // eslint-disable-lin
     onChange: PropTypes.func
   }
   valueOut(expType, text) {
-    const startsWith = expType === 'start' || expType === 'exact' ? '^' : '';
-    const endsWith = expType === 'end' || expType === 'exact' ? '$' : '';
-    const value = `/${startsWith}${text}${endsWith}/`;
+    const starts = expType === 'start' || expType === 'exact' ? '^' : '';
+    const ends = expType === 'end' || expType === 'exact' ? '$' : '';
+    const value = `/${starts}${text}${ends}/`;
     this.props.onChange(value);
   }
   valueIn() {
@@ -31,7 +29,6 @@ export default class RegExpField extends React.Component { // eslint-disable-lin
     return [expType ? expType.key : '', text.replace(/^\/[\^]?/, '').replace(/[\$]?\/$/, '')];
   }
   render() {
-    const { onChange } = this.props;
     const [expType, text] = this.valueIn();
     return (<div className={styles.field}>
       <select value={expType || null} onChange={e => this.valueOut(e.target.value, text)}>

@@ -108,9 +108,9 @@ function emailListViewReducer(state = emailListInitialState, action) {
 const selectListInitialState = {};
 
 function selectListReducer(state = selectListInitialState, action) {
+  const newObject = {};
   switch (action.type) {
     case 'SELECT_LIST_LOADED':
-      const newObject = {};
       newObject[action.key] = action.payload;
       return { ...state, ...newObject };
     default:

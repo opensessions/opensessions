@@ -22,7 +22,7 @@ const actionError = ({ notify }, action, object) => () => notify(`Failed to ${ac
 
 const SessionTile = function (props, context) {
   const { session, style } = props;
-  const { notify, modal, user } = context;
+  const { modal, user } = context;
   const isOwner = user && session.owner === user.user_id;
   const promptAction = action => modal.prompt(<span>Give a name for your duplicated session:</span>, title => apiModel.action('session', session.uuid, action, { title })
     .then(actionResult(context, action))

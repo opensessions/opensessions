@@ -1,7 +1,7 @@
 .field {
   display: flex;
   & select,
-  & input[type="text"] {
+  & input[type='text'] {
     width: auto;
   }
 }

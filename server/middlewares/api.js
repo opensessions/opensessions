@@ -243,14 +243,14 @@ module.exports = (database) => {
     if (Model.new) {
       if (Model.getActions(database.models, req).some(action => action === 'new')) {
         Model.new(req, database.models)
-          .then(instance => {
-            res.json({ instance: instanceToJSON(instance, req) });
+          .then(result => {
+            res.json(result.raw ? result : { instance: instanceToJSON(result, req) });
           })
-          .catch(error => {
-            res.status(404).json({ error: error.message });
+          .catch(result => {
+            res.status(400).json(result.raw ? result : { error: result.message });
           });
       } else {
-        res.status(400).json({ error: `Permission denied to create ${req.params.model}` });
+        res.status(401).json({ error: `Permission denied to create ${req.params.model}` });
       }
     } else {
       const getPrototype = Model.getPrototype || (() => Promise.resolve({}));

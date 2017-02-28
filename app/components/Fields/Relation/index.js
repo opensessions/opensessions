@@ -16,6 +16,7 @@ export default class Relation extends React.Component { // eslint-disable-line r
     onChange: PropTypes.func,
     autoFocus: PropTypes.bool,
     relation: PropTypes.object,
+    listKey: PropTypes.string,
     className: PropTypes.string,
     size: PropTypes.string,
     props: PropTypes.object
@@ -39,8 +40,8 @@ export default class Relation extends React.Component { // eslint-disable-line r
   newRelation = name => apiModel.new(this.props.relation.model, { name }).then(result => {
     this.setState({ relationState: 'none' });
     this.fetchRelation(result.instance.uuid);
-  }).catch(() => {
-    this.context.notify('Couldn\'t create activity type, validation failed', 'error');
+  }).catch(result => {
+    this.context.notify(result.error, 'error');
     this.setState({ relationState: 'none' });
   })
   handleValueChange = (value) => {
