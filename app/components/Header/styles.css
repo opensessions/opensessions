@@ -36,12 +36,12 @@
       display: flex;
       align-items: stretch;
       justify-content: flex-end;
+      color: #1F2C4D;
       & a {
         display: flex;
         align-items: center;
         padding: 0 .75em;
         line-height: 1.25;
-        color: #1F2C4D;
       }
       & span.plus {
         display: inline-block;
@@ -60,6 +60,14 @@
       }
     }
   }
+}
+
+.drafts {
+  background-color: var(--draftColor);
+  color: #FFF;
+  align-self: center;
+  border-radius: 50%;
+  height: 2em;
 }
 
 .partner {

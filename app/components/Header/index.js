@@ -7,6 +7,9 @@ import Sticky from '../Sticky';
 import styles from './styles.css';
 
 export default class Header extends React.Component { // eslint-disable-line react/prefer-stateless-function
+  static propTypes = {
+    drafts: PropTypes.array
+  };
   static contextTypes = {
     user: PropTypes.object,
     store: PropTypes.object,
@@ -21,6 +24,7 @@ export default class Header extends React.Component { // eslint-disable-line rea
   }
   render() {
     const { user } = this.context;
+    const { drafts } = this.props;
     const addSession = <span><span className={styles.plus}>+</span> Add a session</span>;
     return (<Sticky zIndex={4}><header className={styles.header}>
       <div className={styles.pageMargin}>
@@ -30,6 +34,7 @@ export default class Header extends React.Component { // eslint-disable-line rea
         </Link>
         <nav className={styles.nav}>
           {this.context.user ? <Link to="/session/add">{addSession}</Link> : <LoginButton redirect="/session/add">{addSession}</LoginButton>}
+          {false && drafts ? <Link to="/profile/drafts" title="Your draft sessions" className={styles.drafts}>{drafts.length}</Link> : null}
           {this.renderLoginButton()}
         </nav>
       </div>

@@ -145,12 +145,12 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       { slug: 'additional', required: ['leader'], props: { validity: false }, fields: ['preparation', 'leader', 'hasCoaching'] },
     ];
     fieldsets.push({ slug: 'location', required: ['location'], props: { validity: false }, fields: ['location', 'meetingPoint'] });
-    if (!organizerData.noPricing) fieldsets.push({ slug: 'pricing', props: { validity: 'none' }, fields: ['pricing'] });
+    if (!(organizerData.noPricing && organizerData.noPricing !== 'false')) fieldsets.push({ slug: 'pricing', props: { validity: 'none' }, fields: ['pricing'] });
     fieldsets.push({ slug: 'restrictions', props: { validity: 'none' }, fields: ['genderRestriction', 'minAgeRestriction', 'maxAgeRestriction', 'abilityRestriction'] });
     fieldsets.push({ slug: 'contact', required: ['contactName', 'contactEmail'], props: { validity: false }, fields: ['contactName', 'contactEmail', 'contactPhone'] });
     fieldsets.push({ slug: 'social', props: { validity: 'none' }, fields: ['socialWebsite', 'socialFacebook', 'socialInstagram', 'socialTwitter', 'socialHashtag'] });
     fieldsets.push({ slug: 'photo', props: { validity: 'none' }, fields: ['image'] });
-    if (!organizerData.noSchedule) fieldsets.push({ slug: 'schedule', required: ['schedule'], props: { validity: false }, fields: ['schedule'] });
+    if (!(organizerData.noSchedule && organizerData.noSchedule !== 'false')) fieldsets.push({ slug: 'schedule', required: ['schedule'], props: { validity: false }, fields: ['schedule'] });
     if (user.partner) fieldsets.push({ slug: 'partner', props: { validity: 'none' }, fields: ['metadata'] });
     return this.setState({ fieldsets });
   }

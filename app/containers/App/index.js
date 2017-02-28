@@ -22,7 +22,7 @@ import Dialog from '../Modals/Dialog';
 
 import getUserToken from './getUserToken';
 import cookie from '../../utils/cookie';
-import { apiFetch } from '../../utils/api';
+import { apiModel, apiFetch } from '../../utils/api';
 
 import styles from './styles.css';
 
@@ -95,6 +95,11 @@ export default class App extends React.Component { // eslint-disable-line react/
       this.setState({ profile });
     });
   }
+  getDrafts() {
+    return apiModel.search('session', { canAct: 'edit', state: ['draft', 'unpublished'] }).then(res => {
+      this.context.store.dispatch({ type: 'MY_DRAFTS_LOADED', payload: res.instances });
+    });
+  }
   notify = (text, status, actions, storeType) => {
     const notification = {
       id: Date.now(),
@@ -164,6 +169,7 @@ export default class App extends React.Component { // eslint-disable-line react/
       }
 
       this.getPartner();
+      this.getDrafts();
 
       return true;
     });
@@ -171,7 +177,7 @@ export default class App extends React.Component { // eslint-disable-line react/
   render() {
     const { modal } = this.state;
     return (<div className={styles.root}>
-      <Header />
+      <Header drafts={this.context.store.getState().get('myDrafts')} />
       <div className={styles.appBody}>
         <div className={styles.container}>
           {this.props.children}

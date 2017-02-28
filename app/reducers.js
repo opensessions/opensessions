@@ -162,6 +162,17 @@ function profileSessionsViewReducer(state = profileSessionsInitialState, action)
   }
 }
 
+const myDraftsInitialState = fromJS(null);
+
+function myDraftsViewReducer(state = myDraftsInitialState, action) {
+  switch (action.type) {
+    case 'MY_DRAFTS_LOADED':
+      return action.payload;
+    default:
+      return state;
+  }
+}
+
 const formFocusIndexInitialState = 0;
 
 function formFocusIndexReducer(state = formFocusIndexInitialState, action) {
@@ -234,6 +245,7 @@ export default function createReducer(asyncReducers) {
     activityList: activityListViewReducer,
     profileOrganizersList: profileOrganizersViewReducer,
     profileSessionsList: profileSessionsViewReducer,
+    myDrafts: myDraftsViewReducer,
     formFocusIndex: formFocusIndexReducer,
     mapClustered: mapClusteredReducer,
     analysisList: analysisListReducer,

@@ -507,8 +507,8 @@ module.exports = (DataTypes) => ({
               leader: { tab: 'additional', pretty: 'Leader' }
             };
             const requiredInfo = {
-              'contact.name': { tab: 'contact', pretty: 'Full name' },
-              'contact.email': { tab: 'contact', pretty: 'Email address' },
+              // 'contact.name': { tab: 'contact', pretty: 'Full name' },
+              // 'contact.email': { tab: 'contact', pretty: 'Email address' },
               'location.address': { tab: 'location', pretty: 'Address' }
             };
             const errors = [];

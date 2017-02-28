@@ -55,8 +55,9 @@ const sessionToItem = (session, options = {}, isShown) => {
       organizerFields.forEach(field => {
         item.data[field] = session.Organizer.data[field] || item.data[field];
       });
-      if (session.Organizer.data.noSchedule) delete item.data.schedule;
-      if (session.Organizer.data.noPricing) delete item.data.pricing;
+      const { noSchedule, noPricing } = session.Organizer.data;
+      if (noSchedule && noSchedule !== 'false') delete item.data.schedule;
+      if (noPricing && noPricing !== 'false') delete item.data.pricing;
     }
   }
   return item;
