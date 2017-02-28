@@ -497,12 +497,12 @@ module.exports = (DataTypes) => ({
               title: { tab: 'description', pretty: 'Session Title' },
               OrganizerUuid: { tab: 'description', pretty: 'Organiser Name' },
               description: { tab: 'description', pretty: 'Session Description' },
-              leader: { tab: 'additional', pretty: 'Leader' },
-              location: { tab: 'location', pretty: 'Address' }
+              leader: { tab: 'additional', pretty: 'Leader' }
             };
             const requiredInfo = {
               'contact.name': { tab: 'contact', pretty: 'Full name' },
-              'contact.email': { tab: 'contact', pretty: 'Email address' }
+              'contact.email': { tab: 'contact', pretty: 'Email address' },
+              'location.address': { tab: 'location', pretty: 'Address' }
             };
             const errors = [];
             const missingFields = Object.keys(required).filter(key => !session[key]).map(key => required[key]);

@@ -26,14 +26,14 @@ const sessionToItem = (session, options = {}, isShown) => {
   }
   if (item.state === 'updated') {
     item.data = session.toJSON();
-    const { locationData } = item.data;
-    if (locationData) {
-      if ('placeID' in locationData && !options.preserveLatLng) {
-        delete locationData.lat;
-        delete locationData.lng;
+    const { info } = session;
+    if (info.location.data) {
+      if ('placeID' in info.location.data && !options.preserveLatLng) {
+        delete info.location.data.lat;
+        delete info.location.data.lng;
       }
-      if (locationData.manual) item.data.location = locationData.manual.join(', ');
-      item.data.locationData = locationData;
+      item.data.location = info.location.data.manual ? info.location.data.manual.join(', ') : info.location.address;
+      item.data.locationData = info.location.data;
     }
     const { schedule } = item.data;
     if (schedule) {

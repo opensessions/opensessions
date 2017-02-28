@@ -29,7 +29,7 @@ export default class JSONField extends React.Component { // eslint-disable-line 
     const { guides } = this.props;
     if (guides) {
       const options = {};
-      guides.forEach(guide => {
+      guides.filter(guide => !(guide.key in this.props.value)).forEach(guide => {
         options[guide.key] = guide.key;
       });
       this.context.modal.options('Select a key', options, key => {
@@ -56,6 +56,8 @@ export default class JSONField extends React.Component { // eslint-disable-line 
   render() {
     const { guides } = this.props;
     let { value } = this.props;
+    if (!(value instanceof Object)) value = {};
+    const guidesLeft = guides ? guides.filter(guide => !(guide.key in value)) : [];
     return (<div className={styles.field}>
       <ol className={styles.list}>
         {value ? Object.keys(value).map(key => {
@@ -69,7 +71,7 @@ export default class JSONField extends React.Component { // eslint-disable-line 
             <Button onClick={() => this.delete(key)} style={['slim', 'danger']}>×</Button>
           </li>);
         }) : null}
-        {guides && guides.some(key => !(key in value)) ? <li key="new"><Button onClick={this.newKey}>Add</Button></li> : null}
+        {guidesLeft.length ? <li key="new"><Button onClick={this.newKey}>Add</Button></li> : null}
       </ol>
     </div>);
   }

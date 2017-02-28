@@ -316,7 +316,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   }
   organizerOverride(field) {
     const { session } = this.state;
-    if (session && session.OrganizerUuid && session.Organizer && session.Organizer.data && field !== 'description') {
+    if (session && session.OrganizerUuid && session.Organizer && session.Organizer.data && field !== 'description' && field !== 'leader') {
       const { data } = session.Organizer;
       if ((data.noPricing && data.noPricing !== 'false' && field === 'pricing') || (data.noSchedule && data.noSchedule !== 'false' && field === 'schedule')) return <p>This field is disabled by the organiser (<Link to={`${session.Organizer.href}/edit`}>edit</Link>)</p>;
       return data[field] && field === 'location' ? data[field].address : data[field];

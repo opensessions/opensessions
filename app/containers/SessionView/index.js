@@ -334,19 +334,21 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     </div>);
   }
   renderMap(session) {
-    const data = session.locationData;
-    let map = null;
-    let address = null;
+    const { location } = session.info;
+    const { address, data } = location;
+    let map = (<div className={styles.noLocation}>
+      <img src="/images/map-pin.svg" role="presentation" />
+      No location data
+    </div>);
     if (data && data.lat && data.lng) {
-      const defaultCenter = data;
       const marker = {
-        position: defaultCenter,
+        position: data,
         icon: { url: '/images/map-pin-active.svg' },
         defaultAnimation: 2
       };
       const mapProps = {
         defaultZoom: 16,
-        defaultCenter,
+        defaultCenter: data,
         onClick: () => true,
         options: {
           streetViewControl: false,
@@ -364,15 +366,9 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         marker={marker}
         mapProps={mapProps}
       />);
-      address = <div className={styles.address}>{session.location.split(',').map(line => <p key={line}>{line}</p>)}<br /><p><a href={`https://maps.google.com/maps?saddr=My+Location&daddr=${session.location}`} target="blank">Get directions</a></p></div>;
-    } else {
-      map = (<div className={styles.noLocation}>
-        <img src="/images/map-pin.svg" role="presentation" />
-        No location data
-      </div>);
     }
     return (<section className={styles.mapSection}>
-      {address}
+      {address ? <div className={styles.address}>{address.split(',').map(line => <p key={line}>{line}</p>)}<br /><p><a href={`https://maps.google.com/maps?saddr=My+Location&daddr=${address}`} target="blank">Get directions</a></p></div> : null}
       {map}
     </section>);
   }
