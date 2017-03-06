@@ -32,7 +32,7 @@ const sessionToItem = (session, options = {}, isShown) => {
         delete info.location.data.lat;
         delete info.location.data.lng;
       }
-      item.data.location = info.location.data.manual ? info.location.data.manual.join(', ') : info.location.address;
+      item.data.location = info.location.data.manual ? info.location.data.manual.filter(l => l).join(', ') : info.location.address;
       item.data.locationData = info.location.data;
     }
     const { schedule } = item.data;

@@ -7,9 +7,15 @@
       list-style: none;
       & .count {
         background: #FFF;
+        color: #000;
+        min-width: auto;
         padding: .25em;
         display: inline-block;
         line-height: 1;
+      }
+      & .name {
+        display: inline-block;
+        min-width: 12em;
       }
     }
   }
@@ -20,4 +26,28 @@
     padding: .25em;
     min-width: 3em;
   }
+}
+
+.parent {
+  color: #888;
+}
+
+.children {
+  padding-left: .5em;
+  > li {
+    list-style: none;
+    line-height: 1.2em;
+    &::before {
+      color: #888;
+      content: '├ 🔗 ';
+    }
+    &:last-child::before {
+      content: '└ 🔗 ';
+    }
+  }
+}
+
+.time {
+  color: #888;
+  font-size: .9em;
 }

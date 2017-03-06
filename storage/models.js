@@ -158,6 +158,14 @@ module.exports = (DataTypes) => ({
             return `/${this.Model.name.toLowerCase()}/${this.uuid}`;
           },
         },
+        hooks: {
+          afterCreate(activity) {
+            return sendEmail('Someone has added a new activity on Open Sessions', SERVICE_EMAIL, `
+              <p>A new activity has been created on Open Sessions.</p>
+              <p>It's called ${activity.name} and the session it is attached to may still be in draft mode.</p>
+            `, { substitutions: { '-title-': 'New activity', '-titleClass-': 'large' } });
+          }
+        },
         instanceMethods: {
           delete() {
             return this.destroy();
@@ -172,16 +180,15 @@ module.exports = (DataTypes) => ({
               .then(() => src.destroy())
               .then(() => ({ message: 'Activities merged!' }));
           },
+          giveParent(req) {
+            if (!req.body.parentUuid) return Promise.reject({ message: 'Invalid parent ID' });
+            return this.update({ parentUuid: req.body.parentUuid }).then(instance => ({ message: 'Parent added!', instance }));
+          },
+          removeParent() {
+            return this.setParent(null).then(instance => ({ message: 'Parent removed!', instance }));
+          },
           getActions(models, req) {
             return models.Activity.getInstanceActions(this, models, req);
-          }
-        },
-        hooks: {
-          afterCreate(activity) {
-            return sendEmail('Someone has added a new activity on Open Sessions', SERVICE_EMAIL, `
-              <p>A new activity has been created on Open Sessions.</p>
-              <p>It's called ${activity.name} and the session it is attached to may still be in draft mode.</p>
-            `, { substitutions: { '-title-': 'New activity', '-titleClass-': 'large' } });
           }
         },
         classMethods: {
@@ -214,7 +221,9 @@ module.exports = (DataTypes) => ({
             actions.push('view');
             if (req.isAdmin) {
               actions.push('merge');
+              actions.push('giveParent');
               actions.push('delete');
+              if (instance.parentUuid) actions.push('removeParent');
             }
             return actions;
           },
@@ -231,19 +240,22 @@ module.exports = (DataTypes) => ({
           list(req, models) {
             return models.Activity.sequelize.query(`
               SELECT
-                "Activity"."uuid", "Activity"."name", "Activity"."createdAt",
-                COUNT("Sessions".uuid) AS "SessionsCount"
+                "Activity"."uuid", "Activity"."name", "Activity"."createdAt", "Activity"."parentUuid",
+                case when count("Sessions") = 0 then '[]' else JSON_AGG(JSON_BUILD_OBJECT('uuid', "Sessions"."uuid", 'title', "Sessions"."title")) end AS "Sessions",
+                case when count("Children") = 0 then '[]' else JSON_AGG(JSON_BUILD_OBJECT('uuid', "Children"."uuid", 'name', "Children"."name")) end AS "Children"
               FROM "Activities" AS "Activity"
-              LEFT OUTER JOIN (
+                LEFT OUTER JOIN (
                 "SessionActivities" AS "Sessions.SessionActivity"
                 INNER JOIN "Sessions" AS "Sessions" ON "Sessions"."uuid" = "Sessions.SessionActivity"."SessionUuid"
               ) ON "Activity"."uuid" = "Sessions.SessionActivity"."ActivityUuid" AND "Sessions"."state" = 'published'
-              GROUP BY "Activity"."uuid"
-              ORDER BY "Activity"."name";
+              LEFT OUTER JOIN "Activities" AS "Children" ON "Children"."parentUuid" = "Activity"."uuid"
+                GROUP BY "Activity"."uuid"
+                ORDER BY "Activity"."name";
             `).then(([instances]) => ({ instances: instances.map(instance => Object.assign(instance, { actions: models.Activity.getInstanceActions(instance, models, req) })), raw: true }));
           },
           makeAssociations(models) {
             models.Activity.belongsToMany(models.Session, { through: models.SessionActivity });
+            models.Activity.belongsTo(models.Activity, { as: 'parent' });
           }
         }
       }

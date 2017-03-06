@@ -189,7 +189,7 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
     const { session, isSaving, isPendingSave } = this.state;
     const { params } = this.props;
     const actions = [];
-    const visibleActions = ['view', 'publish', 'unpublish'];
+    const visibleActions = ['publish', 'unpublish'];
     if (isSaving) actions.push(<LoadingIcon key="loading" />);
     if (session.state) actions.push(<Link key="view" to={`${session.href}${params.tab ? `?tab=${params.tab}` : ''}`} className={[publishStyles.previewButton, isPendingSave ? publishStyles.disabled : null].join(' ')}>{isPendingSave ? 'Saving...' : 'Preview'}</Link>);
     if (session.actions) {

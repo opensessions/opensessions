@@ -17,7 +17,7 @@ import PriceSVG from '../../components/SVGs/Price';
 import Button from '../../components/Button';
 import SocialMedia from '../../components/SocialMedia';
 
-import { parseSlot, weeksAgo, lastUpdatedString } from '../../utils/calendar';
+import { parseSchedule, weeksAgo, lastUpdatedString } from '../../utils/calendar';
 import { apiModel } from '../../utils/api';
 
 import styles from './styles.css';
@@ -31,8 +31,7 @@ const GoogleMapLoader = withGoogleMap(props => (
   </GoogleMap>
 ));
 
-const actionNext = (result, notify, router, refresh) => {
-  const { message, messageType, redirect, instance } = result;
+const actionNext = ({ message, messageType, redirect, instance }, notify, router, refresh) => {
   if (message) notify(message, messageType || 'success');
   if (redirect) {
     if (redirect !== window.location.pathname) router.push(redirect);
@@ -136,18 +135,17 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   }
   renderDate() {
     const session = this.context.store.getState().get('session');
-    const { sortedSchedule } = session;
-    const sorted = sortedSchedule.filter(slot => !slot.hasOccurred);
+    const upcoming = session.sortedSchedule.filter(slot => !slot.hasOccurred).map(parseSchedule);
     const LIMIT = 2;
     const scheduleItems = this.state.scheduleItems || LIMIT;
     return (<div className={styles.dateDetail}>
       <img src="/images/calendar.svg" role="presentation" />
-      {sorted.length ? (<ol className={styles.dateList}>
-        {sorted.slice(0, scheduleItems).map(parseSlot).map((slot, index) => <li className={[styles.detailText, index === 0 ? styles.nextOccurring : ''].join(' ')}>
-          {slot.date} {slot.time ? <span className={styles.timespan}>at {slot.time}</span> : null}
-          {index === 0 || slot.duration !== sorted[index - 1].duration ? <span className={styles.duration}><img src="/images/clock.svg" role="presentation" />{slot.duration}</span> : null}
+      {upcoming.length ? (<ol className={styles.dateList}>
+        {upcoming.slice(0, scheduleItems).map(({ date, time, duration }, index) => <li className={[styles.detailText, index === 0 ? styles.nextOccurring : ''].join(' ')}>
+          {date} {time ? <span className={styles.timespan}>at {time}</span> : null}
+          {!index || duration !== upcoming[index - 1].duration ? <span className={styles.duration}><img src="/images/clock.svg" role="presentation" />{duration}</span> : null}
         </li>)}
-        {sorted.length > LIMIT ? <li onClick={() => this.setState({ scheduleItems: scheduleItems >= sorted.length ? LIMIT : Math.min(scheduleItems + 3, sorted.length) })} className={styles.expandSchedule}>{scheduleItems >= sorted.length ? 'Show fewer dates ▴' : 'Show more dates ▾'}</li> : null}
+        {upcoming.length > LIMIT ? <li onClick={() => this.setState({ scheduleItems: scheduleItems >= upcoming.length ? LIMIT : Math.min(scheduleItems + 3, upcoming.length) })} className={styles.expandSchedule}>{scheduleItems >= upcoming.length ? 'Show fewer dates ▴' : 'Show more dates ▾'}</li> : null}
       </ol>) : <span className={styles.noSchedule}>No upcoming sessions</span>}
     </div>);
   }
@@ -228,7 +226,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         </div>
         {meetingPoint}
         {preparation}
-        {this.isAdmin() ? activitiesList : null}
+        {activitiesList}
         {this.isAdmin() ? this.renderLastUpdated(session) : null}
       </div>
       <div className={styles.sideCol}>

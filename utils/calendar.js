@@ -1,8 +1,17 @@
-const moment = require('moment');
+const moment = require('moment-timezone');
+const { LOCALE_TIMEZONE } = process.env;
 
 const pgTimeToDate = time => new Date(`2000-01-01 ${time}`);
 
 const dateTime = (date, time) => new Date([date, time].join('T'));
+
+function getDuration(start, end) {
+  const diffMS = end.getTime() - start.getTime();
+  const diffMinutes = diffMS / (60 * 1000);
+  const hours = Math.floor(diffMinutes / 60);
+  const mins = diffMinutes % 60;
+  return [hours ? `${hours}h` : '', mins ? ` ${mins}m` : ''].join('');
+}
 
 function parseSchedule(slot) {
   const { startDate, startTime, endTime } = slot;
@@ -14,13 +23,10 @@ function parseSchedule(slot) {
     data.hasOccurred = date.getTime() <= now.getTime();
   }
   if (startTime) {
+    console.log('parseSchedule data.time = ', startTime);
     data.time = startTime.slice(0, 5);
     if (endTime) {
-      const dur = moment.duration(moment(pgTimeToDate(endTime)).diff(moment(pgTimeToDate(startTime))));
-      const hours = (dur.asHours() + 24) % 24;
-      const hoursInt = Math.floor(hours);
-      const minsInt = Math.ceil((hours % 1) * 60);
-      data.duration = [hoursInt ? `${hoursInt}h` : '', minsInt ? ` ${minsInt}m` : ''].join('');
+      data.duration = getDuration(pgTimeToDate(startTime), pgTimeToDate(endTime));
     }
   }
   return data;
@@ -29,9 +35,11 @@ function parseSchedule(slot) {
 function sortSchedule(slots) {
   if (!(slots && slots.length)) return [];
   const now = new Date();
+  const defaultTime = { start: '00:00:00', end: '23:59:59' };
   return slots.map(slot => Object.assign({}, {
     start: dateTime(slot.startDate, slot.startTime),
     end: dateTime(slot.startDate, slot.endTime),
+    points: ['start', 'end'].map(point => moment.tz(`${slot.startDate}T${slot[`${point}Time`] || defaultTime[point]}`, LOCALE_TIMEZONE).utc().format()),
     hasOccurred: dateTime(slot.startDate, slot.startTime || '00:00:00').getTime() <= now.getTime()
   }, slot)).sort((a, b) => a.start - b.start);
 }
@@ -48,4 +56,4 @@ function calendarLinks(schedule, title, description, location) {
   };
 }
 
-module.exports = { parseSchedule, calendarLinks, sortSchedule, nextSchedule };
+module.exports = { pgTimeToDate, getDuration, parseSchedule, calendarLinks, sortSchedule, nextSchedule };

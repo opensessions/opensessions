@@ -10,7 +10,7 @@ export default class JSONField extends React.Component { // eslint-disable-line 
   };
   static propTypes = {
     guides: PropTypes.array,
-    value: PropTypes.array,
+    value: PropTypes.object,
     onChange: PropTypes.func
   }
   constructor() {
@@ -18,10 +18,10 @@ export default class JSONField extends React.Component { // eslint-disable-line 
     this.state = {};
   }
   newKey = () => {
-    const { guides } = this.props;
+    const { value, guides } = this.props;
     if (guides) {
       const options = {};
-      guides.filter(guide => !(guide.key in this.props.value)).forEach(guide => {
+      guides.filter(guide => !(value && guide.key in value)).forEach(guide => {
         options[guide.key] = guide.key;
       });
       this.context.modal.options('Select a key', options, key => {

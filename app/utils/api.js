@@ -30,12 +30,8 @@ function apiFetch(url, opts) {
         } else {
           reject(json);
         }
-      }).catch(error => {
-        reject({ status: response.status, error });
-      });
-    }).catch(error => {
-      reject({ status: 'error', error });
-    });
+      }).catch(error => reject({ status: response.status, error }));
+    }).catch(error => reject({ status: 'error', error }));
   });
 }
 
