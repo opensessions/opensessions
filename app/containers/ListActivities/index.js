@@ -61,7 +61,7 @@ export default class ListActivities extends React.Component { // eslint-disable-
           activities[a.uuid] = a.name;
         });
         this.context.modal.options(<span>Merge <b>{activity.name}</b> with which activity?</span>, activities, target => {
-          apiModel.action('activity', activity.uuid, 'merge', { target }).then(() => {
+          apiModel.action('activity', activity.uuid, action, { target }).then(() => {
             this.fetchData();
           });
         });
@@ -71,7 +71,7 @@ export default class ListActivities extends React.Component { // eslint-disable-
           activities[a.uuid] = a.name;
         });
         this.context.modal.options(<span>Set which activity as parent to <b>{activity.name}</b>?</span>, activities, parentUuid => {
-          apiModel.action('activity', activity.uuid, 'giveParent', { parentUuid }).then(({ message, messageType }) => {
+          apiModel.action('activity', activity.uuid, action, { parentUuid }).then(({ message, messageType }) => {
             if (message) this.context.notify(message, messageType || 'success');
             this.fetchData();
           });
@@ -101,7 +101,7 @@ export default class ListActivities extends React.Component { // eslint-disable-
     const activities = this.getActivities();
     return (<div className={styles.list}>
       <h1>List of activities {activities ? `(${activities.length})` : null}</h1>
-      {isLoading ? <LoadingMessage message="Loading activities" ellipsis /> : <ol>{activities.map(activity => this.renderActivity(activity))}</ol>}
+      {isLoading ? <LoadingMessage message="Loading activities" ellipsis /> : <ol>{activities ? activities.map(activity => this.renderActivity(activity)) : null}</ol>}
     </div>);
   }
 }

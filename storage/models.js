@@ -776,7 +776,7 @@ module.exports = (DataTypes) => ({
                 if (instance.previous('state') === 'draft') {
                   instance.sendPublishedEmail('Your session was published');
                   const { title, socialTwitter, socialHashtag, Organizer, absoluteURL } = instance;
-                  sendTweet([title, 'was just published', socialTwitter ? `by ${socialTwitter} (${Organizer.name})!` : `by ${Organizer.name}!`, socialHashtag, absoluteURL].filter(t => t).join(' '));
+                  if (socialTwitter) sendTweet([title, 'was just published', socialTwitter ? `by ${socialTwitter} (${Organizer.name})!` : `by ${Organizer.name}!`, socialHashtag, absoluteURL].filter(t => t).join(' '));
                 } else if (instance.previous('state') === 'unpublished') {
                   instance.sendPublishedEmail('Your session was updated');
                 }
