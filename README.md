@@ -45,3 +45,8 @@ Run the server with `npm start`. After a few seconds, the server should be up an
 
 ## Contributing
 Test coverage can be managed by maintaining various files like `*.test.js` or `test/*.js` throughout the codebase, using [Enzyme Shallow](https://github.com/airbnb/enzyme/blob/master/docs/api/shallow.md) and [Jasmine](http://jsfiddle.net/lucassus/4DrrW/) to test components.
+
+### Tell me more!
+
+CONTRIBUTING: [CONTRIBUTING.md](https://github.com/opensessions/opensessions/blob/master/CONTRIBUTING.md)
+DEVOPS: [docs/DEVOPS.md](https://github.com/opensessions/opensessions/blob/master/docs/DEVOPS.md)
