@@ -23,8 +23,11 @@ const emailsRoute = (models) => {
       const { originEmail, metadata } = thread;
       return models.Session.findOne({ where: { uuid: metadata.SessionUuid } }).then(session => {
         const { contact } = session.info;
-        const recipient = bodyFrom.indexOf(originEmail) === -1 ? originEmail : contact.email;
-        return sendEmail(subject, recipient, html, { bcc: SERVICE_EMAIL, replyTo: [thread.uuid, EMAILS_INBOUND_URL].join('@'), NO_TEMPLATE: true }).then(() => res.send('OK'));
+        let recipient;
+        if (bodyFrom.indexOf(originEmail) !== -1) recipient = originEmail;
+        else if (bodyFrom.indexOf(contact.email) !== -1) recipient = contact.email;
+        if (recipient) return sendEmail(subject, recipient, html, { bcc: SERVICE_EMAIL, replyTo: [thread.uuid, EMAILS_INBOUND_URL].join('@'), NO_TEMPLATE: true }).then(() => res.send('OK'));
+        return sendEmail(`Bounced: ${subject}`, bodyFrom, '<p>Only the listed session organizer email and the user who submitted this question, can respond to this thread - your response was not passed on! Please contact hello@opensessions.io if you are experiencing issues.</p>', { bcc: SERVICE_EMAIL }).then(() => res.send('OK'));
       });
     }).catch(error => {
       console.error(error);

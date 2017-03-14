@@ -20,6 +20,7 @@ module.exports = {
         const query = `Insert into public."SessionActivities" (uuid, "createdAt", "updatedAt", "ActivityUuid", "SessionUuid") Values ${sessions.filter(s => s.ActivityUuid).map(s => `('${uuid.v1()}', now(), now(), '${s.ActivityUuid}', '${s.uuid}')`).join(', ')}`;
         return sequelize.query(query);
       }
+      return true;
     }));
   },
   down: migration => migration.dropTable('SessionActivities')

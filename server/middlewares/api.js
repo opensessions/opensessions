@@ -18,7 +18,7 @@ dotenv.config({ silent: true });
 dotenv.load();
 
 module.exports = (database) => {
-  const { LOCALE_TIMEZONE, SERVICE_LOCATION, ADMIN_DOMAIN, AUTH0_CLIENT_SECRET, AUTH0_CLIENT_ID, SEGMENT_WRITE_KEY } = process.env;
+  const { LOCALE_TIMEZONE, SERVICE_LOCATION, ADMIN_DOMAIN, AUTH0_CLIENT_SECRET, AUTH0_CLIENT_ID } = process.env;
   const api = express();
   const getUser = req => (req.user ? req.user.sub : null);
   const logRequests = (req, res, next) => { // eslint-disable-line no-unused-vars
