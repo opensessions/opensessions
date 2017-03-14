@@ -16,8 +16,10 @@ module.exports = {
       SessionUuid: Sequelize.UUID
     }).then(() => sequelize.query('Select * from public."Sessions";').then(result => {
       const sessions = result[0];
-      const query = `Insert into public."SessionActivities" (uuid, "createdAt", "updatedAt", "ActivityUuid", "SessionUuid") Values ${sessions.filter(s => s.ActivityUuid).map(s => `('${uuid.v1()}', now(), now(), '${s.ActivityUuid}', '${s.uuid}')`).join(', ')}`;
-      return sequelize.query(query);
+      if (!!sessions && sessions.length > 0) {
+        const query = `Insert into public."SessionActivities" (uuid, "createdAt", "updatedAt", "ActivityUuid", "SessionUuid") Values ${sessions.filter(s => s.ActivityUuid).map(s => `('${uuid.v1()}', now(), now(), '${s.ActivityUuid}', '${s.uuid}')`).join(', ')}`;
+        return sequelize.query(query);
+      }
     }));
   },
   down: migration => migration.dropTable('SessionActivities')

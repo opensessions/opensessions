@@ -22,7 +22,7 @@ const makeAppAnalysis = (models, info) => {
   getResources.then(([users, sessions]) => {
     const userSessions = users.map(user => ({ user, sessions: sessions.filter(session => session.owner === user.user_id) }));
     const viewStats = sessions.map(session => (session.analytics ? (session.analytics.views || 0) : 0));
-    const totalViews = viewStats.reduce((a, b) => a + b);
+    const totalViews = viewStats.reduce((a, b) => a + b, 0);
     const publishedSessions = userSessions.filter(data => data.sessions.some(session => session.state === 'published'));
     const analysis = {
       timestamp: new Date(),
