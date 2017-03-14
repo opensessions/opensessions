@@ -12,6 +12,20 @@ The app has seemed performant so far, but a few red flags appear to me in the fo
 
 The universal javascript implementation is mostly bare-bones functional (check out what the search bots see by going to ?ssr=1 on any page). However, as you can see, styles aren't working - not a problem for bots, but a blocker for making the site usable for anyone we might want to serve a no-js version to (potentially IE users, if we can't get react stably working for them). Styling could potentially be made universal by migrating to `styled-components` or some other way of doing css. However, the composability of the current solution inherited from the parent `react-boilerplate` project is pretty nice and giving bots and potentially legacy users (if work is put in to making the app proper no-js support) a nice experience may not be worth it, judgement call depending.
 
+## Project structure
+
+- `app` front end react code, which gets compiled by webpack
+- `docs` mostly inherited from `react-boilerplate`
+- `internals` is webpack configs
+- `server` is server code run by nodejs, with a subset compiled by webpack (./src -> ./lib)
+- `storage` contains database-y code, including models, migrations and mutations
+- `utils` contains logic that is shared by multiple parts of the application
+
+### Artifacts
+
+- `build` is created by `npm run build`
+- `uploads` is where node puts temporary images when you upload stuff, before sending to s3
+
 ## Common tasks
 
 ### Adding a route
