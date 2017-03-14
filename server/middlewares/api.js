@@ -18,7 +18,7 @@ dotenv.config({ silent: true });
 dotenv.load();
 
 module.exports = (database) => {
-  const { LOCALE_TIMEZONE, SERVICE_LOCATION, ADMIN_DOMAIN, AUTH0_CLIENT_SECRET, AUTH0_CLIENT_ID } = process.env;
+  const { LOCALE_TIMEZONE, SERVICE_LOCATION, ADMIN_DOMAIN, AUTH0_CLIENT_SECRET, AUTH0_CLIENT_ID, SEGMENT_WRITE_KEY } = process.env;
   const api = express();
   const getUser = req => (req.user ? req.user.sub : null);
   const logRequests = (req, res, next) => { // eslint-disable-line no-unused-vars
@@ -191,12 +191,12 @@ module.exports = (database) => {
   api.use('/admin', processUser, checkIsAdmin, admin);
 
   api.get('/config.js', (req, res) => {
-    const windowKeys = ['GOOGLE_MAPS_API_KEY', 'INTERCOM_APPID', 'AWS_S3_IMAGES_BASEURL', 'AUTH0_CLIENT_ID', 'AUTH0_CLIENT_DOMAIN', 'LOCALE_COUNTRY', 'ADMIN_DOMAIN'];
+    const windowKeys = ['GOOGLE_MAPS_API_KEY', 'SEGMENT_WRITE_KEY', 'INTERCOM_APPID', 'AWS_S3_IMAGES_BASEURL', 'AUTH0_CLIENT_ID', 'AUTH0_CLIENT_DOMAIN', 'LOCALE_COUNTRY', 'ADMIN_DOMAIN'];
     res.send(`
       ${windowKeys.map(key => `window["${key}"] = '${process.env[key]}'`).join(';\n')};
 
       !function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","page","once","off","on"];analytics.factory=function(t){return function(){var e=Array.prototype.slice.call(arguments);e.unshift(t);analytics.push(e);return analytics}};for(var t=0;t<analytics.methods.length;t++){var e=analytics.methods[t];analytics[e]=analytics.factory(e)}analytics.load=function(t){var e=document.createElement("script");e.type="text/javascript";e.async=!0;e.src=("https:"===document.location.protocol?"https://":"http://")+"cdn.segment.com/analytics.js/v1/"+t+"/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(e,n)};analytics.SNIPPET_VERSION="3.1.0";
-        analytics.load("${process.env.SEGMENT_WRITE_KEY}");
+        if (window.SEGMENT_WRITE_KEY) analytics.load(window.SEGMENT_WRITE_KEY);
       }}();
 
       function addScript(src) {

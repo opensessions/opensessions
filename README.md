@@ -1,5 +1,9 @@
 # Open Sessions [![Build Status](https://travis-ci.org/opensessions/opensessions.svg?branch=master)](https://travis-ci.org/opensessions/opensessions) [![Coverage Status](https://coveralls.io/repos/github/opensessions/opensessions/badge.svg?branch=master)](https://coveralls.io/github/opensessions/opensessions?branch=master)
 
+## TO DO
+
+- Document env variables (required vs optional): stretch goal, making as many optional as possible (using env var presence as feature flag)
+
 ## Quick-start
 To start the project, download and use `npm install` in the root folder to install the dependencies.
 

@@ -13,7 +13,7 @@ import styles from './styles.css';
 
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
 
-const emailCategories = [{ name: 'Expiry', id: 'engagement-expiring' }, { name: 'Live sessions', id: 'engagement-live' }, { name: 'Finish your listing', id: 'engagement-finishlisting' }];
+const emailCategories = [{ name: 'Expiry', id: 'engagement-expire-tomorrow' }, { name: 'Live sessions', id: 'engagement-live' }, { name: 'Finish your listing', id: 'engagement-finishlisting' }];
 
 const layout = {
   width: 816,
