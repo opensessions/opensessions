@@ -1,8 +1,8 @@
 'use strict';
 
 module.exports = {
-  up: (migration, DataTypes, done) => {
-    migration.createTable('Session', {
+  up: (migration, DataTypes) => {
+    return migration.createTable('Sessions', {
       uuid: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV1,
@@ -42,26 +42,29 @@ module.exports = {
       endTime: DataTypes.TIME,
       startDate: DataTypes.DATE,
       startTime: DataTypes.TIME,
-    });
-    migration.createTable('Organizer', {
-      uuid: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV1,
-        primaryKey: true
-      },
-      owner: DataTypes.STRING,
-      name: {
-        type: DataTypes.STRING,
-        validate: {
-          notEmpty: true
-        }
-      }
-    });
-    done();
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE
+    }).then(() => (
+      migration.createTable('Organizers', {
+        uuid: {
+          type: DataTypes.UUID,
+          defaultValue: DataTypes.UUIDV1,
+          primaryKey: true
+        },
+        owner: DataTypes.STRING,
+        name: {
+          type: DataTypes.STRING,
+          validate: {
+            notEmpty: true
+          }
+        },
+        createdAt: DataTypes.DATE,
+        updatedAt: DataTypes.DATE
+      })
+    ))
   },
-  down: (migration, DataTypes, done) => {
-    migration.dropTable('Session');
-    migration.dropTable('Organizer');
-    done();
+  down: (migration) => {
+    return migration.dropTable('Sessions')
+      .then(() => migration.dropTable('Organizers'))
   }
 };
