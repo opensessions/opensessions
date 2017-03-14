@@ -22,8 +22,8 @@ const emailsRoute = (models) => {
     models.Threads.findOne({ where: { uuid } }).then(thread => {
       const { originEmail, metadata } = thread;
       return models.Session.findOne({ where: { uuid: metadata.SessionUuid } }).then(session => {
-        const { contactEmail } = session;
-        const recipient = bodyFrom.indexOf(originEmail) === -1 ? originEmail : contactEmail;
+        const { contact } = session.info;
+        const recipient = bodyFrom.indexOf(originEmail) === -1 ? originEmail : contact.email;
         return sendEmail(subject, recipient, html, { bcc: SERVICE_EMAIL, replyTo: [thread.uuid, EMAILS_INBOUND_URL].join('@'), NO_TEMPLATE: true }).then(() => res.send('OK'));
       });
     }).catch(error => {
