@@ -10,7 +10,8 @@ We mostly use the graphical user interface to check out how automatic commits to
 
 ### Heroku
 
-- Make sure your heroku credentials are setup on your computer via ssh key so that you can use the heroku-cli (https://devcenter.heroku.com/articles/keys)
+- Ensure you have a Heroku account and are added to the organisation which is hosting your live app. If you are not, please ask one of your administrators
+- `heroku login` then enter email address and password
 - Use `heroku logs --app ${APP_NAME}` to view the logs. Add `--tail` flag to read continuously.
 - SSH into the machine to root around if anything's going really crazy with `heroku run bash` (I've never done this and suspect you'll never have cause to - red flag if you need to do this in write mode!).
 
