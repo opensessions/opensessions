@@ -77,7 +77,7 @@ export default class ListActivities extends React.Component { // eslint-disable-
           });
         });
         break;
-      case 'rename':
+      case 'rename': {
         const element = <span>New name for <b>{activity.name}</b>?</span>;
         const cb = name => {
           apiModel.action('activity', activity.uuid, action, { name }).then(({ message, messageType }) => {
@@ -87,6 +87,7 @@ export default class ListActivities extends React.Component { // eslint-disable-
         };
         this.context.modal.prompt(element, cb, activity.name);
         break;
+      }
       default:
         this.context.modal.confirm(`Are you sure you want to ${action} ${activity.name}?`, () => apiModel.action('activity', activity.uuid, action).then(() => this.fetchData()));
         break;
