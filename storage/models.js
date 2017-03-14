@@ -189,6 +189,9 @@ module.exports = (DataTypes) => ({
           },
           getActions(models, req) {
             return models.Activity.getInstanceActions(this, models, req);
+          },
+          rename(req) {
+            return this.update({ name: req.body.name }).then(instance => ({ message: 'Renamed!', instance }));
           }
         },
         classMethods: {
@@ -224,6 +227,7 @@ module.exports = (DataTypes) => ({
               actions.push('giveParent');
               actions.push('delete');
               if (instance.parentUuid) actions.push('removeParent');
+              actions.push('rename');
             }
             return actions;
           },
