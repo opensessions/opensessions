@@ -246,13 +246,14 @@ module.exports = (DataTypes) => ({
               SELECT
                 "Activity"."uuid", "Activity"."name", "Activity"."createdAt", "Activity"."parentUuid",
                 case when count("Sessions") = 0 then '[]' else JSON_AGG(JSON_BUILD_OBJECT('uuid', "Sessions"."uuid", 'title', "Sessions"."title")) end AS "Sessions",
-                case when count("Children") = 0 then '[]' else JSON_AGG(JSON_BUILD_OBJECT('uuid', "Children"."uuid", 'name', "Children"."name")) end AS "Children"
+                COALESCE((SELECT json_agg(JSON_BUILD_OBJECT('uuid', "Children"."uuid", 'name', "Children"."name"))
+                  FROM "Activities" as "Children"
+                  WHERE "Children"."parentUuid" = "Activity".uuid ), '[]'::json) as "Children"
               FROM "Activities" AS "Activity"
-                LEFT OUTER JOIN (
+              LEFT OUTER JOIN (
                 "SessionActivities" AS "Sessions.SessionActivity"
                 INNER JOIN "Sessions" AS "Sessions" ON "Sessions"."uuid" = "Sessions.SessionActivity"."SessionUuid"
               ) ON "Activity"."uuid" = "Sessions.SessionActivity"."ActivityUuid" AND "Sessions"."state" = 'published'
-              LEFT OUTER JOIN "Activities" AS "Children" ON "Children"."parentUuid" = "Activity"."uuid"
                 GROUP BY "Activity"."uuid"
                 ORDER BY "Activity"."name";
             `).then(([instances]) => ({ instances: instances.map(instance => Object.assign(instance, { actions: models.Activity.getInstanceActions(instance, models, req) })), raw: true }));

@@ -1,6 +1,6 @@
 # Route Documentation
 
-Routes - what do they want to know and do they return things? Let's find out!
+Routes - What Do They Want to Know and Do They Return Things? Let's Find Out!
 
 ## API
 
@@ -50,4 +50,5 @@ All responses are JSON, with model instance or search result payloads in the top
 * `/organizers` List of all the site's organizers
 * `/dashboard` Admin dashboard (email, app and publishing analytics)
   * `/users` Analytics and list of users
+* `/rdpe` View the RDPE graphically
 * `/terms` Terms and conditions and rules and legal doublets

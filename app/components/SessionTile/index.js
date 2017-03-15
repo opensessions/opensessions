@@ -13,7 +13,7 @@ const actionResult = ({ notify, router, onExpire }, action) => ({ message, messa
     if (message) notify(message, messageType || 'success');
     if (redirect) router.push(redirect);
     onExpire();
-  } else {
+  } else if (messageType !== 'success') {
     throw new Error(`Failed to ${action} session`);
   }
 };
