@@ -6,13 +6,30 @@ Follow the setup instructions as described in the README.
 
 The project suffers from dire lack of testing. Most pressing candidates for testing are the RDPE endpoint.
 
-This could be done by constructing some mock session objects and putting them through the `sessionToRDPE` function, making sure reasonable objects are output, crucially so that the outputs don't get rejected down the line by data consumers. This would be especially useful for testing all schedule/timezone transformations, which can be quite complex as it included both env variables (the app's timezone) and time info stored in non UTC formats being turned into UTC.
+This could be done by constructing some mock session objects and putting them through the `server/middlewares/rdpe : sessionToItem` function, making sure reasonable objects are output, crucially so that the outputs don't get rejected down the line by data consumers. This would be especially useful for testing all schedule/timezone transformations, which can be quite complex as it included both env variables (the app's timezone) and time info stored in non UTC formats being turned into UTC.
 
 The app has seemed performant so far, but a few red flags appear to me in the form of our cron jobs (not sure how these are implemented in node, but probably require a persistent process -- as opposed to the pattern of the rest of the app, which is basically a static front end and a REST api).
 
 The universal javascript implementation is mostly bare-bones functional (check out what the search bots see by going to ?ssr=1 on any page). However, as you can see, styles aren't working - not a problem for bots, but a blocker for making the site usable for anyone we might want to serve a no-js version to (potentially IE users, if we can't get react stably working for them). Styling could potentially be made universal by migrating to `styled-components` or some other way of doing css. However, the composability of the current solution inherited from the parent `react-boilerplate` project is pretty nice and giving bots and potentially legacy users (if work is put in to making the app proper no-js support) a nice experience may not be worth it, judgement call depending.
 
+### Known code debt
+
+#### Build process
+
+The build processes have a few issues currently:
+
+* `npm run build:app`
+  * Initial build is pretty slow (45-60s on my computer), and there could be optimizations to be made here. Hot reloading runs much faster, though
+* `npm run build:server`
+  * only builds a subset of server files - it is likely desirable that we build the whole app in the same version of javascript (i.e. ES6+) as opposed to a split between front end (cutting edge) and server (whatever node gives us). possibly contentious, as the latest node supports almost all of ES6
+  * doesn't hot-reload (particularly useful when trying to test quick changes to the API and models)
+  * it is probably a redunancy to be building the react app twice in this way (once for clients, again for node)
+
+#### 
+
 ## Project structure
+
+### Source
 
 - `app` front end react code, which gets compiled by webpack
 - `docs` mostly inherited from `react-boilerplate`
@@ -24,7 +41,7 @@ The universal javascript implementation is mostly bare-bones functional (check o
 ### Artifacts
 
 - `build` is created by `npm run build`
-- `uploads` is where node puts temporary images when you upload stuff, before sending to s3
+- `uploads` is where node puts temporary files during file uploads, before sending to s3
 
 ## Common tasks
 
