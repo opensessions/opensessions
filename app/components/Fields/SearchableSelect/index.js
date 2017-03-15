@@ -45,7 +45,7 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
   searchEvent = event => {
     const { type, target } = event;
     const { input } = this.refs;
-    const { filteredOptions, highlightIndex } = this.state;
+    const { visible, filteredOptions, highlightIndex } = this.state;
     const newState = {};
     let action;
     if (type === 'focus') {
@@ -63,8 +63,10 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
       if (keyCode in deltas) {
         newState.highlightIndex = highlightIndex + deltas[keyCode];
         this.refs.search.scrollTop = Math.max(0, 32 * (newState.highlightIndex - 3));
-        event.preventDefault();
-        event.stopPropagation();
+        if (filteredOptions && filteredOptions.length) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
       } else if (keyCode === 13) {
         input.blur();
       }

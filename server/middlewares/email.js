@@ -75,12 +75,12 @@ function getStaticMapUrl(center, zoom, size, marker) {
 }
 
 const sendPublishedEmail = (session, subject) => {
-  const { info, pricing, schedule } = session.toJSON();
+  const { info, pricing, schedule } = session;
   const nextSlot = nextSchedule(schedule);
   const parsedSlot = nextSlot ? parseSchedule(nextSlot) : false;
   if (!info.contact.email) return Promise.resolve();
   const prices = pricing && pricing.prices ? pricing.prices.map(band => parseFloat(band.price)).sort((a, b) => (a > b ? 1 : -1)) : [0];
-  const { lat, lng } = session.locationData;
+  const { lat, lng } = info.location.data;
   return sendEmail(subject, info.contact.email, `
     <p>Dear ${session.contactName || 'Open Sessions user'},</p>
     <p>Great news!</p>
@@ -100,7 +100,7 @@ const sendPublishedEmail = (session, subject) => {
           </td>
           <td style="border-left:1px solid #EEE;padding: 1em 0;">
             <p class="label">Address:</p>
-            <p>${session.location.split(',').join('<br />')}</p>
+            <p>${info.location.address.split(',').join('<br />')}</p>
             <p class="label">Price:</p>
             <p>from <b>${prices[0] ? `£${prices[0].toFixed(2)}` : '<span class="is-free">FREE</span>'}</b></p>
           </td>
