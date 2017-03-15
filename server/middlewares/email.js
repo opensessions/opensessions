@@ -37,7 +37,7 @@ const sendEmail = (subject, to, body, opts = {}) => {
   if (substitutions) substitutions['-contactUs-'] = SERVICE_EMAIL;
   const options = {
     personalizations: [{
-      to: [{ email: to }],
+      to: (to instanceof Array ? to : [to]).map(email => ({ email })),
       bcc: bcc ? [{ email: bcc }] : null,
       substitutions
     }],

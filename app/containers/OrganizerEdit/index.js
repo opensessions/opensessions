@@ -189,7 +189,7 @@ export default class OrganizerEdit extends React.Component { // eslint-disable-l
   render() {
     const { instance, isLoading, error } = this.state;
     return (<div className={styles.form}>
-      <PublishHeader h2="Edit organizer" h3={instance ? instance.name : <i>Untitled</i>} actions={this.getActions()} />
+      <PublishHeader h2="Edit organiser" h3={instance ? instance.name : <i>Untitled</i>} actions={this.getActions()} />
       {this.renderForm(instance, isLoading, error)}
     </div>);
   }
