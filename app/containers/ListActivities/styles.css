@@ -39,10 +39,10 @@
     line-height: 1.2em;
     &::before {
       color: #888;
-      content: '├ 🔗 ';
+      content: '├ ';
     }
     &:last-child::before {
-      content: '└ 🔗 ';
+      content: '└ ';
     }
   }
 }

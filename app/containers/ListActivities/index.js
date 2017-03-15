@@ -44,6 +44,9 @@ export default class ListActivities extends React.Component { // eslint-disable-
     const activities = this.context.store.getState().get('activityList');
     return activities;
   }
+  getActivity(uuid) {
+    return this.getActivities().find(activity => activity.uuid === uuid);
+  }
   fetchData() {
     this.setState({ isLoading: true });
     this.constructor.fetchData(this.context.store.dispatch).then(() => {
@@ -60,7 +63,7 @@ export default class ListActivities extends React.Component { // eslint-disable-
         this.getActivities().forEach(a => {
           activities[a.uuid] = a.name;
         });
-        this.context.modal.options(<span>Merge <b>{activity.name}</b> with which activity?</span>, activities, target => {
+        this.context.modal.options(<span>Merge <b>{activity.name}</b> into which activity (removing {activity.name})?</span>, activities, target => {
           apiModel.action('activity', activity.uuid, action, { target }).then(() => {
             this.fetchData();
           });
@@ -101,10 +104,10 @@ export default class ListActivities extends React.Component { // eslint-disable-
         {activity.Sessions.length ? <Button to={`/sessions?activity=${activity.name}`} className={styles.count}>{activity.Sessions.length}</Button> : null}
       </span>
       <span className={styles.actions}>{activity.actions.filter(action => hiddenActions.indexOf(action) === -1).map(
-        action => <Button onClick={() => this.actionClick(activity, action)} style={action in actionStyles ? actionStyles[action] : null}>{action in actionNames ? actionNames[action] : action}</Button>
+        action => <Button key={action} onClick={() => this.actionClick(activity, action)} style={action in actionStyles ? actionStyles[action] : null}>{action in actionNames ? actionNames[action] : action}</Button>
       )}</span>
       <span className={styles.time}>{timeAgo(new Date(activity.createdAt))}</span>
-      {activity.Children ? <ol className={styles.children}>{activity.Children.map(child => <li>{child.name}</li>)}</ol> : null}
+      {activity.Children ? <ol className={styles.children}>{activity.Children.map(child => this.renderActivity(this.getActivity(child.uuid)))}</ol> : null}
     </li>);
   }
   render() {
@@ -112,7 +115,7 @@ export default class ListActivities extends React.Component { // eslint-disable-
     const activities = this.getActivities();
     return (<div className={styles.list}>
       <h1>List of activities {activities ? `(${activities.length})` : null}</h1>
-      {isLoading ? <LoadingMessage message="Loading activities" ellipsis /> : <ol>{activities ? activities.map(activity => this.renderActivity(activity)) : null}</ol>}
+      {isLoading ? <LoadingMessage message="Loading activities" ellipsis /> : <ol>{activities ? activities.filter(activity => !activity.parentUuid).map(activity => this.renderActivity(activity)) : null}</ol>}
     </div>);
   }
 }
