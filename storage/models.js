@@ -483,7 +483,7 @@ module.exports = (DataTypes) => ({
             let location = { address: this.location, data: this.locationData };
             if (Organizer && Organizer.data) {
               attr = name => Organizer.data[name] || this[name];
-              location = Organizer.data.location || location;
+              if (Organizer.data.location) location = Object.assign(location, Organizer.data.location);
             }
             return {
               contact: {

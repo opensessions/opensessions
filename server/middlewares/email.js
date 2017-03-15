@@ -75,8 +75,7 @@ function getStaticMapUrl(center, zoom, size, marker) {
 }
 
 const sendPublishedEmail = (session, subject) => {
-  console.log('sending published email', session);
-  const { info, pricing, schedule } = session;
+  const { info, pricing, schedule } = session.toJSON();
   const nextSlot = nextSchedule(schedule);
   const parsedSlot = nextSlot ? parseSchedule(nextSlot) : false;
   if (!info.contact.email) return Promise.resolve();
