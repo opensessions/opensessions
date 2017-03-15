@@ -52,5 +52,6 @@ Test coverage can be managed by maintaining various files like `*.test.js` or `t
 
 ### Tell me more!
 
-CONTRIBUTING: [CONTRIBUTING.md](https://github.com/opensessions/opensessions/blob/master/CONTRIBUTING.md)
-DEVOPS: [docs/DEVOPS.md](https://github.com/opensessions/opensessions/blob/master/docs/DEVOPS.md)
+* CONTRIBUTING: [CONTRIBUTING.md](https://github.com/opensessions/opensessions/blob/master/CONTRIBUTING.md)
+* DEVOPS: [docs/DEVOPS.md](https://github.com/opensessions/opensessions/blob/master/docs/DEVOPS.md)
+* ROUTES: [docs/ROUTES.md](https://github.com/opensessions/opensessions/blob/master/docs/ROUTES.md)
