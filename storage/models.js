@@ -1,23 +1,11 @@
-const { sendEmail, getStyledElement } = require('../server/middlewares/email');
-const { SERVICE_LOCATION, SERVICE_EMAIL, EMAILS_INBOUND_URL, GOOGLE_MAPS_API_STATICIMAGES_KEY } = process.env;
-const { sortSchedule, parseSchedule, nextSchedule } = require('../utils/calendar');
+const { sendEmail, sendPublishedEmail, getStyledElement } = require('../server/middlewares/email');
+const { SERVICE_LOCATION, SERVICE_EMAIL, EMAILS_INBOUND_URL } = process.env;
+const { sortSchedule, parseSchedule } = require('../utils/calendar');
 const { sendTweet } = require('../server/middlewares/twitter');
 
 const { reqToSearch, sessionToItem } = require('../server/middlewares/rdpe');
 
 const { getUserByEmail, getUserById } = require('./users');
-
-function getStaticMapUrl(center, zoom, size, marker) {
-  const [lat, lng] = center;
-  const opts = {
-    center: center.join(','),
-    zoom,
-    size,
-    markers: Object.keys(marker).map(key => [key, marker[key]].join(':')).concat([lat, lng].join(',')).join('%7C'),
-    key: GOOGLE_MAPS_API_STATICIMAGES_KEY
-  };
-  return `https://maps.googleapis.com/maps/api/staticmap?${Object.keys(opts).map(key => [key, opts[key]].join('=')).join('&')}`;
-}
 
 const deg2rad = deg => deg * (Math.PI / 180);
 
@@ -619,61 +607,6 @@ module.exports = (DataTypes) => ({
             analytics.views = (analytics.views || 0) + 1;
             return this.update({ analytics }, { silent: true }).then(() => ({}));
           },
-          sendPublishedEmail(subject) {
-            const session = this;
-            const { info, pricing, schedule } = session;
-            const nextSlot = nextSchedule(schedule);
-            const parsedSlot = nextSlot ? parseSchedule(nextSlot) : false;
-            if (info.contact.email) {
-              const prices = pricing && pricing.prices ? pricing.prices.map(band => parseFloat(band.price)).sort((a, b) => (a > b ? 1 : -1)) : [0];
-              const { lat, lng } = session.locationData;
-              sendEmail(subject, info.contact.email, `
-                <p>Dear ${session.contactName || 'Open Sessions user'},</p>
-                <p>Great news!</p>
-                <p>You have successfully listed your session on Open Sessions.</p>
-                ${getStyledElement('session', `
-                  <h1>${session.title}</h1>
-                  <table style="text-align:center;">
-                    <tr class="images">
-                      <td>${session.image ? `<img src="${session.image}" />` : `<img src="${SERVICE_LOCATION}/images/placeholder.png" />`}</td>
-                      <td><img src="${getStaticMapUrl([lat, lng], 14, '360x240', { color: 'blue', label: 'S', icon: `${SERVICE_LOCATION}/images/map-pin-active.png` })}" /></td>
-                    </tr>
-                    <tr>
-                      <td style="border-right:1px solid #EEE;">
-                        <img src="${SERVICE_LOCATION}/images/calendar.png" width="42" height="42" />
-                        <p class="label">Next session:</p>
-                        <p>${parsedSlot ? `${parsedSlot.date} <b>at ${parsedSlot.time}</b>` : 'No upcoming session'}</p>
-                      </td>
-                      <td style="border-left:1px solid #EEE;padding: 1em 0;">
-                        <p class="label">Address:</p>
-                        <p>${session.location.split(',').join('<br />')}</p>
-                        <p class="label">Price:</p>
-                        <p>from <b>${prices[0] ? `£${prices[0].toFixed(2)}` : '<span class="is-free">FREE</span>'}</b></p>
-                      </td>
-                    </tr>
-                  </table>
-                  ${getStyledElement('viewLink', 'View or edit your session on Open Sessions', { href: session.absoluteURL }, 'a')}
-                `, { class: 'session compact' })}
-                <h1>Where does my session appear?</h1>
-                ${getStyledElement('aggregators', `
-                  ${session.aggregators.map(aggregator => getStyledElement('aggregatorsLi', `
-                    ${getStyledElement('imageCircle', getStyledElement('aggImg', null, { src: aggregator.img }, 'img'), {}, 'span')}
-                    ${getStyledElement('aggInfo', `
-                      ${getStyledElement('aggInfoTitle', aggregator.name, {}, 'h2')}
-                      ${getStyledElement('aggInfoDesc', aggregator.description, {}, 'p')}
-                      <a href="${aggregator.href}" style="color: inherit;">View your session on ${aggregator.name}</a>
-                    `)}
-                  `, { class: 'info' }, 'li')).join('')}
-                  ${getStyledElement('aggMeta', `Your session ${session.aggregators.length ? `appears on ${session.aggregators.length} activity finder${session.aggregators.length > 1 ? 's' : ''}` : 'doesn\'t appear anywhere yet. We\'ll be in touch'}`, {}, 'li')}
-                `, {}, 'ol')}
-                <h1>What next?</h1>
-                <p>We know that sometimes plans change. If you need to update your listing, click <a href="${session.absoluteURL}/edit">here</a>.</p>
-                <p>Why not share your sessions on your social media? Use the social links on your session page.</p>
-                <h1>Let us know what we can do better</h1>
-                <p>Open Sessions is still in beta testing - your feedback helps us improve it. What would have made things easier for you? Let us know by simply replying to this email.</p>
-              `, { substitutions: { '-title-': 'Your session was published!', '-titleClass-': 'large' } });
-            }
-          },
           delete() {
             return (this.state === 'draft' ? this.destroy() : this.update({ state: 'deleted' })).then(() => ({ message: 'Deletion successful!' }));
           },
@@ -779,11 +712,11 @@ module.exports = (DataTypes) => ({
                   throw err;
                 }
                 if (instance.previous('state') === 'draft') {
-                  instance.sendPublishedEmail('Your session was published');
+                  sendPublishedEmail(instance, 'Your session was published');
                   const { title, socialTwitter, socialHashtag, Organizer, absoluteURL } = instance;
                   if (socialTwitter) sendTweet([title, 'was just published', socialTwitter ? `by ${socialTwitter} (${Organizer.name})!` : `by ${Organizer.name}!`, socialHashtag, absoluteURL].filter(t => t).join(' '));
                 } else if (instance.previous('state') === 'unpublished') {
-                  instance.sendPublishedEmail('Your session was updated');
+                  sendPublishedEmail(instance, 'Your session was updated');
                 }
               } else if (instance.state === 'draft') {
                 if (instance.previous('state') === 'published') instance.state = 'unpublished';
