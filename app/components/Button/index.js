@@ -15,7 +15,8 @@ export default class Button extends React.PureComponent {
     to: PropTypes.string,
     tip: PropTypes.string,
     onClick: PropTypes.func,
-    icon: PropTypes.string
+    icon: PropTypes.string,
+    noJS: PropTypes.bool
   }
   constructor() {
     super();
@@ -27,9 +28,11 @@ export default class Button extends React.PureComponent {
     if (to) this.context.router.push(to);
   }
   onClick = event => {
-    event.stopPropagation();
-    event.preventDefault();
-    this.act();
+    if (!this.props.noJS) {
+      event.stopPropagation();
+      event.preventDefault();
+      this.act();
+    }
   }
   renderLink() {
     const { to, icon, children, className, style } = this.props;

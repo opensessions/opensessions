@@ -59,6 +59,17 @@ export default class UserDashboard extends React.Component { // eslint-disable-l
       this.setState({ isLoading: false });
     });
   }
+  downloadUsers(users) {
+    const usersCSV = encodeURIComponent(users.filter(user => user.email).map(user => `${user.email}`).join('\n'));
+    const element = document.createElement('a');
+    element.setAttribute('href', `data:text/plain;charset=utf-8,${usersCSV}`);
+    element.setAttribute('download', `opensessions-users-${(new Date()).toISOString().substr(0, 16).replace('T', '--')}.csv`);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+    // return `data:application/octet-stream,${usersCSV}`;
+  }
   renderChart(sessions, period, interval) {
     if (!sessions) return null;
     return (<div className={styles.chart}>
@@ -76,6 +87,8 @@ export default class UserDashboard extends React.Component { // eslint-disable-l
     return (<div>
       <h1>User List</h1>
       <PagedList limit={16} orientation="top" isSlim items={userSessions} page={1} itemToProps={item => item} Component={UserSessions} />
+      {/* <Button noJS to={this.downloadUsers(users)}>Download users as CSV</Button> */}
+      <Button onClick={() => this.downloadUsers(users)}>Download users as CSV</Button>
     </div>);
   }
   renderUserAnalytics() {

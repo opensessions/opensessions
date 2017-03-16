@@ -25,7 +25,9 @@ The build processes have a few issues currently:
   * doesn't hot-reload (particularly useful when trying to test quick changes to the API and models)
   * it is probably a redunancy to be building the react app twice in this way (once for clients, again for node)
 
-#### 
+#### Sequelize / model quirks
+
+Mostly when you're handling an instance in the backend e.g. a `session`, its fields correspond to the database fields in a predictable way. Sequelize does allow us to specify a "psuedo" fields, however, which are generated immediately after instance retrieval. For example, on a `session`, this includes `session.sortedSchedule` (which is a parsed, sorted version of the database `session.schedule`) and `session.info` (which sorts through various fields (that should at some point be renamed) like `socialWebsite` (-> `social.website`) info a structured object `info: { social: { facebook: '...' }, contact: { email: '...' } }`, and also pulls in some of this data from `session.Organizer.data` if existing, which obviously brings in an `organizer` instance).
 
 ## Project structure
 

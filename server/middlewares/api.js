@@ -39,9 +39,14 @@ module.exports = (database) => {
         { url: '/rdpe', description: 'RDPE endpoint' },
         { url: '/session', description: 'Session search' },
         { url: '/session/:uuid', description: 'Session detail', methods: { GET: 'Get session', POST: 'Mutate session' } },
-        { url: '/admin', description: 'Admin API', isAdmin: true, routes: [
-          { url: '/users', description: 'List users' }
-        ]}
+        {
+          url: '/admin',
+          description: 'Admin API',
+          isAdmin: true,
+          routes: [
+            { url: '/users', description: 'List users' }
+          ]
+        }
       ]
     });
   });

@@ -207,8 +207,8 @@ export default class OrganizerView extends React.Component { // eslint-disable-l
       {info.contact.name ? <p><b>Contact</b> {info.contact.name}</p> : null}
       {info.contact.phone ? <p><b>Phone</b> <a href={`tel:${info.contact.phone}`}>{info.contact.phone}</a></p> : null}
       {location ? (<div>
-        <ItemMap markers={[{ ...location.data, isActive: true, box: () => <p>{location.address}</p> }]} size={0} />
-        <p><b>Location</b> {location.address}</p>
+        {location.data && location.data.lat ? <ItemMap markers={[{ ...location.data, isActive: true, box: () => <p>{location.address}</p> }]} size={0} /> : null}
+        {location.address ? <p><b>Location</b> {location.address}</p> : null}
       </div>) : null}
       <SocialMedia item={organizer.info.social} />
       {this.canAct('edit') ? <p><Button to={`${organizer.href}/edit/description`} style="slim"><img src="/images/change.png" alt="edit" style={{ filter: 'invert()' }} /> Edit</Button></p> : null}
