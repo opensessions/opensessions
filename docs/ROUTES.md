@@ -33,11 +33,11 @@ All responses are JSON; those returning a model instance or a list thereof paylo
   * `/analysis` app analysis info (snapshots of app state recorded at specific triggers, e.g. app startup, and daily cron)
   * `/users` get all users (admin only)
 * `/hooks`
-  * `/feedback` `POST` Send feedback
-  * `/feature` `POST` When a user clicks that they want to be talked , send us an email
+  * `/feedback` `POST` Send user feedback
+  * `/feature` `POST` When a user clicks that they want to be notified when a feature is live, send us an email telling us who they are and what the feature is
   * `/feature-dialog` `POST` Let us know when a user opens a feature request dialog box
   * `/emails`
-    * `/inbound` `POST` Using sendgrid to deliver emails sent to the EMAILS_INBOUND_URL, according to (sendgrid inbound parse webhook)[https://sendgrid.com/docs/API_Reference/Webhooks/inbound_email.html]
+    * `/inbound` `POST` Using sendgrid to deliver emails sent to the EMAILS_INBOUND_URL, according to [sendgrid inbound parse webhook](https://sendgrid.com/docs/API_Reference/Webhooks/inbound_email.html)
 
 ## App
 
