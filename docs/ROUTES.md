@@ -6,7 +6,7 @@ Routes - What Do They Want to Know and Do They Return Things? Let's Find Out!
 
 The API is sensitive to the authentication of the user, which is derived from the `Authorization: bearer ${json web token}`. This identifies the user's auth0 account id. The primary effect of this is hiding sessions in draft mode from non-owners. Admin users also get additional functionality, who are defined by their auth0 email address matching the `ADMIN_DOMAIN` env var.
 
-All responses are JSON, with model instance or search result payloads in the top-level `instance` or `instances` keys respectively. TODO: use status codes and error messaging consistently.
+All responses are JSON; those returning a model instance or a list thereof payload, are given the top-level `instance` or `instances` keys respectively. TODO: use status codes and error messaging consistently.
 
 * `/api` API root, doesn't return anything (TODO: make return API routes)
   * `/rdpe` [Realtime Paged Data Exchange](https://www.openactive.io/realtime-paged-data-exchange/) root
@@ -32,6 +32,12 @@ All responses are JSON, with model instance or search result payloads in the top
         * `/rdpe` partner's rdpe endpoint
   * `/analysis` app analysis info (snapshots of app state recorded at specific triggers, e.g. app startup, and daily cron)
   * `/users` get all users (admin only)
+* `/hooks`
+  * `/feedback` `POST` Send feedback
+  * `/feature` `POST` When a user clicks that they want to be talked , send us an email
+  * `/feature-dialog` `POST` Let us know when a user opens a feature request dialog box
+  * `/emails`
+    * `/inbound` `POST` Using sendgrid to deliver emails sent to the EMAILS_INBOUND_URL, according to (sendgrid inbound parse webhook)[https://sendgrid.com/docs/API_Reference/Webhooks/inbound_email.html]
 
 ## App
 
