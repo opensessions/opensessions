@@ -30,6 +30,22 @@ module.exports = (database) => {
   api.use('/rdpe', rdpe(database, Object.assign({ baseURL: '/api/rdpe' }, rdpeConfig)));
   api.use('/rdpe-legacy', rdpe(database, Object.assign({}, rdpeConfig, { preserveLatLng: true, baseURL: '/api/rdpe-legacy' })));
 
+  api.get('/', (req, res) => {
+    res.json({
+      request: {
+        headers: ['Authorization: bearer ${json web token}']
+      },
+      routes: [
+        { url: '/rdpe', description: 'RDPE endpoint' },
+        { url: '/session', description: 'Session search' },
+        { url: '/session/:uuid', description: 'Session detail', methods: { GET: 'Get session', POST: 'Mutate session' } },
+        { url: '/admin', description: 'Admin API', isAdmin: true, routes: [
+          { url: '/users', description: 'List users' }
+        ]}
+      ]
+    });
+  });
+
   const requireLogin = jwt({
     secret: new Buffer(AUTH0_CLIENT_SECRET, 'base64'),
     audience: AUTH0_CLIENT_ID
