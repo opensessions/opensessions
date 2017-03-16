@@ -1,7 +1,7 @@
 const sendgrid = require('sendgrid');
 const { parseSchedule, nextSchedule } = require('../../utils/calendar');
 
-const { SENDGRID_SECRET, SERVICE_EMAIL, SERVICE_LOCATION, SENDGRID_TEMPLATE, SENDGRID_TRACKING, GOOGLE_MAPS_API_STATICIMAGES_KEY } = process.env;
+const { SENDGRID_SECRET, SERVICE_EMAIL_SUPPORT, SERVICE_LOCATION, SENDGRID_TEMPLATE, SENDGRID_TRACKING, GOOGLE_MAPS_API_STATICIMAGES_KEY } = process.env;
 
 const emailStyles = {
   messageFrom: { padding: '.5em', background: '#F6F1F1', color: '#666', 'text-align': 'center' },
@@ -35,7 +35,7 @@ const sendEmail = (subject, to, body, opts = {}) => {
   const sg = sendgrid(SENDGRID_SECRET);
   let templateId = opts.template_id || SENDGRID_TEMPLATE;
   if (NO_TEMPLATE) templateId = undefined;
-  if (substitutions) substitutions['-contactUs-'] = SERVICE_EMAIL;
+  if (substitutions) substitutions['-contactUs-'] = SERVICE_EMAIL_SUPPORT;
   const options = {
     personalizations: [{
       to: (to instanceof Array ? to : [to]).map(email => ({ email })),
@@ -43,7 +43,7 @@ const sendEmail = (subject, to, body, opts = {}) => {
       substitutions
     }],
     bcc: bcc ? [{ email: bcc }] : null,
-    from: { name: 'Open Sessions', email: SERVICE_EMAIL },
+    from: opts.from ? opts.from : { name: 'Open Sessions', email: SERVICE_EMAIL_SUPPORT },
     reply_to: replyTo ? { email: replyTo } : null,
     subject,
     content: [{

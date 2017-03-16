@@ -1,5 +1,5 @@
 const { sendEmail, sendPublishedEmail, getStyledElement } = require('../server/middlewares/email');
-const { SERVICE_LOCATION, SERVICE_EMAIL, EMAILS_INBOUND_URL } = process.env;
+const { SERVICE_LOCATION, SERVICE_EMAIL_ADMIN, EMAILS_INBOUND_URL } = process.env;
 const { sortSchedule, parseSchedule } = require('../utils/calendar');
 const { sendTweet } = require('../server/middlewares/twitter');
 
@@ -148,7 +148,7 @@ module.exports = (DataTypes) => ({
         },
         hooks: {
           afterCreate(activity) {
-            return sendEmail('Someone has added a new activity on Open Sessions', SERVICE_EMAIL, `
+            return sendEmail('Someone has added a new activity on Open Sessions', SERVICE_EMAIL_ADMIN, `
               <p>A new activity has been created on Open Sessions.</p>
               <p>It's called ${activity.name} and the session it is attached to may still be in draft mode.</p>
             `, { substitutions: { '-title-': 'New activity', '-titleClass-': 'large' } });
@@ -648,7 +648,7 @@ module.exports = (DataTypes) => ({
                   ${getStyledElement('aggSrcContainer', getStyledElement('aggSrcImg', '', { style: { 'background-image': `url(${SERVICE_LOCATION}/images/open-sessions.png)` } }))}
                 `, { class: 'session', style: 'padding: 0' })}
                 ${getStyledElement('sessionLink', getStyledElement('sessionLinkA', 'View or edit your session on Open Sessions', { href: session.absoluteURL }, 'a'), {}, 'p')}
-              `, { substitutions: { '-title-': `Reply to ${name} by replying to this email`, '-signoffClass-': 'hide' }, replyTo: `${thread.uuid}@${EMAILS_INBOUND_URL}`, bcc: SERVICE_EMAIL }))
+              `, { substitutions: { '-title-': `Reply to ${name} by replying to this email`, '-signoffClass-': 'hide' }, replyTo: `${thread.uuid}@${EMAILS_INBOUND_URL}`, bcc: SERVICE_EMAIL_ADMIN }))
               .then({ message: `Message sent! Replies will be sent to ${email}` });
           },
           setActivitiesAction(req) {

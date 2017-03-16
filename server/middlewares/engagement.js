@@ -16,7 +16,7 @@
   logins_count: 12
 } */
 
-const { SERVICE_LOCATION, SERVICE_EMAIL } = process.env;
+const { SERVICE_LOCATION, SERVICE_EMAIL_ADMIN } = process.env;
 
 const { getAllUsers } = require('../../storage/users');
 const { sendEmail, getStyledElement } = require('./email');
@@ -170,7 +170,7 @@ const sendEngagementEmails = (models) => {
           outbox.push(email);
         }
       });
-      sendEmail('Email Engagement Summary', SERVICE_EMAIL, `<p>We've just generated engagement emails for the week from ${SERVICE_LOCATION}.</p>
+      sendEmail('Email Engagement Summary', SERVICE_EMAIL_ADMIN, `<p>We've just generated engagement emails for the week from ${SERVICE_LOCATION}.</p>
         <p>Total sent: ${outbox.length}</p>
         <ul>${outbox.map(email => `<li><b>Subject:</b> ${email[0]}<br /><b>User:</b> &lt;${email[1]}&gt;</li>`).join('')}</ul>
       `, { substitutions: { '-title-': 'Weekly engagement email summary' } });
@@ -185,7 +185,7 @@ const sendDailyEmails = (models) => getAllUsers().then(users => Promise.all([
   const yesterdayDate = new Date();
   yesterdayDate.setDate(yesterdayDate.getDate() - 1);
   const getDate = date => date.toISOString().substr(0, 10);
-  sendEmail('Daily Email Summary', SERVICE_EMAIL, `<p>We've just generated daily engagement emails from ${SERVICE_LOCATION}.</p>
+  sendEmail('Daily Email Summary', SERVICE_EMAIL_ADMIN, `<p>We've just generated daily engagement emails from ${SERVICE_LOCATION}.</p>
     <h1>Total sent</h1>
     <h2>Finish Your Listing (${draftEmails.length})</h2>
     <ul>${draftEmails.map(email => `<li><b>Subject:</b> ${email[0]}<br /><b>User:</b> &lt;${email[1]}&gt;</li>`).join('')}</ul>

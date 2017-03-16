@@ -12,7 +12,7 @@ const requireLogin = jwt({
 
 const emailsRoute = (models) => {
   const route = express();
-  const { SERVICE_EMAIL, EMAILS_INBOUND_URL } = process.env;
+  const { SERVICE_EMAIL_ADMIN, EMAILS_INBOUND_URL } = process.env;
 
   route.post('/inbound', upload.none(), (req, res) => {
     const { body } = req;
@@ -26,7 +26,7 @@ const emailsRoute = (models) => {
         const recipients = [];
         if (bodyFrom.indexOf(originEmail) === -1) recipients.push(originEmail);
         if (bodyFrom.indexOf(contact.email) === -1) recipients.push(contact.email);
-        return sendEmail(subject, recipients, html, { bcc: SERVICE_EMAIL, replyTo: [thread.uuid, EMAILS_INBOUND_URL].join('@'), NO_TEMPLATE: true }).then(() => res.send('OK'));
+        return sendEmail(subject, recipients, html, { bcc: SERVICE_EMAIL_ADMIN, replyTo: [thread.uuid, EMAILS_INBOUND_URL].join('@'), NO_TEMPLATE: true }).then(() => res.send('OK'));
       });
     }).catch(error => {
       console.error(error);
@@ -39,19 +39,20 @@ const emailsRoute = (models) => {
 
 const hooks = (database) => {
   const route = express();
-  const { SERVICE_LOCATION, SERVICE_EMAIL } = process.env;
+  const { SERVICE_LOCATION, SERVICE_EMAIL_SUPPORT, SERVICE_EMAIL_ADMIN } = process.env;
 
   route.post('/feedback', (req, res) => {
     const { name, email, category, message } = req.body;
-    if (email && message && category) {
-      sendEmail(`${name || 'Someone'} has ${category.toLowerCase()} on Open Sessions`, SERVICE_EMAIL, `
+    const required = ['email', 'message', 'category'];
+    if (required.every(field => req.body[field])) {
+      sendEmail(`${name || 'Someone'} has ${category.toLowerCase()} on Open Sessions`, SERVICE_EMAIL_SUPPORT, `
         <p>${name || 'A user'} &lt;${email}&gt; has submitted some feedback with the category '${category.toLowerCase()}' on Open Sessions:</p>
         <p>${message}</p>
-      `, { replyTo: email, substitutions: { '-title-': 'Feedback' } }).then(() => {
+      `, { replyTo: email, from: email, substitutions: { '-title-': 'Feedback' } }).then(() => {
         res.json({ status: 'success' });
       }).catch(err => res.status(400).json({ status: 'error', message: err }));
     } else {
-      res.json({ status: 'error', message: `You must enter ${['email', 'message', 'category'].filter(v => !req.body[v]).join(' & ')}` });
+      res.json({ status: 'error', message: `You must enter ${required.filter(v => !req.body[v]).join(' & ')}` });
     }
   });
 
@@ -59,7 +60,7 @@ const hooks = (database) => {
 
   route.post('/feature', requireLogin, (req, res) => {
     const { feature, name, email } = req.body;
-    sendEmail('A user is interested in a feature', SERVICE_EMAIL, `
+    sendEmail('A user is interested in a feature', SERVICE_EMAIL_ADMIN, `
       <p>The user ${name} &lt;${email}&gt; is interested in the '${feature}' feature. Please let them know when it's ready!</p>
     `, { substitutions: { '-title-': 'Feature request' } }).then(() => {
       res.json({ status: 'success' });
@@ -68,7 +69,7 @@ const hooks = (database) => {
 
   route.post('/feature-dialog', requireLogin, (req, res) => {
     const { feature, name, email } = req.body;
-    sendEmail('A user has opened a feature dialog', SERVICE_EMAIL, `
+    sendEmail('A user has opened a feature dialog', SERVICE_EMAIL_ADMIN, `
       <p>A user (${name} &lt;${email}&gt;) has opened a dialog box for the '${feature}' feature on ${SERVICE_LOCATION}.</p>
     `, { substitutions: { '-title-': 'Dialog box opened' } }).then(() => {
       res.json({ status: 'success' });
