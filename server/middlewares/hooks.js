@@ -48,7 +48,7 @@ const hooks = (database) => {
       sendEmail(`${name || 'Someone'} has ${category.toLowerCase()} on Open Sessions`, SERVICE_EMAIL_SUPPORT, `
         <p>${name || 'A user'} &lt;${email}&gt; has submitted some feedback with the category '${category.toLowerCase()}' on Open Sessions:</p>
         <p>${message}</p>
-      `, { replyTo: email, from: email, substitutions: { '-title-': 'Feedback' } }).then(() => {
+      `, { replyTo: email, fromName: name, substitutions: { '-title-': 'Feedback' } }).then(() => {
         res.json({ status: 'success' });
       }).catch(err => res.status(400).json({ status: 'error', message: err }));
     } else {

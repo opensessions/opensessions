@@ -37,7 +37,7 @@ const getCachedQuery = (key, models) => {
 
 const getParentActivities = (activity, list) => {
   let activities = [];
-  parent = list.find(a => a.uuid === activity.parentUuid);
+  const parent = list.find(a => a.uuid === activity.parentUuid);
   if (parent) {
     activities.push(parent.name);
     activities = activities.concat(getParentActivities(parent, list));
@@ -86,7 +86,7 @@ const sessionToItem = (session, options = {}, isShown, activityList) => {
         activities.push(activity.name);
         activities = activities.concat(getParentActivities(activity, activityList));
       });
-      item.data.Activities = activities.filter((item, index) => activities.indexOf(item) === index);
+      item.data.Activities = activities.filter((a, index) => activities.indexOf(a) === index);
     }
     item.data.website = `${options.URL}${item.data.href}`;
     item.data.messageURL = `${options.URL}${item.data.href}/action/message`;
