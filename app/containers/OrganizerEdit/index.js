@@ -41,7 +41,8 @@ export default class OrganizerEdit extends React.Component { // eslint-disable-l
       fieldToType: {
         'data.location': Location,
         'data.noPricing': BoolRadio,
-        'data.noSchedule': BoolRadio
+        'data.noSchedule': BoolRadio,
+        'data.noContact': BoolRadio
       },
       fields: {
         title: () => <TextField validation={{ maxLength: 50 }} {...this.getAttr('title')} />,
@@ -57,9 +58,7 @@ export default class OrganizerEdit extends React.Component { // eslint-disable-l
     };
   }
   componentDidMount() {
-    this.fetchData().then(() => {
-      this.getFieldsets();
-    });
+    this.fetchData().then(() => this.getFieldsets());
   }
   onChange = instance => {
     const { fieldsets } = this.state;
@@ -82,7 +81,7 @@ export default class OrganizerEdit extends React.Component { // eslint-disable-l
       { slug: 'social', props: { validity: 'none' }, fields: ['socialWebsite', 'socialFacebook', 'socialInstagram', 'socialTwitter', 'socialHashtag'] },
       { slug: 'location', props: { validity: 'none' }, fields: ['data.location'] }
     ];
-    if (user && user.partner) fieldsets.push({ slug: 'options', props: { validity: 'none' }, fields: ['data.noSchedule', 'data.noPricing'] });
+    if (user && user.partner) fieldsets.push({ slug: 'options', props: { validity: 'none' }, fields: ['data.noSchedule', 'data.noPricing', 'data.noContact'] });
     return this.setState({ fieldsets });
   }
   getAttr = name => {

@@ -95,6 +95,10 @@
     "data.noSchedule": {
       "label": "Disable Schedule",
       "tip": "Hide the Schedule section for this organiser's sessions"
+    },
+    "data.noContact": {
+      "label": "Disable Contact validation",
+      "tip": "Allow sessions to be published without contact details"
     }
   }
 }

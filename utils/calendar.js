@@ -23,7 +23,6 @@ function parseSchedule(slot) {
     data.hasOccurred = date.getTime() <= now.getTime();
   }
   if (startTime) {
-    console.log('parseSchedule data.time = ', startTime);
     data.time = startTime.slice(0, 5);
     if (endTime) {
       data.duration = getDuration(pgTimeToDate(startTime), pgTimeToDate(endTime));

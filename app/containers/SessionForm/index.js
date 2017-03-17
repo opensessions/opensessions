@@ -293,12 +293,13 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
       if (session.state !== 'unpublished') {
         session.state = 'draft';
       }
+      const OrganizerUuid = session.OrganizerUuid;
       apiModel.edit('session', session.uuid, session).then(result => {
         const { instance, error } = result;
         if (this.state.isPendingSave) return true;
         if (error) throw new Error(error);
         this.setState({ isPendingSave: false, isSaving: false, session: instance, status: 'Saved draft!', saveState: 'saved' });
-        this.getFieldsets(instance);
+        if (instance.OrganizerUuid !== OrganizerUuid) this.getFieldsets(instance);
         return result;
       }).catch(result => {
         this.setState({ status: 'Failed saving', isPendingSave: false, isSaving: false, saveState: 'error' });

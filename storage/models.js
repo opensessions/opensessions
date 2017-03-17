@@ -517,8 +517,6 @@ module.exports = (DataTypes) => ({
               leader: { tab: 'additional', pretty: 'Leader' }
             };
             const requiredInfo = {
-              // 'contact.name': { tab: 'contact', pretty: 'Full name' },
-              // 'contact.email': { tab: 'contact', pretty: 'Email address' },
               'location.address': { tab: 'location', pretty: 'Address' }
             };
             const errors = [];
@@ -537,8 +535,13 @@ module.exports = (DataTypes) => ({
             if (session.Activities && !session.Activities.length) {
               errors.push('You need to add an <a data-tab="description" data-field="Activity Type">activity type</a>');
             }
-            const requireSchedule = !(session.Organizer && session.Organizer.data && session.Organizer.data.noSchedule);
-            if (requireSchedule) {
+            const organizerHasFlag = flag => session.Organizer && session.Organizer.data && session.Organizer.data[flag] && session.Organizer.data[flag] !== 'false';
+            if (!organizerHasFlag('noContact')) {
+              if (!['email', 'phone'].some(key => session.info.contact[key])) {
+                errors.push('You must add at least one method of <a data-tab="contact" data-field="Contact">contact</a>');
+              }
+            }
+            if (!organizerHasFlag('noSchedule')) {
               if (!session.sortedSchedule.length) {
                 errors.push('You must add a <a data-tab="schedule" data-field="schedule">schedule</a>');
               } else if (session.sortedSchedule.some(slot => slot.hasOccurred)) {
@@ -547,8 +550,7 @@ module.exports = (DataTypes) => ({
                 errors.push('You must complete <a data-tab="schedule" data-field="schedule">schedule</a> information');
               }
             }
-            const requirePricing = !(session.Organizer && session.Organizer.data && session.Organizer.data.noPricing);
-            if (requirePricing) {
+            if (!organizerHasFlag('noPricing')) {
               if (session.pricing && session.pricing.prices && session.pricing.prices.length) {
                 if (!session.pricing.prices.every(band => band.price)) {
                   errors.push('You need to complete <a data-tab="pricing" data-field="pricing">pricing</a> information');
