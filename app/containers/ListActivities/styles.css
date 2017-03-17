@@ -33,7 +33,8 @@
 }
 
 .children {
-  padding-left: .5em;
+  margin-left: .25em;
+  padding-left: .25em;
   > li {
     list-style: none;
     line-height: 1.2em;

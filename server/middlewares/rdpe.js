@@ -12,7 +12,40 @@ const compareMicrotime = (dateString, operator = '=') => {
 const hiddenFields = ['aggregators', 'contactEmail', 'analytics', 'sortedSchedule', 'owner'];
 const organizerFields = ['contactName', 'contactPhone', 'socialWebsite', 'socialTwitter', 'socialFacebook', 'socialHashtag', 'socialInstagram'];
 
-const sessionToItem = (session, options = {}, isShown) => {
+const getActivityList = models => models.Activity.list({}, models).then(response => response.instances);
+
+const cachedQueries = {
+  activityList: {
+    resolve: getActivityList,
+    timeout: 60 * 60 // in seconds (60s * m/s)
+  }
+};
+
+const cachedQueryResults = {};
+
+const getCachedQuery = (key, models) => {
+  const query = cachedQueries[key];
+  const cached = cachedQueryResults[key];
+  if (cached) {
+    if (Date.now() <= cached.expire) return Promise.resolve(cached.result);
+  }
+  return query.resolve(models).then(result => {
+    cachedQueryResults[key] = { result, expire: Date.now() + (1000 * query.timeout) };
+    return result;
+  });
+};
+
+const getParentActivities = (activity, list) => {
+  let activities = [];
+  parent = list.find(a => a.uuid === activity.parentUuid);
+  if (parent) {
+    activities.push(parent.name);
+    activities = activities.concat(getParentActivities(parent, list));
+  }
+  return activities;
+};
+
+const sessionToItem = (session, options = {}, isShown, activityList) => {
   const item = {
     state: session.state,
     kind: 'session',
@@ -47,7 +80,14 @@ const sessionToItem = (session, options = {}, isShown) => {
         return formatted;
       });
     }
-    if (item.data.Activities) item.data.Activities = item.data.Activities.map(activity => activity.name);
+    if (item.data.Activities) {
+      let activities = [];
+      item.data.Activities.forEach(activity => {
+        activities.push(activity.name);
+        activities = activities.concat(getParentActivities(activity, activityList));
+      });
+      item.data.Activities = activities.filter((item, index) => activities.indexOf(item) === index);
+    }
     item.data.website = `${options.URL}${item.data.href}`;
     item.data.messageURL = `${options.URL}${item.data.href}/action/message`;
     hiddenFields.forEach(key => delete item.data[key]);
@@ -100,29 +140,30 @@ const rdpe = (database, options = {}) => {
   });
 
   api.get('/sessions', (req, res) => {
-    Partner.findAll()
-      .then(partners => partners.map(p => p.userId).filter(id => id))
-      .then(partnerIDs => Session.findAll(reqToSearch(req, database.models))
-        .then(rawSessions => {
-          const sessions = rawSessions.map(session => sessionToItem(session, options, s => partnerIDs.indexOf(s.owner) === -1));
-          const next = {};
-          if (sessions.length) {
-            const lastSession = sessions[sessions.length - 1];
-            next.from = lastSession.modified;
-            next.after = lastSession.id;
-          } else {
-            ['from', 'after'].filter(key => key in req.query).forEach(key => (next[key] = req.query[key]));
-          }
-          res.json({
-            items: sessions,
-            next: `${options.baseURL}/sessions?${Object.keys(next).map(key => [key, encodeURIComponent(next[key])].join('=')).join('&')}`,
-            license: 'https://creativecommons.org/licenses/by/4.0/'
-          });
-        })
-      ).catch(error => {
-        console.error('rdpe error', error);
-        res.json({ error });
-      });
+    Promise.all([
+      Partner.findAll().then(partners => partners.map(p => p.userId).filter(id => id)),
+      getCachedQuery('activityList', database.models)
+    ]).then(([partnerIDs, activityList]) => Session.findAll(reqToSearch(req, database.models))
+      .then(rawSessions => {
+        const sessions = rawSessions.map(session => sessionToItem(session, options, s => partnerIDs.indexOf(s.owner) === -1, activityList));
+        const next = {};
+        if (sessions.length) {
+          const lastSession = sessions[sessions.length - 1];
+          next.from = lastSession.modified;
+          next.after = lastSession.id;
+        } else {
+          ['from', 'after'].filter(key => key in req.query).forEach(key => (next[key] = req.query[key]));
+        }
+        res.json({
+          items: sessions,
+          next: `${options.baseURL}/sessions?${Object.keys(next).map(key => [key, encodeURIComponent(next[key])].join('=')).join('&')}`,
+          license: 'https://creativecommons.org/licenses/by/4.0/'
+        });
+      })
+    ).catch(error => {
+      console.error('rdpe error', error);
+      res.json({ error });
+    });
   });
 
   return api;
