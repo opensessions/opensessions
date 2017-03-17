@@ -57,8 +57,9 @@ export default class OrganizerEdit extends React.Component { // eslint-disable-l
     };
   }
   componentDidMount() {
-    this.fetchData();
-    this.getFieldsets();
+    this.fetchData().then(() => {
+      this.getFieldsets();
+    });
   }
   onChange = instance => {
     const { fieldsets } = this.state;
