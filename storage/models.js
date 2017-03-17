@@ -546,7 +546,7 @@ module.exports = (DataTypes) => ({
                 errors.push('You must add a <a data-tab="schedule" data-field="schedule">schedule</a>');
               } else if (session.sortedSchedule.some(slot => slot.hasOccurred)) {
                 errors.push('Some of your <a data-tab="schedule" data-field="schedule">schedule</a> is out of date');
-              } else if (!session.schedule.every(slot => slot.startDate && slot.startTime && slot.endTime)) {
+              } else if (!session.schedule.every(slot => ['startDate', 'startTime', 'endTime'].every(field => slot[field]))) {
                 errors.push('You must complete <a data-tab="schedule" data-field="schedule">schedule</a> information');
               }
             }

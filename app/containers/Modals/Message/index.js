@@ -26,7 +26,7 @@ export default class MessageModal extends React.Component { // eslint-disable-li
   componentWillMount() {
     const { user } = this.context;
     const { options } = this.props;
-    this.setState({ form: { email: user ? user.email : null, category: options ? options[0] : null } });
+    this.setState({ form: { data: { user }, email: user ? user.email : null, category: options ? options[0] : null } });
   }
   send = () => apiFetch(this.props.url, { body: this.state.form }).then(res => {
     const { status } = res;

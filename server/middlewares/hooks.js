@@ -42,12 +42,13 @@ const hooks = (database) => {
   const { SERVICE_LOCATION, SERVICE_EMAIL_SUPPORT, SERVICE_EMAIL_ADMIN } = process.env;
 
   route.post('/feedback', (req, res) => {
-    const { name, email, category, message } = req.body;
+    const { name, email, category, message, data } = req.body;
     const required = ['email', 'message', 'category'];
     if (required.every(field => req.body[field])) {
       sendEmail(`${name || 'Someone'} has ${category.toLowerCase()} on Open Sessions`, SERVICE_EMAIL_SUPPORT, `
         <p>${name || 'A user'} &lt;${email}&gt; has submitted some feedback with the category '${category.toLowerCase()}' on Open Sessions:</p>
         <p>${message}</p>
+        ${data ? `<p>Additional data: ${JSON.stringify(data)}</p>` : ''}
       `, { replyTo: email, fromName: name, substitutions: { '-title-': 'Feedback' } }).then(() => {
         res.json({ status: 'success' });
       }).catch(err => res.status(400).json({ status: 'error', message: err }));
