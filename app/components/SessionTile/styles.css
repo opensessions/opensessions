@@ -115,23 +115,6 @@
         & > li {
           list-style: none;
           display: inline-block;
-          margin-right: .1em;
-          & a {
-            display: block;
-            color: var(--actionColor);
-            text-decoration: none;
-            &:hover {
-              background-color: var(--actionColor);
-              color: #FFF;
-            }
-            &.delete {
-              color: #BF0000;
-              &:hover {
-                background-color: #BF0000;
-                color: #FFF;
-              }
-            }
-          }
         }
       }
       & .state {
@@ -166,6 +149,7 @@
       & > li {
         list-style: none;
         &.schedule {
+          position: relative;
           background: #888;
           color: #FFF;
           margin: .5em auto;
@@ -175,10 +159,9 @@
             background-color: #BBB;
             box-shadow: 0 .1em .75em 0 rgba(0, 0, 0, .25);
             text-decoration: line-through;
-            position: relative;
-            margin-top: -1.5em;
-            &:first-child {
-              margin-top: 0;
+            margin-bottom: -1.5em;
+            &:last-child {
+              margin-bottom: 0;
             }
           }
           & > svg {
@@ -244,7 +227,7 @@
         font-size: 1.1em;
         & ol.actions > li a,
         & .state {
-          padding: .5em 1em;
+          margin: 0;
         }
       }
     }

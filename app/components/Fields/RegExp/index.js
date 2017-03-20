@@ -26,7 +26,7 @@ export default class RegExpField extends React.Component { // eslint-disable-lin
     const { value } = this.props;
     const text = value ? value.toString() : '';
     const expType = expTypes.filter(type => type.test.test(text))[0];
-    return [expType ? expType.key : '', text.replace(/^\/[\^]?/, '').replace(/[\$]?\/$/, '')];
+    return [expType ? expType.key : '', text.replace(/^\/[\^]?/, '').replace(/[$]?\/$/, '')];
   }
   render() {
     const [expType, text] = this.valueIn();

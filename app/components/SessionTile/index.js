@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
+import Button from '../Button';
 
 import CalendarSVG from '../SVGs/Calendar';
 
@@ -32,10 +33,10 @@ const SessionTile = function (props, context) {
     .catch(actionError(context, action, 'session')));
   const renderActions = () => {
     const actionTypes = {
-      edit: <Link to={`${session.href}/edit`}>Edit</Link>,
-      view: <Link to={session.href}>View</Link>,
-      duplicate: <a onClick={() => promptAction('duplicate')} onKeyUp={({ keyCode, target }) => keyCode === 13 && target.click()} tabIndex={0}>Duplicate</a>,
-      delete: <a onClick={() => confirmAction('delete')} onKeyUp={({ keyCode, target }) => keyCode === 13 && target.click()} tabIndex={0} className={styles.delete}>Delete</a>
+      edit: <Button style="slim" to={`${session.href}/edit`}>Edit</Button>,
+      view: <Button style="slim" to={session.href}>View</Button>,
+      duplicate: <Button style="slim" onClick={() => promptAction('duplicate')}>Duplicate</Button>,
+      delete: <Button onClick={() => confirmAction('delete')} style={['danger', 'slim']}>Delete</Button>
     };
     return (<ol className={styles.actions}>
       {session.actions.filter(key => key in actionTypes).map(key => <li key={key}>{actionTypes[key]}</li>)}

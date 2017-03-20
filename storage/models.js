@@ -363,7 +363,7 @@ module.exports = (DataTypes) => ({
               instance.data = data;
             }
             if (instance.changed('slug')) {
-              instance.slug = instance.slug.replace(/[/\.]/g, '');
+              instance.slug = instance.slug.replace(/[/.]/g, '');
             }
           }
         }

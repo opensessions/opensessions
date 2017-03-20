@@ -6,7 +6,7 @@ import { timeAgo } from '../../utils/calendar';
 import styles from './styles.css';
 
 const isDate = data => {
-  if (data.match && data.match(/^[\d\.]+$/)) return false;
+  if (data.match && data.match(/^[\d.]+$/)) return false;
   const date = new Date(data);
   return !isNaN(date) && date.getTime();
 };

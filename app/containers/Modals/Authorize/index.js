@@ -121,7 +121,7 @@ export default class AuthModal extends React.Component { // eslint-disable-line 
           form[name] = value;
           this.setState({ form });
         }}
-        type={"text"}
+        type="text"
         {...props}
       />
     </div>);

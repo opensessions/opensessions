@@ -1,8 +1,9 @@
 import React, { PropTypes } from 'react';
+import BoolBox from '../BoolBox';
 
 import styles from './styles.css';
 
-export default class OptionalField extends React.Component { // eslint-disable-line react/prefer-stateless-function
+export default class Optional extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
     value: PropTypes.any,
     onChange: PropTypes.func,
@@ -17,8 +18,7 @@ export default class OptionalField extends React.Component { // eslint-disable-l
     const value = target ? target.value : event;
     this.props.onChange(value);
   }
-  radioClick = event => {
-    const showInput = event.target.value === 'true';
+  radioClick(showInput) {
     if (!showInput) this.props.onChange(this.props.null || null);
     this.setState({ showInput });
   }
@@ -32,16 +32,12 @@ export default class OptionalField extends React.Component { // eslint-disable-l
       onChange: this.handleChange
     };
     const input = showInput ? <component.type {...props} {...component.props} autoFocus /> : null;
-    const radioAttrs = {
-      type: 'radio',
-      onChange: this.radioClick
-    };
     return (<div className={`${styles.optionalField} ${multiline ? styles.multiline : ''}`}>
-      <label>
-        <input {...radioAttrs} value="null" checked={!showInput} /> {'no' in this.props ? this.props.no : 'No'}
+      <label onClick={() => this.radioClick(false)}>
+        <BoolBox type="radio" checked={!showInput} onChange={() => this.radioClick(false)} /> {'no' in this.props ? this.props.no : 'No'}
       </label>
-      <label>
-        <input {...radioAttrs} value="true" checked={showInput} /> {'yes' in this.props ? this.props.yes : 'Yes'}
+      <label onClick={() => this.radioClick(true)}>
+        <BoolBox type="radio" checked={showInput} onChange={() => this.radioClick(true)} /> {'yes' in this.props ? this.props.yes : 'Yes'}
       </label>
       <label>
         {input}

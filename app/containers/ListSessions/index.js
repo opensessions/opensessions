@@ -83,7 +83,7 @@ export default class ListSessions extends React.Component { // eslint-disable-li
             if (activityList) this.context.modal.options(`Change ${key}`, activities, newVal => this.context.router.push(getURL(isMap, search.replace([key, val].join('='), [key, newVal].join('=')))));
             else this.context.modal.prompt(`Change ${key}`, newVal => this.context.router.push(getURL(isMap, search.replace([key, val].join('='), [key, newVal].join('=')))));
           };
-          return <span>{key}: <Button style={['slim', 'live']} onClick={() => changeVal()}>{val}</Button> <Button style={['slim', 'danger']} to={getURL(isMap, search.replace(new RegExp(`[\?&]?${key}=${val}`), ''))}>x</Button></span>;
+          return <span>{key}: <Button style={['slim', 'live']} onClick={() => changeVal()}>{val}</Button> <Button style={['slim', 'danger']} to={getURL(isMap, search.replace(new RegExp(`[?&]?${key}=${val}`), ''))}>x</Button></span>;
         })}
       </p>)}
       <p>

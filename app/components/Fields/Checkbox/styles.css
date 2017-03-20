@@ -5,39 +5,6 @@
   vertical-align: middle;
 }
 
-.checkbox {
-  display: inline-block;
-  vertical-align: middle;
-  overflow: hidden;
-  border: 1px solid #C8C8C8;
-  background: #FFF;
-  height: 1.5em;
-  width: 1.5em;
-  min-width: 1.5em;
-  text-align: center;
-  transition: .3s all ease;
-  &.checked {
-    background: #182750;
-    border-color: #182750;
-    color: #FFF;
-    & svg {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  &:focus {
-    box-shadow: 0 0 .1em .1em var(--actionColor);
-    outline: none;
-    border-color: transparent;
-  }
-  & svg {
-    opacity: 1;
-    transform: translateY(1em);
-    color: #FFF;
-    transition: .3s all ease;
-  }
-}
-
 .label {
   margin-left: .5em;
 }
