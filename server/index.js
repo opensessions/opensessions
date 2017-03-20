@@ -73,9 +73,11 @@ makeAppAnalysis(database.models, { trigger: 'app-started' });
 // Initialize frontend middleware that will serve your JS app
 const webpackConfig = require(`../internals/webpack/webpack.${isDev ? 'dev' : 'prod'}.babel`);
 
+const isCrawler = /bot|googlebot|facebookexternalhit|twitterbot|crawler|spider|robot|crawling/i;
+
 // Catch bots and serve special rendered components
 app.use((req, res, done) => {
-  if ((req.query && req.query.ssr) || req.get('User-Agent').match(/bot|googlebot|facebookexternalhit|twitterbot|crawler|spider|robot|crawling/i)) {
+  if ((req.query && req.query.ssr) || isCrawler.test(req.get('User-Agent'))) {
     getRenderedPage(req).then(page => {
       res.send(page);
     }).catch(error => {

@@ -9,8 +9,8 @@ import { timeAgo } from '../../utils/calendar';
 import styles from './styles.css';
 
 const hiddenActions = ['view'];
-const actionNames = { giveParent: 'Set a parent', removeParent: 'Remove parent' };
-const actionStyles = { delete: 'danger' };
+const actionNames = { giveParent: 'set parent', removeParent: 'remove parent' };
+const actionStyles = { delete: 'danger', removeParent: 'danger' };
 
 export default class ListActivities extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
@@ -40,8 +40,9 @@ export default class ListActivities extends React.Component { // eslint-disable-
   componentDidMount() {
     this.fetchData();
   }
-  getActivities() {
+  getActivities(isSorted = false) {
     const activities = this.context.store.getState().get('activityList');
+    if (isSorted) return activities.concat().sort((a1, a2) => (a1.Sessions.length < a2.Sessions.length ? 1 : -1));
     return activities;
   }
   getActivity(uuid) {
@@ -49,12 +50,12 @@ export default class ListActivities extends React.Component { // eslint-disable-
   }
   fetchData() {
     this.setState({ isLoading: true });
-    this.constructor.fetchData(this.context.store.dispatch).then(() => {
-      this.setState({ isLoading: false });
-    }).catch(error => {
-      this.context.notify(error, 'error');
-      this.setState({ isLoading: false });
-    });
+    this.constructor.fetchData(this.context.store.dispatch)
+      .then(() => this.setState({ isLoading: false }))
+      .catch(error => {
+        this.context.notify(error, 'error');
+        this.setState({ isLoading: false });
+      });
   }
   actionClick = (activity, action) => {
     const activities = {};
@@ -63,10 +64,8 @@ export default class ListActivities extends React.Component { // eslint-disable-
         this.getActivities().forEach(a => {
           activities[a.uuid] = a.name;
         });
-        this.context.modal.options(<span>Merge <b>{activity.name}</b> into which activity (removing {activity.name})?</span>, activities, target => {
-          apiModel.action('activity', activity.uuid, action, { target }).then(() => {
-            this.fetchData();
-          });
+        this.context.modal.options(<span>Rename all <b>{activity.name}</b> tags to which activity?</span>, activities, target => {
+          apiModel.action('activity', activity.uuid, action, { target }).then(() => this.fetchData());
         });
         break;
       case 'giveParent':
@@ -111,10 +110,12 @@ export default class ListActivities extends React.Component { // eslint-disable-
     </li>);
   }
   render() {
+    const { sortPopularity } = this.state;
     const isLoading = this.state ? this.state.isLoading : false;
-    const activities = this.getActivities();
+    const activities = this.getActivities(sortPopularity);
     return (<div className={styles.list}>
       <h1>List of activities {activities ? `(${activities.length})` : null}</h1>
+      <p><Button onClick={() => this.setState({ sortPopularity: !sortPopularity })}>Sort {sortPopularity ? 'alphabetically' : 'by popularity'}</Button></p>
       {isLoading ? <LoadingMessage message="Loading activities" ellipsis /> : <ol>{activities ? activities.filter(activity => !activity.parentUuid).map(activity => this.renderActivity(activity)) : null}</ol>}
     </div>);
   }

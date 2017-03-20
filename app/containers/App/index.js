@@ -11,7 +11,6 @@
  */
 
 import React, { PropTypes } from 'react';
-import 'babel-polyfill';
 import { Link } from 'react-router';
 
 import Header from '../../components/Header';

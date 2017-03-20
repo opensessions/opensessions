@@ -30,20 +30,35 @@
 
 .parent {
   color: #888;
+  display: none;
 }
 
 .children {
-  margin-left: .25em;
-  padding-left: .25em;
+  margin-left: 1em;
+  position: relative;
+  &:before {
+    content: '';
+    width: .125em;
+    height: calc(100% - 1em);
+    left: -.125em;
+    top: 0;
+    position: absolute;
+    background-color: #AAA;
+  }
+  .children {
+    &::before {
+      top: -1em;
+      height: 100%;
+    }
+  }
   > li {
     list-style: none;
     line-height: 1.2em;
     &::before {
-      color: #888;
-      content: '├ ';
-    }
-    &:last-child::before {
-      content: '└ ';
+      content: '— ';
+      color: #AAA;
+      font-family: monospace;
+      font-size: 2em;
     }
   }
 }
