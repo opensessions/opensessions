@@ -28,7 +28,7 @@ export default class Footer extends React.Component { // eslint-disable-line rea
             <Authenticated>
               <h2>Your account</h2>
               <p>
-              <Button style={['slim', 'dark']} tip="Have a question or issue? Let us know!" icon={'/images/open-sessions-icon.png'} to="mailto:hello@opensessions.io">
+              <Button style={['slim', 'dark']} tip="Have a question or issue? Let us know!" icon={'/images/open-sessions-icon.png'} to="mailto:hello@opensessions.io" onClick={() => true}>
                 Message us!
               </Button>
               </p>
