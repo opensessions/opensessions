@@ -172,7 +172,7 @@
     "redux-immutable": "^3.0.6",
     "redux-saga": "^0.10.0",
     "reselect": "^2.5.1",
-    "s3-uploader": "^2.0.1",
+    "s3-uploader": "^2.0.2",
     "sanitize.css": "^3.3.0",
     "sendgrid": "^4.7.0",
     "sequelize": "^3.30.1",
