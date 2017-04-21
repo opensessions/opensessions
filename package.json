@@ -253,6 +253,6 @@
     "stylelint-config-standard": "^8.0.0",
     "webpack": "2.1.0-beta.20",
     "webpack-dev-middleware": "^1.6.1",
-    "webpack-hot-middleware": "^2.10.0"
+    "webpack-hot-middleware": "^2.13.2"
   }
 }
