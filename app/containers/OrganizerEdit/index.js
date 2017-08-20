@@ -156,7 +156,7 @@ export default class OrganizerEdit extends React.Component { // eslint-disable-l
         return result;
       }).catch(result => {
         this.setState({ status: 'Failed saving', isPendingSave: false, isSaving: false, saveState: 'error' });
-        console.error(result.error);
+        window.logException(result.error);
         this.notify('Autosave failed', 'error');
       });
     }, ms);

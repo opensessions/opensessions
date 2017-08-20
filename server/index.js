@@ -2,6 +2,7 @@
 
 const express = require('express');
 const logger = require('./logger');
+const Raven = require('raven');
 const frontend = require('./middlewares/frontend');
 const isDev = process.env.NODE_ENV !== 'production';
 
@@ -14,7 +15,12 @@ const cookieParser = require('cookie-parser');
 
 const getRenderedPage = require('./lib/server').default;
 
+Raven.config(process.env.SENTRY_DSN).install();
+
 const app = express();
+
+// Logging middleware
+app.use(Raven.requestHandler())
 
 // Standard node middleware
 const bodyParser = require('body-parser');
@@ -95,6 +101,8 @@ app.use('/hooks', hooks(database));
 
 // Webpack frontend (hot reloading etc for dev)
 if (process.argv.indexOf('NO_WEBPACK') === -1) app.use(frontend(webpackConfig));
+
+app.use(Raven.errorHandler());
 
 const port = process.env.PORT || 3850;
 

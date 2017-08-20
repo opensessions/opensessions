@@ -9,6 +9,17 @@
   <title>Open Sessions</title>
   <link rel="manifest" href="/manifest.json">
   <meta name="mobile-web-app-capable" content="yes">
+  <script src="https://cdn.ravenjs.com/3.17.0/raven.min.js" crossorigin="anonymous"></script>
+  <script type="javascript">
+    Raven.config('https://f05814fde37c4071ae5deb9020f59daf@sentry.io/206122').install();
+    window.logException = function (ex, context) {
+      Raven.captureException(ex, {
+        extra: context
+      });
+      /*eslint no-console:0*/
+      window.console && console.error && console.error(ex);
+    };
+  </script>
   <script src="/api/config.js"></script>
   <script src="https://cdn.auth0.com/js/lock/10.2.2/lock.min.js"></script>
   <!-- Facebook Pixel Code -->
