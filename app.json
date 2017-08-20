@@ -49,9 +49,7 @@
     "INTERCOM_APPID": {
       "required": true
     },
-    "LD_LIBRARY_PATH": {
-      "required": true
-    },
+    "LD_LIBRARY_PATH": "",
     "LOCALE_COUNTRY": "gb",
     "LOCALE_TIMEZONE": "Europe/London",
     "NPM_CONFIG_LOGLEVEL": "warn",
