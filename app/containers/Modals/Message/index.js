@@ -40,6 +40,7 @@ export default class MessageModal extends React.Component { // eslint-disable-li
       <p><Button onClick={() => this.context.modal.close()}>OK</Button></p>
     </GenericModal>) });
   }).catch(error => {
+    window.logException(error);
     alert(error);
   })
   render() {

@@ -5,8 +5,6 @@ import Authenticated from '../Authenticated';
 import LogoutLink from '../LogoutLink';
 import Button from '../Button';
 
-import MessageModal from '../../containers/Modals/Message';
-
 import styles from './styles.css';
 
 export default class Footer extends React.Component { // eslint-disable-line react/prefer-stateless-function
@@ -28,9 +26,9 @@ export default class Footer extends React.Component { // eslint-disable-line rea
             <Authenticated>
               <h2>Your account</h2>
               <p>
-              <Button style={['slim', 'dark']} tip="Have a question or issue? Let us know!" icon={'/images/open-sessions-icon.png'} to="mailto:hello@opensessions.io" onClick={() => {window.location.href = 'mailto:hello@opensessions.io';}}>
-                Message us!
-              </Button>
+                <Button style={['slim', 'dark']} tip="Have a question or issue? Let us know!" icon={'/images/open-sessions-icon.png'} to="mailto:hello@opensessions.io" onClick={() => { window.location.href = 'mailto:hello@opensessions.io'; }}>
+                  Message us!
+                </Button>
               </p>
               <p><Link to="/profile">Profile</Link> • <Link to="/profile/calendar">Schedule</Link></p>
               <p><LogoutLink>Log out</LogoutLink></p>

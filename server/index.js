@@ -20,7 +20,7 @@ Raven.config(process.env.SENTRY_DSN).install();
 const app = express();
 
 // Logging middleware
-app.use(Raven.requestHandler())
+app.use(Raven.requestHandler());
 
 // Standard node middleware
 const bodyParser = require('body-parser');
