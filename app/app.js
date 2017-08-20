@@ -21,6 +21,21 @@ import trackPage from './utils/analytics';
 // Import the CSS reset, which HtmlWebpackPlugin transfers to the build folder
 import 'sanitize.css/lib/sanitize.css';
 
+// Import Raven
+import Raven from 'raven-js';
+Raven
+    .config('https://f05814fde37c4071ae5deb9020f59daf@sentry.io/206122')
+    .install();
+
+// Global exception logging TODO: Move this into imports
+window.logException = function (ex, context) {
+  Raven.captureException(ex, {
+    extra: context
+  });
+  /*eslint no-console:0*/
+  window.console && console.error && console.error(ex);
+};
+
 // Create redux store with history
 // this uses the singleton browserHistory provided by react-router
 // Optionally, this could be changed to leverage a created history
