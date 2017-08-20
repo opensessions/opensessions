@@ -1,0 +1,97 @@
+{
+  "name": "opensessions",
+  "description": "Open Sessions",
+  "scripts": {
+  },
+  "env": {
+    "ADMIN_DOMAIN": {
+      "required": true
+    },
+    "AUTH0_CLIENT_DOMAIN": {
+      "required": true
+    },
+    "AUTH0_CLIENT_ID": {
+      "required": true
+    },
+    "AUTH0_CLIENT_SECRET": {
+      "required": true
+    },
+    "AUTH0_CLIENT_TOKEN": {
+      "required": true
+    },
+    "AWS_DEFAULT_PROFILE": {
+      "required": true
+    },
+    "AWS_S3_IMAGES_ACCESSKEY": {
+      "required": true
+    },
+    "AWS_S3_IMAGES_BASEURL": {
+      "required": true
+    },
+    "AWS_S3_IMAGES_SECRETKEY": {
+      "required": true
+    },
+    "CLUSTER_NAME": {
+      "required": true
+    },
+    "EMAILS_INBOUND_URL": {
+      "required": true
+    },
+    "GOOGLE_ANALYTICS_TRACKINGID": {
+      "required": true
+    },
+    "GOOGLE_MAPS_API_KEY": {
+      "required": true
+    },
+    "HEROKU_POSTGRESQL_BLUE_URL": {
+      "required": true
+    },
+    "INTERCOM_APPID": {
+      "required": true
+    },
+    "LD_LIBRARY_PATH": {
+      "required": true
+    },
+    "LOCALE_COUNTRY": "gb",
+    "LOCALE_TIMEZONE": "Europe/London",
+    "NPM_CONFIG_LOGLEVEL": "warn",
+    "NPM_CONFIG_PRODUCTION": "false",
+    "SEGMENT_WRITE_KEY": {
+      "required": true
+    },
+    "SENDGRID_SECRET": {
+      "required": true
+    },
+    "SENDGRID_TEMPLATE": {
+      "required": true
+    },
+    "SENDGRID_TRACKING": {
+      "required": true
+    },
+    "SERVICE_EMAIL": {
+      "required": true
+    },
+    "SERVICE_EMAIL_ADMIN": {
+      "required": true
+    },
+    "SERVICE_EMAIL_SUPPORT": {
+      "required": true
+    },
+    "SERVICE_LOCATION": {
+      "required": true
+    },
+    "SERVICE_NAME": {
+      "required": true
+    }
+  },
+  "formation": {
+  },
+  "addons": [
+    "heroku-postgresql"
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ]
+}
