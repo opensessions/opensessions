@@ -21,10 +21,10 @@ import trackPage from './utils/analytics';
 // Import the CSS reset, which HtmlWebpackPlugin transfers to the build folder
 import 'sanitize.css/lib/sanitize.css';
 
-// Import Raven
+// Import Raven (note window mapping to process config comes from /config.js in api.js)
 import Raven from 'raven-js';
 Raven
-    .config('https://f05814fde37c4071ae5deb9020f59daf@sentry.io/206122')
+    .config(window.SENTRY_DSN_PUBLIC)
     .install();
 
 // Global exception logging TODO: Move this into imports

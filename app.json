@@ -79,6 +79,12 @@
     },
     "SERVICE_NAME": {
       "required": true
+    },
+    "SENTRY_DSN": {
+      "required": true
+    },
+    "SENTRY_DSN_PUBLIC": {
+      "required": true
     }
   },
   "formation": {
