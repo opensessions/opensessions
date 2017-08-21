@@ -2,7 +2,7 @@
 
 ## What is this?
 
-Open Sessions is your gateway to the most popular physical activity finders on the web. It is a free-to-use tool created to help community sport and physical activity providers publish data about their activities as open data - according to the [OpenActive](http://www.openactive.io) standards.
+Open Sessions is your gateway to the most popular physical activity finders on the web. It is a free-to-use, open source tool created to help community sport and physical activity providers publish data about their activities as open data - according to the [OpenActive](http://www.openactive.io) standards.
 
 ## Quick-start
 To start the project, download and use `npm install` in the root folder to install the dependencies.
