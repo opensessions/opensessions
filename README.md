@@ -1,8 +1,8 @@
 # Open Sessions [![Build Status](https://travis-ci.org/opensessions/opensessions.svg?branch=master)](https://travis-ci.org/opensessions/opensessions) [![Coverage Status](https://coveralls.io/repos/github/opensessions/opensessions/badge.svg?branch=master)](https://coveralls.io/github/opensessions/opensessions?branch=master)
 
-## TO DO
+## What is this?
 
-- Document env variables (required vs optional): stretch goal, making as many optional as possible (using env var presence as feature flag)
+Open Sessions is your gateway to the most popular physical activity finders on the web. It is a free-to-use tool created to help community sport and physical activity providers publish data about their activities as open data - according to the [OpenActive](http://www.openactive.io) standards.
 
 ## Quick-start
 To start the project, download and use `npm install` in the root folder to install the dependencies.
@@ -55,3 +55,7 @@ Test coverage can be managed by maintaining various files like `*.test.js` or `t
 * CONTRIBUTING: [CONTRIBUTING.md](https://github.com/opensessions/opensessions/blob/master/CONTRIBUTING.md)
 * DEVOPS: [docs/DEVOPS.md](https://github.com/opensessions/opensessions/blob/master/docs/DEVOPS.md)
 * ROUTES: [docs/ROUTES.md](https://github.com/opensessions/opensessions/blob/master/docs/ROUTES.md)
+
+## TO DO
+
+- Document env variables (required vs optional): stretch goal, making as many optional as possible (using env var presence as feature flag)
