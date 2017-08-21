@@ -37,7 +37,7 @@ const getCachedQuery = (key, models) => {
 
 const getParentActivities = (activity, list) => {
   if (!list) return [];
-  
+
   let activities = [];
   const parent = list.find(a => a.uuid === activity.parentUuid);
   if (parent) {

@@ -5,7 +5,7 @@
 // import { getHooks } from 'utils/hooks';
 
 const errorLoading = err => {
-  console.error('Dynamic page loading failed', err); // eslint-disable-line no-console
+  window.logException('Dynamic page loading failed', err); // eslint-disable-line no-console
 };
 
 const loadModule = cb => componentModule => {

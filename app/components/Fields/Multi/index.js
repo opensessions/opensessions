@@ -22,7 +22,7 @@ export default class MultiField extends React.Component { // eslint-disable-line
     apiFetch(`/api${this.props.path}/action/setActivitiesAction`, { body: { uuids: list } }).then(() => {
       this.props.onChange(list);
     }).catch(error => {
-      console.error(error);
+      window.logException(error);
     });
   }
   render() {

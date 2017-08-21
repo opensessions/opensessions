@@ -55,7 +55,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     const { error, instance } = result;
     if (error) throw error;
     dispatch({ type: 'SESSION_LOADED', payload: instance });
-  }).catch(console.error)
+  }).catch(window.logException)
   constructor() {
     super();
     this.state = {};

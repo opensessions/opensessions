@@ -78,7 +78,7 @@ export default class Form extends React.Component { // eslint-disable-line react
         fieldToFocus.querySelectorAll('[tabIndex], input, textarea, select')[0].focus();
       });
     } catch (error) {
-      console.error('Couldn\'t refocus', error);
+      window.logException('Couldn\'t refocus', error);
     }
   }
   renderNav() {

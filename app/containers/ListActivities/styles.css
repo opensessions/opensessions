@@ -36,7 +36,7 @@
 .children {
   margin-left: 1em;
   position: relative;
-  &:before {
+  &::before {
     content: '';
     width: .125em;
     height: calc(100% - 1em);
