@@ -32,7 +32,7 @@
     "start:prod": "npm run db:migration:run && npm run build:server && npm run start:server:prod",
     "start:prod-migrate": "npm run db:migration:run && npm run start:server:prod",
     "start:prod-nomigration": "npm run start:server:prod",
-    "start:server:dev": "cross-env NODE_ENV=development node server",
+    "start:server:dev": "cross-env NODE_ENV=development nodemon server",
     "start:server:prod": "cross-env NODE_ENV=production node server",
     "pagespeed": "node ./internals/scripts/pagespeed.js",
     "presetup": "npm i chalk",
