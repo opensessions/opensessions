@@ -17,6 +17,18 @@ const capitalize = string => `${string[0].toUpperCase()}${string.substr(1)}`;
 dotenv.config({ silent: true });
 dotenv.load();
 
+
+// wrapper around handlers to catch any unanticipated exceptions
+const tryCatch = (fn) =>
+  (req, res, next) => {
+    try {
+      fn(req, res, next);
+    } catch (ex) {
+      next(ex);
+    }
+  };
+
+
 module.exports = (database) => {
   const { LOCALE_TIMEZONE, SERVICE_LOCATION, ADMIN_DOMAIN, AUTH0_CLIENT_SECRET, AUTH0_CLIENT_ID } = process.env;
   const api = express();
@@ -241,7 +253,7 @@ module.exports = (database) => {
     });
   });
 
-  api.get('/:model', resolveModel, (req, res) => {
+  api.get('/:model', resolveModel, tryCatch((req, res, next) => {
     const { Model } = req;
     const { canAct } = req.query;
     delete req.query.canAct;
@@ -257,7 +269,7 @@ module.exports = (database) => {
         res.status(404).json({ error: error.message });
       });
     });
-  });
+  }));
 
   api.all('/:model/action/new', processUser, resolveModel, (req, res) => {
     const { Model } = req;
