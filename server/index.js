@@ -4,7 +4,7 @@ const express = require('express');
 const Raven = require('raven');
 
 const logger = require('./logger');
-const { createApiError } = require('./error')
+const { createApiError } = require('./error');
 
 // middlewares
 const frontend = require('./middlewares/frontend');
