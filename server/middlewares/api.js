@@ -75,8 +75,11 @@ module.exports = (database) => {
   };
 
   const checkIsAdmin = (req, res, next) => {
-    if (req.isAdmin) next();
-    else res.status(401).json({ status: 'failure', message: 'Admin only path' });
+    if (req.isAdmin) {
+      return next();
+    }
+    const responseData = { status: 'failure', message: 'Admin only path' };
+    return next(createApiError(401, responseData, new Error(responseData.message)));
   };
 
   const processUser = (req, res, next) => {
@@ -97,10 +100,10 @@ module.exports = (database) => {
     const modelName = capitalize(req.params.model);
     if (modelName in database.models) {
       req.Model = database.models[modelName];
-      next();
-    } else {
-      res.status(404).json({ error: `Model '${modelName}' does not exist` });
+      return next();
     }
+    const responseData = { error: `Model '${modelName}' does not exist` };
+    return next(createApiError(404, responseData, new Error(responseData.error)));
   };
 
   const timeFields = ['createdAt', 'updatedAt'];
@@ -152,16 +155,18 @@ module.exports = (database) => {
     return regex.test(email);
   };
 
-  api.post('/auth-email', (req, res) => {
+  api.post('/auth-email', (req, res, next) => {
     const { email } = req.body;
     if (isEmail(email)) {
       authClient.getUsers({ q: `email:"${email}"` }).then(users => {
         res.json({ status: 'success', exists: users.length >= 1 });
       }).catch(error => {
-        res.status(500).json({ status: 'failure', error });
+        const responseData = { status: 'failure', error };
+        return next(createApiError(500, responseData, error));
       });
     } else {
-      res.status(500).json({ status: 'failure', error: 'Invalid email address' });
+      const responseData = { status: 'failure', error: 'Invalid email address' };
+      next(createApiError(500, responseData, new Error(responseData.error)));
     }
   });
 
@@ -188,7 +193,7 @@ module.exports = (database) => {
   const twoSF = number => (number > 9 ? number : `0${number}`);
   const dateFormat = date => `${date.getFullYear()}-${twoSF(date.getMonth() + 1)}-${twoSF(date.getDate())}`;
 
-  admin.get('/emails', (req, res) => {
+  admin.get('/emails', (req, res, next) => {
     const { days, categories } = req.query;
     const { SENDGRID_SECRET } = process.env;
     const sg = sendgrid(SENDGRID_SECRET);
@@ -206,7 +211,8 @@ module.exports = (database) => {
     sg.API(request).then(response => {
       res.json({ emails: response.body });
     }).catch(err => {
-      res.status(400).json({ message: 'Failed to load emails', error: err, content: err ? err.message : '' });
+      const responseData = { message: 'Failed to load emails', error: err, content: err ? err.message : '' };
+      return next(createApiError(400, responseData, err));
     });
   });
 
@@ -238,7 +244,7 @@ module.exports = (database) => {
     const { Session } = database.models;
     Session.findAll(Session.getQuery({ where: { owner: getUser(req) } }, database.models, getUser(req))).then(instances => {
       const list = instances.map(s => s.leader).concat(instances.map(s => s.info.contact.name)).filter(name => name);
-      res.json({ list: list.filter((name, key) => list.indexOf(name) === key) });
+      return res.json({ list: list.filter((name, key) => list.indexOf(name) === key) });
     });
   });
 
@@ -259,122 +265,132 @@ module.exports = (database) => {
     });
   });
 
-  api.all('/:model/action/new', processUser, resolveModel, (req, res) => {
+  api.all('/:model/action/new', processUser, resolveModel, (req, res, next) => {
     const { Model } = req;
     if (Model.new) {
       if (Model.getActions(database.models, req).some(action => action === 'new')) {
-        Model.new(req, database.models)
-          .then(result => {
-            res.json(result.raw ? result : { instance: instanceToJSON(result, req) });
-          })
+        return Model.new(req, database.models)
+          .then(result =>
+            res.json(result.raw ? result : { instance: instanceToJSON(result, req) })
+          )
           .catch(result => {
-            res.status(400).json(result.raw ? result : { error: result.message });
+            const responseData = result.raw ? result : { error: result.message };
+            return next(createApiError(400, responseData, result));
           });
-      } else {
-        res.status(401).json({ error: `Permission denied to create ${req.params.model}` });
       }
-    } else {
-      const getPrototype = Model.getPrototype || (() => Promise.resolve({}));
-      getPrototype(database.models, getUser(req)).then(data => {
-        Object.keys(req.body).forEach(key => {
-          data[key] = req.body[key];
-        });
-        data.owner = getUser(req);
-        Model.create(data).then(instance => {
-          res.json({ instance: instanceToJSON(instance, req) });
-        }).catch(error => {
-          res.status(404).json({ error: error.message });
-        });
-      });
+      const responseData = { error: `Permission denied to create ${req.params.model}` };
+      return next(createApiError(401, responseData, new Error(responseData.error)));
     }
+    const getPrototype = Model.getPrototype || (() => Promise.resolve({}));
+    return getPrototype(database.models, getUser(req)).then(data => {
+      Object.keys(req.body).forEach(key => {
+        data[key] = req.body[key];
+      });
+      data.owner = getUser(req);
+      Model.create(data).then(instance =>
+        res.json({ instance: instanceToJSON(instance, req) })
+      ).catch(error => {
+        const responseData = { error: error.message };
+        return next(createApiError(404, responseData, error));
+      });
+    });
   });
 
-  api.all('/:model/action/:action', processUser, resolveModel, (req, res) => {
+  api.all('/:model/action/:action', processUser, resolveModel, (req, res, next) => {
     const { Model } = req;
     const { action } = req.params;
     if (Model[action]) {
       if (Model.getActions(database.models, req).some(a => a === action)) {
-        Model[action](req, database.models)
+        return Model[action](req, database.models)
           .then(result => {
             res.json(result.raw ? result : { instance: instanceToJSON(result, req) });
           })
           .catch(error => {
-            res.status(404).json({ error: error.message });
+            const responseData = { error: error.message };
+            return next(createApiError(404, responseData, error));
           });
-      } else {
-        res.status(400).json({ error: `Permission denied on ${req.params.model} with action ${action}` });
       }
-    } else {
-      res.status(400).json({ error: 'Unrecognized action' });
+      const responseData = { error: `Permission denied on ${req.params.model} with action ${action}` };
+      return next(createApiError(400, responseData, new Error(responseData.error)));
     }
+    const responseData = { error: 'Unrecognized action' };
+    return next(createApiError(400, responseData, new Error(responseData.error)));
   });
 
-  api.get('/:model/:uuid', resolveModel, (req, res) => {
+  api.get('/:model/:uuid', resolveModel, (req, res, next) => {
     const { Model } = req;
     const { uuid } = req.params;
     processUser(req, res, () => {
       const query = Model.getQuery({ where: Object.assign({}, req.query, { uuid }) }, database.models, getUser(req));
       if (query instanceof Error) {
-        res.status(400).json({ status: 'failure', error: query.message });
-      } else {
-        Model.findOne(query).then(instance => {
-          if (!instance) throw new Error('Instance could not be retrieved');
-          res.json({ instance: instanceToJSON(instance, req) });
-        }).catch(error => {
-          res.status(404).json({ error: error.message, isLoggedIn: !!req.user });
-        });
+        const responseData = { status: 'failure', error: query.message };
+        return next(createApiError(400, responseData, query));
       }
+      return Model.findOne(query).then(instance => {
+        if (!instance) throw new Error('Instance could not be retrieved');
+        return res.json({ instance: instanceToJSON(instance, req) });
+      }).catch(error => {
+        const responseData = { error: error.message, isLoggedIn: !!req.user };
+        return next(createApiError(404, responseData, error));
+      });
     });
   });
 
-  api.post('/:model/:uuid', requireLogin, resolveModel, (req, res) => {
+  api.post('/:model/:uuid', requireLogin, resolveModel, (req, res, next) => {
     const { Model } = req;
     const { uuid } = req.params;
     const query = Model.getQuery({ where: { uuid } }, database.models, getUser(req));
     if (query instanceof Error) {
-      res.status(400).json({ status: 'failure', error: query.message });
-    } else {
-      Model.findOne(query).then(instance => {
-        const actions = instance.getActions(database.models, req);
-        if (!actions.some(action => action === 'edit')) throw new Error(`Must be owner to modify ${Model.name}`);
-        const fields = Object.keys(req.body);
-        fields.filter(key => key.slice(-4) === 'Uuid').filter(key => req.body[key] === null).map(key => `set${key.replace(/Uuid$/, '')}`).forEach(setter => {
-          if (instance[setter]) instance[setter](null);
-        });
-        if (query.include) {
-          query.include.forEach(model => {
-            delete req.body[model.name];
-          });
-        }
-        return instance.update(req.body, { returning: true }).then(savedInstance => {
-          res.json({ instance: instanceToJSON(savedInstance, req) });
-        });
-      }).catch(error => {
-        res.status(404).json({ error: error.message });
-      });
+      const responseData = { status: 'failure', error: query.message };
+      return next(createApiError(400, responseData, query));
     }
+    return Model.findOne(query).then(instance => {
+      const actions = instance.getActions(database.models, req);
+      if (!actions.some(action => action === 'edit')) throw new Error(`Must be owner to modify ${Model.name}`);
+      const fields = Object.keys(req.body);
+      fields.filter(key => key.slice(-4) === 'Uuid').filter(key => req.body[key] === null).map(key => `set${key.replace(/Uuid$/, '')}`).forEach(setter => {
+        if (instance[setter]) instance[setter](null);
+      });
+      if (query.include) {
+        query.include.forEach(model => {
+          delete req.body[model.name];
+        });
+      }
+      return instance.update(req.body, { returning: true }).then(savedInstance =>
+        res.json({ instance: instanceToJSON(savedInstance, req) })
+      );
+    }).catch(error => {
+      const responseData = { error: error.message };
+      return next(createApiError(404, responseData, error));
+    });
   });
 
-  api.all('/:model/:uuid/action/:action', resolveModel, (req, res) => {
+  api.all('/:model/:uuid/action/:action', resolveModel, (req, res, next) => {
     const { Model } = req;
     const { uuid, action } = req.params;
-    processUser(req, res, () => {
+    return processUser(req, res, () => {
       const user = getUser(req);
       const query = Model.getQuery({ where: { uuid } }, database.models, user);
       if (query instanceof Error) {
-        res.status(400).json({ status: 'failure', error: query.message });
-      } else {
-        Model.findOne(query).then(instance => {
-          const actions = instance.getActions(database.models, req);
-          if (actions.indexOf(action) !== -1) {
-            instance[action](req, database.models)
-              .then(result => res.json(Object.assign({ status: 'success' }, result)))
-              .catch(error => console.log(error) || res.status(404).json({ status: 'failure', error: error.message }));
-          } else {
-            res.status(500).json({ status: 'failure', error: `'${action}' is an unavailable action` });
-          }
-        }).catch(error => res.status(404).json({ status: 'failure', error: 'Record not found', message: (error && error.message ? error.message : error).toString(), query: query.where }));
+        const responseData = { status: 'failure', error: query.message };
+        return next(createApiError(400, responseData, query));
       }
+      return Model.findOne(query).then(instance => {
+        const actions = instance.getActions(database.models, req);
+        if (actions.indexOf(action) !== -1) {
+          return instance[action](req, database.models)
+            .then(result => res.json(Object.assign({ status: 'success' }, result)))
+            .catch(error => {
+              const responseData = { status: 'failure', error: error.message };
+              return next(createApiError(404, responseData, error));
+            });
+        }
+        const responseData = { status: 'failure', error: `'${action}' is an unavailable action` };
+        return next(createApiError(500, responseData, new Error(responseData.error)));
+      }).catch(error => {
+        const responseData = { status: 'failure', error: 'Record not found', message: (error && error.message ? error.message : error).toString(), query: query.where };
+        return next(createApiError(404, responseData, error));
+      });
     });
   });
 
@@ -406,8 +422,13 @@ module.exports = (database) => {
             [image].concat(result.versions).forEach(version => fs.unlink(version.path));
             return instance.update(data)
               .then(final => res.json({ status: 'success', result, baseURL: aws.URL, instance: final }));
-          }).catch(error => res.status(400).json({ error })))
-        .catch(error => res.status(404).json({ error }));
+          }).catch(error => {
+            const responseData = { error };
+            return next(createApiError(400, responseData, error));
+          }))
+        .catch(error =>
+           next(createApiError(404, { error }, error))
+        );
     } else {
       next();
     }
