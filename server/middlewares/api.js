@@ -6,6 +6,7 @@ const sendgrid = require('sendgrid');
 
 const { rdpe } = require('./rdpe.js');
 const s3 = require('./s3.js');
+const { createApiError } = require('../error.js');
 
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
@@ -241,21 +242,20 @@ module.exports = (database) => {
     });
   });
 
-  api.get('/:model', resolveModel, (req, res) => {
+  api.get('/:model', resolveModel, (req, res, next) => {
     const { Model } = req;
     const { canAct } = req.query;
     delete req.query.canAct;
     processUser(req, res, () => {
       const query = Model.getQuery({ where: queryParse(req, Model) }, database.models, getUser(req));
       if (query instanceof Error) {
-        res.status(400).json({ status: 'failure', error: query.message });
-        return;
+        return next(createApiError(400, { status: 'failure' }, query));
       }
-      Model.findAll(query).then(instances => {
+      return Model.findAll(query).then(instances => {
         res.json({ instances: instances.map(instance => instanceToJSON(instance, req)).filter(instance => (canAct ? instance.actions.some(action => action === canAct) : true)) });
-      }).catch(error => {
-        res.status(404).json({ error: error.message });
-      });
+      }).catch(error =>
+        next(createApiError(404, { error: error.message }, error))
+      );
     });
   });
 

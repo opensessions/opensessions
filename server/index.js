@@ -4,6 +4,8 @@ const express = require('express');
 const logger = require('./logger');
 const Raven = require('raven');
 const frontend = require('./middlewares/frontend');
+const defaultErrorHandler = require('./middlewares/error-handler.js');
+
 const isDev = process.env.NODE_ENV !== 'production';
 
 require('dotenv').config({ verbose: false });
@@ -97,11 +99,16 @@ app.use((req, res, done) => {
 
 // Webhooks
 const hooks = require('./middlewares/hooks');
+
 app.use('/hooks', hooks(database));
 
 // Webpack frontend (hot reloading etc for dev)
 if (process.argv.indexOf('NO_WEBPACK') === -1) app.use(frontend(webpackConfig));
 
+/* --- Error handling middleware --- */
+// defualt error middleware intercepts any custom error
+// logs the error, reply to user and passes the error onto Raven for logging on Sentry
+app.use(defaultErrorHandler);
 app.use(Raven.errorHandler());
 
 const port = process.env.PORT || 3850;
