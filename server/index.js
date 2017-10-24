@@ -111,46 +111,6 @@ if (process.argv.indexOf('NO_WEBPACK') === -1) app.use(frontend(webpackConfig));
 app.use(defaultErrorHandler);
 app.use(Raven.errorHandler());
 
-
-
-
-class ApiError {
-  constructor({statusCode, rawError}) {
-    super('ApiError', {statusCode, responseData})
-  }
-}
-
-const defaultHandlerError = (err, req, res, next) => {
-  console.log('ERROR MIDDLE\n\n\n');
-  if (err instanceof Error) {
-    const errorMessage = `ERROR serving ${req.originalUrl}:\n\tname: ${error.name}\n\tmessage: ${error.message}\n\tstack: ${error.stack}`);
-    logger.error(err);
-
-  }
-  // res.status(500).json({ status: 'failure', error });
-  // res.status(500).json({ status: 'failure', error: 'Invalid email address' });
-  // res.status(400).json({ message: 'Failed to load emails', error: err, content: err ? err.message : '' });
-  // res.status(400).json({ status: 'failure', error: query.message });
-  // res.status(404).json({ error: error.message });
-  // res.status(400).json(result.raw ? result : { error: result.message });
-  // res.status(401).json({ error: `Permission denied to create ${req.params.model}` });
-  // res.status(404).json({ error: error.message });
-}
-app.use(defaultHandlerError);
-app.use((req, res, next) => {
-  console.log('MIDDLE\n\n\n');
-  next()
-})
-
-
-
-
-
-
-
-
-
-
 const port = process.env.PORT || 3850;
 
 app.listen(port, err => {
