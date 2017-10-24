@@ -1,8 +1,12 @@
 /* eslint consistent-return:0 */
 
 const express = require('express');
-const logger = require('./logger');
 const Raven = require('raven');
+
+const logger = require('./logger');
+const { createApiError } = require('./error')
+
+// middlewares
 const frontend = require('./middlewares/frontend');
 const defaultErrorHandler = require('./middlewares/error-handler.js');
 
@@ -84,16 +88,16 @@ const webpackConfig = require(`../internals/webpack/webpack.${isDev ? 'dev' : 'p
 const isCrawler = /bot|googlebot|facebookexternalhit|twitterbot|crawler|spider|robot|crawling/i;
 
 // Catch bots and serve special rendered components
-app.use((req, res, done) => {
+app.use((req, res, next) => {
   if ((req.query && req.query.ssr) || isCrawler.test(req.get('User-Agent'))) {
     getRenderedPage(req).then(page => {
       res.send(page);
     }).catch(error => {
-      console.error(error);
-      res.json({ status: 'error', error });
+      const responseData = { status: 'error', error };
+      next(createApiError(500, responseData, error));
     });
   } else {
-    done();
+    next();
   }
 });
 
