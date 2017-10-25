@@ -4,7 +4,7 @@ const express = require('express');
 const Raven = require('raven');
 
 const logger = require('./logger');
-const { createApiError } = require('./error');
+const ApiError = require('./error');
 
 // middlewares
 const frontend = require('./middlewares/frontend');
@@ -94,7 +94,7 @@ app.use((req, res, next) => {
       res.send(page);
     }).catch(error => {
       const responseData = { status: 'error', error };
-      next(createApiError(500, responseData, error));
+      next(ApiError.init(500, responseData, error));
     });
   } else {
     next();
