@@ -6,7 +6,7 @@ const sendgrid = require('sendgrid');
 
 const { rdpe } = require('./rdpe.js');
 const s3 = require('./s3.js');
-const { createApiError } = require('../error.js');
+const ApiError = require('../error.js');
 
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
@@ -79,7 +79,7 @@ module.exports = (database) => {
       return next();
     }
     const responseData = { status: 'failure', message: 'Admin only path' };
-    return next(createApiError(401, responseData, new Error(responseData.message)));
+    return next(ApiError.init(401, responseData, new Error(responseData.message)));
   };
 
   const processUser = (req, res, next) => {
@@ -103,7 +103,7 @@ module.exports = (database) => {
       return next();
     }
     const responseData = { error: `Model '${modelName}' does not exist` };
-    return next(createApiError(404, responseData, new Error(responseData.error)));
+    return next(ApiError.init(404, responseData, new Error(responseData.error)));
   };
 
   const timeFields = ['createdAt', 'updatedAt'];
@@ -162,11 +162,11 @@ module.exports = (database) => {
         res.json({ status: 'success', exists: users.length >= 1 });
       }).catch(error => {
         const responseData = { status: 'failure', error };
-        return next(createApiError(500, responseData, error));
+        return next(ApiError.init(500, responseData, error));
       });
     } else {
       const responseData = { status: 'failure', error: 'Invalid email address' };
-      next(createApiError(500, responseData, new Error(responseData.error)));
+      next(ApiError.init(500, responseData, new Error(responseData.error)));
     }
   });
 
@@ -212,7 +212,7 @@ module.exports = (database) => {
       res.json({ emails: response.body });
     }).catch(err => {
       const responseData = { message: 'Failed to load emails', error: err, content: err ? err.message : '' };
-      return next(createApiError(400, responseData, err));
+      return next(ApiError.init(400, responseData, err));
     });
   });
 
@@ -255,12 +255,12 @@ module.exports = (database) => {
     processUser(req, res, () => {
       const query = Model.getQuery({ where: queryParse(req, Model) }, database.models, getUser(req));
       if (query instanceof Error) {
-        return next(createApiError(400, { status: 'failure' }, query));
+        return next(ApiError.init(400, { status: 'failure' }, query));
       }
       return Model.findAll(query).then(instances => {
         res.json({ instances: instances.map(instance => instanceToJSON(instance, req)).filter(instance => (canAct ? instance.actions.some(action => action === canAct) : true)) });
       }).catch(error =>
-        next(createApiError(404, { error: error.message }, error))
+        next(ApiError.init(404, { error: error.message }, error))
       );
     });
   });
@@ -275,11 +275,11 @@ module.exports = (database) => {
           )
           .catch(result => {
             const responseData = result.raw ? result : { error: result.message };
-            return next(createApiError(400, responseData, result));
+            return next(ApiError.init(400, responseData, result));
           });
       }
       const responseData = { error: `Permission denied to create ${req.params.model}` };
-      return next(createApiError(401, responseData, new Error(responseData.error)));
+      return next(ApiError.init(401, responseData, new Error(responseData.error)));
     }
     const getPrototype = Model.getPrototype || (() => Promise.resolve({}));
     return getPrototype(database.models, getUser(req)).then(data => {
@@ -291,7 +291,7 @@ module.exports = (database) => {
         res.json({ instance: instanceToJSON(instance, req) })
       ).catch(error => {
         const responseData = { error: error.message };
-        return next(createApiError(404, responseData, error));
+        return next(ApiError.init(404, responseData, error));
       });
     });
   });
@@ -307,14 +307,14 @@ module.exports = (database) => {
           })
           .catch(error => {
             const responseData = { error: error.message };
-            return next(createApiError(404, responseData, error));
+            return next(ApiError.init(404, responseData, error));
           });
       }
       const responseData = { error: `Permission denied on ${req.params.model} with action ${action}` };
-      return next(createApiError(400, responseData, new Error(responseData.error)));
+      return next(ApiError.init(400, responseData, new Error(responseData.error)));
     }
     const responseData = { error: 'Unrecognized action' };
-    return next(createApiError(400, responseData, new Error(responseData.error)));
+    return next(ApiError.init(400, responseData, new Error(responseData.error)));
   });
 
   api.get('/:model/:uuid', resolveModel, (req, res, next) => {
@@ -324,14 +324,14 @@ module.exports = (database) => {
       const query = Model.getQuery({ where: Object.assign({}, req.query, { uuid }) }, database.models, getUser(req));
       if (query instanceof Error) {
         const responseData = { status: 'failure', error: query.message };
-        return next(createApiError(400, responseData, query));
+        return next(ApiError.init(400, responseData, query));
       }
       return Model.findOne(query).then(instance => {
         if (!instance) throw new Error('Instance could not be retrieved');
         return res.json({ instance: instanceToJSON(instance, req) });
       }).catch(error => {
         const responseData = { error: error.message, isLoggedIn: !!req.user };
-        return next(createApiError(404, responseData, error));
+        return next(ApiError.init(404, responseData, error));
       });
     });
   });
@@ -342,7 +342,7 @@ module.exports = (database) => {
     const query = Model.getQuery({ where: { uuid } }, database.models, getUser(req));
     if (query instanceof Error) {
       const responseData = { status: 'failure', error: query.message };
-      return next(createApiError(400, responseData, query));
+      return next(ApiError.init(400, responseData, query));
     }
     return Model.findOne(query).then(instance => {
       const actions = instance.getActions(database.models, req);
@@ -361,7 +361,7 @@ module.exports = (database) => {
       );
     }).catch(error => {
       const responseData = { error: error.message };
-      return next(createApiError(404, responseData, error));
+      return next(ApiError.init(404, responseData, error));
     });
   });
 
@@ -373,7 +373,7 @@ module.exports = (database) => {
       const query = Model.getQuery({ where: { uuid } }, database.models, user);
       if (query instanceof Error) {
         const responseData = { status: 'failure', error: query.message };
-        return next(createApiError(400, responseData, query));
+        return next(ApiError.init(400, responseData, query));
       }
       return Model.findOne(query).then(instance => {
         const actions = instance.getActions(database.models, req);
@@ -382,14 +382,14 @@ module.exports = (database) => {
             .then(result => res.json(Object.assign({ status: 'success' }, result)))
             .catch(error => {
               const responseData = { status: 'failure', error: error.message };
-              return next(createApiError(404, responseData, error));
+              return next(ApiError.init(404, responseData, error));
             });
         }
         const responseData = { status: 'failure', error: `'${action}' is an unavailable action` };
-        return next(createApiError(500, responseData, new Error(responseData.error)));
+        return next(ApiError.init(500, responseData, new Error(responseData.error)));
       }).catch(error => {
         const responseData = { status: 'failure', error: 'Record not found', message: (error && error.message ? error.message : error).toString(), query: query.where };
-        return next(createApiError(404, responseData, error));
+        return next(ApiError.init(404, responseData, error));
       });
     });
   });
@@ -424,10 +424,10 @@ module.exports = (database) => {
               .then(final => res.json({ status: 'success', result, baseURL: aws.URL, instance: final }));
           }).catch(error => {
             const responseData = { error };
-            return next(createApiError(400, responseData, error));
+            return next(ApiError.init(400, responseData, error));
           }))
         .catch(error =>
-           next(createApiError(404, { error }, error))
+           next(ApiError.init(404, { error }, error))
         );
     } else {
       next();
