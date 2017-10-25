@@ -6,7 +6,7 @@ class ApiError extends Error {
     this.rawError = rawError;
   }
 
-  static init (statusCode, responseData, rawError) {
+  static init(statusCode, responseData, rawError) {
     return new ApiError(statusCode, responseData, rawError);
   }
 }
