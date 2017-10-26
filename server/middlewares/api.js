@@ -18,6 +18,18 @@ const capitalize = string => `${string[0].toUpperCase()}${string.substr(1)}`;
 dotenv.config({ silent: true });
 dotenv.load();
 
+
+// wrapper around handlers to catch any unanticipated exceptions
+const tryCatch = (fn) =>
+  (req, res, next) => {
+    try {
+      fn(req, res, next);
+    } catch (ex) {
+      next(ex);
+    }
+  };
+
+
 module.exports = (database) => {
   const { LOCALE_TIMEZONE, SERVICE_LOCATION, ADMIN_DOMAIN, AUTH0_CLIENT_SECRET, AUTH0_CLIENT_ID } = process.env;
   const api = express();
@@ -31,7 +43,7 @@ module.exports = (database) => {
   api.use('/rdpe', rdpe(database, Object.assign({ baseURL: '/api/rdpe' }, rdpeConfig)));
   api.use('/rdpe-legacy', rdpe(database, Object.assign({}, rdpeConfig, { preserveLatLng: true, baseURL: '/api/rdpe-legacy' })));
 
-  api.get('/', (req, res) => {
+  api.get('/', tryCatch((req, res) => {
     res.json({
       request: {
         headers: ['Authorization: bearer ${json web token}']
@@ -50,7 +62,7 @@ module.exports = (database) => {
         }
       ]
     });
-  });
+  }));
 
   const requireLogin = jwt({
     secret: new Buffer(AUTH0_CLIENT_SECRET, 'base64'),
@@ -74,15 +86,15 @@ module.exports = (database) => {
     });
   };
 
-  const checkIsAdmin = (req, res, next) => {
+  const checkIsAdmin = tryCatch((req, res, next) => {
     if (req.isAdmin) {
       return next();
     }
     const responseData = { status: 'failure', message: 'Admin only path' };
     return next(ApiError.init(401, responseData, new Error(responseData.message)));
-  };
+  });
 
-  const processUser = (req, res, next) => {
+  const processUser = tryCatch((req, res, next) => {
     req.isAdmin = false;
     requireLogin(req, res, () => {
       if (req.user) {
@@ -94,9 +106,9 @@ module.exports = (database) => {
         next();
       }
     });
-  };
+  });
 
-  const resolveModel = (req, res, next) => {
+  const resolveModel = tryCatch((req, res, next) => {
     const modelName = capitalize(req.params.model);
     if (modelName in database.models) {
       req.Model = database.models[modelName];
@@ -104,7 +116,7 @@ module.exports = (database) => {
     }
     const responseData = { error: `Model '${modelName}' does not exist` };
     return next(ApiError.init(404, responseData, new Error(responseData.error)));
-  };
+  });
 
   const timeFields = ['createdAt', 'updatedAt'];
 
@@ -155,7 +167,7 @@ module.exports = (database) => {
     return regex.test(email);
   };
 
-  api.post('/auth-email', (req, res, next) => {
+  api.post('/auth-email', tryCatch((req, res, next) => {
     const { email } = req.body;
     if (isEmail(email)) {
       authClient.getUsers({ q: `email:"${email}"` }).then(users => {
@@ -168,32 +180,32 @@ module.exports = (database) => {
       const responseData = { status: 'failure', error: 'Invalid email address' };
       next(ApiError.init(500, responseData, new Error(responseData.error)));
     }
-  });
+  }));
 
-  api.get('/stats', (req, res) => {
+  api.get('/stats', tryCatch((req, res) => {
     database.models.Session.findAll().then(sessions => {
       res.json({ sessions: { total: sessions.length, published: sessions.filter(session => session.state === 'published').length } });
     });
-  });
+  }));
 
   const admin = express();
 
-  admin.get('/stats', (req, res) => {
+  admin.get('/stats', tryCatch((req, res) => {
     database.models.Session.findAll().then(sessions => {
       res.json({ sessions: { total: sessions.length, published: sessions.filter(session => session.state === 'published').length } });
     });
-  });
+  }));
 
-  admin.get('/users', (req, res) => {
+  admin.get('/users', tryCatch((req, res) => {
     getAllUsers().then(users => {
       res.json({ users });
     });
-  });
+  }));
 
   const twoSF = number => (number > 9 ? number : `0${number}`);
   const dateFormat = date => `${date.getFullYear()}-${twoSF(date.getMonth() + 1)}-${twoSF(date.getDate())}`;
 
-  admin.get('/emails', (req, res, next) => {
+  admin.get('/emails', tryCatch((req, res, next) => {
     const { days, categories } = req.query;
     const { SENDGRID_SECRET } = process.env;
     const sg = sendgrid(SENDGRID_SECRET);
@@ -214,11 +226,11 @@ module.exports = (database) => {
       const responseData = { message: 'Failed to load emails', error: err, content: err ? err.message : '' };
       return next(ApiError.init(400, responseData, err));
     });
-  });
+  }));
 
   api.use('/admin', processUser, checkIsAdmin, admin);
 
-  api.get('/config.js', (req, res) => {
+  api.get('/config.js', tryCatch((req, res) => {
     const windowKeys = ['GOOGLE_MAPS_API_KEY', 'SEGMENT_WRITE_KEY', 'AWS_S3_IMAGES_BASEURL', 'AUTH0_CLIENT_ID', 'AUTH0_CLIENT_DOMAIN', 'LOCALE_COUNTRY', 'ADMIN_DOMAIN', 'SENTRY_DSN_PUBLIC'];
     res.send(`
       ${windowKeys.map(key => `window["${key}"] = '${process.env[key]}'`).join(';\n')};
@@ -234,21 +246,21 @@ module.exports = (database) => {
       }
       addScript("https://maps.googleapis.com/maps/api/js?key=" + window.GOOGLE_MAPS_API_KEY + "&libraries=places");
     `);
-  });
+  }));
 
   api.get('/health', (req, res) => {
     res.json({ status: 'OK' });
   });
 
-  api.get('/leader-list', requireLogin, (req, res) => {
+  api.get('/leader-list', requireLogin, tryCatch((req, res) => {
     const { Session } = database.models;
     Session.findAll(Session.getQuery({ where: { owner: getUser(req) } }, database.models, getUser(req))).then(instances => {
       const list = instances.map(s => s.leader).concat(instances.map(s => s.info.contact.name)).filter(name => name);
       return res.json({ list: list.filter((name, key) => list.indexOf(name) === key) });
     });
-  });
+  }));
 
-  api.get('/:model', resolveModel, (req, res, next) => {
+  api.get('/:model', resolveModel, tryCatch((req, res, next) => {
     const { Model } = req;
     const { canAct } = req.query;
     delete req.query.canAct;
@@ -263,7 +275,7 @@ module.exports = (database) => {
         next(ApiError.init(404, { error: error.message }, error))
       );
     });
-  });
+  }));
 
   api.all('/:model/action/new', processUser, resolveModel, (req, res, next) => {
     const { Model } = req;
