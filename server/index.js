@@ -78,7 +78,7 @@ const crons = [
   }, null, true, process.env.LOCALE_TIMEZONE)
 ];
 
-console.log('Crons started', crons);
+console.log('Crons started', crons) // eslint-disable-line
 
 makeAppAnalysis(database.models, { trigger: 'app-started' });
 
