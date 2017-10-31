@@ -30,13 +30,13 @@ export default class IconRadioField extends React.Component { // eslint-disable-
     return (<label tabIndex="0" onKeyUp={this.tabKey} className={styles.notInline}>
       {option.icon}
       {option.text}
-      <input type="radio" onChange={this.handleChange} value={option.value} selected={selected} />
+      <input type="radio" onChange={this.handleChange} value={option.value} checked={selected} selected={selected} />
     </label>);
   }
   renderOptionInline(option, selected) {
     return (<label tabIndex="0" onKeyUp={this.tabKey} className={styles.inline}>
       {option.text} {option.icon}
-      <input type="radio" onChange={this.handleChange} value={option.value} selected={selected} />
+      <input type="radio" onChange={this.handleChange} value={option.value} checked={selected} selected={selected} />
     </label>);
   }
   render() {
