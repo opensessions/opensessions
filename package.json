@@ -10,8 +10,8 @@
   "author": "Oliver Beatson @ imin-ltd, based on boilerplate by Max Stoiber",
   "license": "ISC",
   "engines": {
-    "node": ">=6.2.2",
-    "npm": ">=3"
+    "node": "^6.2.2",
+    "npm": "^3"
   },
   "engineStrict": true,
   "scripts": {
