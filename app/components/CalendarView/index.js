@@ -30,7 +30,7 @@ export default class CalendarView extends React.Component {
   renderWeek(week, itemDates) {
     const dayStyles = [styles.past, styles.today, styles.future];
     return (<ol className={styles.week}>
-      {week.map(day => (day ? <li className={dayStyles[Math.sign(day.replace(/-/g, '') - todayDate.replace(/-/g, '')) + 1]}><span className={styles.day}>{day ? day.split('-')[2] : '-'}</span> {this.renderDay(day, itemDates)}</li> : <li className={styles.empty} />))}
+      {week.map((day, key) => (day ? <li key={key} className={dayStyles[Math.sign(day.replace(/-/g, '') - todayDate.replace(/-/g, '')) + 1]}><span className={styles.day}>{day ? day.split('-')[2] : '-'}</span> {this.renderDay(day, itemDates)}</li> : <li className={styles.empty} />))}
     </ol>);
   }
   renderWeekTitles() {
@@ -109,8 +109,8 @@ export default class CalendarView extends React.Component {
         <Button style="slim" onClick={() => this.setState({ month: monthDiff(1) })}>🠞</Button>
       </div>
       <ol className={styles.month}>
-        <li>{this.renderWeekTitles()}</li>
-        {getWeeks(new Date(`${month}-01`)).map(week => <li>{this.renderWeek(week, itemDates)}</li>)}
+        <li key={0}>{this.renderWeekTitles()}</li>
+        {getWeeks(new Date(`${month}-01`)).map((week, i) => <li key={i + 1}>{this.renderWeek(week, itemDates)}</li>)}
       </ol>
     </div>);
   }

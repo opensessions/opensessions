@@ -143,7 +143,7 @@ export default class SearchableSelect extends React.Component { // eslint-disabl
     let searchResults = null;
     if (visible && (lazyLoad ? search : true)) {
       searchResults = (<ol className={styles.searchResults} ref="search">
-        {filteredOptions.map((opt, index) => <li {...opt.props} className={index === highlightIndex ? styles.highlight : null} onMouseOver={event => this.itemHover(event.target.parentNode.getElementsByClassName(styles.text)[0])} onMouseOut={() => this.setState({ highlightIndex: -1 })}>
+        {filteredOptions.map((opt, index) => <li key={index} {...opt.props} className={index === highlightIndex ? styles.highlight : null} onMouseOver={event => this.itemHover(event.target.parentNode.getElementsByClassName(styles.text)[0])} onMouseOut={() => this.setState({ highlightIndex: -1 })}>
           <span className={styles.text} dangerouslySetInnerHTML={{ __html: opt.html }} data-index={index} onMouseUp={() => this.setValue(opt.props.key)} data-key={opt.props.key} />
           {/* opt.actions ? opt.actions.map(action => <span key={action.type} className={styles.action} onClick={this.actionClick} data-action={JSON.stringify(action)}>{action.type}</span>) : null*/}
         </li>)}

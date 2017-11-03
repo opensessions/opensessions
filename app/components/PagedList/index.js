@@ -51,10 +51,17 @@ export default class PagedList extends React.Component { // eslint-disable-line 
     const pages = Math.ceil(total / limit);
     const [start, end] = [-1, 0].map(index => page + index).map(index => index * limit);
     if (!total) return <p>{noneMessage}</p>;
-    return (<div className={[styles.list, isSlim ? styles.slim : ''].join(' ')} ref="list">
-      {orientation !== 'bottom' && pages > 1 ? this.renderPagination(start, end, pages) : null}
-      <ol>{items.slice(start, end).map((item, key) => <li key={key + start}><Component {...itemToProps(item)} /></li>)}</ol>
-      {orientation !== 'top' && pages > 1 ? this.renderPagination(start, end, pages) : null}
-    </div>);
+    return (
+      <div className={[styles.list, isSlim ? styles.slim : ''].join(' ')} ref="list">
+        {orientation !== 'bottom' && pages > 1 ? this.renderPagination(start, end, pages) : null}
+        <ol>{items.slice(start, end).map((item, key) => (
+          <li key={key + start}>
+            <Component {...itemToProps(item)} />
+          </li>
+        ))}
+        </ol>
+        {orientation !== 'top' && pages > 1 ? this.renderPagination(start, end, pages) : null}
+      </div>
+    );
   }
 }

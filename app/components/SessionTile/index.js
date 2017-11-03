@@ -21,7 +21,7 @@ const actionResult = ({ notify, router, onExpire }, action) => ({ message, messa
 
 const actionError = ({ notify }, action, object) => () => notify(`Failed to ${action} ${object}`);
 
-const SessionTile = function (props, context) {
+const SessionTile = (props, context) => {
   const { session, style } = props;
   const { modal, user } = context;
   const isOwner = user && session.owner === user.user_id;

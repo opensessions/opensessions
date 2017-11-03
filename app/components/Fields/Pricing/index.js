@@ -77,14 +77,14 @@ export default class PricingField extends React.Component { // eslint-disable-li
   renderPaid() {
     const { value } = this.props;
     return (<ol className={styles.questions}>
-      <li>
+      <li key={0}>
         {value.type === 'multi' ? this.renderPrices() : this.renderPrice()}
       </li>
-      <li className={styles.bind}>
+      <li key={1} className={styles.bind}>
         <label>What payment methods do you accept?</label>
         <IconRadio value={value.paymentMethods} options={METHODS_OPTIONS} onChange={this.setMethod} />
       </li>
-      <li>
+      <li key={2}>
         <label>Offer the first session for free?</label>
         <div className={styles.firstFree}>
           <Checkbox checked={value.firstFree} onChange={checked => this.setFirstFree(checked)} label="Yes, first time attendees get a free session" />

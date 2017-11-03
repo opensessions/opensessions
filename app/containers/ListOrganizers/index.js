@@ -8,7 +8,7 @@ import { apiModel } from '../../utils/api';
 
 import styles from './styles.css';
 
-const OrganizerTile = function (props) {
+const OrganizerTile = (props) => {
   const { organizer } = props;
   return (<div className={styles.organizerTile}>
     <span>
