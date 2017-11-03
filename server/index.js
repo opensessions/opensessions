@@ -1,9 +1,15 @@
 /* eslint consistent-return:0 */
 
 const express = require('express');
-const logger = require('./logger');
 const Raven = require('raven');
+
+const logger = require('./logger');
+const ApiError = require('./error');
+
+// middlewares
 const frontend = require('./middlewares/frontend');
+const defaultErrorHandler = require('./middlewares/error-handler.js');
+
 const isDev = process.env.NODE_ENV !== 'production';
 
 require('dotenv').config({ verbose: false });
@@ -72,7 +78,7 @@ const crons = [
   }, null, true, process.env.LOCALE_TIMEZONE)
 ];
 
-console.log('Crons started', crons);
+console.log('Crons started', crons) // eslint-disable-line
 
 makeAppAnalysis(database.models, { trigger: 'app-started' });
 
@@ -82,26 +88,31 @@ const webpackConfig = require(`../internals/webpack/webpack.${isDev ? 'dev' : 'p
 const isCrawler = /bot|googlebot|facebookexternalhit|twitterbot|crawler|spider|robot|crawling/i;
 
 // Catch bots and serve special rendered components
-app.use((req, res, done) => {
+app.use((req, res, next) => {
   if ((req.query && req.query.ssr) || isCrawler.test(req.get('User-Agent'))) {
     getRenderedPage(req).then(page => {
       res.send(page);
     }).catch(error => {
-      console.error(error);
-      res.json({ status: 'error', error });
+      const responseData = { status: 'error', error };
+      next(ApiError.init(500, responseData, error));
     });
   } else {
-    done();
+    next();
   }
 });
 
 // Webhooks
 const hooks = require('./middlewares/hooks');
+
 app.use('/hooks', hooks(database));
 
 // Webpack frontend (hot reloading etc for dev)
 if (process.argv.indexOf('NO_WEBPACK') === -1) app.use(frontend(webpackConfig));
 
+/* --- Error handling middleware --- */
+// defualt error middleware intercepts any custom error
+// logs the error, reply to user and passes the error onto Raven for logging on Sentry
+app.use(defaultErrorHandler);
 app.use(Raven.errorHandler());
 
 const port = process.env.PORT || 3850;
