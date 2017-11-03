@@ -22,8 +22,10 @@ export default class BoolBox extends React.PureComponent {
   }
   render() {
     const { checked, onChange, type } = this.props;
-    return (<span onClick={() => onChange(!checked)} className={[styles.checkbox, checked ? styles.checked : '', type === 'radio' ? styles.radio : ''].join(' ')} tabIndex={0} onKeyDown={this.onKeyDown}>
-      <TickSVG />
-    </span>);
+    return (
+      <span onClick={() => onChange(!checked)} className={[styles.checkbox, checked ? styles.checked : '', type === 'radio' ? styles.radio : ''].join(' ')} tabIndex={0} onKeyDown={this.onKeyDown}>
+        <TickSVG />
+      </span>
+    );
   }
 }
