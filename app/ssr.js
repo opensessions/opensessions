@@ -48,8 +48,6 @@ export function handleRoute(res, renderProps) {
 }
 
 export function requestHandler(req, res) {
-  // console.log('Request Handler', req.url);
-
   match({ routes, location: req.url }, (error, redirectLocation, renderProps) => {
     if (error) {
       handleError(error);
