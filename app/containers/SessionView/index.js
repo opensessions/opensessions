@@ -152,14 +152,17 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   renderDetails(session) {
     let locationDetail = null;
     if (session.location) {
-      const locationPieces = session.locationData && session.locationData.manual ? session.locationData.manual : session.location.split(', ');
+      const locationPieces =
+        session.locationData && session.locationData.manual
+        ? session.locationData.manual
+        : session.location.split(', ');
       locationDetail = (
         <div className={styles.locationDetail}>
           <img src="/images/map-pin.svg" role="presentation" />
           <span className={styles.detailText}>
             {locationPieces.map((line, index) => (
-              <span key={index} className={styles.addrLine}>{line}</span>)
-            )}
+              <span key={`locationPieces-${index}`} className={styles.addrLine}>{line}</span>
+            ))}
           </span>
         </div>
       );
@@ -172,16 +175,25 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         <div className={styles.detailsText}>
           <h1>
             {this.getTitle()}
-            {session.state === 'published' ? null : <span className={styles.state}>(draft)</span>}
+            {session.state === 'published'
+              ? null
+              : <span className={styles.state}>(draft)</span>
+            }
           </h1>
           {locationDetail}
           {this.renderDate()}
           <div className={styles.detailPrice}>
             <img src="/images/tag.svg" role="presentation" />
-            {session.pricing && session.pricing.firstFree ? <span>First session {this.getFree()}</span> : this.getLowestPrice()}
+            {session.pricing && session.pricing.firstFree
+              ? <span>First session {this.getFree()}</span>
+              : this.getLowestPrice()
+            }
           </div>
           <div className={styles.contactButton}>
-            {session.Organizer ? <Button to={session.Organizer.href} style="slim">View organiser</Button> : null}
+            {session.Organizer
+              ? <Button to={session.Organizer.href} style="slim">View organiser</Button>
+              : null
+            }
           </div>
         </div>
         <Helmet
@@ -224,8 +236,8 @@ export default class SessionView extends React.Component { // eslint-disable-lin
 
     return (
       <ol className={styles.prices}>
-        {pricesWithDefault.map(band => (
-          <li>
+        {pricesWithDefault.map((band, index) => (
+          <li key={`prices-${index}`}>
             <span className={styles.label}>{band.type}</span>
             <span className={styles.amount}>
               <img src="/images/tag.svg" role="presentation" />
