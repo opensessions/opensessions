@@ -9,7 +9,7 @@ import { apiModel } from '../../../utils/api';
 export default class Relation extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static contextTypes = {
     notify: PropTypes.func,
-    store: PropTypes.func
+    store: PropTypes.object
   };
   static propTypes = {
     value: PropTypes.string,

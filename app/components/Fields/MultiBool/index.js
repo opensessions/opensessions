@@ -18,7 +18,7 @@ export default class MultiBoolField extends React.Component { // eslint-disable-
     const { value, options } = this.props;
     return (<div className={styles.multiField}>
       {options.map(option => (<label className={styles.option} key={option}>
-        <Checkbox label={option} checked={value ? (value.indexOf(option) + 1) : false} onChange={checked => this.handleChange(option, checked)} />
+        <Checkbox label={option} checked={value ? !!(value.indexOf(option) + 1) : false} onChange={checked => this.handleChange(option, checked)} />
       </label>))}
     </div>);
   }

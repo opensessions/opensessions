@@ -329,8 +329,21 @@ export default class SessionForm extends React.Component { // eslint-disable-lin
   renderFieldset = fieldset => <div>{fieldset.fields.map(this.renderField)}</div>
   renderField = (field, index) => {
     const override = this.organizerOverride(field);
-    if (override) return <Field key={index} index={index} {...this.state.copy.fields[field]} label={<span>{this.state.copy.fields[field].label} <i>(taken from <Link to={`${this.state.session.Organizer.href}/edit`}>organiser</Link>)</i></span>}><div className={styles.disabledField}>{override}</div></Field>;
-    return <Field key={index} index={index} {...this.state.copy.fields[field]}>{this.state.fields[field] ? this.state.fields[field]() : <TextField {...this.getAttr(field)} />}</Field>;
+    // override to make field non editable
+    if (override) {
+      return (
+        <Field key={index} index={index} {...this.state.copy.fields[field]} labelComponent={<span>{this.state.copy.fields[field].label} <i>(taken from <Link to={`${this.state.session.Organizer.href}/edit`}>organiser</Link>)</i></span>}>
+          <div className={styles.disabledField}>
+            {override}
+          </div>
+        </Field>
+      );
+    }
+    return (
+      <Field key={index} index={index} {...this.state.copy.fields[field]}>
+        {this.state.fields[field] ? this.state.fields[field]() : <TextField {...this.getAttr(field)} />}
+      </Field>
+    );
   }
   render() {
     const { session } = this.state;

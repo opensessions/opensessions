@@ -4,6 +4,7 @@ import styles from './styles.css';
 
 export default class Field extends React.Component { // eslint-disable-line react/prefer-stateless-function
   static propTypes = {
+    labelComponent: PropTypes.object, // used if label is a component for example when the field is overridden (taken from organiser)
     label: PropTypes.string,
     tipType: PropTypes.string,
     tip: PropTypes.string,
@@ -35,13 +36,16 @@ export default class Field extends React.Component { // eslint-disable-line reac
     </div>);
   }
   render() {
-    const { label, fullSize, tip, children } = this.props;
-    return (<div className={styles.field} data-hasfocus={this.state.hasFocus} onFocus={this.onFocusChange} onBlur={this.onFocusChange}>
-      <label className={styles.label}>{label}</label>
-      <div className={fullSize ? '' : styles.inputWrap}>
-        {children}
+    const { label, labelComponent, fullSize, tip, children } = this.props;
+    const labelToUse = labelComponent || label;
+    return (
+      <div className={styles.field} data-hasfocus={this.state.hasFocus} onFocus={this.onFocusChange} onBlur={this.onFocusChange}>
+        <label className={styles.label}>{labelToUse}</label>
+        <div className={fullSize ? '' : styles.inputWrap}>
+          {children}
+        </div>
+        {tip ? this.renderTooltip() : null}
       </div>
-      {tip ? this.renderTooltip() : null}
-    </div>);
+    );
   }
 }

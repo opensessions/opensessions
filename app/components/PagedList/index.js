@@ -14,7 +14,7 @@ export default class PagedList extends React.Component { // eslint-disable-line 
     items: PropTypes.array,
     itemToProps: PropTypes.func,
     location: PropTypes.object,
-    Component: PropTypes.component,
+    Component: PropTypes.func,
     page: PropTypes.number,
     limit: PropTypes.number,
     noneMessage: PropTypes.any,
