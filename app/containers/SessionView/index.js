@@ -141,7 +141,7 @@ export default class SessionView extends React.Component { // eslint-disable-lin
     return (<div className={styles.dateDetail}>
       <img src="/images/calendar.svg" role="presentation" />
       {upcoming.length ? (<ol className={styles.dateList}>
-        {upcoming.slice(0, scheduleItems).map(({ date, time, duration }, index) => <li className={[styles.detailText, index === 0 ? styles.nextOccurring : ''].join(' ')}>
+        {upcoming.slice(0, scheduleItems).map(({ date, time, duration }, index) => <li key={index} className={[styles.detailText, index === 0 ? styles.nextOccurring : ''].join(' ')}>
           {date} {time ? <span className={styles.timespan}>at {time}</span> : null}
           {!index || duration !== upcoming[index - 1].duration ? <span className={styles.duration}><img src="/images/clock.svg" role="presentation" />{duration}</span> : null}
         </li>)}
@@ -152,122 +152,191 @@ export default class SessionView extends React.Component { // eslint-disable-lin
   renderDetails(session) {
     let locationDetail = null;
     if (session.location) {
-      const locationPieces = session.locationData && session.locationData.manual ? session.locationData.manual : session.location.split(', ');
-      locationDetail = (<div className={styles.locationDetail}>
-        <img src="/images/map-pin.svg" role="presentation" />
-        <span className={styles.detailText}>{locationPieces.map(line => <span className={styles.addrLine}>{line}</span>)}</span>
-      </div>);
+      const locationPieces =
+        session.locationData && session.locationData.manual
+        ? session.locationData.manual
+        : session.location.split(', ');
+      locationDetail = (
+        <div className={styles.locationDetail}>
+          <img src="/images/map-pin.svg" role="presentation" />
+          <span className={styles.detailText}>
+            {locationPieces.map((line, index) => (
+              <span key={`locationPieces-${index}`} className={styles.addrLine}>{line}</span>
+            ))}
+          </span>
+        </div>
+      );
     }
-    return (<div className={styles.detailsSection}>
-      <div className={[styles.detailsImg, session.image ? '' : styles.noImg].join(' ')}>
-        <img src={session.image || '/images/placeholder.png'} role="presentation" />
-      </div>
-      <div className={styles.detailsText}>
-        <h1>
-          {this.getTitle()}
-          {session.state === 'published' ? null : <span className={styles.state}>(draft)</span>}
-        </h1>
-        {locationDetail}
-        {this.renderDate()}
-        <div className={styles.detailPrice}>
-          <img src="/images/tag.svg" role="presentation" />
-          {session.pricing && session.pricing.firstFree ? <span>First session {this.getFree()}</span> : this.getLowestPrice()}
+    return (
+      <div className={styles.detailsSection}>
+        <div className={[styles.detailsImg, session.image ? '' : styles.noImg].join(' ')}>
+          <img src={session.image || '/images/placeholder.png'} role="presentation" />
         </div>
-        <div className={styles.contactButton}>
-          {session.Organizer ? <Button to={session.Organizer.href} style="slim">View organiser</Button> : null}
+        <div className={styles.detailsText}>
+          <h1>
+            {this.getTitle()}
+            {session.state === 'published'
+              ? null
+              : <span className={styles.state}>(draft)</span>
+            }
+          </h1>
+          {locationDetail}
+          {this.renderDate()}
+          <div className={styles.detailPrice}>
+            <img src="/images/tag.svg" role="presentation" />
+            {session.pricing && session.pricing.firstFree
+              ? <span>First session {this.getFree()}</span>
+              : this.getLowestPrice()
+            }
+          </div>
+          <div className={styles.contactButton}>
+            {session.Organizer
+              ? <Button to={session.Organizer.href} style="slim">View organiser</Button>
+              : null
+            }
+          </div>
         </div>
+        <Helmet
+          title={session.title}
+          titleTemplate="%s - Open Sessions"
+          meta={
+            [['og:image', session.image],
+            ['og:title', session.title],
+            ['og:description', (session.description || '').substr(0, 256)],
+            ['og:url', session.absoluteURL]]
+              .map(([property, content]) => ({ property, content }))
+              .concat([
+                ['twitter:card', 'summary'],
+                ['twitter:site', '@open_sessions'],
+                ['twitter:creator', session.info.social.twitter]]
+                .map(([name, content]) => ({ name, content }))
+              )
+          }
+        />
       </div>
-      <Helmet title={session.title} titleTemplate="%s - Open Sessions" meta={[['og:image', session.image], ['og:title', session.title], ['og:description', (session.description || '').substr(0, 256)], ['og:url', session.absoluteURL]].map(([property, content]) => ({ property, content })).concat([['twitter:card', 'summary'], ['twitter:site', '@open_sessions'], ['twitter:creator', session.info.social.twitter]].map(([name, content]) => ({ name, content })))} />
-    </div>);
+    );
   }
   renderLastUpdated(session) {
     const [updatedAt, dayDelta, freshness] = lastUpdatedString(session);
     const freshStyles = ['', styles.recent, styles.new];
-    return <span className={[styles.lastUpdated, freshStyles[freshness]].join(' ')} title={dayDelta <= 1 ? '' : `${dayDelta} days ago`}>last updated {updatedAt}</span>;
+    return (
+      <span
+        className={[styles.lastUpdated, freshStyles[freshness]].join(' ')}
+        title={dayDelta <= 1 ? '' : `${dayDelta} days ago`}
+      >
+        last updated {updatedAt}
+      </span>
+    );
   }
   renderPriceList(prices) {
-    return (<ol className={styles.prices}>
-      {(prices && prices.length ? prices : [{ type: '', price: 0 }]).map(band => (<li>
-        <span className={styles.label}>{band.type}</span>
-        <span className={styles.amount}>
-          <img src="/images/tag.svg" role="presentation" />
-          {this.formatPrice(band.price)}
-        </span>
-      </li>))}
-    </ol>);
+    const pricesWithDefault =
+      prices && prices.length
+      ? prices
+      : [{ type: '', price: 0 }];
+
+    return (
+      <ol className={styles.prices}>
+        {pricesWithDefault.map((band, index) => (
+          <li key={`prices-${index}`}>
+            <span className={styles.label}>{band.type}</span>
+            <span className={styles.amount}>
+              <img src="/images/tag.svg" role="presentation" />
+              {this.formatPrice(band.price)}
+            </span>
+          </li>
+        ))}
+      </ol>
+    );
   }
   renderDescription(session) {
     let meetingPoint = null;
     if (session.meetingPoint) {
-      meetingPoint = (<div className={styles.infoSection}>
-        <h3>Session meeting point</h3>
-        <div className={styles.description}>
-          {session.meetingPoint}
+      meetingPoint = (
+        <div className={styles.infoSection}>
+          <h3>Session meeting point</h3>
+          <div className={styles.description}>
+            {session.meetingPoint}
+          </div>
         </div>
-      </div>);
+      );
     }
     let preparation = null;
     if (session.preparation) {
-      preparation = (<div className={styles.infoSection}>
-        <h3>What you'll need</h3>
-        <div className={styles.description}>
-          {session.preparation}
+      preparation = (
+        <div className={styles.infoSection}>
+          <h3>What you'll need</h3>
+          <div className={styles.description}>
+            {session.preparation}
+          </div>
         </div>
-      </div>);
+      );
     }
-    const activitiesList = session.Activities ? <ol className={styles.activitiesList}>{session.Activities.map(activity => <li key={activity.name}><Link to={`/sessions?activity=${activity.name}`}>{activity.name}</Link></li>)}</ol> : null;
+    const activitiesList =
+      session.Activities
+      ? <ol className={styles.activitiesList}>
+        {session.Activities.map(activity => (
+          <li key={activity.name}>
+            <Link to={`/sessions?activity=${activity.name}`}>
+              {activity.name}
+            </Link>
+          </li>
+        ))}
+      </ol>
+      : null;
     const prices = this.getPrices();
     const { pricing, info } = session;
-    return (<div className={styles.descriptionSection}>
-      <div className={styles.mainCol}>
-        <h2>Description</h2>
-        <div className={styles.description}>
-          {session.description || <i>This session has no description</i>}
+    return (
+      <div className={styles.descriptionSection}>
+        <div className={styles.mainCol}>
+          <h2>Description</h2>
+          <div className={styles.description}>
+            {session.description || <i>This session has no description</i>}
+          </div>
+          {meetingPoint}
+          {preparation}
+          {activitiesList}
+          {this.isAdmin() ? this.renderLastUpdated(session) : null}
         </div>
-        {meetingPoint}
-        {preparation}
-        {activitiesList}
-        {this.isAdmin() ? this.renderLastUpdated(session) : null}
+        <div className={styles.sideCol}>
+          <div className={styles.info}>
+            <h3>Pricing</h3>
+            <div className={`${styles.floatingInfo} ${styles.pricing}`}>
+              {pricing && pricing.firstFree ? (<div>
+                <strong>First Session</strong>
+                <div>
+                  <span className={styles.amount}><img src="/images/tag.svg" role="presentation" /> FREE</span>
+                </div>
+                <strong>and then</strong>
+                {this.renderPriceList(prices)}
+              </div>) : (<div>{this.renderPriceList(prices)}</div>)}
+            </div>
+          </div>
+          {session.leader ? (<div className={styles.info}>
+            <h3>Session Leader</h3>
+            <div className={styles.floatingInfo}>
+              {session.leader}
+            </div>
+          </div>) : null}
+          <div className={styles.info}>
+            <h3>Organiser</h3>
+            <div className={`${styles.floatingInfo} ${styles.organizerInfo}`}>
+              <p>{session.Organizer ? (<Link to={session.Organizer.href}>{session.Organizer.name}</Link>) : 'No organizer'}</p>
+              <p>{this.canAct('message') ? <Button style="slim" onClick={this.dispatchMessageModal} icon="/images/email.png" tip="Got a question about this session?">Message</Button> : null}</p>
+              <p>{info.contact.phone ? (<a className={styles.organizerLink} href={`tel:${info.contact.phone}`}><img src="/images/phone.svg" role="presentation" /> {info.contact.phone}</a>) : ''}</p>
+              <SocialMedia item={info.social} />
+            </div>
+          </div>
+          <div className={styles.info}>
+            <h3>Disability Support</h3>
+            <div className={`${styles.floatingInfo} ${styles.disabilityInfo}`}>
+              {(session.abilityRestriction && session.abilityRestriction.length)
+                ? session.abilityRestriction.map(ability => <p key={ability}>{ability} <img src="/images/tick.svg" role="presentation" /></p>)
+                : <p>No disabilities supported</p>}
+            </div>
+          </div>
+        </div>
       </div>
-      <div className={styles.sideCol}>
-        <div className={styles.info}>
-          <h3>Pricing</h3>
-          <div className={`${styles.floatingInfo} ${styles.pricing}`}>
-            {pricing && pricing.firstFree ? (<div>
-              <strong>First Session</strong>
-              <div>
-                <span className={styles.amount}><img src="/images/tag.svg" role="presentation" /> FREE</span>
-              </div>
-              <strong>and then</strong>
-              {this.renderPriceList(prices)}
-            </div>) : (<div>{this.renderPriceList(prices)}</div>)}
-          </div>
-        </div>
-        {session.leader ? (<div className={styles.info}>
-          <h3>Session Leader</h3>
-          <div className={styles.floatingInfo}>
-            {session.leader}
-          </div>
-        </div>) : null}
-        <div className={styles.info}>
-          <h3>Organiser</h3>
-          <div className={`${styles.floatingInfo} ${styles.organizerInfo}`}>
-            <p>{session.Organizer ? (<Link to={session.Organizer.href}>{session.Organizer.name}</Link>) : 'No organizer'}</p>
-            <p>{this.canAct('message') ? <Button style="slim" onClick={this.dispatchMessageModal} icon="/images/email.png" tip="Got a question about this session?">Message</Button> : null}</p>
-            <p>{info.contact.phone ? (<a className={styles.organizerLink} href={`tel:${info.contact.phone}`}><img src="/images/phone.svg" role="presentation" /> {info.contact.phone}</a>) : ''}</p>
-            <SocialMedia item={info.social} />
-          </div>
-        </div>
-        <div className={styles.info}>
-          <h3>Disability Support</h3>
-          <div className={`${styles.floatingInfo} ${styles.disabilityInfo}`}>
-            {(session.abilityRestriction && session.abilityRestriction.length)
-              ? session.abilityRestriction.map(ability => <p key={ability}>{ability} <img src="/images/tick.svg" role="presentation" /></p>)
-              : <p>No disabilities supported</p>}
-          </div>
-        </div>
-      </div>
-    </div>);
+    );
   }
   renderAbout(session) {
     let features = [];
@@ -365,10 +434,12 @@ export default class SessionView extends React.Component { // eslint-disable-lin
         mapProps={mapProps}
       />);
     }
-    return (<section className={styles.mapSection}>
-      {address ? <div className={styles.address}>{address.split(',').map(line => <p key={line}>{line}</p>)}<br /><p><a href={`https://maps.google.com/maps?saddr=My+Location&daddr=${address}`} target="blank">Get directions</a></p></div> : null}
-      {map}
-    </section>);
+    return (
+      <section className={styles.mapSection}>
+        {address ? <div className={styles.address}>{address.split(',').map(line => <p key={line}>{line}</p>)}<br /><p><a href={`https://maps.google.com/maps?saddr=My+Location&daddr=${address}`} target="blank">Get directions</a></p></div> : null}
+        {map}
+      </section>
+    );
   }
   renderShare(session) {
     const { title, href } = session;

@@ -21,7 +21,7 @@ const actionResult = ({ notify, router, onExpire }, action) => ({ message, messa
 
 const actionError = ({ notify }, action, object) => () => notify(`Failed to ${action} ${object}`);
 
-const SessionTile = function (props, context) {
+const SessionTile = (props, context) => {
   const { session, style } = props;
   const { modal, user } = context;
   const isOwner = user && session.owner === user.user_id;
@@ -64,7 +64,7 @@ const SessionTile = function (props, context) {
           {isAdmin && aggregators ? aggregators.map(agg => <a key={agg.name} target="blank" href={agg.href} className={styles.GALLink}>{agg.name}</a>) : null}
         </h1>
         <div className={styles.location}>{session.locationData && session.locationData.manual ? session.locationData.manual.join(', ') : session.location}</div>
-        {session.Activities ? <ol className={styles.activities}>{session.Activities.map(activity => <li>{activity.name}</li>)}</ol> : null}
+        {session.Activities ? <ol className={styles.activities}>{session.Activities.map((activity, index) => <li key={index}>{activity.name}</li>)}</ol> : null}
       </div>
       <div className={styles.meta}>
         {renderActions()}
